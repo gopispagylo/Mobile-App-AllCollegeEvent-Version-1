@@ -5,4 +5,8 @@ class ImagePath{
   final authForgetImg = "assets/image/auth-forgot.png";
   final googleImg = "assets/image/Google__G__logo.png";
 
+  // Organizer victor image path
+  final orgLoginImg = "assets/image/or_login.png";
+  final orgForgotImg = "assets/image/or_forgotpassword.png";
+
 }

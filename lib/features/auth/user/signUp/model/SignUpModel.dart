@@ -34,7 +34,7 @@ class _SignUpModelState extends State<SignUpModel> {
         backgroundColor: MyColor().whiteClr,
         body: Stack(
           children: [
-            Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain),
+            Positioned.fill(child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain)),
             Container(
               margin: EdgeInsets.only(left: 16, right: 16),
               child: ListView(
@@ -115,22 +115,24 @@ class _SignUpModelState extends State<SignUpModel> {
                     ),
                   ),
                   SizedBox(height: 30),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(320, 48),
-                      elevation: 0,
-                      backgroundColor: MyColor().primaryClr,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(50),
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(320, 48),
+                        elevation: 0,
+                        backgroundColor: MyColor().primaryClr,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(50),
+                        ),
                       ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Sign up",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: MyColor().whiteClr,
+                      onPressed: () {},
+                      child: Text(
+                        "Sign up",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: MyColor().whiteClr,
+                        ),
                       ),
                     ),
                   ),
@@ -160,26 +162,27 @@ class _SignUpModelState extends State<SignUpModel> {
                     ],
                   ),
                   SizedBox(height: 15),
-                  Container(
-                    alignment: Alignment.center,
-                    height: 48,
-                    width: 320,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                        border: Border.all(color: Colors.grey.shade400,width: 0.5)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset(ImagePath().googleImg,height: 30,),
-                        const SizedBox(width: 10,),
-                        Text("Continue with Google",style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14
-                        )
-                        ),
-                      ],
+                  Center(
+                    child: Container(
+                      height: 48,
+                      width: 320,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.white,
+                          border: Border.all(color: Colors.grey.shade400,width: 0.5)
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(ImagePath().googleImg,height: 30,),
+                          const SizedBox(width: 10,),
+                          Text("Continue with Google",style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14
+                          )
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 25),

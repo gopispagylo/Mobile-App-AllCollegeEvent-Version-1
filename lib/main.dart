@@ -1,7 +1,18 @@
+import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future<void> main() async{
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // DotEnv file initialized
+  await dotenv.load(fileName: '.env');
+
+  // Set initial base url
+  await ApiController().setBaseUrl();
+
   runApp(MyApp());
 }
 

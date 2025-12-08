@@ -1,7 +1,11 @@
+import 'dart:ui';
+import 'dart:ui' as ui;
+
 import 'package:all_college_event_app/features/auth/chechUser/model/ChechUserModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CheckUserPage extends StatefulWidget {
@@ -13,10 +17,28 @@ class CheckUserPage extends StatefulWidget {
 
 class _CheckUserPageState extends State<CheckUserPage> {
 
+
+  void printRefreshRate() {
+    final refreshRate = ui.PlatformDispatcher.instance.views.first.display.refreshRate;
+    print("📱 Refresh Rate: $refreshRate Hz");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    printRefreshRate();
+  }
+  
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: CheckUserModel()
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent
+      ),
+      child: Scaffold(
+        body: CheckUserModel()
+      ),
     );
   }
 }
