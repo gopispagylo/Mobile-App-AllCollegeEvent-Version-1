@@ -1,6 +1,7 @@
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
 import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -42,14 +43,14 @@ class _CheckUserModelState extends State<CheckUserModel> {
                   ),
                   Text(
                     textAlign: TextAlign.center,
-                    "You Are Joining As", style: TextStyle(
+                    ConfigMessage().checkUserHeadMsg, style: TextStyle(
                       fontFamily: "blMelody",
                       fontSize: 30,
                       fontWeight: FontWeight.w500
                   ),),
                   Text(
                     textAlign: TextAlign.center,
-                    "Help us personalize your app experience.", style: GoogleFonts.poppins(
+                    ConfigMessage().checkUserSubHeadMsg, style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w500
                   ),),

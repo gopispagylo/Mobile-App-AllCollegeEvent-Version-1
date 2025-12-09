@@ -1,19 +1,25 @@
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
-import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
-import 'package:all_college_event_app/features/auth/user/signUp/ui/SignUpPage.dart';
+import 'package:all_college_event_app/features/auth/user/signUp/bloc/signUp/sign_up_bloc.dart';
+import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignUpModel extends StatefulWidget {
-  const SignUpModel({super.key});
+  final String whichScreen;
+
+  const SignUpModel({super.key, required this.whichScreen});
 
   @override
   State<SignUpModel> createState() => _SignUpModelState();
 }
 
 class _SignUpModelState extends State<SignUpModel> {
+
   // Text Input controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -24,19 +30,22 @@ class _SignUpModelState extends State<SignUpModel> {
   bool obscureTexPassword = true;
   bool obscureTexConfirmPassword = true;
 
+  // Global Key
+  final formKey = GlobalKey<FormState>();
+
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        backgroundColor: MyColor().whiteClr,
-        body: Stack(
-          children: [
-            Positioned.fill(child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain)),
-            Container(
-              margin: EdgeInsets.only(left: 16, right: 16),
+    return Scaffold(
+      backgroundColor: MyColor().whiteClr,
+      body: Stack(
+        children: [
+          Positioned.fill(child: Image.asset(
+              ImagePath().backgroundImg, fit: BoxFit.contain)),
+          Container(
+            margin: EdgeInsets.only(left: 16, right: 16),
+            child: Form(
+              key: formKey,
               child: ListView(
                 children: [
                   Container(
@@ -45,7 +54,7 @@ class _SignUpModelState extends State<SignUpModel> {
                   ),
                   Text(
                     textAlign: TextAlign.center,
-                    "Join us Now!!",
+                    ConfigMessage().signUpUserHeadMsg,
                     style: TextStyle(
                       fontFamily: "blMelody",
                       fontSize: 30,
@@ -54,7 +63,7 @@ class _SignUpModelState extends State<SignUpModel> {
                   ),
                   Text(
                     textAlign: TextAlign.center,
-                    "Let’s Create your account",
+                    ConfigMessage().signUpUserSubHeadMsg,
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
@@ -65,33 +74,31 @@ class _SignUpModelState extends State<SignUpModel> {
                     label: "Name",
                     controller: nameController,
                     hintText: "Enter your name",
-                    errorText: "Please enter your name",
+                    validator: Validators().validName,
                   ),
                   SizedBox(height: 20),
                   MyModels().customTextField(
                     label: "Email",
                     controller: emailController,
                     hintText: "Enter your mail id",
-                    errorText: "Please enter your mail id",
+                    validator: Validators().validEmail,
                   ),
                   SizedBox(height: 20),
                   MyModels().customTextFieldPassword(
                     label: "Password",
                     controller: passwordController,
                     hintText: "Enter your password",
-                    errorText: "Please enter your password",
+                    errorText: Validators().validPassword,
                     obscureText: obscureTexPassword,
-                    eyeIcon: Container(
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            obscureTexPassword = !obscureTexPassword;
-                          });
-                        },
-                        icon: !obscureTexPassword
-                            ? Icon(Icons.visibility)
-                            : Icon(Icons.visibility_off),
-                      ),
+                    eyeIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscureTexPassword = !obscureTexPassword;
+                        });
+                      },
+                      icon: !obscureTexPassword
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -99,42 +106,59 @@ class _SignUpModelState extends State<SignUpModel> {
                     label: "Confirm Password",
                     controller: confirmPasswordController,
                     hintText: "Enter your confirm password",
-                    errorText: "Please enter your confirm password",
+                    errorText: Validators().validConfirmPassword,
                     obscureText: obscureTexConfirmPassword,
-                    eyeIcon: Container(
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            obscureTexConfirmPassword = !obscureTexConfirmPassword;
-                          });
-                        },
-                        icon: !obscureTexConfirmPassword
-                            ? Icon(Icons.visibility)
-                            : Icon(Icons.visibility_off),
-                      ),
+                    eyeIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscureTexConfirmPassword = !obscureTexConfirmPassword;
+                        });
+                      },
+                      icon: !obscureTexConfirmPassword
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
                     ),
                   ),
                   SizedBox(height: 30),
-                  Center(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(320, 48),
-                        elevation: 0,
-                        backgroundColor: MyColor().primaryClr,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusGeometry.circular(50),
+                  BlocConsumer<SignUpBloc, SignUpState>(
+                    listener: (context, signUpState) {
+                      if(signUpState is SignUpSuccess){
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)));
+                        nameController.clear();
+                        emailController.clear();
+                        passwordController.clear();
+                        confirmPasswordController.clear();
+                      }else if(signUpState is SignUpFail){
+                        print("ErrorMessageErrorMessageErrorMessageErrorMessageErrorMessage${signUpState.errorMessage}");
+                      }
+                    },
+                    builder: (context, signUpState) {
+                      return Center(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            fixedSize: Size(320, 48),
+                            elevation: 0,
+                            backgroundColor: MyColor().primaryClr,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(50),
+                            ),
+                          ),
+                          onPressed: () {
+                            if(formKey.currentState!.validate()){
+                              context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
+                            }
+                          },
+                          child: signUpState is SignUpLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
+                            "Sign up",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: MyColor().whiteClr,
+                            ),
+                          ),
                         ),
-                      ),
-                      onPressed: () {},
-                      child: Text(
-                        "Sign up",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: MyColor().whiteClr,
-                        ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
                   SizedBox(height: 15),
                   Row(
@@ -148,7 +172,7 @@ class _SignUpModelState extends State<SignUpModel> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text("Or",style: GoogleFonts.poppins(
+                        child: Text("Or", style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w400,
                           fontSize: 14,
                         ),),
@@ -169,14 +193,15 @@ class _SignUpModelState extends State<SignUpModel> {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(50),
                           color: Colors.white,
-                          border: Border.all(color: Colors.grey.shade400,width: 0.5)
+                          border: Border.all(
+                              color: Colors.grey.shade400, width: 0.5)
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Image.asset(ImagePath().googleImg,height: 30,),
+                          Image.asset(ImagePath().googleImg, height: 30,),
                           const SizedBox(width: 10,),
-                          Text("Continue with Google",style: GoogleFonts.poppins(
+                          Text("Continue with Google", style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w600,
                               fontSize: 14
                           )
@@ -189,16 +214,17 @@ class _SignUpModelState extends State<SignUpModel> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Already have an Account!?",style: GoogleFonts.poppins(
+                      Text(
+                        "Already have an Account!?", style: GoogleFonts.poppins(
                           fontSize: 14,
                           fontWeight: FontWeight.w500
                       ),),
                       SizedBox(width: 8,),
                       GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           Navigator.pop(context);
                         },
-                        child: Text("Sign In",style: GoogleFonts.poppins(
+                        child: Text("Sign In", style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: MyColor().primaryClr,
                             fontWeight: FontWeight.w600
@@ -210,8 +236,8 @@ class _SignUpModelState extends State<SignUpModel> {
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

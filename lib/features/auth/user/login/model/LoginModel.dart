@@ -2,9 +2,12 @@ import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
 import 'package:all_college_event_app/features/auth/user/login/bloc/login/login_bloc.dart';
 import 'package:all_college_event_app/features/auth/user/signUp/ui/SignUpPage.dart';
-import 'package:all_college_event_app/features/tabs/HomePage.dart';
+import 'package:all_college_event_app/features/screens/home/ui/HomePage.dart';
+import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -76,7 +79,7 @@ class _LoginModelState extends State<LoginModel> {
                 ),
                 Text(
                   textAlign: TextAlign.center,
-                  "Welcome",
+                  ConfigMessage().loginUserHeadMsg,
                   style: TextStyle(
                     fontFamily: "blMelody",
                     fontSize: 30,
@@ -85,7 +88,7 @@ class _LoginModelState extends State<LoginModel> {
                 ),
                 Text(
                   textAlign: TextAlign.center,
-                  "Please login your account",
+                  ConfigMessage().loginUserSubHeadMsg,
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
@@ -96,14 +99,14 @@ class _LoginModelState extends State<LoginModel> {
                   label: "Email",
                   controller: emailController,
                   hintText: "Enter your mail id",
-                  errorText: "Please enter your mail id",
+                  validator: Validators().validEmail,
                 ),
                 SizedBox(height: 20),
                 MyModels().customTextFieldPassword(
                   label: "Password",
                   controller: passwordController,
                   hintText: "Enter your password",
-                  errorText: "Please enter your password",
+                  errorText: Validators().validPassword,
                   obscureText: obscureTex,
                   eyeIcon: Container(
                     child: IconButton(
@@ -139,7 +142,9 @@ class _LoginModelState extends State<LoginModel> {
                 BlocConsumer<LoginBloc, LoginState>(
               listener: (context, loginState) {
                 if(loginState is LoginSuccess){
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=> HomePage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)));
+                  emailController.clear();
+                  passwordController.clear();
                 } else if(loginState is LoginFail){
                   print("ErrorMessageErrorMessageErrorMessageErrorMessageErrorMessage${loginState.errorMessage}");
                 }
@@ -156,7 +161,6 @@ class _LoginModelState extends State<LoginModel> {
                       ),
                     ),
                     onPressed: () {
-                      print("kdjfgjhxdgfjdhfdfgh");
                       if(formKey.currentState!.validate()){
                         context.read<LoginBloc>().add(ClickedLogin(email: emailController.text, password: passwordController.text, type: widget.whichScreen));
                       }
@@ -239,7 +243,7 @@ class _LoginModelState extends State<LoginModel> {
                     SizedBox(width: 8,),
                     GestureDetector(
                       onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (_)=> SignUpPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> SignUpPage(whichScreen: widget.whichScreen,)));
                       },
                       child: Text("Sign Up",style: GoogleFonts.poppins(
                           fontSize: 14,

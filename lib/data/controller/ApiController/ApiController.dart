@@ -7,11 +7,6 @@ import 'package:yaml/yaml.dart';
 
 class ApiController {
 
-  Future<void> setBaseUrl() async{
-    dio.options.baseUrl = await getBaseUrl();
-    print('jhfzdmfhxfmhsfmghsdmfhgdsfnhgsdfhsgdfnhg${dio.options.baseUrl}');
-  }
-
   final dio = Dio(
     BaseOptions(
       baseUrl: "",
@@ -19,6 +14,12 @@ class ApiController {
       receiveTimeout: Duration(seconds: 5),
     )
   );
+
+  // Assign the value of base url
+  Future<void> setBaseUrl() async{
+    dio.options.baseUrl = await getBaseUrl();
+  }
+
 
   // Post Method
   Future<Response> postMethod({required String endPoint, required Map<String,dynamic> data}) async{

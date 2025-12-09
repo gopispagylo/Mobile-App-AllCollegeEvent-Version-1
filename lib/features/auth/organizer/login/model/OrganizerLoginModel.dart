@@ -1,7 +1,9 @@
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -40,7 +42,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                 ),
                 Text(
                   textAlign: TextAlign.center,
-                  "Host. Manage. Inspire.",
+                  ConfigMessage().loginOrgHeadMsg,
                   style: TextStyle(
                     fontFamily: "blMelody",
                     fontSize: 30,
@@ -49,7 +51,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                 ),
                 Text(
                   textAlign: TextAlign.center,
-                  "Turn Ideas into Events — Let’s Begin!",
+                  ConfigMessage().loginOrgSubHeadMsg,
                   style: GoogleFonts.poppins(
                     fontSize: 18,
                     fontWeight: FontWeight.w500,
@@ -60,14 +62,14 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                   label: "Domain Mail ID",
                   controller: emailController,
                   hintText: "Enter your domain mail id",
-                  errorText: "Please enter your domain mail id",
+                  validator: Validators().validDomainMail,
                 ),
                 SizedBox(height: 20),
                 MyModels().customTextFieldPassword(
                   label: "Password",
                   controller: passwordController,
                   hintText: "Enter your password",
-                  errorText: "Please enter your password",
+                  errorText: Validators().validPassword,
                   obscureText: obscureTex,
                   eyeIcon: Container(
                     child: IconButton(

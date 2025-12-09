@@ -42,18 +42,43 @@ class Validators {
     return null;
   }
 
+  String? validConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your password";
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters';
+    }
+    return null;
+  }
+
   String? validFirstname (String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your first name";
     }
     return null;
   }
+
   String? validLastname (String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your last name";
     }
     return null;
   }
+
+  String? validName (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your name";
+    }
+    return null;
+  }
+  String? validDomainMail (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your domain mail id";
+    }
+    return null;
+  }
+
   String? validPhone (String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your phone number";

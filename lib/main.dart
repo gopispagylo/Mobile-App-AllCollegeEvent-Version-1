@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
+import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -9,6 +10,7 @@ Future<void> main() async{
 
   // DotEnv file initialized
   await dotenv.load(fileName: '.env');
+
 
   // Set initial base url
   await ApiController().setBaseUrl();
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
       data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: CheckUserPage(),
+        home: BottomNavigationBarPage(pageIndex: 0,),
       ),
     );
   }

@@ -11,29 +11,31 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc({required this.apiController}) : super(LoginInitial()) {
     on<ClickedLogin>((event, emit) async{
       emit(LoginLoading());
+
       try{
         // Giving a body
         final parameter = {
           "email": event.email,
-          "password": "${event.password}",
+          "password": event.password,
           "type": event.type
         };
-        print("parameterparameterparameterparameter$parameter");
-        final response = await apiController.postMethod(endPoint: "http://13.204.5.72:5000/api/v1/auth/login", data: parameter);
-        print("responseresponseresponseresponseresponse$response");
+
+        // Initial set base url
+        await apiController.setBaseUrl();
+        final response = await apiController.postMethod(endPoint: "auth/login", data: parameter);
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
             emit(LoginSuccess());
-          }else{
-            print("responseBodyresponseBodyresponseBody$responseBody");
+          }else {
+            emit(LoginFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
         if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
           emit(LoginFail(errorMessage: "No internet connection"));
         }else{
-          emit(LoginFail(errorMessage: "Something went wrong, please try again$e"));
+          emit(LoginFail(errorMessage: "Something went wrong, please try again"));
         }
       } catch(e){
         emit(LoginFail(errorMessage: "Unexpected error occurred"));

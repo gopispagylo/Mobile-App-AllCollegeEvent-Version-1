@@ -126,7 +126,7 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
               label: widget.whichScreen == 'login' ? "Email" : "Domain Mail ID",
               controller: emailController,
               hintText: widget.whichScreen == 'login' ? "Enter your mail id" : "Enter your domain mail id" ,
-              errorText: widget.whichScreen == 'login' ? "Please enter your mail id" : "Please enter your mail id",
+              validator: widget.whichScreen == 'login' ? Validators().validEmail : Validators().validDomainMail,
             ),
             SizedBox(height: 30),
             Center(
@@ -187,7 +187,7 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
               label: "Password",
               controller: passwordController,
               hintText: "Enter your password",
-              errorText: "Please enter your password",
+              errorText: Validators().validPassword,
               obscureText: obscureTexPassword,
               eyeIcon: IconButton(
                 onPressed: () =>
@@ -202,7 +202,7 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
               label: "Confirm Password",
               controller: confirmPasswordController,
               hintText: "Enter your confirm password",
-              errorText: "Please enter your confirm password",
+              errorText: Validators().validConfirmPassword,
               obscureText: obscureTexConfirmPassword,
               eyeIcon: IconButton(
                 onPressed: () => setState(

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MyModels{
 
-  Center customTextField({required String label, required TextEditingController controller, required String hintText, required String errorText}){
+  Center customTextField({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? validator}){
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -22,12 +22,7 @@ class MyModels{
             width: 320,
             child: TextFormField(
               controller: controller,
-              validator: (value){
-                if(value == null || value.isEmpty){
-                  return errorText;
-                }
-                return null;
-              },
+              validator: validator,
               onTapOutside: (outSideTab){
                 WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
               },
@@ -41,13 +36,20 @@ class MyModels{
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
                 ),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                ),
                 hintText: hintText,
                 hintStyle: GoogleFonts.poppins(
                     fontWeight: FontWeight.w400,
                     fontSize: 12,
                     color: MyColor().hintTextClr
                 ),
-
               ),
             ),
           )
@@ -55,7 +57,8 @@ class MyModels{
       ),
     );
   }
-  Center customTextFieldPassword({required String label, required TextEditingController controller, required String hintText, required String errorText, required bool obscureText, required Widget eyeIcon}){
+
+  Center customTextFieldPassword({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? errorText, required bool obscureText, required Widget eyeIcon}){
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -72,12 +75,7 @@ class MyModels{
             width: 320,
             child: TextFormField(
               controller: controller,
-              validator: (value){
-                if(value == null || value.isEmpty){
-                  return errorText;
-                }
-                return null;
-              },
+              validator: errorText,
               obscureText: obscureText,
               onTapOutside: (outSideTab){
                 WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
@@ -91,6 +89,15 @@ class MyModels{
                 focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+                ),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                        color: MyColor().redClr, width: 0.5)
                 ),
                 hintText: hintText,
                 hintStyle: GoogleFonts.poppins(

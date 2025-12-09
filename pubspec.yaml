@@ -42,6 +42,9 @@ dependencies:
   yaml:
   bloc:
   flutter_bloc:
+  curved_labeled_navigation_bar:
+  carousel_slider:
+  smooth_page_indicator:
 
 dev_dependencies:
   flutter_test:
