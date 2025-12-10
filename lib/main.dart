@@ -2,6 +2,7 @@ import 'package:all_college_event_app/data/controller/ApiController/ApiControlle
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async{
@@ -15,7 +16,10 @@ Future<void> main() async{
   // Set initial base url
   await ApiController().setBaseUrl();
 
-  runApp(MyApp());
+  // Device only portrait view
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
+    runApp(MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -27,6 +31,11 @@ class MyApp extends StatelessWidget {
       data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            scrolledUnderElevation: 0.0,
+          )
+        ),
         home: BottomNavigationBarPage(pageIndex: 0,),
       ),
     );

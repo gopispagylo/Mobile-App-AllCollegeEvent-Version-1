@@ -7,6 +7,7 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BottomNavigationBarPage extends StatefulWidget {
   final int pageIndex;
@@ -51,22 +52,47 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
         CurvedNavigationBarItem(
           child: Icon(Icons.home_outlined,color: pageIndex == 0 ? MyColor().whiteClr : MyColor().borderClr,),
           label: 'Home',
+          labelStyle: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 12,
+            color: MyColor().blackClr
+          )
         ),
         CurvedNavigationBarItem(
           child: Icon(Icons.search,color: pageIndex == 1 ? MyColor().whiteClr : MyColor().borderClr,),
           label: 'Search',
+            labelStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                color: MyColor().blackClr
+            )
         ),
         CurvedNavigationBarItem(
           child: Icon(Icons.chat_bubble_outline,color: pageIndex == 2 ? MyColor().whiteClr : MyColor().borderClr,),
-          label: 'Chat',
+          label: 'Categories',
+            labelStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                color: MyColor().blackClr
+            )
         ),
         CurvedNavigationBarItem(
           child: Icon(Icons.newspaper,color: pageIndex == 3 ? MyColor().whiteClr : MyColor().borderClr,),
-          label: 'Feed',
+          label: 'Event',
+            labelStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                color: MyColor().blackClr
+            )
         ),
         CurvedNavigationBarItem(
           child: Icon(Icons.perm_identity,color: pageIndex == 4 ? MyColor().whiteClr : MyColor().borderClr,),
-          label: 'Personal',
+          label: 'Profile',
+            labelStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                color: MyColor().blackClr
+            )
         ),
       ],
       index: pageIndex,
