@@ -39,8 +39,8 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("Trending Events",style: TextStyle(
-                  fontWeight: FontWeight.w500,
+              Text("Top Organizers",style: TextStyle(
+                  fontWeight: FontWeight.w600,
                   fontSize: 18,
                   fontFamily: "blMelody"
               ),),

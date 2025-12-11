@@ -36,7 +36,7 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
             margin: EdgeInsets.only(left: 16,right: 16,top: 24),
             child: Text("Top Spotlights",style: TextStyle(
                 fontSize: 18,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontFamily: "blMelody"
             ),)),
         SizedBox(height: 15,),

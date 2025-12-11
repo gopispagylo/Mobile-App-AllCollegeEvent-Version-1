@@ -98,7 +98,7 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel> with 
           Container(
             margin: EdgeInsets.only(top: 30,left: 16,right: 6),
             child: Text("Explore Places Around the World",style: TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: 18,
                 fontFamily: "blMelody"
             ),),

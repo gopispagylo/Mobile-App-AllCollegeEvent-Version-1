@@ -106,7 +106,7 @@ class _CheckUserModelState extends State<CheckUserModel> {
                           if(selectUser == 'User'){
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> LoginPage(whichScreen: 'user',)));
                           }else{
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage()));
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage(whichScreen: 'org',)));
                           }
                         } : null, child: Text("Continue",style: GoogleFonts.poppins(
                         fontSize: 14,

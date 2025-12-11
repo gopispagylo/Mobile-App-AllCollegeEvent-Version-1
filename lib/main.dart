@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
+      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(0.85)),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
             scrolledUnderElevation: 0.0,
           )
         ),
-        home: BottomNavigationBarPage(pageIndex: 0,),
+        // home: BottomNavigationBarPage(pageIndex: 0,),
+        home: CheckUserPage(),
       ),
     );
   }

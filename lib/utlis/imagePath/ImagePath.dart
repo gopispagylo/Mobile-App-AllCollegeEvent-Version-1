@@ -9,4 +9,7 @@ class ImagePath{
   final orgLoginImg = "assets/image/or_login.png";
   final orgForgotImg = "assets/image/or_forgotpassword.png";
 
+  // --------- Organizer victor image for signUp ---------
+  final orgSignUpImg = "assets/image/rocket.png";
+
 }

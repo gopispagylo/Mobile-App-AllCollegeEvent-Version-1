@@ -44,7 +44,7 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Pick Your Vibe!",style: TextStyle(
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w600,
                 fontSize: 18,
                 fontFamily: "blMelody"
               ),),

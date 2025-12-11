@@ -114,4 +114,61 @@ class MyModels{
     );
   }
 
+  // ----------- Custom Dropdown ------------
+  Column customDropdown({required String label,required String hint,required dynamic value,required dynamic onChanged,required List<DropdownMenuItem<String>> items,required FormFieldValidator<String?> valid}){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(bottom: 12),
+          child: Text(label,style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600
+          ),),
+        ),
+        DropdownButtonFormField<String>(
+          iconEnabledColor: MyColor().primaryClr,
+          hint: Text(hint,style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              color: MyColor().hintTextClr
+          ),),
+          style: GoogleFonts.poppins(
+            fontSize: 14,
+            color: MyColor().primaryClr,
+            fontWeight: FontWeight.w600,
+          ),
+          iconDisabledColor: MyColor().blackClr,
+          value: value,
+          decoration: InputDecoration(
+            suffixIcon: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Icon(Icons.arrow_drop_down,),
+            ),
+            // iconColor: MyColor().primaryClr,
+            contentPadding: EdgeInsets.all(10),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
+            ),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
+            ),
+            errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+            ),
+          ),
+          onChanged: onChanged,
+          items: items,
+          validator: valid,
+        ),
+      ],
+    );
+  }
 }

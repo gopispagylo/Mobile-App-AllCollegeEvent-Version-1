@@ -22,9 +22,14 @@ class _WelcomeModelState extends State<WelcomeModel> {
             // spreadRadius: 0,
           ),
         ],
-          border: Border(bottom: BorderSide(color: MyColor().primaryClr.withOpacity(0.15))),
-          color: MyColor().boxInnerClr,
-          borderRadius: BorderRadius.only(bottomRight: Radius.circular(44),bottomLeft: Radius.circular(44))
+        border: Border(
+          bottom: BorderSide(color: MyColor().primaryClr.withOpacity(0.15)),
+        ),
+        color: MyColor().boxInnerClr,
+        borderRadius: BorderRadius.only(
+          bottomRight: Radius.circular(44),
+          bottomLeft: Radius.circular(44),
+        ),
       ),
       child: Container(
         margin: EdgeInsets.all(16),
@@ -34,16 +39,20 @@ class _WelcomeModelState extends State<WelcomeModel> {
             Row(
               children: [
                 Text(
-                  "Welcome ",style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),),
+                  "Welcome ",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
                 Text(
-                  "Krish!",style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  color: MyColor().primaryClr,
-                  fontWeight: FontWeight.w600,
-                ),),
+                  "Krish!",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    color: MyColor().primaryClr,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ],
             ),
             // Location
@@ -54,81 +63,88 @@ class _WelcomeModelState extends State<WelcomeModel> {
                   margin: EdgeInsets.only(top: 14),
                   padding: EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                      color: MyColor().locationClr,
-                      borderRadius: BorderRadius.circular(44)
+                    color: MyColor().locationClr,
+                    borderRadius: BorderRadius.circular(44),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.location_on_outlined),
-                      Text("Coimbatore, India",style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600
-                      ),),
-                      Icon(Icons.arrow_drop_down)
+                      Icon(Icons.location_on_outlined, size: 18),
+                      Text(
+                        "Coimbatore, India",
+                        style: GoogleFonts.poppins(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Icon(Icons.arrow_drop_down, size: 18),
                     ],
                   ),
                 ),
                 Container(
                   decoration: BoxDecoration(
                     color: MyColor().locationClr,
-                    shape: BoxShape.circle
+                    shape: BoxShape.circle,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(15),
-                    child: Icon(Icons.notifications,size: 24,),
+                    child: Icon(Icons.notifications, size: 18),
                   ),
-                )
+                ),
               ],
             ),
             // Search Bar
             Center(
               child: Container(
-                margin: EdgeInsets.only(top: 30,bottom: 16),
+                margin: EdgeInsets.only(top: 30, bottom: 16),
                 width: 380,
-                  child: TextFormField(
-                    onTapOutside: (onChanged){
-                      WidgetsBinding.instance.focusManager.primaryFocus!.unfocus();
-                    },
-                    decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(100),
-                      borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
-                  ),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(100),
-                    borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
-                ),
-                      prefixIcon: Icon(Icons.search,size: 24,),
-                      suffixIcon: GestureDetector(
-                        onTap: (){
-
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  color: MyColor().locationClr,
-                              borderRadius: BorderRadius.circular(100)
-                          ),
-                            child: Icon(
-                              Icons.tune,
-                            ),
-                          ),
-                        ),
-                      ),
-                      hintText: "Search Events",
-                      hintStyle: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          color: MyColor().hintTextClr
+                child: TextFormField(
+                  onTapOutside: (onChanged) {
+                    WidgetsBinding.instance.focusManager.primaryFocus!
+                        .unfocus();
+                  },
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                      borderSide: BorderSide(
+                        color: MyColor().borderClr,
+                        width: 0.5,
                       ),
                     ),
-                  )),
-            )
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                      borderSide: BorderSide(
+                        color: MyColor().primaryClr,
+                        width: 0.5,
+                      ),
+                    ),
+                    prefixIcon: Icon(Icons.search, size: 18),
+                    suffixIcon: GestureDetector(
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: MyColor().locationClr,
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                          child: Icon(Icons.tune, size: 18),
+                        ),
+                      ),
+                    ),
+                    hintText: "Search Events",
+                    hintStyle: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: MyColor().hintTextClr,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
-      )
+      ),
     );
   }
 }

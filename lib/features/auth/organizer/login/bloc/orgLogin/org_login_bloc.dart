@@ -4,14 +4,14 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'login_event.dart';
-part 'login_state.dart';
+part 'org_login_event.dart';
+part 'org_login_state.dart';
 
-class LoginBloc extends Bloc<LoginEvent, LoginState> {
+class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
   final ApiController apiController;
-  LoginBloc({required this.apiController}) : super(LoginInitial()) {
-    on<ClickedLogin>((event, emit) async{
-      emit(LoginLoading());
+  OrgLoginBloc({required this.apiController}) : super(OrgLoginInitial()) {
+    on<ClickedOrgLogin>((event, emit) async{
+      emit(OrgLoading());
 
       try{
         // Giving a body
@@ -27,19 +27,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
-            emit(LoginSuccess());
+            emit(OrgSuccess());
           }else {
-            emit(LoginFail(errorMessage: responseBody['message']));
+            emit(OrgFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
         if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(LoginFail(errorMessage: ConfigMessage().noInterNetMsg));
+          emit(OrgFail(errorMessage: ConfigMessage().noInterNetMsg));
         }else{
-          emit(LoginFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
+          emit(OrgFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
         }
       } catch(e){
-        emit(LoginFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+        emit(OrgFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

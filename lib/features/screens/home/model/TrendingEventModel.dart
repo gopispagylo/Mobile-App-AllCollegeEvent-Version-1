@@ -70,7 +70,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text("Trending Events",style: TextStyle(
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
                   fontSize: 18,
                   fontFamily: "blMelody"
               ),),
@@ -196,7 +196,6 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                           fontSize: 12
                       )),
                     )
-
                   ],
                 ),
               );

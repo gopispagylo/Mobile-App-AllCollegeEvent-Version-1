@@ -23,7 +23,7 @@ class _EventListModelState extends State<EventListModel> {
       children: [
         Center(
           child: Container(
-              margin: EdgeInsets.only(top: 10,bottom: 16),
+              margin: EdgeInsets.only(top: 10,bottom: 16,left: 16,right: 16),
               width: 380,
               child: TextFormField(
                 onTapOutside: (onChanged){
@@ -66,25 +66,28 @@ class _EventListModelState extends State<EventListModel> {
                 ),
               )),
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(filterString.length, (index){
-              return Container(
-                height: 48,
-                alignment: Alignment.center,
-                padding: EdgeInsets.only(left: 20,right: 20),
-                decoration: BoxDecoration(
-                    color: MyColor().boxInnerClr
-                ),
-                child: Text(filterString[index],style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: MyColor().blackClr,
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(filterString.length, (index){
+                return Container(
+                  height: 48,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(left: 20,right: 20),
+                  decoration: BoxDecoration(
+                      color: MyColor().boxInnerClr
+                  ),
+                  child: Text(filterString[index],style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: MyColor().blackClr,
 
-                ),),
-              );
-            }),
+                  ),),
+                );
+              }),
+            ),
           ),
         ),
         Expanded(child: ListModel())

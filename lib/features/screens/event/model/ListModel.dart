@@ -13,168 +13,148 @@ class _ListModelState extends State<ListModel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 0,right: 16,top: 20,bottom: 20),
+      margin: EdgeInsets.only(left: 16,right: 16,top: 20,bottom: 20),
      child: ListView.builder(
-         itemCount: 20,
+         itemCount: 10,
          itemBuilder: (context,index){
-       return Stack(
-         children: [
-           Container(
-             margin: EdgeInsets.only(left: 50,bottom: 16),
+           return Container(
+             margin: EdgeInsets.only(left: 0, bottom: 16),
              padding: EdgeInsets.all(10),
              decoration: BoxDecoration(
-                 color: MyColor().whiteClr,
-                 border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
-                 borderRadius: BorderRadiusGeometry.circular(10)
+               color: MyColor().whiteClr,
+               border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+               borderRadius: BorderRadius.circular(10),
              ),
-             child: Container(
-               margin: EdgeInsets.only(left: 80),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   Expanded(
+             child: Row(
+               crossAxisAlignment: CrossAxisAlignment.center,
+               children: [
+                 Expanded(
+                   flex: 2,
+                   child: Container(
+                       decoration: BoxDecoration(
+                         borderRadius: BorderRadius.circular(10)
+                       ),
+                       clipBehavior: Clip.antiAlias,
+                       child: Image.network("https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop",height: 100,fit: BoxFit.cover,)),
+                 ),
+                 Expanded(
+                   flex: 4,
+                   child: Container(
+                     margin: EdgeInsets.only(left: 10),
                      child: Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
                        children: [
-                         Text("TATA Job Fair", style: GoogleFonts.poppins(
-                             fontSize: 16,
-                             fontWeight: FontWeight.w600
-                         ),),
-                         SizedBox(height: 10,),
                          Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                            children: [
-                             Container(
-                               margin: EdgeInsets.only(bottom: 10,right: 10),
-                               padding: EdgeInsets.only(left: 10,right: 10,top: 2,bottom: 2),
-                               decoration: BoxDecoration(
-                                   color: MyColor().primaryBackgroundClr,
-                                   borderRadius: BorderRadiusGeometry.circular(40)
-                               ),
-                               child: Text("Paid",style: GoogleFonts.poppins(
-                                   fontWeight: FontWeight.w400,
-                                   fontSize: 12
-                               )),
-                             ),
-                             Container(
-                               margin: EdgeInsets.only(bottom: 10,right: 10),
-                               padding: EdgeInsets.only(left: 10,right: 10,top: 2,bottom: 2),
-                               decoration: BoxDecoration(
-                                   color: MyColor().blueBackgroundClr,
-                                   // border: Border.all(color: MyColor().blueBackgroundClr),
-                                   borderRadius: BorderRadiusGeometry.circular(40)
-                               ),
-                               child: Text("Networking",style: GoogleFonts.poppins(
-                                   fontWeight: FontWeight.w400,
-                                   fontSize: 12
-                               )),
+                             Expanded(child: Text('Infinite Legen',overflow: TextOverflow.ellipsis,style: GoogleFonts.poppins(
+                               fontSize: 14,
+                               fontWeight: FontWeight.w600,
+                             ),)),
+                             SizedBox(width: 5,),
+                             Row(
+                               children: [
+                                 circleIcon(Icons.favorite_border),
+                                 SizedBox(width: 5,),
+                                 circleIcon(Icons.bookmark_outline),
+                               ],
                              ),
                            ],
                          ),
-                         Row(
-                           children: [
-                             Icon(Icons.calendar_month),
-                             SizedBox(width: 5,),
-                             Text("24 Jan 2025, Friday",style: GoogleFonts.poppins(
-                                 fontSize: 12,
-                                 fontWeight: FontWeight.w600
-                             ),),
-                           ],
-                         ),
+                         SizedBox(height: 5,),
+                         Row(children: [
+                          chip("Paid", MyColor().primaryBackgroundClr.withOpacity(0.35)),
+                          chip("Entertainment", MyColor().blueBackgroundClr.withOpacity(0.35)),
+                        ],),
                          SizedBox(height: 10,),
                          Row(
                            children: [
-                             Icon(Icons.location_on_outlined),
-                             SizedBox(width: 5,),
-                             Text("Coimbatore",style: GoogleFonts.poppins(
-                                 fontSize: 12,
-                                 fontWeight: FontWeight.w600
-                             ),),
+                             Icon(Icons.calendar_month, size: 14),
+                             SizedBox(width: 5),
+                             Expanded(
+                               child: Text(
+                                 "24 Jan 2025, Friday",
+                                 overflow: TextOverflow.ellipsis,
+                                 style: GoogleFonts.poppins(
+                                   fontSize: 12,
+                                   fontWeight: FontWeight.w400,
+                                 ),
+                               ),
+                             ),
                            ],
                          ),
-                       ],
+                         SizedBox(height: 5,),
+                         Row(
+                           children: [
+                             Icon(Icons.location_on_outlined, size: 14),
+                             SizedBox(width: 5),
+                             Expanded(
+                               child: Text(
+                                 "Coimbatore, India",
+                                 overflow: TextOverflow.ellipsis,
+                                 style: GoogleFonts.poppins(
+                                   fontSize: 12,
+                                   fontWeight: FontWeight.w400,
+                                 ),
+                               ),
+                             ),
+                             Container(
+                                 padding: EdgeInsets.symmetric(
+                                   vertical: 3,
+                                   horizontal: 8,
+                                 ),
+                                 decoration: BoxDecoration(
+                                   color: MyColor().primaryBackgroundClr.withOpacity(
+                                     0.35,
+                                   ),
+                                   borderRadius: BorderRadius.circular(8),
+                                 ),
+                                 child: Text(
+                                   "Ongoing",
+                                   style: GoogleFonts.poppins(
+                                     fontSize: 12,
+                                     fontWeight: FontWeight.w400,
+                                     color: MyColor().blackClr,
+                                   ),
+                                 )
+                             )
+                           ],
+                         ),
+                      ],
                      ),
                    ),
-                   SizedBox(
-                     height: 120,
-                     child: Column(
-                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                       children: [
-                         Row(
-                           children: [
-                             Container(
-                               padding: EdgeInsets.all(12),
-                               decoration: BoxDecoration(
-                                   color: MyColor().boxInnerClr,
-                                   shape: BoxShape.circle),
-                               child: Icon(Icons.favorite_border),
-                             ),
-                             SizedBox(width: 10),
-                             Container(
-                               padding: EdgeInsets.all(12),
-                               decoration: BoxDecoration(
-                                   color: MyColor().boxInnerClr,
-                                   shape: BoxShape.circle),
-                               child: Icon(Icons.bookmark_outline),
-                             ),
-                           ],
-                         ),
-
-                         Container(
-                           padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                           decoration: BoxDecoration(
-                             color: MyColor().primaryClr,
-                             borderRadius: BorderRadius.circular(8),
-                           ),
-                           child: Text(
-                             "Ongoing",
-                             style: GoogleFonts.poppins(
-                               fontSize: 12,
-                               fontWeight: FontWeight.w500,
-                               color: Colors.white,
-                             ),
-                           ),
-                         ),
-                       ],
-                     ),
-                   )
-                 ],
-               ),
-             ),
-           ),
-           Positioned(
-             left: 0,
-             top: 17,
-             child: Container(
-               margin: EdgeInsets.only(left: 16,right: 0),
-               height: 110,
-               width: 115,
-               decoration: BoxDecoration(
-                 borderRadius: BorderRadiusGeometry.circular(10),
-                 boxShadow: [
-                   BoxShadow(color: MyColor().primaryBackgroundClr,
-                     blurRadius: 5,
-                     spreadRadius: 2
-                   )
-                 ]
-               ),
-               clipBehavior: Clip.antiAlias,
-               child: Banner(
-                 message: "offer",
-                 location: BannerLocation.topStart,
-                 color: MyColor().yellowClr,
-                 textStyle: GoogleFonts.poppins(
-                   fontWeight: FontWeight.w500,
-                   fontSize: 14,
-                   color: MyColor().blackClr
                  ),
-                 child: Image.network(
-                   "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                   fit: BoxFit.cover,),),
+               ],
              ),
-           ),
-         ],
-       );
-     }),
+           );
+         }),
     );
   }
+}
+
+
+// Reusable Widgets
+Widget chip(String text, Color bg) {
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+    decoration: BoxDecoration(
+      color: bg,
+      borderRadius: BorderRadius.circular(40),
+    ),
+    child: Text(
+      text,
+      style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w400),
+    ),
+  );
+}
+
+Widget circleIcon(IconData icon) {
+  return Container(
+    padding: EdgeInsets.all(10),
+    decoration: BoxDecoration(
+        border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+      color: MyColor().boxInnerClr,
+      shape: BoxShape.circle,
+    ),
+    child: Icon(icon, size: 15),
+  );
 }

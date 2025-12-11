@@ -92,7 +92,25 @@ class Validators {
     }
     return null;
   }
+  String? validCountry (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your country";
+    }
+    return null;
+  }String? validState (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your country";
+    }
+    return null;
+  }String? validCity (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your country";
+    }
+    return null;
+  }
 }
+
+
 
 class ImageLoader {
   Widget build(BuildContext context, Widget? child, ImageChunkEvent? loadingProgress) {
