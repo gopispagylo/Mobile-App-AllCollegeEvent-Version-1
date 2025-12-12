@@ -13,10 +13,14 @@ final blackSecondaryClr = Color(0xff1C1C1C);
 final hintTextClr = Color(0xff8B8B8B);
 final secondaryClr = Color(0xff3D3D3D);
 final redClr = Color(0xffFF0000);
+final redBgClr = Color(0xffFFECF1);
 final bottomNavBarClr = Color(0xffEFEFEF);
 final sliderDotClr = Color(0xffD9D9D9);
 final locationClr = Color(0xffF0F0F0);
 final greenClr = Color(0xff1DA339);
 final yellowClr = Color(0xffFFCA3A);
+final yellowBgClr = Color(0xffFFF7E8);
+final blueClr = Color(0xff46A6F4);
+
 
 }

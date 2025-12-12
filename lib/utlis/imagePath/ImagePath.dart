@@ -12,4 +12,7 @@ class ImagePath{
   // --------- Organizer victor image for signUp ---------
   final orgSignUpImg = "assets/image/rocket.png";
 
+  // ---------- Select your journey
+  final yourJourneyImg = "assets/image/image.png";
+
 }

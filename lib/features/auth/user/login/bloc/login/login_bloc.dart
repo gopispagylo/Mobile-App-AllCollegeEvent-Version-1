@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +15,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
 
       try{
+
+        DBHelper db = DBHelper();
+
         // Giving a body
         final parameter = {
           "email": event.email,
@@ -28,6 +32,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           final responseBody = response.data;
           if(responseBody['status'] == true){
             emit(LoginSuccess());
+
+            // --------- insert the bool value on the sqLite data base ------------
+            await db.insertIsLogin("isLogin", true);
+
           }else {
             emit(LoginFail(errorMessage: responseBody['message']));
           }

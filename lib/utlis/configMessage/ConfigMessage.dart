@@ -29,4 +29,9 @@ class ConfigMessage {
   final String somethingWentWrongMsg = "Something went wrong, please try again";
   final String unexpectedErrorMsg = "Unexpected error occurred";
 
+  // ------------ Journey Message ----------
+  final String journeyVibe = "Select your vibe! ";
+  final String journey = "Start your journey!";
+  final String clickAndEnjoy = "Click & enjoy your events vibe !";
+
 }

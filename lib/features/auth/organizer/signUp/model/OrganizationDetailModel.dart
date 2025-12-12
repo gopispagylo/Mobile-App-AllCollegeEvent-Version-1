@@ -189,6 +189,8 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                 ),
 
                 // ------ State & City --------
+                SizedBox(height: 20,),
+
                 Row(
                   children: [
                     Expanded(
@@ -256,14 +258,14 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                         children: [
                           Container(
                             margin: EdgeInsets.only(bottom: 12),
-                            child: Text("State",style: GoogleFonts.poppins(
+                            child: Text("City",style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600
                             ),),
                           ),
                           DropdownButtonFormField<String>(
                             iconEnabledColor: MyColor().primaryClr,
-                            hint: Text("Select your State",style: GoogleFonts.poppins(
+                            hint: Text("Select your city",style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w400,
                                 fontSize: 12,
                                 color: MyColor().hintTextClr
@@ -302,7 +304,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                             onChanged: (onChanged){
 
                             },
-                            items: stateList.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['state'].toString()))).toList(),
+                            items: cityList.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['city'].toString()))).toList(),
                             validator: Validators().validState,
                           ),
                         ],
@@ -359,6 +361,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                     SizedBox(width: 8,),
                     GestureDetector(
                       onTap: () {
+                        Navigator.pop(context);
                         Navigator.pop(context);
                       },
                       child: Text("Sign In", style: GoogleFonts.poppins(

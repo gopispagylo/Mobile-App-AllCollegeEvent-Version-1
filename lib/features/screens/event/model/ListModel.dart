@@ -132,7 +132,7 @@ class _ListModelState extends State<ListModel> {
 }
 
 
-// Reusable Widgets
+// --------- Dummy Button ---------
 Widget chip(String text, Color bg) {
   return Container(
     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
@@ -147,6 +147,8 @@ Widget chip(String text, Color bg) {
   );
 }
 
+
+// --------- Fav & Add to cart Icon ---------
 Widget circleIcon(IconData icon) {
   return Container(
     padding: EdgeInsets.all(10),

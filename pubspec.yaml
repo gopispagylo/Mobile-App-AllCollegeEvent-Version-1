@@ -45,6 +45,8 @@ dependencies:
   curved_labeled_navigation_bar:
   carousel_slider:
   smooth_page_indicator:
+  sqflite:
+  path:
 
 dev_dependencies:
   flutter_test:

@@ -141,7 +141,7 @@ class _GridViewModelState extends State<GridViewModel> {
         // Search Bar
         Center(
           child: Container(
-              margin: EdgeInsets.only(top: 10,bottom: 16),
+              margin: EdgeInsets.only(top: 10,bottom: 16,left: 16,right: 16),
               width: 380,
               child: TextFormField(
                 onTapOutside: (onChanged){

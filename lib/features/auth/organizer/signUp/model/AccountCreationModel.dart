@@ -76,13 +76,13 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                           children: [
                             Container(
                                 decoration: BoxDecoration(
-                                    color: MyColor().primaryBackgroundClr,
+                                    color: MyColor().boxInnerClr,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: MyColor().primaryClr.withOpacity(0.15))
+                                    border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Icon(Icons.person,size: 18,color: MyColor().primaryClr,),
+                                  child: Icon(Icons.person,size: 18,color: MyColor().blackClr,),
                                 )),
                             SizedBox(height: 5,),
                             Text(textAlign: TextAlign.center,"Organization\nDetails",style: GoogleFonts.poppins(
@@ -98,13 +98,13 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                           children: [
                             Container(
                                 decoration: BoxDecoration(
-                                    color: MyColor().boxInnerClr,
+                                    color: MyColor().primaryBackgroundClr,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                                    border: Border.all(color: MyColor().primaryClr.withOpacity(0.15))
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Icon(Icons.check_circle_outline,size: 18,),
+                                  child: Icon(Icons.check_circle_outline,size: 18,color: MyColor().primaryClr,),
                                 )),
                             SizedBox(height: 5,),
                             Text(textAlign: TextAlign.center,"Account\nCreation",style: GoogleFonts.poppins(
@@ -124,11 +124,11 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                 ),
                 Text(
                   textAlign: TextAlign.center,
-                  "Organization Details",
+                  "Account Creation",
                   style: TextStyle(
                     fontFamily: "blMelody",
                     fontSize: 30,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
 
@@ -211,6 +211,8 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                     SizedBox(width: 8,),
                     GestureDetector(
                       onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pop(context);
                         Navigator.pop(context);
                       },
                       child: Text("Sign In", style: GoogleFonts.poppins(
