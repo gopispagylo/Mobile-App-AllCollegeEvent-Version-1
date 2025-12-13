@@ -8,6 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+// --------- GlobalKey for outside navigator access its called global context ---------
+final navigatorKey = GlobalKey<NavigatorState>();
+
+
 Future<void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,6 +51,7 @@ class _MyAppState extends State<MyApp> {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(0.85)),
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           appBarTheme: AppBarTheme(

@@ -171,4 +171,112 @@ class MyModels{
       ],
     );
   }
+
+  void alertDialogCustomizeEdit(
+      BuildContext context,
+      String title,
+      Widget text,
+      dynamic buttonExit,
+      dynamic buttonCancel,
+      String leadingText,
+      String actionText,
+      ) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width, // Full width
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: "Roboto",
+                    fontSize: 20,
+                    color: MyColor().secondaryClr,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                text,
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: buttonExit,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: MyColor().primaryClr, width: 1),
+                            color: Colors.white,
+                          ),
+                          child: Text(
+                            leadingText,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: "Roboto",
+                              color: MyColor().primaryClr,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: InkWell(
+                        onTap: buttonCancel,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: MyColor().primaryClr,
+                          ),
+                          child: Text(
+                            actionText,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Roboto",
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // -------- Custom Dialog with content ---------
+  void alertDialogContentCustom({required BuildContext context,required Widget content}) async{
+    showDialog(context: context, builder: (context){
+      return AlertDialog(
+        content: content,
+        backgroundColor: MyColor().whiteClr,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      );
+    });
+  }
 }

@@ -1,12 +1,22 @@
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/orgAccCreationBloc/org_acc_creation_bloc.dart';
+import 'package:all_college_event_app/features/auth/organizer/signUp/model/VerifyModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AccountCreationModel extends StatefulWidget {
-  const AccountCreationModel({super.key});
+  final String country;
+  final String city;
+  final String state;
+  final String orgName;
+  final String categories;
+  final String type;
+
+  const AccountCreationModel({super.key, required this.country, required this.city, required this.state, required this.orgName, required this.categories,required this.type});
 
   @override
   State<AccountCreationModel> createState() => _AccountCreationModelState();
@@ -14,6 +24,7 @@ class AccountCreationModel extends StatefulWidget {
 
 class _AccountCreationModelState extends State<AccountCreationModel> {
 
+  
   // ------ Controller ------
   final domainMailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -26,6 +37,16 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
   bool obscureTexPassword = true;
   bool obscureTexConfirmPassword = true;
 
+
+  @override
+  void initState() {
+    super.initState();
+   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.country}");
+   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.city}");
+   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.state}");
+   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.orgName}");
+   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.categories}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,30 +195,50 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                 ),
                 SizedBox(height: 30),
                 // -------- Button ----------
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(320, 48),
-                      elevation: 0,
-                      backgroundColor: MyColor().primaryClr,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(50),
+                BlocConsumer<OrgAccCreationBloc, OrgAccCreationState>(
+                  listener: (context, orgAccCreationState) {
+                    if (orgAccCreationState is OrgSignUpSuccess) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> VerifyModel(mailId: domainMailController.text,)));
+                    }
+                  },
+                  builder: (context, orgAccCreationState) {
+                    return Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(320, 48),
+                          elevation: 0,
+                          backgroundColor: MyColor().primaryClr,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            context.read<OrgAccCreationBloc>().add(
+                                ClickedOrgSignUp(
+                                    email: domainMailController.text,
+                                    password: passwordController.text,
+                                    type: 'org',
+                                    orgName: widget.orgName,
+                                    orgCat: widget.categories,
+                                    country: widget.country,
+                                    state: widget.state,
+                                    city: widget.city));
+                          }
+                        },
+                        child: orgAccCreationState is OrgSignUpLoading ? Center(
+                          child: CircularProgressIndicator(
+                            color: MyColor().whiteClr,),) : Text(
+                          "Verify your Domain",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: MyColor().whiteClr,
+                          ),
+                        ),
                       ),
-                    ),
-                    onPressed: () {
-                      // if(formKey.currentState!.validate()){
-                      //   context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
-                      // }
-                    },
-                    child: Text(
-                      "Verify your Domain",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: MyColor().whiteClr,
-                      ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 SizedBox(height: 25),
                 Row(

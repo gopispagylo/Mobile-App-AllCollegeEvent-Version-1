@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrganizationDetailModel extends StatefulWidget {
-  const OrganizationDetailModel({super.key});
+  final String categories;
+  final String type;
+
+  const OrganizationDetailModel({super.key, required this.categories,required this.type});
 
   @override
   State<OrganizationDetailModel> createState() => _OrganizationDetailModelState();
@@ -184,7 +187,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                       selectedCountry = onChanged;
                     });
                   }, items: countryList.map((e)=> DropdownMenuItem<String>(
-                      value: e['code'],
+                      value: e['country'],
                       child: Text(e['country'].toString()))).toList(), valid: Validators().validCountry),
                 ),
 
@@ -243,9 +246,9 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                               ),
                             ),
                             onChanged: (onChanged){
-
+                              selectedState = onChanged;
                             },
-                            items: stateList.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['state'].toString()))).toList(),
+                            items: stateList.map((e)=> DropdownMenuItem<String>(value: e['state'],child: Text(e['state'].toString()))).toList(),
                             validator: Validators().validState,
                           ),
                         ],
@@ -276,7 +279,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                               fontWeight: FontWeight.w600,
                             ),
                             iconDisabledColor: MyColor().blackClr,
-                            value: selectedState,
+                            value: selectedCity,
                             decoration: InputDecoration(
                               suffixIcon: Padding(
                                 padding: const EdgeInsets.only(right: 12),
@@ -302,9 +305,9 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                               ),
                             ),
                             onChanged: (onChanged){
-
+                              selectedCity = onChanged;
                             },
-                            items: cityList.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['city'].toString()))).toList(),
+                            items: cityList.map((e)=> DropdownMenuItem<String>(value: e['city'],child: Text(e['city'].toString()))).toList(),
                             validator: Validators().validState,
                           ),
                         ],
@@ -337,7 +340,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                       // if(formKey.currentState!.validate()){
                       //   context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
                       // }
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=> AccountCreationPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (_)=> AccountCreationPage(country: selectedCountry ?? "", city: selectedCity ?? "", state: selectedState ?? "", orgName: nameController.text, categories: widget.categories, type: widget.type,)));
                     },
                     child: Text(
                       "Verify your Domain",

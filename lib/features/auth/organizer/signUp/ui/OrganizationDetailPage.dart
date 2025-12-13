@@ -3,7 +3,10 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 
 class OrganizationDetailPage extends StatefulWidget {
-  const OrganizationDetailPage({super.key});
+  final String categories;
+  final String type;
+
+  const OrganizationDetailPage({super.key, required this.categories, required this.type});
 
   @override
   State<OrganizationDetailPage> createState() => _OrganizationDetailPageState();
@@ -14,7 +17,7 @@ class _OrganizationDetailPageState extends State<OrganizationDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColor().whiteClr,
-      body: OrganizationDetailModel(),
+      body: OrganizationDetailModel(categories: widget.categories, type: widget.type,),
     );
   }
 }

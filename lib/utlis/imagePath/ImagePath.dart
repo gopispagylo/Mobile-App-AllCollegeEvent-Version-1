@@ -15,4 +15,7 @@ class ImagePath{
   // ---------- Select your journey
   final yourJourneyImg = "assets/image/image.png";
 
+  // ---------- All College Event png logo ---------
+  final allCollegeEventLogoPng = "assets/image/allcollegeevent_logo.png";
+
 }

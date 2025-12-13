@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrgCategoriesModel extends StatefulWidget {
-  const OrgCategoriesModel({super.key});
+  final String type;
+
+  const OrgCategoriesModel({super.key, required this.type});
 
   @override
   State<OrgCategoriesModel> createState() => _OrgCategoriesModelState();
@@ -220,7 +222,7 @@ class _OrgCategoriesModelState extends State<OrgCategoriesModel> {
                     ),
                     onPressed: () {
                       if(selectCategories != null){
-                        Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationDetailPage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationDetailPage(categories: selectCategories ?? '', type: widget.type,)));
                       }else{
                         print("Please choose a categories");
                       }

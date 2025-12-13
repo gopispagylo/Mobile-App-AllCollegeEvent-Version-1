@@ -161,7 +161,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                       SizedBox(width: 8,),
                       GestureDetector(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (_)=> OrgSignUpPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=> OrgSignUpPage(type: widget.whichScreen,)));
                         },
                         child: Text("Sign Up",style: GoogleFonts.poppins(
                             fontSize: 14,

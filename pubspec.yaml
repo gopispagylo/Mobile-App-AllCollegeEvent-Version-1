@@ -47,6 +47,10 @@ dependencies:
   smooth_page_indicator:
   sqflite:
   path:
+  app_links:
+#  font_awesome_flutter:
+  material_symbols_icons:
+  url_launcher:
 
 dev_dependencies:
   flutter_test:
