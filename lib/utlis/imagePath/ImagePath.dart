@@ -18,4 +18,7 @@ class ImagePath{
   // ---------- All College Event png logo ---------
   final allCollegeEventLogoPng = "assets/image/allcollegeevent_logo.png";
 
+  // ---------- Delete Image ---------
+  final deleteImg = "assets/image/trash_illustrator.png";
+
 }

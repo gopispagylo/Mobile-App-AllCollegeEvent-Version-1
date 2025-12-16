@@ -58,6 +58,7 @@ class MyModels{
     );
   }
 
+  // --------- TextField Password ---------
   Center customTextFieldPassword({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? errorText, required bool obscureText, required Widget eyeIcon}){
     return Center(
       child: Column(
@@ -199,11 +200,11 @@ class MyModels{
                 Text(
                   title,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Roboto",
-                    fontSize: 20,
-                    color: MyColor().secondaryClr,
-                  ),
+                    fontFamily: "blMelody",
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24,
+                    color: MyColor().blackClr
+                  )
                 ),
                 const SizedBox(height: 10),
                 text,
@@ -224,11 +225,10 @@ class MyModels{
                           ),
                           child: Text(
                             leadingText,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: "Roboto",
-                              color: MyColor().primaryClr,
+                            style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().primaryClr
                             ),
                           ),
                         ),
@@ -247,11 +247,10 @@ class MyModels{
                           ),
                           child: Text(
                             actionText,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: "Roboto",
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().whiteClr
                             ),
                           ),
                         ),
@@ -278,5 +277,65 @@ class MyModels{
         ),
       );
     });
+  }
+
+  // -------- Social Media Field -----------
+  SizedBox customSocialMedia({required dynamic prefix, required TextEditingController controller, required String hintText,}) {
+    return SizedBox(
+      width: 320,
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(10),
+          enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+          ),
+          focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+          ),
+          errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                  color: MyColor().redClr, width: 0.5)
+          ),
+          hintText: hintText,
+          hintStyle: GoogleFonts.poppins(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              color: MyColor().hintTextClr
+          ),
+          prefixIcon: prefix,
+
+        ),
+      ),
+    );
+}
+
+  // -------- Button ----------
+  ElevatedButton customButton({required dynamic onPressed,required String title}) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        fixedSize: Size(320, 48),
+        backgroundColor: MyColor().primaryClr,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+      ),
+      onPressed: onPressed,
+      child: Text(
+        title,
+        style: GoogleFonts.poppins(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: MyColor().whiteClr,
+        ),
+      ),
+    );
   }
 }

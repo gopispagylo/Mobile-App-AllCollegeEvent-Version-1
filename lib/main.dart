@@ -2,6 +2,7 @@ import 'package:all_college_event_app/data/controller/ApiController/ApiControlle
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/auth/journey/ui/JourneyPage.dart';
+import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreenPage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
@@ -23,28 +24,32 @@ Future<void> main() async{
   await ApiController().setBaseUrl();
 
   // -------- Access the db --------
-  DBHelper db = DBHelper();
+  var data = await DBHelper().getIsSplash();
+  var loginData = await DBHelper().getIsLogin();
 
-  var data = await db.getIsLogin();
+  bool isSplash = data.isNotEmpty;
+  bool isLogin = loginData.isNotEmpty;
 
-  bool isLoggedIn = data.isNotEmpty;
+  print("datadatadatadatadatadatadatadatadata$data");
 
   // Device only portrait view
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
-    runApp(MyApp(isLoggedIn: isLoggedIn,));
+    runApp(MyApp(isSplash: isSplash, isLogin: isLogin,));
   });
 }
 
 class MyApp extends StatefulWidget {
-  final bool isLoggedIn;
+  final bool isSplash;
+  final bool isLogin;
 
-  const MyApp({super.key, required this.isLoggedIn});
+  const MyApp({super.key, required this.isSplash, required this.isLogin});
 
   @override
   State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +63,10 @@ class _MyAppState extends State<MyApp> {
             scrolledUnderElevation: 0.0,
           )
         ),
-        home: widget.isLoggedIn
-            ? BottomNavigationBarPage(pageIndex: 0)
-            : CheckUserPage(),
+        home: widget.isSplash
+            ? widget.isLogin ? BottomNavigationBarPage(pageIndex: 0) : CheckUserPage()
+            : SplashScreenPage()
+        // home: BottomNavigationBarPage(pageIndex: 0),
       ),
     );
   }

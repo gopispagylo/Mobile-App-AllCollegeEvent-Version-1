@@ -142,7 +142,8 @@ class _LoginModelState extends State<LoginModel> {
                 BlocConsumer<LoginBloc, LoginState>(
               listener: (context, loginState) {
                 if(loginState is LoginSuccess){
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)));
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)), (route) => false,);
+                  // Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)));
                   emailController.clear();
                   passwordController.clear();
                 } else if(loginState is LoginFail){

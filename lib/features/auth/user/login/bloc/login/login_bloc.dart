@@ -3,6 +3,7 @@ import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
 part 'login_event.dart';
@@ -35,12 +36,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
             // --------- insert the bool value on the sqLite data base ------------
             await db.insertIsLogin("isLogin", true);
+            await db.insertingIsSplash('isSplash', true);
 
           }else {
             emit(LoginFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
+        // DBHelper db = DBHelper();
+        // await db.insertingIsSplash('isSplash', true);
+        // debugPrint("DioExceptionDioExceptionDioExceptionDioException$e");
         if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
           emit(LoginFail(errorMessage: ConfigMessage().noInterNetMsg));
         }else{

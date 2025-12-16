@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +15,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
       emit(SignUpLoading());
       try{
+
+        DBHelper db = DBHelper();
+
         // Giving a body
         final parameter = {
           "name" : event.name,
@@ -31,6 +35,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           final responseBody = response.data;
           if(responseBody['status'] == true){
             emit(SignUpSuccess());
+            // --------- insert the bool value on the sqLite data base ------------
+            await db.insertIsLogin("isLogin", true);
+            await db.insertingIsSplash('isSplash', true);
           }else {
             emit(SignUpFail(errorMessage: responseBody['message']));
           }

@@ -20,22 +20,30 @@ class DBHelper {
 
   return await openDatabase(
     path,
-    version: 1,
-    onCreate: (checkDB, version) async{
+    version: 2,
+    onCreate: onCreate
+  );
+}
 
-      // --------- create table --------
-      await checkDB.execute(
-        '''
-        CREATE TABLE IsLogin(
+  // ---------------- Create Tables (Fresh Install) ----------------
+  Future<void> onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE IsLogin (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         isActive INTEGER
-        )
-         '''
-      );
-    }
-  );
-}
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE IsSplash (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        isActive INTEGER
+      )
+    ''');
+
+  }
 
   // --------- IsLogin bool Insert Data ----------
   Future<int> insertIsLogin(String name, bool isActive) async{
@@ -56,6 +64,23 @@ class DBHelper {
   Future<int> deleteAllLoginData() async {
     final dbClient = await db;
     return await dbClient.delete('IsLogin');
+  }
+
+  // -----------------------------------------------------------------
+
+  // ------- Inserting data -----------
+  Future<int> insertingIsSplash(String name, bool isSplash) async{
+    final dbClient = await db;
+    return await dbClient.insert('IsSplash', {
+      'name' : name,
+      'isActive' : isSplash ? 1 : 0
+    });
+  }
+
+  // ---------- Get data --------
+  Future<List<Map<String,dynamic>>> getIsSplash() async{
+    final dbClient = await db;
+    return await dbClient.query('IsSplash');
   }
 
 }

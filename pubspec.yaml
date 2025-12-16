@@ -51,6 +51,7 @@ dependencies:
 #  font_awesome_flutter:
   material_symbols_icons:
   url_launcher:
+  iconsax_flutter:
 
 dev_dependencies:
   flutter_test:
