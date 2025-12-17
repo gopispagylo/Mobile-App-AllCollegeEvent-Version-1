@@ -317,6 +317,76 @@ class MyModels{
     );
 }
 
+  // -------------- Comment Field ----------
+  textFormFieldCommentLimited({required BuildContext context, required String label, required String hintText, required String valid, required dynamic controller,required dynamic keyBoardType, required dynamic textCapitalization,required int maxLines,required int limit }){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontFamily: "Sora",
+              fontSize: 16,
+            ),
+          ),
+        ),
+        SizedBox(height: 10,),
+        TextFormField(
+          maxLines: maxLines,
+          textCapitalization: textCapitalization,
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: MyColor().primaryClr,
+              fontFamily: "Sora"
+          ),
+          controller: controller,
+          onTapUpOutside: (outSideClick){
+            FocusManager.instance.primaryFocus!.unfocus();
+          },
+          validator: (value){
+            if(value == null || value.isEmpty){
+              return valid;
+            }
+            return null;
+          },
+          keyboardType: keyBoardType,
+          maxLength: limit,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+                borderSide: BorderSide(color: MyColor().borderClr.withOpacity(0.15),width: 0.5),
+                borderRadius: BorderRadius.circular(8)
+            ),
+            enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+            ),
+            focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+            ),
+            errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+            ),
+            hintText: hintText,
+            hintStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: MyColor().hintTextClr
+            )
+          ),
+        )
+      ],
+    );
+  }
+
   // -------- Button ----------
   ElevatedButton customButton({required dynamic onPressed,required String title}) {
     return ElevatedButton(

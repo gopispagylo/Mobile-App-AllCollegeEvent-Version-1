@@ -69,7 +69,7 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
               });
             },
             enlargeCenterPage: true,
-            autoPlay: true,
+            autoPlay: false,
             autoPlayCurve: Curves
                 .fastOutSlowIn,
             enableInfiniteScroll: true,

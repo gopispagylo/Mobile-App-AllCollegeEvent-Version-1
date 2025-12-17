@@ -34,4 +34,8 @@ class ConfigMessage {
   final String journey = "Start your journey!";
   final String clickAndEnjoy = "Click & enjoy your events vibe !";
 
+  // ----------- Report Message --------------
+  final String reportMsg = "Upload a photo of the issue, provide your name,and we’ll forward it to the concerned team for resolution.";
+
+
 }
