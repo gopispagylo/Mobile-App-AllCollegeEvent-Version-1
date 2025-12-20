@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/features/screens/home/model/LocationModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -59,25 +60,30 @@ class _WelcomeModelState extends State<WelcomeModel> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  margin: EdgeInsets.only(top: 14),
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: MyColor().locationClr,
-                    borderRadius: BorderRadius.circular(44),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.location_on_outlined, size: 18),
-                      Text(
-                        "Coimbatore, India",
-                        style: GoogleFonts.poppins(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> LocationModel()));
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: 14),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: MyColor().locationClr,
+                      borderRadius: BorderRadius.circular(44),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.location_on_outlined, size: 18),
+                        Text(
+                          "Coimbatore, India",
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      Icon(Icons.arrow_drop_down, size: 18),
-                    ],
+                        Icon(Icons.arrow_drop_down, size: 18),
+                      ],
+                    ),
                   ),
                 ),
                 Container(

@@ -19,10 +19,11 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
 
         final parameter = {
           'email' : event.email,
-          'otp' : event.password
+          'password' : event.password
         };
-
+        print("ResetPasswordBlocResetPasswordBlocResponseResetPasswordBlocResetPasswordBlocResponse$parameter");
         final response = await apiController.postMethod(endPoint: "auth/reset-password", data: parameter);
+        print("ResetPasswordBlocResetPasswordBlocResponseResetPasswordBlocResetPasswordBlocResponse$response");
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){

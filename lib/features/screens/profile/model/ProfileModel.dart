@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileModel extends StatefulWidget {
-  const ProfileModel({super.key});
+  final String whichScreen;
+
+  const ProfileModel({super.key, required this.whichScreen});
 
   @override
   State<ProfileModel> createState() => _ProfileModelState();
@@ -15,6 +17,9 @@ class ProfileModel extends StatefulWidget {
 class _ProfileModelState extends State<ProfileModel> {
   @override
   Widget build(BuildContext context) {
+    // ---------- access the value of whichScreen ---------
+    final checkUser = widget.whichScreen == 'User';
+
     return Container(
       margin: EdgeInsets.only(left: 16,right: 16),
       child: Column(
@@ -32,14 +37,14 @@ class _ProfileModelState extends State<ProfileModel> {
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (_)=> EditProfileModel()));
               },
-              child: customContainer(name: "Edit Profile", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
-          GestureDetector(
+              child: customContainer(name: "Edit Profile", icon: Icons.arrow_forward_ios, borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
+         if(!checkUser) GestureDetector(
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (_)=> SocialLinksModel()));
               },
               child: customContainer(name: "Social Links", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)))),
-          SizedBox(height: 24,),
-          Container(
+          if(!checkUser)  SizedBox(height: 24,),
+        if(!checkUser)  Container(
             child: Text("My Activities",style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -51,8 +56,8 @@ class _ProfileModelState extends State<ProfileModel> {
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (_)=> SavedEventModel()));
               },
-              child: customContainer(name: "My Saved List", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
-          SizedBox(height: 24,),
+              child: customContainer(name: "My Saved List", icon: Icons.arrow_forward_ios, borderRadius:BorderRadius.circular(12))),
+         if(!checkUser) SizedBox(height: 24,),
         ],
       ),
     );

@@ -9,7 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class MySpaceModel extends StatefulWidget {
-  const MySpaceModel({super.key});
+  final String whichScreen;
+
+  const MySpaceModel({super.key, required this.whichScreen});
 
   @override
   State<MySpaceModel> createState() => _MySpaceModelState();
@@ -26,28 +28,42 @@ class _MySpaceModelState extends State<MySpaceModel> {
 
   @override
   Widget build(BuildContext context) {
+
+    // ---------- access the value of whichScreen ---------
+    final checkUser = widget.whichScreen == 'User';
+
     return Container(
       margin: EdgeInsets.only(left: 16,right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            child: Text("My Space",style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: MyColor().blackClr
-            ),),
-          ),
-          SizedBox(height: 10,),
-          customContainer(name: "Create Your Event", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12))),
-          customContainer(name: "Dashboard", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(0),topLeft: Radius.circular(0))),
-          GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> MyEventsModel()));
-              },
-              child: customContainer(name: "My Events", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)))),
-          SizedBox(height: 24,),
-          Container(
+          // ----- only visible for organizer ----------
+         Visibility(
+           visible: !checkUser,
+           child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
+             children: [
+               Container(
+                 child: Text("My Space",style: GoogleFonts.poppins(
+                     fontSize: 18,
+                     fontWeight: FontWeight.w600,
+                     color: MyColor().blackClr
+                 ),),
+               ),
+               SizedBox(height: 10,),
+               customContainer(name: "Create Your Event", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12))),
+               customContainer(name: "Dashboard", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(0),topLeft: Radius.circular(0))),
+               GestureDetector(
+                   onTap: (){
+                     Navigator.push(context, MaterialPageRoute(builder: (_)=> MyEventsModel()));
+                   },
+                   child: customContainer(name: "My Events", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)))),
+               SizedBox(height: 24,),
+             ],
+           ),
+         ),
+
+         if(!checkUser) Container(
             child: Text("Settings",style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -55,12 +71,14 @@ class _MySpaceModelState extends State<MySpaceModel> {
             ),),
           ),
           SizedBox(height: 10,),
-          customCheckBox(name: 'Notifications', borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)), value: checkNotification, onChanged: (value) {
+          customCheckBox(name: 'Notifications', borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)), value: checkNotification, onChanged: (value) {
             setState(() {
               checkNotification = value;
             });
           }),
-          customCheckBox(name: 'Email Settings', borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)), value: checkEmailSetting, onChanged: (value) {
+
+          // ----- only visible for organizer ----------
+        if(!checkUser)  customCheckBox(name: 'Email Settings', borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)), value: checkEmailSetting, onChanged: (value) {
             setState(() {
               checkEmailSetting = value;
             });
@@ -225,6 +243,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     Navigator.pop(context);
                   }, ()async{
                     await DBHelper().deleteAllLoginData();
+                    await DBHelper().deleteUser();
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
                   }, "Cancel", "Logout");
                 },

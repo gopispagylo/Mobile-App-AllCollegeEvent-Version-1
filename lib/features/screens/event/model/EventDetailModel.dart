@@ -258,19 +258,21 @@ class _EventDetailModelState extends State<EventDetailModel> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Column(
-                                children: [
-                                  tickerName(title: 'Ticket Name', icon: Iconsax.ticket, backClr: MyColor().yellowClr),
-                                  SizedBox(height: 5,),
-                                  Text('Early bird registration',
-                                    style: GoogleFonts.poppins(
-                                    fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                                  ),),
-                                  SizedBox(height: 2,),
-                                  Text('Elite Registration',style: GoogleFonts.poppins(
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    tickerName(title: 'Ticket Name', icon: Iconsax.ticket, backClr: MyColor().yellowClr),
+                                    SizedBox(height: 5,),
+                                    Text('Early bird registration',
+                                      style: GoogleFonts.poppins(
                                       fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                                  ),),
-                                ],
+                                    ),),
+                                    SizedBox(height: 2,),
+                                    Text('Elite Registration',style: GoogleFonts.poppins(
+                                        fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                                    ),),
+                                  ],
+                                ),
                               )
                             ],
                           ),
@@ -286,18 +288,20 @@ class _EventDetailModelState extends State<EventDetailModel> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Column(
-                                children: [
-                                  tickerName(title: 'Price', icon: Iconsax.ticket, backClr: MyColor().redClr),
-                                  SizedBox(height: 5,),
-                                  Text('₹500',style: GoogleFonts.poppins(
-                                      fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                                  ),),
-                                  SizedBox(height: 2,),
-                                  Text('₹500',style: GoogleFonts.poppins(
-                                      fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                                  ),),
-                                ],
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    tickerName(title: 'Price', icon: Iconsax.ticket, backClr: MyColor().redClr),
+                                    SizedBox(height: 5,),
+                                    Text('₹500',style: GoogleFonts.poppins(
+                                        fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                                    ),),
+                                    SizedBox(height: 2,),
+                                    Text('₹500',style: GoogleFonts.poppins(
+                                        fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                                    ),),
+                                  ],
+                                ),
                               )
                             ],
                           ),

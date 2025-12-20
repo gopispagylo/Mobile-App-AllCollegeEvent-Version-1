@@ -1,11 +1,15 @@
+import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/bloc/resetPassword/reset_password_bloc.dart';
+import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
+import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class ResetPasswordModel extends StatefulWidget {
   final String whichScreen;
@@ -32,8 +36,16 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
   bool obscureTexConfirmPassword = true;
 
   @override
+  void initState() {
+    super.initState();
+    print("whichScreenwhichScreenwhichScreenwhichScreen${widget.whichScreen}");
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BlocProvider(
+  create: (context) => ResetPasswordBloc(apiController: ApiController()),
+  child: Scaffold(
       backgroundColor: MyColor().whiteClr,
       body: Stack(
         children: [
@@ -109,7 +121,31 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
                 BlocConsumer<ResetPasswordBloc, ResetPasswordState>(
                   listener: (context, resetPasswordState) {
                     if (resetPasswordState is ResetPasswordSuccess) {
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=> ResetPasswordModel(whichScreen: widget.whichScreen, email: widget.email,)));
+                      MyModels().alertDialogContentCustom(context: context, content: Container(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Iconsax.tick_circle,color: MyColor().greenClr,),
+                            SizedBox(height: 10,),
+                            Container(
+                              child: Text("Password Changed !",style: GoogleFonts.poppins(
+                                fontSize: 18,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                              ),),
+                            ),
+                          ],
+                        ),
+                      ));
+
+                        Future.delayed(Duration(milliseconds: 500),(){
+                          if(widget.whichScreen == 'user'){
+                            Navigator.pop(context);
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> LoginPage(whichScreen: 'user',)));
+                          }else{
+                            Navigator.pop(context);
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage(whichScreen: 'org',)));
+                          }
+                        });
+
                     } else if (resetPasswordState is ResetPasswordFail) {
                       debugPrint(
                         "ForgotPasswordError${resetPasswordState.errorMessage}",
@@ -128,12 +164,12 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
                         ),
                         onPressed: () {
                           if(formKey.currentState!.validate()){
-                            // context.read<VerifyOtpBloc>().add(
-                            //   ClickedVerifyOtp(
-                            //     email: widget.email,
-                            //     otp: pinPutController.text,
-                            //   ),
-                            // );
+                            context.read<ResetPasswordBloc>().add(
+                              ClickedResetPassword(
+                                email: widget.email,
+                                password: confirmPasswordController.text
+                              ),
+                            );
                           }
                         },
                         child: resetPasswordState is ResetPasswordLoading
@@ -159,6 +195,7 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
           ),
         ],
       ),
-    );
+    ),
+);
   }
 }

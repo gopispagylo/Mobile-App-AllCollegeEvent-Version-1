@@ -24,6 +24,7 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
         // Initial set base url
         await apiController.setBaseUrl();
         final response = await apiController.postMethod(endPoint: "auth/login", data: parameter);
+        print("OrgLoginBlocOrgLoginBlocOrgLoginBlocOrgLoginBloc$response");
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){

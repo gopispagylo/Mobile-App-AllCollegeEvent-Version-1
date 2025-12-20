@@ -21,6 +21,7 @@ class _EventListModelState extends State<EventListModel> {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // ----------- search bar ----------
         Center(
           child: Container(
               margin: EdgeInsets.only(top: 10,bottom: 16,left: 16,right: 16),
@@ -66,6 +67,8 @@ class _EventListModelState extends State<EventListModel> {
                 ),
               )),
         ),
+
+
         Container(
           margin: EdgeInsets.only(left: 16,right: 16),
           child: SingleChildScrollView(

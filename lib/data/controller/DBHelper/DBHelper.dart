@@ -20,13 +20,15 @@ class DBHelper {
 
   return await openDatabase(
     path,
-    version: 2,
+    version: 3,
     onCreate: onCreate
   );
 }
 
   // ---------------- Create Tables (Fresh Install) ----------------
   Future<void> onCreate(Database db, int version) async {
+
+    // -------- Login Screen isLogin --------
     await db.execute('''
       CREATE TABLE IsLogin (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,6 +37,7 @@ class DBHelper {
       )
     ''');
 
+    // -------- Splash Screen isSplash ------------
     await db.execute('''
       CREATE TABLE IsSplash (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -43,6 +46,13 @@ class DBHelper {
       )
     ''');
 
+    // -------- Set a which user login -----------
+    await db.execute('''
+      CREATE TABLE UserSave (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT
+      )
+    ''');
   }
 
   // --------- IsLogin bool Insert Data ----------
@@ -82,5 +92,34 @@ class DBHelper {
     final dbClient = await db;
     return await dbClient.query('IsSplash');
   }
+
+
+  // ------------------------------------------------------------------
+
+  // -------- save user ----------
+  Future<int> insertUser(String user) async{
+      final dbClient = await db;
+      return await dbClient.insert('UserSave', {
+        'name' : user,
+      });
+  }
+
+  // ----------- get user -----------
+  Future<String?> getUser() async{
+    final dbClient = await db;
+    final result = await dbClient.query('UserSave');
+    if(result.isNotEmpty){
+      return result.first['name'] as String;
+    }
+    return null;
+  }
+
+  // -------- delete user ----------
+  Future<int> deleteUser() async{
+    final dbClient = await db;
+    return await dbClient.delete('UserSave');
+  }
+
+
 
 }

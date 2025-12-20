@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
 import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -102,12 +103,21 @@ class _CheckUserModelState extends State<CheckUserModel> {
                                 borderRadius: BorderRadiusGeometry.circular(50)
                             )
                         ),
-                        onPressed: selectUser != null ? (){
+                        onPressed: selectUser != null ? ()async{
+
+                          // ------- initial delete ---------
+                          await DBHelper().deleteUser();
+                            print("InitialInsertTheUserValue");
+                            // ------ insert user -------------
+                            await DBHelper().insertUser(selectUser!);
+
                           if(selectUser == 'User'){
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> LoginPage(whichScreen: 'user',)));
                           }else{
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage(whichScreen: 'org',)));
                           }
+
+
                         } : null, child: Text("Continue",style: GoogleFonts.poppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

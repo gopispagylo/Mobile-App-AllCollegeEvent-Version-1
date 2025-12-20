@@ -7,7 +7,6 @@ import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pinput/pinput.dart';
 
 class ForgotPasswordModel extends StatefulWidget {
   final String whichScreen;
@@ -42,7 +41,7 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
           ListView(
             children: [
               SizedBox(height: 32),
-              widget.whichScreen == 'login'
+              widget.whichScreen == 'user'
                   ? Image.asset(ImagePath().authForgetImg)
                   : Image.asset(ImagePath().orgForgotImg),
               SizedBox(height: 20),
@@ -72,10 +71,10 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
                 child: Column(
                   children: [
                     MyModels().customTextField(
-                      label: widget.whichScreen == 'login' ? "Email" : "Domain Mail ID",
+                      label: widget.whichScreen == 'user' ? "Email" : "Domain Mail ID",
                       controller: emailController,
-                      hintText: widget.whichScreen == 'login' ? "Enter your mail id" : "Enter your domain mail id" ,
-                      validator: widget.whichScreen == 'login' ? Validators().validEmail : Validators().validDomainMail,
+                      hintText: widget.whichScreen == 'user' ? "Enter your mail id" : "Enter your domain mail id" ,
+                      validator: widget.whichScreen == 'user' ? Validators().validEmail : Validators().validDomainMail,
                     ),
 
                     SizedBox(height: 30),
