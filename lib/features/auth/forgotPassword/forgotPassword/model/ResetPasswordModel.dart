@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/bloc/resetPassword/reset_password_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:toastification/toastification.dart';
 
 class ResetPasswordModel extends StatefulWidget {
   final String whichScreen;
@@ -146,10 +148,9 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
                           }
                         });
 
-                    } else if (resetPasswordState is ResetPasswordFail) {
-                      debugPrint(
-                        "ForgotPasswordError${resetPasswordState.errorMessage}",
-                      );
+                    }
+                    else if (resetPasswordState is ResetPasswordFail) {
+                      FlutterToast().flutterToast(resetPasswordState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
                     }
                   },
                   builder: (context, resetPasswordState) {

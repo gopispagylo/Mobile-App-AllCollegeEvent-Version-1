@@ -24,7 +24,7 @@ class _ReportModelState extends State<ReportModel> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(16),
-      child: Column(
+      child: ListView(
         children: [
 
           // ------- text ------

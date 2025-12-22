@@ -1,10 +1,9 @@
-import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
-import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 
 class SplashScreenModel extends StatefulWidget {
   const SplashScreenModel({super.key});
@@ -47,13 +46,6 @@ class _SplashScreenModelState extends State<SplashScreenModel> {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> CheckUserPage()));
     }
   }
-
-  @override
-  void initState() {
-    super.initState();
-    // checkLogin();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +99,20 @@ class _SplashScreenModelState extends State<SplashScreenModel> {
                             ),
                           ),
                         ),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //     openGmailInbox();
+                        //   },
+                        //   child: Container(
+                        //     padding: EdgeInsets.all(16),
+                        //     margin: EdgeInsets.only(top: 30),
+                        //       decoration: BoxDecoration(
+                        //         color: MyColor().primaryClr
+                        //       ),
+                        //       child: Text('Open Gmail',style: GoogleFonts.poppins(
+                        //         fontSize: 16,fontWeight: FontWeight.w500,color: MyColor().whiteClr
+                        //       ),)),
+                        // )
                       ],
                     );
                   },

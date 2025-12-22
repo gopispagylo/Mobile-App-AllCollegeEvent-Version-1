@@ -3,14 +3,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-class CarouselSliderPage extends StatefulWidget {
-  const CarouselSliderPage({super.key});
+class OrganizationCarouselSliderModel extends StatefulWidget {
+  const OrganizationCarouselSliderModel({super.key});
 
   @override
-  State<CarouselSliderPage> createState() => _CarouselSliderPageState();
+  State<OrganizationCarouselSliderModel> createState() => _OrganizationCarouselSliderModelState();
 }
 
-class _CarouselSliderPageState extends State<CarouselSliderPage> {
+class _OrganizationCarouselSliderModelState extends State<OrganizationCarouselSliderModel> {
 
   // Smooth Indicator controller
   final scrollController = CarouselSliderController();
@@ -30,15 +30,6 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(left: 16,right: 16,top: 24),
-            child: Text("Top Spotlights",style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                fontFamily: "blMelody"
-            ),)),
-        SizedBox(height: 15,),
         CarouselSlider.builder(
           itemCount: photoList.length,
           itemBuilder: (BuildContext context, index, realIndex) {
@@ -51,7 +42,7 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
                 margin: EdgeInsets.only(left: 16,right: 16,bottom: 16),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                 ),
                 clipBehavior: Clip.antiAlias,

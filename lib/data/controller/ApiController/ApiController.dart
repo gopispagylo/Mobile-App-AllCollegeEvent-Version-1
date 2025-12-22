@@ -10,8 +10,8 @@ class ApiController {
   final dio = Dio(
     BaseOptions(
       baseUrl: "",
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 5),
+      connectTimeout: Duration(seconds: 8),
+      receiveTimeout: Duration(seconds: 8),
     )
   );
 

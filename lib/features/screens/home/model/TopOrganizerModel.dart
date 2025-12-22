@@ -1,3 +1,5 @@
+import 'package:all_college_event_app/features/screens/home/model/TopOrganizerSeeAllModel.dart';
+import 'package:all_college_event_app/features/screens/organization/ui/OrganizationPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -44,12 +46,17 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                   fontSize: 18,
                   fontFamily: "blMelody"
               ),),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Text("See all",style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500
-                ),),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> TopOrganizerSeeAllModel()));
+                },
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  child: Text("See all",style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500
+                  ),),
+                ),
               )
             ],
           ),
@@ -58,17 +65,22 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: List.generate(brandLogos.length, (index){
-              return Container(
-                margin: EdgeInsets.only(left: index == 0 ? 16 : 0,right: 16),
-                height: 100,
-                width: 100,
-                decoration: BoxDecoration(
-                  color: MyColor().whiteClr,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationPage()));
+                },
+                child: Container(
+                  margin: EdgeInsets.only(left: index == 0 ? 16 : 0,right: 16),
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    color: MyColor().whiteClr,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Image.network(brandLogos[index]),
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: Image.network(brandLogos[index]),
               );
             }),
           ),

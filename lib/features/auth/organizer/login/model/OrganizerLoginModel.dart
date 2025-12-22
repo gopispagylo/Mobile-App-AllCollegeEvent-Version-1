@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/bloc/orgLogin/org_login_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 
 class OrganizerLoginModel extends StatefulWidget {
   final String whichScreen;
@@ -135,7 +137,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                           (route) => false,
                         );
                       } else if (orgLoginState is OrgFail) {
-                        print("OrgFailOrgFailOrgFailOrgFailOrgFailOrgFail");
+                        FlutterToast().flutterToast(orgLoginState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
                       }
                     },
                     builder: (context, orgLoginState) {

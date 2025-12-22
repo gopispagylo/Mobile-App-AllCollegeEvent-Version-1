@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/bloc/verifyOtp/verify_otp_bloc.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/model/ResetPasswordModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pinput/pinput.dart';
+import 'package:toastification/toastification.dart';
 
 class OtpVerifyModel extends StatefulWidget {
   final String whichScreen;
@@ -119,9 +121,7 @@ class _OtpVerifyModelState extends State<OtpVerifyModel> {
                       if (verifyOtpState is VerifyOtpSuccess) {
                         Navigator.push(context, MaterialPageRoute(builder: (_)=> ResetPasswordModel(whichScreen: widget.whichScreen, email: widget.email,)));
                       } else if (verifyOtpState is VerifyOtpFail) {
-                        debugPrint(
-                          "ForgotPasswordError${verifyOtpState.errorMessage}",
-                        );
+                        FlutterToast().flutterToast(verifyOtpState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
                       }
                     },
                     builder: (context, verifyOtpState) {

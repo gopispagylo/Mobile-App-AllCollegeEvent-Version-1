@@ -1,9 +1,9 @@
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
 import 'package:all_college_event_app/features/auth/user/login/bloc/login/login_bloc.dart';
 import 'package:all_college_event_app/features/auth/user/signUp/ui/SignUpPage.dart';
-import 'package:all_college_event_app/features/screens/home/ui/HomePage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:toastification/toastification.dart';
 
 class LoginModel extends StatefulWidget {
   final String whichScreen;
@@ -59,16 +60,6 @@ class _LoginModelState extends State<LoginModel> {
     } catch (e) {
       print('googleSignInFunctionFailgoogleSignInFunctionFail$e');
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    checkUser();
-  }
-
-  checkUser() async {
-    print("initStateinitStateinitState${await DBHelper().getUser()}");
   }
 
   @override
@@ -169,13 +160,10 @@ class _LoginModelState extends State<LoginModel> {
                         ),
                         (route) => false,
                       );
-                      // Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)));
                       emailController.clear();
                       passwordController.clear();
                     } else if (loginState is LoginFail) {
-                      print(
-                        "ErrorMessageErrorMessageErrorMessageErrorMessageErrorMessage${loginState.errorMessage}",
-                      );
+                      FlutterToast().flutterToast(loginState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
                     }
                   },
                   builder: (context, loginState) {

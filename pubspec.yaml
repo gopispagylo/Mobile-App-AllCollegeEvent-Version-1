@@ -52,6 +52,8 @@ dependencies:
   url_launcher:
   iconsax_flutter:
   dotted_border:
+  toastification:
+
 
 dev_dependencies:
   flutter_test:

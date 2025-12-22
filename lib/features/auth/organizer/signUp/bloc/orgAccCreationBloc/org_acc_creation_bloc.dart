@@ -14,6 +14,10 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
       emit(OrgSignUpLoading());
 
       try{
+
+        // ------ set a base url --------
+        await apiController.setBaseUrl();
+
         // Giving a body
         final parameter = {
           "email": event.email,
@@ -23,7 +27,8 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
           "org_cat": event.orgCat,
           "country": event.country,
           "state": event.state,
-          "city": event.city
+          "city": event.city,
+          'platform' : 'mobile'
         };
 
         print("parameterparameterparameterparameterForOrgAccCreationBloc$parameter");
@@ -41,12 +46,14 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
           }
         }
       } on DioException catch(e){
+        print('OrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBloc$e');
         if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
           emit(OrgSignUpFail(errorMessage: ConfigMessage().noInterNetMsg));
         }else{
           emit(OrgSignUpFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
         }
       } catch(e){
+        print('OrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBloc$e');
         emit(OrgSignUpFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

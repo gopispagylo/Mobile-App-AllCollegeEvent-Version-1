@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/controller/DeepLinkService/DeepLinkService.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/auth/journey/ui/JourneyPage.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreenPage.dart';
@@ -8,6 +9,7 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:toastification/toastification.dart';
 
 // --------- GlobalKey for outside navigator access its called global context ---------
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -29,6 +31,9 @@ Future<void> main() async{
 
   bool isSplash = data.isNotEmpty;
   bool isLogin = loginData.isNotEmpty;
+
+  // --------- initial deeplink ------
+  DeepLinkService().initial;
 
   print("datadatadatadatadatadatadatadatadata$data");
 
@@ -53,20 +58,22 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          appBarTheme: AppBarTheme(
-            scrolledUnderElevation: 0.0,
-          )
+    return ToastificationWrapper(
+      child: MediaQuery(
+        data: MediaQuery.of(context).copyWith(textScaler: TextScaler.linear(1)),
+        child: MaterialApp(
+          navigatorKey: navigatorKey,
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            appBarTheme: AppBarTheme(
+              scrolledUnderElevation: 0.0,
+            )
+          ),
+          home: widget.isSplash
+              ? widget.isLogin ? BottomNavigationBarPage(pageIndex: 0) : CheckUserPage()
+              : SplashScreenPage()
+          // home: BottomNavigationBarPage(pageIndex: 0),
         ),
-        home: widget.isSplash
-            ? widget.isLogin ? BottomNavigationBarPage(pageIndex: 0) : CheckUserPage()
-            : SplashScreenPage()
-        // home: BottomNavigationBarPage(pageIndex: 0),
       ),
     );
   }

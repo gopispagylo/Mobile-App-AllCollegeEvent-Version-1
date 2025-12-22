@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/orgAccCreationBloc/org_acc_creation_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/model/VerifyModel.dart';
@@ -7,6 +8,7 @@ import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 
 class AccountCreationModel extends StatefulWidget {
   final String country;
@@ -199,6 +201,8 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                   listener: (context, orgAccCreationState) {
                     if (orgAccCreationState is OrgSignUpSuccess) {
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> VerifyModel(mailId: domainMailController.text,)));
+                    }else if(orgAccCreationState is OrgSignUpFail){
+                      FlutterToast().flutterToast(orgAccCreationState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
                     }
                   },
                   builder: (context, orgAccCreationState) {
