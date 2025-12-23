@@ -1,4 +1,5 @@
 
+import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/CarouselSliderPage.dart';
 import 'package:all_college_event_app/features/screens/home/model/CategoriesModel.dart';
 import 'package:all_college_event_app/features/screens/home/model/CountriesAndCitiesModel.dart';
@@ -8,6 +9,7 @@ import 'package:all_college_event_app/features/screens/home/model/WelcomeModel.d
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeModel extends StatefulWidget {
   const HomeModel({super.key});
@@ -32,28 +34,33 @@ class _HomeModelState extends State<HomeModel> {
           backgroundColor: MyColor().whiteClr,
         ),
         backgroundColor: MyColor().whiteClr,
-        body: ListView(
-          children: [
+        body: RefreshIndicator(
+          onRefresh: () async{
+            context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
+          },
+          child: ListView(
+            children: [
 
-            // Welcome UI
-            WelcomeModel(),
+              // Welcome UI
+              WelcomeModel(),
 
-            // CarouselSlider UI
-            CarouselSliderPage(),
+              // CarouselSlider UI
+              CarouselSliderPage(),
 
-            // Categories UI
-            HomeCategoriesModel(),
+              // Categories UI
+              HomeCategoriesModel(),
 
-            // Trending Event UI
-            TrendingEventModel(),
+              // Trending Event UI
+              TrendingEventModel(),
 
-            // Top Organizer UI
-            TopOrganizerModel(),
+              // Top Organizer UI
+              TopOrganizerModel(),
 
-            // Countries & Cities UI
-            CountriesAndCitiesModel(),
+              // Countries & Cities UI
+              CountriesAndCitiesModel(),
 
-          ],
+            ],
+          ),
         ),
       ),
     );

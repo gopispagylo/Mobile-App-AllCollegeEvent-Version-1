@@ -53,6 +53,8 @@ dependencies:
   iconsax_flutter:
   dotted_border:
   toastification:
+  shimmer_animation:
+  intl:
 
 
 dev_dependencies:

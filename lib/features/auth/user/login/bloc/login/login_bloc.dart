@@ -43,9 +43,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           }
         }
       } on DioException catch(e){
-        // DBHelper db = DBHelper();
-        // await db.insertingIsSplash('isSplash', true);
-        // debugPrint("DioExceptionDioExceptionDioExceptionDioException$e");
         if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
           emit(LoginFail(errorMessage: ConfigMessage().noInterNetMsg));
         }else{

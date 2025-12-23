@@ -21,4 +21,7 @@ class ImagePath{
   // ---------- Delete Image ---------
   final deleteImg = "assets/image/trash_illustrator.png";
 
+  // ---------- Error Image --------------
+  final errorMessageImg = "assets/image/error_img.png";
+
 }
