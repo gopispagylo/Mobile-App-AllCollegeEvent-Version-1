@@ -55,6 +55,7 @@ dependencies:
   toastification:
   shimmer_animation:
   intl:
+  cached_network_image:
 
 
 dev_dependencies:

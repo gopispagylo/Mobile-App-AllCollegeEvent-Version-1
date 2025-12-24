@@ -61,8 +61,8 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
               children: [
                 SizedBox(height: 32),
                 widget.whichScreen == 'login'
-                    ? Image.asset(ImagePath().authForgetImg)
-                    : Image.asset(ImagePath().orgForgotImg),
+                    ? Image.asset(ImagePath().authForgetImg,height: 250,)
+                    : Image.asset(ImagePath().orgForgotImg,height: 250,),
                 SizedBox(height: 20),
                 Text(
                   "Forgot Password",

@@ -6,9 +6,7 @@ import 'package:all_college_event_app/features/screens/home/model/CountriesAndCi
 import 'package:all_college_event_app/features/screens/home/model/TopOrganizerModel.dart';
 import 'package:all_college_event_app/features/screens/home/model/TrendingEventModel.dart';
 import 'package:all_college_event_app/features/screens/home/model/WelcomeModel.dart';
-import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeModel extends StatefulWidget {
@@ -21,47 +19,34 @@ class HomeModel extends StatefulWidget {
 class _HomeModelState extends State<HomeModel> {
 
 
-
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent
-      ),
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 0,
-          backgroundColor: MyColor().whiteClr,
-        ),
-        backgroundColor: MyColor().whiteClr,
-        body: RefreshIndicator(
-          onRefresh: () async{
-            context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
-          },
-          child: ListView(
-            children: [
+    return RefreshIndicator(
+      onRefresh: () async{
+        context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
+      },
+      child: ListView(
+        children: [
 
-              // Welcome UI
-              WelcomeModel(),
+          // Welcome UI
+          WelcomeModel(),
 
-              // CarouselSlider UI
-              CarouselSliderPage(),
+          // CarouselSlider UI
+          CarouselSliderPage(),
 
-              // Categories UI
-              HomeCategoriesModel(),
+          // Categories UI
+          HomeCategoriesModel(),
 
-              // Trending Event UI
-              TrendingEventModel(),
+          // Trending Event UI
+          TrendingEventModel(),
 
-              // Top Organizer UI
-              TopOrganizerModel(),
+          // Top Organizer UI
+          TopOrganizerModel(),
 
-              // Countries & Cities UI
-              CountriesAndCitiesModel(),
+          // Countries & Cities UI
+          CountriesAndCitiesModel(),
 
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }

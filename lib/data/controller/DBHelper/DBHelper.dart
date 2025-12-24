@@ -53,6 +53,15 @@ class DBHelper {
         name TEXT
       )
     ''');
+
+
+    // -------- Set a token -----------
+    await db.execute('''
+      CREATE TABLE SaveToken (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        token TEXT
+      )
+    ''');
   }
 
   // --------- IsLogin bool Insert Data ----------
@@ -121,4 +130,29 @@ class DBHelper {
   }
 
 
+  // ---------------------------------------------
+
+  // ----------- set a token --------------------
+  Future<int> insertToken(String token) async{
+    final dbClient = await db;
+    return await dbClient.insert('SaveToken',{
+      'token' : token
+    });
+  }
+
+  // ----------- get a token --------
+  Future<String?> getToken() async{
+    final dbClient = await db;
+    final result = await dbClient.query('SaveToken');
+    if(result.isNotEmpty){
+      return result.first['token'] as String;
+    }
+    return null;
+  }
+
+  // ------------- delete token -----------
+  Future<int> deleteToken() async{
+    final dbClient = await db;
+    return await dbClient.delete('SaveToken');
+  }
 }

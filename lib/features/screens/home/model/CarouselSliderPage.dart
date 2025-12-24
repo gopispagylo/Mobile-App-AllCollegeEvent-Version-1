@@ -31,7 +31,7 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
     return Column(
       children: [
         Container(
-          alignment: Alignment.topLeft,
+            alignment: Alignment.topLeft,
             margin: EdgeInsets.only(left: 16,right: 16,top: 24),
             child: Text("Top Spotlights",style: TextStyle(
                 fontSize: 18,
@@ -51,7 +51,7 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
                 margin: EdgeInsets.only(left: 16,right: 16,bottom: 16),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                 ),
                 clipBehavior: Clip.antiAlias,

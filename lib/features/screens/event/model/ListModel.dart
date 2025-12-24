@@ -1,14 +1,16 @@
-import 'dart:math';
 
-import 'package:all_college_event_app/features/screens/event/bloc/event_list_bloc.dart';
+import 'package:all_college_event_app/features/screens/event/bloc/eventListBloc/event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/model/EventDetailModel.dart';
+import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+
 
 class ListModel extends StatefulWidget {
   const ListModel({super.key});
@@ -48,6 +50,8 @@ class _ListModelState extends State<ListModel> {
                   final title = list['title'] ?? "No title";
                   final featuredImagePath = list['bannerImage'];
 
+                  print("featuredImagePathfeaturedImagePathfeaturedImagePath$featuredImagePath");
+
                   // --- date format -----
                   final eventStartDateFormat = list['eventDate'];
                   final parsedDate = DateFormat('dd/MM/yyyy').parse(eventStartDateFormat);
@@ -56,144 +60,169 @@ class _ListModelState extends State<ListModel> {
                   // ---- venue ---
                   final venue = list['venue'];
 
+                  // -------- identity ---------
+                  final identity = list['identity'];
 
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => EventDetailModel()),
+                  // ------- Tween Animation -----------
+                  return TweenAnimationBuilder(
+                    tween: Tween(begin: 50.0, end: 0.0),
+                    duration: Duration(milliseconds: 550),
+                    builder: (context, value, child) {
+                      return Transform.translate(offset: Offset(0, value),
+                        child: Opacity(
+                          opacity: 1 - (value / 50),
+                          child: child,)
                       );
                     },
-                    child: Container(
-                      margin: EdgeInsets.only(left: 0, bottom: 16),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: MyColor().whiteClr,
-                        border: Border.all(
-                          color: MyColor().borderClr.withOpacity(0.15),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title),
+                            transitionsBuilder: (_, animation, __, child){
+                            return SlideTransition( position: Tween(
+                              begin: const Offset(1, 0),
+                              end: Offset.zero,
+                            ).animate(animation),
+                              child: child,);
+                            }
+                          )
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 0, bottom: 16),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: MyColor().whiteClr,
+                          border: Border.all(
+                            color: MyColor().borderClr.withOpacity(0.15),
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: Image.network(
-                                featuredImagePath ,
-                                height: 100,
-                                fit: BoxFit.cover,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Container(
+                                height: 110,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: CachedNetworkImage(
+                                  imageUrl: featuredImagePath,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                                  errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image_not_supported),
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          title,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
+                            Expanded(
+                              flex: 4,
+                              child: Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            title,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      SizedBox(width: 5),
-                                      Row(
-                                        children: [
-                                          circleIcon(Icons.favorite_border),
-                                          SizedBox(width: 5),
-                                          circleIcon(Icons.bookmark_outline),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    children: [
-                                      chip(
-                                        "Paid",
-                                        MyColor().primaryBackgroundClr
-                                            .withOpacity(0.35),
-                                      ),
-                                      chip(
-                                        "Entertainment",
-                                        MyColor().blueBackgroundClr.withOpacity(
-                                          0.35,
+                                        SizedBox(width: 5),
+                                        Row(
+                                          children: [
+                                            circleIcon(Icons.favorite_border),
+                                            SizedBox(width: 5),
+                                            circleIcon(Icons.bookmark_outline),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.calendar_month, size: 14),
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                        child: Text(
-                                          eventStartDate,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
-                                    children: [
-                                      Icon(Icons.location_on_outlined, size: 14),
-                                      SizedBox(width: 5),
-                                      Expanded(
-                                        child: Text(
-                                          venue,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 3,
-                                          horizontal: 8,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: MyColor().primaryBackgroundClr
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        chip(
+                                          "Paid",
+                                          MyColor().primaryBackgroundClr
                                               .withOpacity(0.35),
-                                          borderRadius: BorderRadius.circular(8),
                                         ),
-                                        child: Text(
-                                          "Ongoing",
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w400,
-                                            color: MyColor().blackClr,
+                                        chip(
+                                          "Entertainment",
+                                          MyColor().blueBackgroundClr.withOpacity(
+                                            0.35,
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                    SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_month, size: 14),
+                                        SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            eventStartDate,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.location_on_outlined, size: 14),
+                                        SizedBox(width: 5),
+                                        Expanded(
+                                          child: Text(
+                                            venue,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            vertical: 3,
+                                            horizontal: 8,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: MyColor().primaryBackgroundClr
+                                                .withOpacity(0.35),
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Text(
+                                            "Ongoing",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w400,
+                                              color: MyColor().blackClr,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -406,6 +435,7 @@ Widget eventCardShimmer() {
                       width: 60,
                       height: 20,
                       decoration: BoxDecoration(
+                        color: MyColor().sliderDotClr,
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),

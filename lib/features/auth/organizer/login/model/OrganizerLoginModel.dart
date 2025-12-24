@@ -48,10 +48,11 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
               key: formKey,
               child: ListView(
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 24),
+                  SizedBox(
+                    height: 250,
                     child: Image.asset(ImagePath().orgLoginImg),
                   ),
+                  SizedBox(height: 20,),
                   Text(
                     textAlign: TextAlign.center,
                     ConfigMessage().loginOrgHeadMsg,

@@ -1,6 +1,8 @@
 import 'package:all_college_event_app/features/screens/event/model/EventDetailModel.dart';
+import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -66,7 +68,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
+    return Column(
       children: [
         Container(
           margin: EdgeInsets.only(top: 30,left: 16,right: 6),
@@ -105,8 +107,21 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                     final venue = list['venue'];
 
                     // ------ date format -------
-                    final parsedDate = DateFormat('dd/mm/yyyy').parse(list['eventDate']);
-                    final dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                    final rawDate = list['eventDate']?.toString() ?? "";
+                    // // 2. Safe Date Parsing
+                    // String dateFormat = "Date TBD";
+                    // if (rawDate.isNotEmpty) {
+                    //   try {
+                    //     // Use MM for months!
+                    //     final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
+                    //     dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                    //   } catch (e) {
+                    //     debugPrint("Date parsing error: $e");
+                    //     dateFormat = rawDate; // Fallback to raw string if parsing fails
+                    //   }
+                    // }
+                    //
+                    // print("object");
 
                     // ------ event mode ------
                     final eventMode = list['mode'];
@@ -114,9 +129,12 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                     // ------- image path ---------
                     final featuredImage = list['bannerImage'];
 
+                    // -------- identity ---------
+                    final identity = list['identity'];
+
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => EventDetailModel()));
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => EventDetailPage(identity: identity, title: title,)));
                       },
                       child: Container(
                         margin: EdgeInsets.only(right: 16, left: index == 0 ? 16 : 0, top: 15),
@@ -131,12 +149,24 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            SizedBox(
-                                height: 130,
-                                width: 220,
-                                child: Image.network(
-                                  featuredImage,
-                                  fit: BoxFit.fill,)),
+                            // ------ featured image -------
+                            Container(
+                              height: 130,
+                              width: 220,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                              ),
+                              clipBehavior: Clip.antiAlias,
+                              child: CachedNetworkImage(
+                                imageUrl: featuredImage,
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                                errorWidget: (context, url, error) =>
+                                const Icon(Icons.image_not_supported),
+                              ),
+                            ),
+
+                            // ------ icon --------
                             Container(
                               margin: EdgeInsets.all(10),
                               child: Column(
@@ -202,7 +232,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                         children: [
                                           Icon(Icons.calendar_month, size: 15,),
                                           SizedBox(width: 5,),
-                                          Text(dateFormat,
+                                          Text(rawDate,
                                             style: GoogleFonts.poppins(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12
@@ -233,6 +263,8 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                 ],
                               ),
                             ),
+
+                            // ------- event content --------
                             Container(
                               margin: EdgeInsets.only(bottom: 10, right: 10),
                               width: 52,

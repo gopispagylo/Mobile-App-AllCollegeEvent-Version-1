@@ -38,6 +38,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await db.insertIsLogin("isLogin", true);
             await db.insertingIsSplash('isSplash', true);
 
+            // ------- set token ---------
+            await db.insertToken(responseBody['token']);
+
           }else {
             emit(LoginFail(errorMessage: responseBody['message']));
           }

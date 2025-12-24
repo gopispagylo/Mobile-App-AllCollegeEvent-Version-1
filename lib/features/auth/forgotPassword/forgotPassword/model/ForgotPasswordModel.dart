@@ -44,8 +44,8 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
             children: [
               SizedBox(height: 32),
               widget.whichScreen == 'user'
-                  ? Image.asset(ImagePath().authForgetImg)
-                  : Image.asset(ImagePath().orgForgotImg),
+                  ? Image.asset(ImagePath().authForgetImg,height: 250,)
+                  : Image.asset(ImagePath().orgForgotImg,height: 250,),
               SizedBox(height: 20),
               Text(
                 // index == 2 ? "Set New Password" :

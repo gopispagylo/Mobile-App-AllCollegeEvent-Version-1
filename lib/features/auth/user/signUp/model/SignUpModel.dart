@@ -51,9 +51,10 @@ class _SignUpModelState extends State<SignUpModel> {
               child: ListView(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 48),
+                    height: 250,
                     child: Image.asset(ImagePath().authSignupImg),
                   ),
+                  SizedBox(height: 20,),
                   Text(
                     textAlign: TextAlign.center,
                     ConfigMessage().signUpUserHeadMsg,

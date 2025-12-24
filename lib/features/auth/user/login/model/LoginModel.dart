@@ -67,7 +67,7 @@ class _LoginModelState extends State<LoginModel> {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain),
+          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain,),
         ),
         Container(
           margin: EdgeInsets.only(left: 16, right: 16),
@@ -75,10 +75,11 @@ class _LoginModelState extends State<LoginModel> {
             key: formKey,
             child: ListView(
               children: [
-                Container(
-                  margin: EdgeInsets.only(top: 24),
+                SizedBox(
+                  height: 250,
                   child: Image.asset(ImagePath().authLoginImg),
                 ),
+                SizedBox(height: 20,),
                 Text(
                   textAlign: TextAlign.center,
                   ConfigMessage().loginUserHeadMsg,
