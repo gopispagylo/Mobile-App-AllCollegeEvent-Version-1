@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 
 class TrendingEventModel extends StatefulWidget {
@@ -97,197 +98,206 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                 color: MyColor().primaryClr,),);
             } else if (trendingEventState is TrendingEventListSuccess) {
 
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(trendingEventState.trendingEventList.length, (index) {
+              return TweenAnimationBuilder(
+                tween: Tween(begin: 50.0, end: 0.0),
+                duration: (Duration(milliseconds: 600)),
+                builder:  (context, value, child) {
+                  return Transform.translate(offset: Offset(value, 0),child: Opacity(
+                      opacity: 1 - (value / 50),
+                      child: child),);
+                },
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(trendingEventState.trendingEventList.length, (index) {
 
-                    final list = trendingEventState.trendingEventList[index];
-                    final title = list['title'];
-                    final venue = list['venue'];
+                      final list = trendingEventState.trendingEventList[index];
+                      final title = list['title'];
+                      final venue = list['venue'];
 
-                    // ------ date format -------
-                    final rawDate = list['eventDate']?.toString() ?? "";
-                    // // 2. Safe Date Parsing
-                    // String dateFormat = "Date TBD";
-                    // if (rawDate.isNotEmpty) {
-                    //   try {
-                    //     // Use MM for months!
-                    //     final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
-                    //     dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
-                    //   } catch (e) {
-                    //     debugPrint("Date parsing error: $e");
-                    //     dateFormat = rawDate; // Fallback to raw string if parsing fails
-                    //   }
-                    // }
-                    //
-                    // print("object");
+                      // ------ date format -------
+                      final rawDate = list['eventDate']?.toString() ?? "";
+                      // // 2. Safe Date Parsing
+                      // String dateFormat = "Date TBD";
+                      // if (rawDate.isNotEmpty) {
+                      //   try {
+                      //     // Use MM for months!
+                      //     final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
+                      //     dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                      //   } catch (e) {
+                      //     debugPrint("Date parsing error: $e");
+                      //     dateFormat = rawDate; // Fallback to raw string if parsing fails
+                      //   }
+                      // }
+                      //
+                      // print("object");
 
-                    // ------ event mode ------
-                    final eventMode = list['mode'];
+                      // ------ event mode ------
+                      final eventMode = list['mode'];
 
-                    // ------- image path ---------
-                    final featuredImage = list['bannerImage'];
+                      // ------- image path ---------
+                      final featuredImage = list['bannerImage'];
 
-                    // -------- identity ---------
-                    final identity = list['identity'];
+                      // -------- identity ---------
+                      final identity = list['identity'];
 
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (_) => EventDetailPage(identity: identity, title: title,)));
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 16, left: index == 0 ? 16 : 0, top: 15),
-                        width: 220,
-                        decoration: BoxDecoration(
-                            color: MyColor().boxInnerClr,
-                            borderRadius: BorderRadiusGeometry.circular(12),
-                            border: Border.all(
-                                color: MyColor().borderClr.withOpacity(0.15))
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            // ------ featured image -------
-                            Container(
-                              height: 130,
-                              width: 220,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => EventDetailPage(identity: identity, title: title,)));
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 16, left: index == 0 ? 16 : 0, top: 15),
+                          width: 220,
+                          decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              borderRadius: BorderRadiusGeometry.circular(12),
+                              border: Border.all(
+                                  color: MyColor().borderClr.withOpacity(0.15))
+                          ),
+                          clipBehavior: Clip.antiAlias,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // ------ featured image -------
+                              Container(
+                                height: 130,
+                                width: 220,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: CachedNetworkImage(
+                                  imageUrl: featuredImage ?? '',
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                                  errorWidget: (context, url, error) =>
+                                  const Icon(Iconsax.image,size: 50,),
+                                ),
                               ),
-                              clipBehavior: Clip.antiAlias,
-                              child: CachedNetworkImage(
-                                imageUrl: featuredImage,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
-                                errorWidget: (context, url, error) =>
-                                const Icon(Icons.image_not_supported),
-                              ),
-                            ),
 
-                            // ------ icon --------
-                            Container(
-                              margin: EdgeInsets.all(10),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(title,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600,
-                                          ),),
-                                      ),
-                                      Row(
-                                        children: [
-                                          circleIcon(Icons.favorite_border),
-                                          SizedBox(width: 5,),
-                                          circleIcon(Icons.bookmark_outline),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 10,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(Icons.location_on, size: 15,),
-                                          SizedBox(width: 5,),
-                                          Text(venue,
+                              // ------ icon --------
+                              Container(
+                                margin: EdgeInsets.all(10),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(title,
+                                            overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),),
+                                        ),
+                                        Row(
+                                          children: [
+                                            circleIcon(Icons.favorite_border),
+                                            SizedBox(width: 5,),
+                                            circleIcon(Icons.bookmark_outline),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(Icons.location_on, size: 15,),
+                                            SizedBox(width: 5,),
+                                            Text(venue ?? '',
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12
+                                              ),),
+                                          ],
+                                        ),
+
+                                        Row(
+                                          children: [
+                                            Icon(Icons.local_activity_outlined,
+                                              size: 15,),
+                                            SizedBox(width: 5,),
+                                            Text(
+                                              "₹1999", style: GoogleFonts.poppins(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12
                                             ),),
-                                        ],
-                                      ),
-
-                                      Row(
-                                        children: [
-                                          Icon(Icons.local_activity_outlined,
-                                            size: 15,),
-                                          SizedBox(width: 5,),
-                                          Text(
-                                            "₹1999", style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12
-                                          ),),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5,),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment
-                                        .spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Icon(Icons.calendar_month, size: 15,),
-                                          SizedBox(width: 5,),
-                                          Text(rawDate,
-                                            style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12
-                                            ),),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 8,
-                                            width: 8,
-                                            decoration: BoxDecoration(
-                                                color: eventMode == "offline" ? MyColor().redClr : MyColor().greenClr,
-                                                shape: BoxShape.circle
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment
+                                          .spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Icon(Icons.calendar_month, size: 15,),
+                                            SizedBox(width: 5,),
+                                            Text(rawDate,
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12
+                                              ),),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              height: 8,
+                                              width: 8,
+                                              decoration: BoxDecoration(
+                                                  color: eventMode == "offline" ? MyColor().redClr : MyColor().greenClr,
+                                                  shape: BoxShape.circle
+                                              ),
                                             ),
-                                          ),
-                                          SizedBox(width: 5,),
-                                          Text(eventMode,
-                                            style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w400,
-                                                fontSize: 12
-                                            ),),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5,),
-                                ],
+                                            SizedBox(width: 5,),
+                                            Text(eventMode,
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12
+                                              ),),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 5,),
+                                  ],
+                                ),
                               ),
-                            ),
 
-                            // ------- event content --------
-                            Container(
-                              margin: EdgeInsets.only(bottom: 10, right: 10),
-                              width: 52,
-                              padding: EdgeInsets.only(
-                                  left: 10, right: 10, top: 5, bottom: 5),
-                              decoration: BoxDecoration(
-                                  color: MyColor().primaryBackgroundClr,
-                                  border: Border.all(
-                                      color: MyColor().primaryClr),
-                                  borderRadius: BorderRadiusGeometry.circular(
-                                      40)
-                              ),
-                              child: Text("Paid", style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 12
-                              )),
-                            )
-                          ],
+                              // ------- event content --------
+                              Container(
+                                margin: EdgeInsets.only(bottom: 10, right: 10),
+                                width: 52,
+                                padding: EdgeInsets.only(
+                                    left: 10, right: 10, top: 5, bottom: 5),
+                                decoration: BoxDecoration(
+                                    color: MyColor().primaryBackgroundClr,
+                                    border: Border.all(
+                                        color: MyColor().primaryClr),
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                        40)
+                                ),
+                                child: Text("Paid", style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 12
+                                )),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    );
+                      );
 
-                  }),
+                    }),
+                  ),
                 ),
               );
             }

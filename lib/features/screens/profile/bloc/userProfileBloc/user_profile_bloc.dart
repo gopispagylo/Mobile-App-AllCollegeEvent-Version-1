@@ -6,16 +6,16 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'event_detail_event.dart';
-part 'event_detail_state.dart';
+part 'user_profile_event.dart';
+part 'user_profile_state.dart';
 
-class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
+class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   final ApiController apiController;
-  final List<dynamic> eventDetailList = [];
-  EventDetailBloc({required this.apiController}) : super(EventDetailInitial()) {
-    on<ClickEventDetail>((event, emit) async{
+  final List<dynamic> userProfileList = [];
+  UserProfileBloc({required this.apiController}) : super(UserProfileInitial()) {
+    on<ClickedUserProfile>((event, emit) async{
 
-      emit(EventDetailLoading());
+      emit(UserProfileLoading());
 
       try{
 
@@ -25,28 +25,26 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         // ----- access token data base -------
         final token = await DBHelper().getToken();
 
+        // ----- get a user id -----
+        final userId = await DBHelper().getUserId();
 
-        final parameter = {
-          "" : ""
-        };
+        final response = await apiController.getMethodWithoutBody(endPoint: 'admin/users/$userId', token: token!);
 
-        final response = await apiController.getMethod(endPoint: 'events/${event.identity}', token: token!, data: parameter);
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
-            eventDetailList.clear();
-            eventDetailList.add(responseBody['data']);
-            emit(EventDetailSuccess(eventDetailList: List.from(eventDetailList)));
+            userProfileList.clear();
+            userProfileList.add(responseBody['data']);
+            emit(UserProfileSuccess(userProfileList: List.from(userProfileList)));
           }else{
-            emit(EventDetailFail(errorMessage: responseBody['message']));
+            emit(UserProfileFail(errorMessage: responseBody['message']));
           }
         }
-
-      }on DioException catch(e){
+      } on DioException catch(e){
         // ------ error handle config --------
         HandleErrorConfig().handleDioError(e);
       } catch(e){
-        emit(EventDetailFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+        emit(UserProfileFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

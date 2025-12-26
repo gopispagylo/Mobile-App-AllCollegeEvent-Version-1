@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -29,13 +30,8 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
           }
         }
       }on DioException catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioException$e");
-        if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(ForgotPasswordFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          print("DioExceptionDioExceptionDioExceptionDioException$e");
-          emit(ForgotPasswordFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
         print("DioExceptionDioExceptionDioExceptionDioException$e");
         emit(ForgotPasswordFail(errorMessage: ConfigMessage().unexpectedErrorMsg));

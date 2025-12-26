@@ -28,6 +28,7 @@ class ConfigMessage {
   final String noInterNetMsg = "No internet connection";
   final String somethingWentWrongMsg = "Something went wrong, please try again";
   final String unexpectedErrorMsg = "Unexpected error occurred";
+  final String serverError = "Server error. Please try later";
 
   // ------------ Journey Message ----------
   final String journeyVibe = "Select your vibe! ";

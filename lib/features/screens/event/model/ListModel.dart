@@ -66,7 +66,7 @@ class _ListModelState extends State<ListModel> {
                   // ------- Tween Animation -----------
                   return TweenAnimationBuilder(
                     tween: Tween(begin: 50.0, end: 0.0),
-                    duration: Duration(milliseconds: 550),
+                    duration: Duration(milliseconds: 600),
                     builder: (context, value, child) {
                       return Transform.translate(offset: Offset(0, value),
                         child: Opacity(

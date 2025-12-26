@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -33,11 +34,8 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
           }
         }
       }on DioException catch(e){
-        if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(ResetPasswordFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          emit(ResetPasswordFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
         emit(ResetPasswordFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

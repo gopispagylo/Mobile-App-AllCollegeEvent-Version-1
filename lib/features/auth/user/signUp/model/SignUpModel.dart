@@ -77,14 +77,14 @@ class _SignUpModelState extends State<SignUpModel> {
                     label: "Name",
                     controller: nameController,
                     hintText: "Enter your name",
-                    validator: Validators().validName,
+                    validator: Validators().validName, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false,
                   ),
                   SizedBox(height: 20),
                   MyModels().customTextField(
                     label: "Email",
                     controller: emailController,
                     hintText: "Enter your mail id",
-                    validator: Validators().validEmail,
+                    validator: Validators().validEmail, textInputType: TextInputType.text, textCapitalization: TextCapitalization.none, readOnly: false,
                   ),
                   SizedBox(height: 20),
                   MyModels().customTextFieldPassword(

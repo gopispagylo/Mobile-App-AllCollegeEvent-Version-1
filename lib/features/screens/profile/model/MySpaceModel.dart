@@ -98,7 +98,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
               Container(
                 height: 48,
                 decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
+                  color: MyColor().whiteClr,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                 ),
@@ -220,12 +220,12 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                     children: [
-                      Icon(Iconsax.trash_copy,size: 18,),
+                      Icon(Iconsax.trash_copy,size: 18,color: MyColor().redClr,),
                       SizedBox(width: 5,),
                       Text("Delete Account",style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
-                          color: MyColor().blackClr
+                          color: MyColor().redClr
                       ),),
                     ],
                     ),
@@ -273,6 +273,63 @@ class _MySpaceModelState extends State<MySpaceModel> {
             ],
           ),
           SizedBox(height: 30,),
+          Center(
+            child: Wrap(
+              children: [
+                customText(text: 'About Us'),
+                 Container(
+                  margin: EdgeInsets.only(top: 7),
+                  height: 20,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  ),
+                ),
+                customText(text: 'Contact us'),
+                Container(
+                  margin: EdgeInsets.only(top: 7),
+                  height: 20,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  ),
+                ),
+                customText(text: 'Feedback'),
+                Container(
+                  margin: EdgeInsets.only(top: 7),
+                  height: 20,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  ),
+                ),
+                customText(text: 'FAQ'),
+                Container(
+                  margin: EdgeInsets.only(top: 7),
+                  height: 20,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  ),
+                ),
+                customText(text: 'Privacy Policy'),
+                Container(
+                  margin: EdgeInsets.only(top: 7),
+                  height: 20,
+                  child: VerticalDivider(
+                    color: Colors.grey,
+                    thickness: 1,
+                  ),
+                ),
+                customText(text: 'Terms & Conditions'),
+              ],
+            ),
+          ),
+          SizedBox(height: 50,),
+          Center(child: Text(textAlign: TextAlign.center,"Copyright © 2025 AllCollegeEvent - All Rights Reserved.",style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,color: MyColor().borderClr,fontSize: 12
+          ),)),
+          SizedBox(height: 20,),
         ],
       ),
     );
@@ -329,6 +386,16 @@ class _MySpaceModelState extends State<MySpaceModel> {
         ],
       ),
     ),
+  );
+}
+
+  // ------- custom text -------
+  Widget customText({required String text}) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Text(text, style: GoogleFonts.poppins(
+        fontSize: 14, color: MyColor().borderClr, fontWeight: FontWeight.w600
+    ),),
   );
 }
 

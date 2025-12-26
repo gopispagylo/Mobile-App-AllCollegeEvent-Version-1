@@ -1,4 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -14,6 +16,10 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
       emit(OrgLoading());
 
       try{
+
+        // ----- access the data base ------
+        DBHelper db = DBHelper();
+
         // Giving a body
         final parameter = {
           "email": event.email,
@@ -28,17 +34,19 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
+
             emit(OrgSuccess());
+
+            // -------- set a user id --------
+            await db.insertUser(responseBody['identity']);
+
           }else {
             emit(OrgFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
-        if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(OrgFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          emit(OrgFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
         emit(OrgFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

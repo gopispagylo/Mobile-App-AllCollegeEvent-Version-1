@@ -76,7 +76,7 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
                       label: widget.whichScreen == 'user' ? "Email" : "Domain Mail ID",
                       controller: emailController,
                       hintText: widget.whichScreen == 'user' ? "Enter your mail id" : "Enter your domain mail id" ,
-                      validator: widget.whichScreen == 'user' ? Validators().validEmail : Validators().validDomainMail,
+                      validator: widget.whichScreen == 'user' ? Validators().validEmail : Validators().validDomainMail, textInputType: TextInputType.emailAddress, textCapitalization: TextCapitalization.none, readOnly: false,
                     ),
 
                     SizedBox(height: 30),

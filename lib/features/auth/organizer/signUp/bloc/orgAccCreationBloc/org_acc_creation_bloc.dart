@@ -1,4 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -17,6 +19,9 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
 
         // ------ set a base url --------
         await apiController.setBaseUrl();
+
+        // ----- access the data base ------
+        DBHelper db = DBHelper();
 
         // Giving a body
         final parameter = {
@@ -40,18 +45,18 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
+
+            // -------- set a user id --------
+            await db.insertUser(responseBody['identity']);
+
             emit(OrgSignUpSuccess());
           }else {
             emit(OrgSignUpFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
-        print('OrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBloc$e');
-        if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(OrgSignUpFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          emit(OrgSignUpFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
         print('OrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBloc$e');
         emit(OrgSignUpFail(errorMessage: ConfigMessage().unexpectedErrorMsg));

@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -38,15 +39,9 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
         }
 
       }on DioException catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioExceptionDioException$e");
-        if(e.type == DioExceptionType.connectionTimeout || e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout){
-          emit(EventFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          print("DioExceptionDioExceptionDioExceptionDioExceptionDioException$e");
-          emit(EventFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioExceptionDioException$e");
         emit(EventFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

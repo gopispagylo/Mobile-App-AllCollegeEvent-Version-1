@@ -88,7 +88,7 @@ class _ReportModelState extends State<ReportModel> {
 
           // ----------- Name Field -------
           SizedBox(height: 20,),
-          MyModels().customTextField(label: "Your Name", controller: nameController, hintText: "Name", validator: Validators().validName),
+          MyModels().customTextField(label: "Your Name", controller: nameController, hintText: "Name", validator: Validators().validName, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false),
           SizedBox(height: 20,),
           
           // ---------- Report Problem Field ---------

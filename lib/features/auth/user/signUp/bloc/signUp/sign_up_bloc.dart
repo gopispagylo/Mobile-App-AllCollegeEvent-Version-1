@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -23,7 +24,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           "name" : event.name,
           "email": event.email,
           "password": event.password,
-          "type": event.type
+          "type": event.type,
+          'platform' : "mobile"
         };
         print("SignUpBlocSignUpBlocSignUpBlocSignUpBlocSignUpBlocSignUpBloc$parameter");
 
@@ -38,16 +40,17 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             // --------- insert the bool value on the sqLite data base ------------
             await db.insertIsLogin("isLogin", true);
             await db.insertingIsSplash('isSplash', true);
+
+            // -------- set a user id --------
+            await db.insertUser(responseBody['identity']);
+
           }else {
             emit(SignUpFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
-        if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(SignUpFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          emit(SignUpFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
         emit(SignUpFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

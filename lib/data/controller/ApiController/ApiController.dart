@@ -10,8 +10,8 @@ class ApiController {
   final dio = Dio(
     BaseOptions(
       baseUrl: "",
-      connectTimeout: Duration(seconds: 8),
-      receiveTimeout: Duration(seconds: 8),
+      connectTimeout: Duration(seconds: 5),
+      receiveTimeout: Duration(seconds: 5),
     )
   );
 
@@ -39,11 +39,32 @@ class ApiController {
   Future<Response> getMethod({required String endPoint,required String token, required Map<String,dynamic> data}) async{
     final response = await dio.get(endPoint,data: data,options: Options(
       headers: {
-        "token" : token
+        "Authorization" : "Bearer $token"
       }
     ));
     return response;
   }
+
+// Get Method without data
+  Future<Response> getMethodWithoutBody({required String endPoint,required String token}) async{
+    final response = await dio.get(endPoint,options: Options(
+      headers: {
+        "Authorization" : "Bearer $token"
+      }
+    ));
+    return response;
+  }
+
+  // Put Method without data
+  Future<Response> putMethod({required String endPoint,required String token, required Map<String,dynamic> data}) async{
+    final response = await dio.put(endPoint,data: data,options: Options(
+        headers: {
+          "Authorization" : "Bearer $token"
+        }
+    ));
+    return response;
+  }
+
 }
 
 

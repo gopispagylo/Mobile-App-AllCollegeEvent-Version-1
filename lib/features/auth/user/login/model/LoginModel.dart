@@ -102,7 +102,7 @@ class _LoginModelState extends State<LoginModel> {
                   label: "Email",
                   controller: emailController,
                   hintText: "Enter your mail id",
-                  validator: Validators().validEmail,
+                  validator: Validators().validEmail, textInputType: TextInputType.emailAddress, textCapitalization: TextCapitalization.none, readOnly: false,
                 ),
                 SizedBox(height: 20),
                 MyModels().customTextFieldPassword(

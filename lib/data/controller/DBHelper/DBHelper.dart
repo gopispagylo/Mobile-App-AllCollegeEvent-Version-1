@@ -62,7 +62,16 @@ class DBHelper {
         token TEXT
       )
     ''');
+
+    // -------- Set a user id --------
+    await db.execute('''
+      CREATE TABLE SaveUserId (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT
+      )
+    ''');
   }
+
 
   // --------- IsLogin bool Insert Data ----------
   Future<int> insertIsLogin(String name, bool isActive) async{
@@ -154,5 +163,31 @@ class DBHelper {
   Future<int> deleteToken() async{
     final dbClient = await db;
     return await dbClient.delete('SaveToken');
+  }
+
+  // --------------------------------------------------
+
+  // ------------ save a userId --------
+  Future<int> insertUserId(String userId) async{
+    final dbClient = await db;
+    return await dbClient.insert('SaveUserId', {
+      'userId' : userId
+    });
+  }
+
+  // ----------- get user id ---------
+  Future<String?> getUserId() async{
+    final dbClient = await db;
+    final result = await dbClient.query('SaveUserId');
+    if(result.isNotEmpty){
+      return result.first['userId'] as String;
+    }
+    return null;
+  }
+
+  // ----------- delete the user id -----------
+  Future<int> deleteUserId() async{
+    final dbClient = await db;
+    return await dbClient.delete('SaveUserId');
   }
 }

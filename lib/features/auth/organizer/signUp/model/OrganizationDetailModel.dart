@@ -322,7 +322,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                   label: "Organization Name",
                   controller: nameController,
                   hintText: "Enter Organization Name",
-                  validator: Validators().validName,
+                  validator: Validators().validName, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false,
                 ),
                 SizedBox(height: 30),
                 // -------- Button ----------

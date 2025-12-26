@@ -75,7 +75,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                     label: "Domain Mail ID",
                     controller: emailController,
                     hintText: "Enter your domain mail id",
-                    validator: Validators().validDomainMail,
+                    validator: Validators().validDomainMail, textCapitalization: TextCapitalization.none, textInputType: TextInputType.emailAddress, readOnly: false,
                   ),
                   SizedBox(height: 20),
                   MyModels().customTextFieldPassword(

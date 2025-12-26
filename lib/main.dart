@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:toastification/toastification.dart';
 
+
 // --------- GlobalKey for outside navigator access its called global context ---------
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -32,8 +33,6 @@ Future<void> main() async{
 
   // --------- initial deeplink ------
   DeepLinkService().initial;
-
-  print("datadatadatadatadatadatadatadatadata$data");
 
   // Device only portrait view
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){

@@ -1,9 +1,12 @@
+import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MySpaceModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/ProfileModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/TopModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -40,20 +43,36 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       );
     }
-    return Scaffold(
-      backgroundColor: MyColor().whiteClr,
-      body: ListView(
-        children: [
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => UserProfileBloc(apiController: ApiController())..add(ClickedUserProfile()),
+        ),
+      ],
+      child: Builder(
+        builder: (context) {
+          return Scaffold(
+            backgroundColor: MyColor().whiteClr,
+            body: RefreshIndicator(
+              onRefresh: () async{
+                context.read<UserProfileBloc>().add(ClickedUserProfile());
+              },
+              child: ListView(
+                children: [
 
-          // ------- Profile Header -------
-          TopModel(whichScreen: checkUser!),
+                  // ------- Profile Header -------
+                  TopModel(whichScreen: checkUser!),
 
-          // ---------- Profile model ----------
-          ProfileModel(whichScreen: checkUser!,),
+                  // ---------- Profile model ----------
+                  ProfileModel(whichScreen: checkUser!,),
 
-          // ----------- My Space --------
-          MySpaceModel(whichScreen: checkUser!,),
-        ],
+                  // ----------- My Space --------
+                  MySpaceModel(whichScreen: checkUser!,),
+                ],
+              ),
+            ),
+          );
+        }
       ),
     );
   }

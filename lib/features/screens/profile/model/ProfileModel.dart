@@ -1,8 +1,10 @@
+import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/EditProfileModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/SavedEventModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/SocialLinksModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProfileModel extends StatefulWidget {
@@ -15,8 +17,10 @@ class ProfileModel extends StatefulWidget {
 }
 
 class _ProfileModelState extends State<ProfileModel> {
+
   @override
   Widget build(BuildContext context) {
+
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
@@ -25,17 +29,17 @@ class _ProfileModelState extends State<ProfileModel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            child: Text("Profile",style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: MyColor().blackClr
-            ),),
-          ),
+          Text("Profile",style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: MyColor().blackClr
+          ),),
           SizedBox(height: 10,),
           GestureDetector(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> EditProfileModel()));
+                Navigator.push(context, MaterialPageRoute(builder: (_)=> EditProfileModel(whichScreen: widget.whichScreen,))).then((_){
+                  context.read<UserProfileBloc>().add(ClickedUserProfile());
+                });
               },
               child: customContainer(name: "Edit Profile", icon: Icons.arrow_forward_ios, borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
          if(!checkUser) GestureDetector(
@@ -44,13 +48,11 @@ class _ProfileModelState extends State<ProfileModel> {
               },
               child: customContainer(name: "Social Links", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)))),
           if(!checkUser)  SizedBox(height: 24,),
-        if(!checkUser)  Container(
-            child: Text("My Activities",style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: MyColor().blackClr
-            ),),
-          ),
+        if(!checkUser)  Text("My Activities",style: GoogleFonts.poppins(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: MyColor().blackClr
+        ),),
           SizedBox(height: 10,),
           GestureDetector(
               onTap: (){

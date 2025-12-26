@@ -161,7 +161,7 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                   label: "Domain Email",
                   controller: domainMailController,
                   hintText: "Enter your Domain",
-                  validator: Validators().validName,
+                  validator: Validators().validName, textInputType: TextInputType.emailAddress, textCapitalization: TextCapitalization.none, readOnly: false,
                 ),
                 SizedBox(height: 20),
                 MyModels().customTextFieldPassword(

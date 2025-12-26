@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
@@ -32,6 +33,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
+
             emit(LoginSuccess());
 
             // --------- insert the bool value on the sqLite data base ------------
@@ -41,16 +43,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             // ------- set token ---------
             await db.insertToken(responseBody['token']);
 
+            // -------- set a user id --------
+            await db.insertUserId(responseBody['data']['identity']);
+
+            print("LoginBlocLoginBlocLoginBlocLoginBlocLoginBlocLoginBloc${db.getUserId()}");
+
+
           }else {
             emit(LoginFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch(e){
-        if(e.type == DioExceptionType.connectionError || e.type == DioExceptionType.receiveTimeout || e.type == DioExceptionType.connectionTimeout){
-          emit(LoginFail(errorMessage: ConfigMessage().noInterNetMsg));
-        }else{
-          emit(LoginFail(errorMessage: ConfigMessage().somethingWentWrongMsg));
-        }
+        // ------ error handle config --------
+        HandleErrorConfig().handleDioError(e);
       } catch(e){
         emit(LoginFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

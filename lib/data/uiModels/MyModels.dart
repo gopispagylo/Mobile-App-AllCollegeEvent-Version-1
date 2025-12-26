@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MyModels{
 
-  Center customTextField({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? validator}){
+  Center customTextField({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? validator,required TextInputType textInputType,required TextCapitalization textCapitalization,required bool readOnly}){
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -26,6 +26,9 @@ class MyModels{
               onTapOutside: (outSideTab){
                 WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
               },
+              readOnly: readOnly,
+              keyboardType: textInputType,
+              textCapitalization: textCapitalization,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10),
                 enabledBorder: OutlineInputBorder(
