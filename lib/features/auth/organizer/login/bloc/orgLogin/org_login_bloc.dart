@@ -37,8 +37,15 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
 
             emit(OrgSuccess());
 
+            // --------- insert the bool value on the sqLite data base ------------
+            await db.insertIsLogin("isLogin", true);
+            await db.insertingIsSplash('isSplash', true);
+
+            // ------- set token ---------
+            await db.insertToken(responseBody['token']);
+
             // -------- set a user id --------
-            await db.insertUser(responseBody['identity']);
+            await db.insertUserId(responseBody['data']['identity']);
 
           }else {
             emit(OrgFail(errorMessage: responseBody['message']));
@@ -46,7 +53,8 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
         }
       } on DioException catch(e){
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(OrgFail(errorMessage: error));
       } catch(e){
         emit(OrgFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

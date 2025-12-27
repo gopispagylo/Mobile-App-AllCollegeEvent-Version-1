@@ -1,4 +1,3 @@
-import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBloc/event_detail_bloc.dart';
 import 'package:all_college_event_app/features/screens/report/ui/ReportPage.dart';

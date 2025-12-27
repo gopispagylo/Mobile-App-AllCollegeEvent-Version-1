@@ -12,8 +12,18 @@ class ApiController {
       baseUrl: "",
       connectTimeout: Duration(seconds: 5),
       receiveTimeout: Duration(seconds: 5),
+      // sendTimeout: Duration(seconds: 5)
     )
   );
+
+  final dioThirdParty = Dio(
+    BaseOptions(
+      baseUrl: "https://countriesnow.space/api/v0.1",
+      connectTimeout: Duration(seconds: 5),
+      receiveTimeout: Duration(seconds: 5),
+    )
+  );
+
 
   // Assign the value of base url
   Future<void> setBaseUrl() async{
@@ -45,7 +55,7 @@ class ApiController {
     return response;
   }
 
-// Get Method without data
+  // Get Method without data
   Future<Response> getMethodWithoutBody({required String endPoint,required String token}) async{
     final response = await dio.get(endPoint,options: Options(
       headers: {
@@ -62,6 +72,25 @@ class ApiController {
           "Authorization" : "Bearer $token"
         }
     ));
+    return response;
+  }
+
+
+  // ------- country ------------
+  Future<Response> getCountries({required String endPoint}) async {
+    final response = await dioThirdParty.get(endPoint);
+    return response;
+  }
+
+  // ------- state ------------
+  Future<Response> getStates({required String endPoint}) async {
+    final response = await dioThirdParty.get(endPoint);
+    return response;
+  }
+
+  // ------- city ------------
+  Future<Response> getCities({required String endPoint}) async {
+    final response = await dioThirdParty.get(endPoint);
     return response;
   }
 

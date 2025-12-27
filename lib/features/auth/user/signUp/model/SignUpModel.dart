@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/features/auth/user/signUp/bloc/signUp/sign_up_bloc.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -126,7 +127,7 @@ class _SignUpModelState extends State<SignUpModel> {
                   BlocConsumer<SignUpBloc, SignUpState>(
                     listener: (context, signUpState) {
                       if(signUpState is SignUpSuccess){
-                        Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 0,)));
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> LoginPage(whichScreen: widget.whichScreen,)));
                         nameController.clear();
                         emailController.clear();
                         passwordController.clear();
@@ -147,9 +148,13 @@ class _SignUpModelState extends State<SignUpModel> {
                             ),
                           ),
                           onPressed: () {
-                            if(formKey.currentState!.validate()){
-                              context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
-                            }
+                           if(passwordController.text == confirmPasswordController.text){
+                             if(formKey.currentState!.validate()){
+                               context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
+                             }
+                           } else{
+                             FlutterToast().flutterToast("Password doesn`t match", ToastificationType.error, ToastificationStyle.flat);
+                           }
                           },
                           child: signUpState is SignUpLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
                             "Sign up",

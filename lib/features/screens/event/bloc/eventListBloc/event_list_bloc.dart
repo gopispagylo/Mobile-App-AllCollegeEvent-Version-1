@@ -40,7 +40,8 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
 
       }on DioException catch(e){
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(EventFail(errorMessage: error));
       } catch(e){
         emit(EventFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

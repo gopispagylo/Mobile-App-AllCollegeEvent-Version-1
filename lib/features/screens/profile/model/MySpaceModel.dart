@@ -2,7 +2,7 @@ import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MyEventsModel.dart';
-import 'package:all_college_event_app/main.dart';
+import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/OrganizationCreateDetailPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -51,7 +51,11 @@ class _MySpaceModelState extends State<MySpaceModel> {
                  ),),
                ),
                SizedBox(height: 10,),
-               customContainer(name: "Create Your Event", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12))),
+               GestureDetector(
+                   onTap: (){
+                     Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                   },
+                   child: customContainer(name: "Create Your Event", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
                customContainer(name: "Dashboard", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(0),topLeft: Radius.circular(0))),
                GestureDetector(
                    onTap: (){
@@ -178,6 +182,8 @@ class _MySpaceModelState extends State<MySpaceModel> {
                                         ),
                                         onPressed: deleteController.text.trim() == "Delete" ?  () async{
                                           await DBHelper().deleteAllLoginData();
+                                          await DBHelper().deleteUserId();
+
                                           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
                                         } : null,
                                         child: Text("Delete Account",

@@ -27,8 +27,11 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
         // ----- get a user id -----
         final userId = await DBHelper().getUserId();
+        print("userIduserIduserIduserIduserIduserId$userId");
+        print("tokentokentokentokentokentokentoken$token");
 
         final response = await apiController.getMethodWithoutBody(endPoint: 'admin/users/$userId', token: token!);
+        print("UserProfileBlocUserProfileBlocUserProfileBlocUserProfileBloc$response");
 
         if(response.statusCode == 200){
           final responseBody = response.data;

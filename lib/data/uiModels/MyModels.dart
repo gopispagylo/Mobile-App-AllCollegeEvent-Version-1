@@ -321,7 +321,7 @@ class MyModels{
 }
 
   // -------------- Comment Field ----------
-  textFormFieldCommentLimited({required BuildContext context, required String label, required String hintText, required String valid, required dynamic controller,required dynamic keyBoardType, required dynamic textCapitalization,required int maxLines,required int limit }){
+  Column textFormFieldCommentLimited({required BuildContext context, required String label, required String hintText, required String valid, required dynamic controller,required dynamic keyBoardType, required dynamic textCapitalization,required int maxLines,required int limit }){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -387,6 +387,121 @@ class MyModels{
           ),
         )
       ],
+    );
+  }
+
+  // ---------- with limited ----
+  Center customTextFieldWithLimit({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? validator,required TextInputType textInputType,required TextCapitalization textCapitalization,required bool readOnly,required int limit}){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 12),
+            child: Text(label,style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600
+            ),),
+          ),
+          SizedBox(
+            width: 320,
+            child: TextFormField(
+              maxLength: limit,
+              controller: controller,
+              validator: validator,
+              onTapOutside: (outSideTab){
+                WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+              },
+              readOnly: readOnly,
+              keyboardType: textInputType,
+              textCapitalization: textCapitalization,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+                ),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                ),
+                hintText: hintText,
+                hintStyle: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: MyColor().hintTextClr
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  // --------- with limited & without valid ------------
+  Center customTextFieldWithLimitWithoutValid({required String label, required TextEditingController controller, required String hintText,required TextInputType textInputType,required TextCapitalization textCapitalization,required bool readOnly,required int limit}){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 12),
+            child: Text(label,style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600
+            ),),
+          ),
+          SizedBox(
+            width: 320,
+            child: TextFormField(
+              maxLength: limit,
+              controller: controller,
+              onTapOutside: (outSideTab){
+                WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+              },
+              readOnly: readOnly,
+              keyboardType: textInputType,
+              textCapitalization: textCapitalization,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+                ),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                ),
+                hintText: hintText,
+                hintStyle: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: MyColor().hintTextClr
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 

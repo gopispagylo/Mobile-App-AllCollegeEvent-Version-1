@@ -37,13 +37,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           final responseBody = response.data;
           if(responseBody['status'] == true){
             emit(SignUpSuccess());
-            // --------- insert the bool value on the sqLite data base ------------
-            await db.insertIsLogin("isLogin", true);
-            await db.insertingIsSplash('isSplash', true);
-
-            // -------- set a user id --------
-            await db.insertUser(responseBody['identity']);
-
           }else {
             emit(SignUpFail(errorMessage: responseBody['message']));
           }

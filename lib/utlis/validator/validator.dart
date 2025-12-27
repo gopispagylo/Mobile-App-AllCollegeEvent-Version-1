@@ -72,6 +72,15 @@ class Validators {
     }
     return null;
   }
+
+  String? validTitle (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter title";
+    }
+    return null;
+  }
+
+
   String? validDomainMail (String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your domain mail id";
@@ -82,6 +91,13 @@ class Validators {
   String? validPhone (String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your phone number";
+    }
+    return null;
+  }
+
+  String? validAbout (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your about the event";
     }
     return null;
   }
@@ -102,12 +118,56 @@ class Validators {
       return "Please select your country";
     }
     return null;
-  }String? validCity (String? value) {
+  }
+
+  String? validCity (String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your country";
     }
     return null;
   }
+
+  String? validOrgCategories (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your organization category";
+    }
+    return null;
+  }
+
+  String? validOrgDepartment (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your organization department";
+    }
+    return null;
+  }
+
+  String? validEligibleDepartment (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your eligible department";
+    }
+    return null;
+  }
+
+  String? validOrganizationName (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your organization name";
+    }
+    return null;
+  }
+  String? validOrganizationPhone (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your organization name";
+    }
+    return null;
+  }
+
+  String? validLocation (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your location";
+    }
+    return null;
+  }
+
 }
 
 

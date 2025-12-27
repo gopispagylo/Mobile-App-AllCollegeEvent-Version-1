@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:toastification/toastification.dart';
 
 class TopModel extends StatefulWidget {
   final String whichScreen;
@@ -222,7 +224,7 @@ class _ProfileModelState extends State<TopModel> {
                 ),
                 Center(
                   child: Text(
-                    "No Results Found",
+                    userProfileState.errorMessage,
                     style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w600,
                       fontSize: 18,

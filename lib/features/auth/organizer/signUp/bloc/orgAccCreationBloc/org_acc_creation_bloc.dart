@@ -40,6 +40,7 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
 
         // Initial set base url
         await apiController.setBaseUrl();
+
         final response = await apiController.postMethod(endPoint: "auth/signup", data: parameter);
         print("OrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBloc$response");
         if(response.statusCode == 200){
@@ -47,7 +48,7 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
           if(responseBody['status'] == true){
 
             // -------- set a user id --------
-            await db.insertUser(responseBody['identity']);
+            await db.insertUser(responseBody['data']['identity']);
 
             emit(OrgSignUpSuccess());
           }else {
