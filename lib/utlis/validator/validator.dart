@@ -66,9 +66,33 @@ class Validators {
     return null;
   }
 
+  String? validPayment (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your payment";
+    }
+    return null;
+  }
+
   String? validName (String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your name";
+    }
+    return null;
+  }
+  String? validTicketName (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your ticker name";
+    }
+    return null;
+  }
+  String? validAmount (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your amount";
+    }
+    return null;
+  } String? validDescription (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your description";
     }
     return null;
   }
@@ -134,9 +158,39 @@ class Validators {
     return null;
   }
 
+  String? validPerks (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your perks";
+    }
+    return null;
+  }
+  String? validCertification (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your certification";
+    }
+    return null;
+  } String? validTotalCount (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your total count";
+    }
+    return null;
+  } String? validAccommodation (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your accommodation";
+    }
+    return null;
+  }
+
   String? validOrgDepartment (String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your organization department";
+    }
+    return null;
+  }
+
+  String? validTimeZone (String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your time zone";
     }
     return null;
   }

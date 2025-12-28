@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/chooseStateBloc/choose_state_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/cityBloc/city_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/model/OrganizationDetailModel.dart';
@@ -29,6 +30,8 @@ class _OrganizationDetailPageState extends State<OrganizationDetailPage> {
           ),
           BlocProvider(
             create: (context) => CountryBloc(apiController: ApiController())..add(FetchCountry()),
+          ), BlocProvider(
+            create: (context) => ChooseStateBloc(apiController: ApiController()),
           ),
         ],
         child: OrganizationDetailModel(

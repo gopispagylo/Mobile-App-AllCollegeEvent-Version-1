@@ -14,11 +14,10 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
     on<FetchCountry>((event, emit) async{
       emit(CountryLoading());
       try {
-        final response = await apiController.getCities(endPoint: '/countries');
-        print('CountryBlocCountryBlocCountryBlocCountryBlocCountryBloc$response');
+        final response = await apiController.getCountries(endPoint: '/countries/iso');
 
         if(response.statusCode == 200){
-          final Map<String,dynamic> data = response.data;
+          final data = response.data['data'];
           if(data.isNotEmpty){
             emit(CountrySuccess(countryList: data));
           }else{
@@ -26,12 +25,10 @@ class CountryBloc extends Bloc<CountryEvent, CountryState> {
           }
         }
       } on DioException catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioException$e");
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(CountryFail(errorMessage: error));
       } catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioException$e");
         emit(CountryFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

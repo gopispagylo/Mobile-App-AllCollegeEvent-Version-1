@@ -148,13 +148,21 @@ class _SignUpModelState extends State<SignUpModel> {
                             ),
                           ),
                           onPressed: () {
-                           if(passwordController.text == confirmPasswordController.text){
-                             if(formKey.currentState!.validate()){
-                               context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
-                             }
-                           } else{
-                             FlutterToast().flutterToast("Password doesn`t match", ToastificationType.error, ToastificationStyle.flat);
-                           }
+                            if(formKey.currentState!.validate()) {
+                              if (passwordController.text ==
+                                  confirmPasswordController.text) {
+                                context.read<SignUpBloc>().add(ClickedSignUp(
+                                    name: nameController.text,
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                    type: widget.whichScreen));
+                              } else {
+                                FlutterToast().flutterToast(
+                                    "Password doesn`t match",
+                                    ToastificationType.error,
+                                    ToastificationStyle.flat);
+                              }
+                            }
                           },
                           child: signUpState is SignUpLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
                             "Sign up",

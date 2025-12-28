@@ -8,7 +8,7 @@ final class CountryInitial extends CountryState {}
 class CountryLoading extends CountryState{}
 
 class CountrySuccess extends CountryState{
-  final Map<String,dynamic> countryList;
+  final List<dynamic> countryList;
 
   CountrySuccess({required this.countryList});
 }

@@ -218,16 +218,24 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                         ),
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            context.read<OrgAccCreationBloc>().add(
-                                ClickedOrgSignUp(
-                                    email: domainMailController.text,
-                                    password: passwordController.text,
-                                    type: 'org',
-                                    orgName: widget.orgName,
-                                    orgCat: widget.categories,
-                                    country: widget.country,
-                                    state: widget.state,
-                                    city: widget.city));
+                            if (passwordController.text ==
+                                confirmPasswordController.text) {
+                              context.read<OrgAccCreationBloc>().add(
+                                  ClickedOrgSignUp(
+                                      email: domainMailController.text,
+                                      password: passwordController.text,
+                                      type: 'org',
+                                      orgName: widget.orgName,
+                                      orgCat: widget.categories,
+                                      country: widget.country,
+                                      state: widget.state,
+                                      city: widget.city));
+                            } else {
+                              FlutterToast().flutterToast(
+                                  "Password doesn`t match",
+                                  ToastificationType.error,
+                                  ToastificationStyle.flat);
+                            }
                           }
                         },
                         child: orgAccCreationState is OrgSignUpLoading ? Center(

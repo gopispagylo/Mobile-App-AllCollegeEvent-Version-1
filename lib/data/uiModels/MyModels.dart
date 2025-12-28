@@ -2,6 +2,7 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class MyModels{
 
@@ -130,47 +131,50 @@ class MyModels{
               fontWeight: FontWeight.w600
           ),),
         ),
-        DropdownButtonFormField<String>(
-          iconEnabledColor: MyColor().primaryClr,
-          hint: Text(hint,style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              color: MyColor().hintTextClr
-          ),),
-          style: GoogleFonts.poppins(
-            fontSize: 14,
-            color: MyColor().primaryClr,
-            fontWeight: FontWeight.w600,
+        SizedBox(
+          width: 320,
+          child: DropdownButtonFormField<String>(
+            iconEnabledColor: MyColor().primaryClr,
+            hint: Text(hint,style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w400,
+                fontSize: 12,
+                color: MyColor().hintTextClr
+            ),),
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              color: MyColor().primaryClr,
+              fontWeight: FontWeight.w600,
+            ),
+            iconDisabledColor: MyColor().blackClr,
+            value: value,
+            decoration: InputDecoration(
+              suffixIcon: Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: Icon(Icons.arrow_drop_down,),
+              ),
+              // iconColor: MyColor().primaryClr,
+              contentPadding: EdgeInsets.all(10),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
+              ),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+              ),
+            ),
+            onChanged: onChanged,
+            items: items,
+            validator: valid,
           ),
-          iconDisabledColor: MyColor().blackClr,
-          value: value,
-          decoration: InputDecoration(
-            suffixIcon: Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: Icon(Icons.arrow_drop_down,),
-            ),
-            // iconColor: MyColor().primaryClr,
-            contentPadding: EdgeInsets.all(10),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
-            ),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
-            ),
-            errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-            ),
-          ),
-          onChanged: onChanged,
-          items: items,
-          validator: valid,
         ),
       ],
     );
@@ -524,6 +528,58 @@ class MyModels{
           color: MyColor().whiteClr,
         ),
       ),
+    );
+  }
+
+  // ----- Date & Time UI ---------
+  Column customDateAndTimeUi({required TextEditingController controller, required GestureTapCallback onTap,required String label}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          margin: EdgeInsets.only(bottom: 12),
+          child: Text(label,style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600
+          ),),
+        ),
+        SizedBox(
+          width: 320,
+          child: TextField(
+            controller: controller,
+            readOnly: true,
+            style: GoogleFonts.poppins(
+                fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().primaryClr
+            ),
+            decoration: InputDecoration(
+              hintText: "Select Date & Time",
+              contentPadding: EdgeInsets.all(10),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
+              ),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+              ),
+              hintStyle: GoogleFonts.poppins(
+                  fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().borderClr
+              ),
+              prefixIcon: Icon(Iconsax.calendar,color: MyColor().borderClr,),
+
+            ),
+            onTap: onTap
+          ),
+        ),
+      ],
     );
   }
 }

@@ -165,12 +165,16 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
                         ),
                         onPressed: () {
                           if(formKey.currentState!.validate()){
-                            context.read<ResetPasswordBloc>().add(
-                              ClickedResetPassword(
-                                email: widget.email,
-                                password: confirmPasswordController.text
-                              ),
-                            );
+                           if(passwordController.text == confirmPasswordController.text){
+                             context.read<ResetPasswordBloc>().add(
+                               ClickedResetPassword(
+                                   email: widget.email,
+                                   password: confirmPasswordController.text
+                               ),
+                             );
+                           } else{
+                             FlutterToast().flutterToast("Password doesn`t match", ToastificationType.error, ToastificationStyle.flat);
+                           }
                           }
                         },
                         child: resetPasswordState is ResetPasswordLoading

@@ -16,13 +16,17 @@ class ApiController {
     )
   );
 
-  final dioThirdParty = Dio(
+  final Dio dioThirdParty = Dio(
     BaseOptions(
+
       baseUrl: "https://countriesnow.space/api/v0.1",
-      connectTimeout: Duration(seconds: 5),
-      receiveTimeout: Duration(seconds: 5),
-    )
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 10),
+      headers: {"Content-Type": "application/json"},
+      validateStatus: (status) => status != null && status < 500,
+    ),
   );
+
 
 
   // Assign the value of base url
@@ -78,20 +82,21 @@ class ApiController {
 
   // ------- country ------------
   Future<Response> getCountries({required String endPoint}) async {
-    final response = await dioThirdParty.get(endPoint);
-    return response;
+    return await dioThirdParty.get(endPoint);
   }
 
-  // ------- state ------------
-  Future<Response> getStates({required String endPoint}) async {
-    final response = await dioThirdParty.get(endPoint);
-    return response;
+  Future<Response> getStates({
+    required String endPoint,
+    required Map<String, dynamic> data,
+  }) async {
+    return await dioThirdParty.get(endPoint, data: data);
   }
 
-  // ------- city ------------
-  Future<Response> getCities({required String endPoint}) async {
-    final response = await dioThirdParty.get(endPoint);
-    return response;
+
+  Future<Response> getCities({
+    required String endPoint,
+  }) async {
+    return await dioThirdParty.get(endPoint);
   }
 
 }

@@ -13,7 +13,7 @@ class PerksBloc extends Bloc<PerksEvent, PerksState> {
   final ApiController apiController;
   final List<dynamic> perksList = [];
   PerksBloc({required this.apiController}) : super(PerksInitial()) {
-    on<PerksEvent>((event, emit) async{
+    on<FetchPerks>((event, emit) async{
       emit(PerksLoading());
       try{
 
@@ -27,7 +27,7 @@ class PerksBloc extends Bloc<PerksEvent, PerksState> {
         print("PerksBlocPerksBlocPerksBlocPerksBlocPerksBlocPerksBlocPerksBloc$response");
         if(response.statusCode == 200){
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if(responseBody['success'] == true){
             perksList.clear();
             perksList.addAll(responseBody['data']);
             emit(PerksSuccess(perksList: List.from(perksList)));

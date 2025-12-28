@@ -163,7 +163,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                               );
                             }
                           },
-                          child: Text(
+                          child: orgLoginState is OrgLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
                             "Sign in",
                             style: GoogleFonts.poppins(
                               fontSize: 14,

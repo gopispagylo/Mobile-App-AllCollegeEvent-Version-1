@@ -3,6 +3,7 @@ import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/aceCategories/ace_categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/eventType/event_type_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/searchableKeyWords/searchable_key_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/SelectTimeZonePage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +31,7 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
   // --------- dropdown value -----
   String? selectAceCategories;
   String? selectEventType;
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +85,12 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
 
         // ---------- Category -----
         Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
+          margin: EdgeInsets.only(left: 16,right: 16,bottom: selectAceCategories != null ? 20 : 0),
           child: BlocBuilder<AceCategoriesBloc, AceCategoriesState>(
                     builder: (context, aceCategoriesState) {
-                      if(aceCategoriesState is AceCategoriesSuccess){
+                      if(aceCategoriesState is AceCategoriesLoading){
+                        return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                      } else if(aceCategoriesState is AceCategoriesSuccess){
                         return SizedBox(
                           width: 320,
                           child: MyModels().customDropdown(label: "Category *", hint: "Select Event Category", value: selectAceCategories, onChanged: (category){
@@ -103,13 +107,14 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
                   ),
         ),
 
-        
         // ------ event type -----
         Container(
-          margin: EdgeInsets.only(left: 16,right: 16,top: 20,bottom: 20),
+          margin: EdgeInsets.only(left: 16,right: 16,bottom: 20),
           child: BlocBuilder<EventTypeBloc, EventTypeState>(
             builder: (context, eventTypeState) {
-              if(eventTypeState is EventTypeSuccess){
+              if(eventTypeState is EventTypeLoading){
+                return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+              } else if(eventTypeState is EventTypeSuccess){
                 return SizedBox(
                   width: 320,
                   child: MyModels().customDropdown(label: "Event Type *", hint: "Select Type of Event", value: selectEventType, onChanged: (orgCategory){
@@ -278,6 +283,62 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
             margin: EdgeInsets.only(left: 16,right: 16),
             child: MyModels().textFormFieldCommentLimited(context: context, label: "About the Event*", hintText: "About the Event", valid: "Please enter about the event", controller: aboutController, keyBoardType: TextInputType.text, textCapitalization: TextCapitalization.sentences, maxLines: 10, limit: 1000)),
 
+        // ------- back & Continue -------
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16,bottom: 20),
+          child: Row(
+            children: [
+              // ------- Save & Continue -------
+              Expanded(
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.pop(context);
+                  },
+                  child: Align(
+                    alignment: AlignmentGeometry.topRight,
+                    child: Container(
+                        margin: EdgeInsets.only(top: 20,right: 0),
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: MyColor().whiteClr,
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: MyColor().primaryClr)
+                        ),
+                        child: Text("Back",style: GoogleFonts.poppins(
+                            fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().primaryClr
+                        ),)),
+                  ),
+                ),
+              ),
+              SizedBox(width: 16,),
+              Expanded(
+                child: GestureDetector(
+                  onTap: (){
+                    // if(formKey.currentState!.validate()){
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> SelectTimeZonePage()));
+                    // }
+                  },
+                  child: Align(
+                    alignment: AlignmentGeometry.topRight,
+                    child: Container(
+                        margin: EdgeInsets.only(top: 20,right: 0),
+                        height: 48,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                            color: MyColor().primaryClr,
+                            borderRadius: BorderRadius.circular(30),
+                            border: Border.all(color: MyColor().primaryClr)
+                        ),
+                        child: Text("Continue",style: GoogleFonts.poppins(
+                            fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().whiteClr
+                        ),)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
 
       ],
     );

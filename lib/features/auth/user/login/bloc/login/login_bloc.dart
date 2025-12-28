@@ -55,7 +55,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         }
       } on DioException catch(e){
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(LoginFail(errorMessage: error));
       } catch(e){
         emit(LoginFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

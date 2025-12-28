@@ -43,7 +43,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         }
       } on DioException catch(e){
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(SignUpFail(errorMessage: error));
       } catch(e){
         emit(SignUpFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

@@ -111,7 +111,9 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
             margin: EdgeInsets.only(left: 16,right: 16,top: 20),
             child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
               builder: (context, orgCategoriesState) {
-               if(orgCategoriesState is OrgCategoriesSuccess){
+                if(orgCategoriesState is OrgCategoriesLoading){
+                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                } else if(orgCategoriesState is OrgCategoriesSuccess){
                  return SizedBox(
                    width: 320,
                    child: MyModels().customDropdown(label: "Event Host By *", hint: "Select your Organization Category", value: selectOrgCategories, onChanged: (orgCategory){
@@ -147,7 +149,9 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
             margin: EdgeInsets.only(left: 16,right: 16,top: 20),
             child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
               builder: (context, orgCategoriesState) {
-                if(orgCategoriesState is OrgCategoriesSuccess){
+                if(orgCategoriesState is OrgCategoriesLoading){
+                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                } else if(orgCategoriesState is OrgCategoriesSuccess){
                   return SizedBox(
                     width: 320,
                     child: MyModels().customDropdown(label: "Organization Department *", hint: "Select your Organization Department", value: selectOrgCategories, onChanged: (orgCategory){
@@ -181,7 +185,9 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
             margin: EdgeInsets.only(left: 16,right: 16,top: 20),
             child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
               builder: (context, orgCategoriesState) {
-                if(orgCategoriesState is OrgCategoriesSuccess){
+                if(orgCategoriesState is OrgCategoriesLoading){
+                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                } else if(orgCategoriesState is OrgCategoriesSuccess){
                   return SizedBox(
                     width: 320,
                     child: MyModels().customDropdown(label: "Eligible Department *", hint: "Select Eligible Department", value: selectOrgCategories, onChanged: (orgCategory){
@@ -195,7 +201,7 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
             ),
           ),
 
-          // ------- Save & Continue -------
+          // ------- Continue -------
           GestureDetector(
             onTap: (){
               // if(formKey.currentState!.validate()){
@@ -214,7 +220,7 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(color: MyColor().primaryClr)
                   ),
-                  child: Text("Save & Continue",style: GoogleFonts.poppins(
+                  child: Text("Continue",style: GoogleFonts.poppins(
                     fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().whiteClr
                   ),)),
             ),

@@ -34,7 +34,7 @@ class AccommodationBloc extends Bloc<AccommodationEvent, AccommodationState> {
         );
         if (response.statusCode == 200) {
           final responseBody = response.data;
-          if (responseBody['status'] == true) {
+          if (responseBody['success'] == true) {
             accommodationList.clear();
             accommodationList.addAll(responseBody['data']);
             emit(

@@ -35,7 +35,7 @@ class CertificationBloc extends Bloc<CertificationEvent, CertificationState> {
         );
         if (response.statusCode == 200) {
           final responseBody = response.data;
-          if (responseBody['status'] == true) {
+          if (responseBody['success'] == true) {
             certificationList.clear();
             certificationList.addAll(responseBody['data']);
             emit(
