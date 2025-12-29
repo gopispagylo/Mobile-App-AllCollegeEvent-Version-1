@@ -35,7 +35,8 @@ class ResetPasswordBloc extends Bloc<ResetPasswordEvent, ResetPasswordState> {
         }
       }on DioException catch(e){
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(ResetPasswordFail(errorMessage: error));
       } catch(e){
         emit(ResetPasswordFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

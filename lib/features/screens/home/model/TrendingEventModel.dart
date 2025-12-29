@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class TrendingEventModel extends StatefulWidget {
   const TrendingEventModel({super.key});
@@ -18,87 +19,36 @@ class TrendingEventModel extends StatefulWidget {
 
 class _TrendingEventModelState extends State<TrendingEventModel> {
 
-  List<Map<String, dynamic>> eventsList = [
-    {
-      "title": "Comic Con Co...",
-      "location": "Coimbatore",
-      "price": 999,
-      "date": "Jan 01, 2026",
-      "mode": "Online",
-      "isPaid": true,
-      "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      "title": "AI Webinar",
-      "location": "Coimbatore",
-      "price": 199,
-      "date": "Jan 01, 2026",
-      "mode": "Online",
-      "isPaid": false,
-      "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      "title": "Startup Meetup",
-      "location": "Bangalore",
-      "price": 0,
-      "date": "Feb 10, 2026",
-      "mode": "Offline",
-      "isPaid": false,
-      "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      "title": "Music Fest 2026",
-      "location": "Chennai",
-      "price": 1499,
-      "date": "Mar 15, 2026",
-      "mode": "Offline",
-      "isPaid": true,
-      "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      "title": "Design Workshop",
-      "location": "Hyderabad",
-      "price": 499,
-      "date": "Apr 05, 2026",
-      "mode": "Online",
-      "isPaid": true,
-      "image": "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-  ];
-
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(top: 30,left: 16,right: 6),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return BlocBuilder<TrendingEventListBloc, TrendingEventListState>(
+      builder: (context, trendingEventState) {
+        if (trendingEventState is TrendingEventListLoading) {
+          return categoryShimmer();
+        } else if (trendingEventState is TrendingEventListSuccess) {
+          return Column(
             children: [
-              Text("Trending Events",style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18,
-                  fontFamily: "blMelody"
-              ),),
               Container(
-                padding: EdgeInsets.all(10),
-                child: Text("See all",style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500
-                ),),
-              )
-            ],
-          ),
-        ),
-        BlocBuilder<TrendingEventListBloc, TrendingEventListState>(
-          builder: (context, trendingEventState) {
-            if (trendingEventState is TrendingEventListLoading) {
-              return Center(child: CircularProgressIndicator(
-                color: MyColor().primaryClr,),);
-            } else if (trendingEventState is TrendingEventListSuccess) {
-
-              return TweenAnimationBuilder(
+                margin: EdgeInsets.only(top: 30,left: 16,right: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Trending Events",style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        fontFamily: "blMelody"
+                    ),),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Text("See all",style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500
+                      ),),
+                    )
+                  ],
+                ),
+              ),
+              TweenAnimationBuilder(
                 tween: Tween(begin: 50.0, end: 0.0),
                 duration: (Duration(milliseconds: 600)),
                 builder:  (context, value, child) {
@@ -117,20 +67,20 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                       // ------ date format -------
                       final rawDate = list['eventDate']?.toString() ?? "";
-                      // // 2. Safe Date Parsing
-                      // String dateFormat = "Date TBD";
-                      // if (rawDate.isNotEmpty) {
-                      //   try {
-                      //     // Use MM for months!
-                      //     final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
-                      //     dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
-                      //   } catch (e) {
-                      //     debugPrint("Date parsing error: $e");
-                      //     dateFormat = rawDate; // Fallback to raw string if parsing fails
-                      //   }
-                      // }
-                      //
-                      // print("object");
+                      // 2. Safe Date Parsing
+                      String dateFormat = "Date TBD";
+                      if (rawDate.isNotEmpty) {
+                        try {
+                          // Use MM for months!
+                          final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
+                          dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                        } catch (e) {
+                          debugPrint("Date parsing error: $e");
+                          dateFormat = rawDate; // Fallback to raw string if parsing fails
+                        }
+                      }
+
+                      print("object");
 
                       // ------ event mode ------
                       final eventMode = list['mode'];
@@ -241,7 +191,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                           children: [
                                             Icon(Icons.calendar_month, size: 15,),
                                             SizedBox(width: 5,),
-                                            Text(rawDate,
+                                            Text(dateFormat,
                                               style: GoogleFonts.poppins(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 12
@@ -299,12 +249,38 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                     }),
                   ),
                 ),
-              );
-            }
-            return SizedBox.shrink();
-          },
-        )
-      ],
+              ),
+            ],
+          );
+        }
+        return SizedBox.shrink();
+      },
+    );
+  }
+
+  // ------ skeleton loading ------
+  Widget categoryShimmer() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(6, (index) {
+          return Shimmer(
+            child: Container(
+              margin: EdgeInsets.only(
+                left: 16,
+                right: index == 5 ? 16 : 0,
+                top: 15,
+              ),
+              height: 220,
+              width: 220,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: MyColor().sliderDotClr,
+              ),
+            ),
+          );
+        }),
+      ),
     );
   }
 }
@@ -322,3 +298,4 @@ Widget circleIcon(IconData icon) {
     child: Icon(icon, size: 15),
   );
 }
+

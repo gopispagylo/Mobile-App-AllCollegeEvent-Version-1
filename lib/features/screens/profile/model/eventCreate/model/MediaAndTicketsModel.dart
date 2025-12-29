@@ -37,16 +37,36 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
   Widget build(BuildContext context) {
     return ListView(
       children: [
+
         Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
+          margin: EdgeInsets.only(left: 16,right: 16,top: 10),
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Organization Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -54,9 +74,28 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Event Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -64,9 +103,28 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 0.1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Media & Tickets"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      ),),
                     ),
                   ],
                 ),
@@ -154,93 +212,99 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
         ),
 
         // ------- perks dropdown -----
-        Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
-          child: BlocBuilder<PerksBloc, PerksState>(
-              builder: (context, perksState) {
-                if (perksState is PerksLoading) {
-                  return Center(child: CircularProgressIndicator(
-                    color: MyColor().primaryClr,),);
-                }
-                else if (perksState is PerksSuccess) {
-                  return MyModels().customDropdown(label: "Perks *",
-                      hint: "Select Perks Type",
-                      value: perksValue,
-                      onChanged: (onChanged) {
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(left: 16,right: 16),
+            child: BlocBuilder<PerksBloc, PerksState>(
+                builder: (context, perksState) {
+                  if (perksState is PerksLoading) {
+                    return Center(child: CircularProgressIndicator(
+                      color: MyColor().primaryClr,),);
+                  }
+                  else if (perksState is PerksSuccess) {
+                    return MyModels().customDropdown(label: "Perks *",
+                        hint: "Select Perks Type",
+                        value: perksValue,
+                        onChanged: (onChanged) {
 
-                      },
-                      items: perksState.perksList.map((e) =>
-                          DropdownMenuItem<String>(
-                              value: e['identity'], child: Text(e['perkName'])))
-                          .toList(),
-                      valid: Validators().validPerks);
-                } else if(perksState is PerksFail){
-                  return Text(perksState.errorMessage);
+                        },
+                        items: perksState.perksList.map((e) =>
+                            DropdownMenuItem<String>(
+                                value: e['identity'], child: Text(e['perkName'])))
+                            .toList(),
+                        valid: Validators().validPerks);
+                  } else if(perksState is PerksFail){
+                    return Text(perksState.errorMessage);
+                  }
+                  return SizedBox.shrink();
                 }
-                return SizedBox.shrink();
-              }
+            ),
           ),
         ),
 
         SizedBox(height: 20,),
 
         // --------- Certification -------
-        Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
-          child: BlocBuilder<CertificationBloc, CertificationState>(
-              builder: (context, certificationState) {
-                if (certificationState is CertificationLoading) {
-                  return Center(child: CircularProgressIndicator(
-                    color: MyColor().primaryClr,),);
-                }
-                else if (certificationState is CertificationSuccess) {
-                  return MyModels().customDropdown(label: "Certification *",
-                      hint: "Select Certification Type",
-                      value: perksValue,
-                      onChanged: (onChanged) {
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(left: 16,right: 16),
+            child: BlocBuilder<CertificationBloc, CertificationState>(
+                builder: (context, certificationState) {
+                  if (certificationState is CertificationLoading) {
+                    return Center(child: CircularProgressIndicator(
+                      color: MyColor().primaryClr,),);
+                  }
+                  else if (certificationState is CertificationSuccess) {
+                    return MyModels().customDropdown(label: "Certification *",
+                        hint: "Select Certification Type",
+                        value: perksValue,
+                        onChanged: (onChanged) {
 
-                      },
-                      items: certificationState.certificationList.map((e) =>
-                          DropdownMenuItem<String>(
-                              value: e['identity'], child: Text(e['certName'])))
-                          .toList(),
-                      valid: Validators().validPerks);
-                } else if(certificationState is CertificationFail){
-                  return Text(certificationState.errorMessage);
+                        },
+                        items: certificationState.certificationList.map((e) =>
+                            DropdownMenuItem<String>(
+                                value: e['identity'], child: Text(e['certName'])))
+                            .toList(),
+                        valid: Validators().validPerks);
+                  } else if(certificationState is CertificationFail){
+                    return Text(certificationState.errorMessage);
+                  }
+                  return SizedBox.shrink();
                 }
-                return SizedBox.shrink();
-              }
+            ),
           ),
         ),
 
         SizedBox(height: 20,),
 
         // --------- Accommodation -------
-        Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
-          child: BlocBuilder<AccommodationBloc, AccommodationState>(
-              builder: (context, accommodationState) {
-                if (accommodationState is AccommodationLoading) {
-                  return Center(child: CircularProgressIndicator(
-                    color: MyColor().primaryClr,),);
-                }
-                else if (accommodationState is AccommodationSuccess) {
-                  return MyModels().customDropdown(label: "Accommodation *",
-                      hint: "Select Accommodation Type",
-                      value: perksValue,
-                      onChanged: (onChanged) {
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(left: 16,right: 16),
+            child: BlocBuilder<AccommodationBloc, AccommodationState>(
+                builder: (context, accommodationState) {
+                  if (accommodationState is AccommodationLoading) {
+                    return Center(child: CircularProgressIndicator(
+                      color: MyColor().primaryClr,),);
+                  }
+                  else if (accommodationState is AccommodationSuccess) {
+                    return MyModels().customDropdown(label: "Accommodation *",
+                        hint: "Select Accommodation Type",
+                        value: perksValue,
+                        onChanged: (onChanged) {
 
-                      },
-                      items: accommodationState.accommodationList.map((e) =>
-                          DropdownMenuItem<String>(
-                              value: e['identity'], child: Text(e['accommodationName'])))
-                          .toList(),
-                      valid: Validators().validPerks);
-                } else if(accommodationState is AccommodationFail){
-                  return Text(accommodationState.errorMessage);
+                        },
+                        items: accommodationState.accommodationList.map((e) =>
+                            DropdownMenuItem<String>(
+                                value: e['identity'], child: Text(e['accommodationName'])))
+                            .toList(),
+                        valid: Validators().validPerks);
+                  } else if(accommodationState is AccommodationFail){
+                    return Text(accommodationState.errorMessage);
+                  }
+                  return SizedBox.shrink();
                 }
-                return SizedBox.shrink();
-              }
+            ),
           ),
         ),
 
@@ -302,6 +366,7 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
             ],
           ),
         ),
+
       ],
     );
   }

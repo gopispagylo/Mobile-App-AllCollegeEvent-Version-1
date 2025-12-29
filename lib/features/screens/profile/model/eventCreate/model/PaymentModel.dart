@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -35,21 +37,43 @@ class _PaymentModelState extends State<PaymentModel> {
   // ------ local stored ticket ------
  final List<Map<String,dynamic>> ticketList = [];
 
+ // -------- editing index --------
+ int? editingIndex;
+
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
 
         Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
+          margin: EdgeInsets.only(left: 16,right: 16,top: 10),
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Organization Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -57,9 +81,28 @@ class _PaymentModelState extends State<PaymentModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Event Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -67,9 +110,28 @@ class _PaymentModelState extends State<PaymentModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 0.5,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Media & Tickets"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      ),),
                     ),
                   ],
                 ),
@@ -216,7 +278,11 @@ class _PaymentModelState extends State<PaymentModel> {
                     DataCell(Text(ticket['ticket_name'] ?? "-")),
                     DataCell(Text(ticket['amount']?.toString() ?? "free")),
                     DataCell(Text(ticket['total_count']?.toString() ?? "-")),
-                    DataCell(Icon(Iconsax.edit_copy,)),
+                    DataCell(GestureDetector(
+                        onTap: () {
+                          editTicket(index);
+                        },
+                        child: Icon(Iconsax.edit_copy,))),
                     DataCell(GestureDetector(
                         onTap: (){
                           setState(() {
@@ -298,10 +364,12 @@ class _PaymentModelState extends State<PaymentModel> {
 
   // ---------- ticket dialog ------
   void ticketDialog() async{
-    MyModels().alertDialogContentCustom(context: context, content: StatefulBuilder(
+    MyModels().alertDialogContentCustom(
+        context: context,
+        content: StatefulBuilder(
         builder: (context,setState) {
-          return Container(
-            child: ListView(
+          return SingleChildScrollView(
+            child: Column(
               children: [
                 MyModels().customTextField(label: "Ticket Name *", controller: ticketNameController, hintText: "Enter Ticket Name", validator: Validators().validTicketName, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false),
                 SizedBox(height: 20,),
@@ -321,7 +389,11 @@ class _PaymentModelState extends State<PaymentModel> {
                   }
                 }, label: "Selling From *"),
                 SizedBox(height: 20,),
-                MyModels().customDropdown(label: "Total Count *", hint: "Select Total Count", value: countValue, onChanged: (onChanged){}, items: countList.map((e)=> DropdownMenuItem<String>(value: e.toString(),child: Text(e.toString()))).toList(), valid: Validators().validTotalCount),
+                MyModels().customDropdown(label: "Total Count *", hint: "Select Total Count", value: countValue, onChanged: (onChanged){
+                  setState((){
+                    countValue = onChanged;
+                  });
+                }, items: countList.map((e)=> DropdownMenuItem<String>(value: e.toString(),child: Text(e.toString()))).toList(), valid: Validators().validTotalCount),
                 SizedBox(height: 10,),
                 Row(
                   children: [
@@ -343,7 +415,7 @@ class _PaymentModelState extends State<PaymentModel> {
                 if(freeOrPaid) SizedBox(height: 20,),
                 MyModels().customButton(onPressed: (){
                   addTicket();
-                }, title: "Add Ticket")
+                }, title: editingIndex == null ? "Add Ticket" : "update Ticket")
               ],
             ),
           );
@@ -353,8 +425,8 @@ class _PaymentModelState extends State<PaymentModel> {
 
   // -----add ticket -------
   void addTicket() {
-    setState(() {
-      ticketList.add({
+
+      final ticketData = {
         'ticket_name': ticketNameController.text,
         'description': descriptionController.text,
         'selling_from': sellingFromController.text,
@@ -363,8 +435,15 @@ class _PaymentModelState extends State<PaymentModel> {
         'paid': freeOrPaid,
         if (amountController.text.isNotEmpty)
           'amount': amountController.text,
+      };
+
+      setState(() {
+        if(editingIndex == null){
+          ticketList.add(ticketData);
+        } else{
+          ticketList[editingIndex!] = ticketData;
+        }
       });
-    });
 
     // clear form
     ticketNameController.clear();
@@ -374,8 +453,30 @@ class _PaymentModelState extends State<PaymentModel> {
     amountController.clear();
     countValue = null;
     freeOrPaid = false;
+    editingIndex = null;
 
     Navigator.pop(context);
+  }
+
+  // --------- edit ticket --------
+  void editTicket(int index) {
+    final ticket = ticketList[index];
+
+    // ---------- fill fields ----------
+    ticketNameController.text = ticket['ticket_name'] ?? '';
+    descriptionController.text = ticket['description'] ?? '';
+    sellingFromController.text = ticket['selling_from'] ?? '';
+    sellingUpToController.text = ticket['selling_upto'] ?? '';
+    amountController.text = ticket['amount']?.toString() ?? '';
+    countValue = ticket['total_count'].toString();
+    freeOrPaid = ticket['paid'] ?? false;
+
+    print("countValuecountValuecountValuecountValue$countValue");
+    editingIndex = index;
+
+    // ------ ticket ui dialog -------
+    ticketDialog();
+
   }
 
 }

@@ -48,15 +48,34 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
       children: [
 
         Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
+          margin: EdgeInsets.only(left: 16,right: 16,top: 10),
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Organization Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -64,9 +83,28 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 0.5,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Event Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -74,9 +112,28 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 0.0,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Media & Tickets"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      ),),
                     ),
                   ],
                 ),

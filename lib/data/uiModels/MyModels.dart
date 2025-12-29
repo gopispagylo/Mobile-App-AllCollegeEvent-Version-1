@@ -340,54 +340,57 @@ class MyModels{
           ),
         ),
         SizedBox(height: 10,),
-        TextFormField(
-          maxLines: maxLines,
-          textCapitalization: textCapitalization,
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: MyColor().primaryClr,
-              fontFamily: "Sora"
-          ),
-          controller: controller,
-          onTapUpOutside: (outSideClick){
-            FocusManager.instance.primaryFocus!.unfocus();
-          },
-          validator: (value){
-            if(value == null || value.isEmpty){
-              return valid;
-            }
-            return null;
-          },
-          keyboardType: keyBoardType,
-          maxLength: limit,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-                borderSide: BorderSide(color: MyColor().borderClr.withOpacity(0.15),width: 0.5),
-                borderRadius: BorderRadius.circular(8)
+        SizedBox(
+          width: 320,
+          child: TextFormField(
+            maxLines: maxLines,
+            textCapitalization: textCapitalization,
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: MyColor().primaryClr,
+                fontFamily: "Sora"
             ),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+            controller: controller,
+            onTapUpOutside: (outSideClick){
+              FocusManager.instance.primaryFocus!.unfocus();
+            },
+            validator: (value){
+              if(value == null || value.isEmpty){
+                return valid;
+              }
+              return null;
+            },
+            keyboardType: keyBoardType,
+            maxLength: limit,
+            decoration: InputDecoration(
+              border: OutlineInputBorder(
+                  borderSide: BorderSide(color: MyColor().borderClr.withOpacity(0.15),width: 0.5),
+                  borderRadius: BorderRadius.circular(8)
+              ),
+              enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+              ),
+              focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+              ),
+              errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+              ),
+              hintText: hintText,
+              hintStyle: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: MyColor().hintTextClr
+              )
             ),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
-            ),
-            errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-            ),
-            hintText: hintText,
-            hintStyle: GoogleFonts.poppins(
-                fontWeight: FontWeight.w400,
-                fontSize: 12,
-                color: MyColor().hintTextClr
-            )
           ),
         )
       ],

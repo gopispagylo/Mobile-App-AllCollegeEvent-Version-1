@@ -68,7 +68,6 @@ class _EventListModelState extends State<EventListModel> {
               )),
         ),
 
-
         Container(
           margin: EdgeInsets.only(left: 16,right: 16),
           child: SingleChildScrollView(

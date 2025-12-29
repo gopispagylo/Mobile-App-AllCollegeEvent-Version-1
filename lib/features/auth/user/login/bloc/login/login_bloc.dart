@@ -46,7 +46,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             // -------- set a user id --------
             await db.insertUserId(responseBody['data']['identity']);
 
-            print("LoginBlocLoginBlocLoginBlocLoginBlocLoginBlocLoginBloc${db.getUserId()}");
 
 
           }else {

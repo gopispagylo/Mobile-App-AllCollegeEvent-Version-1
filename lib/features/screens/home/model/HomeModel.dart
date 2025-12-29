@@ -1,4 +1,5 @@
 
+import 'package:all_college_event_app/features/screens/home/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/CarouselSliderPage.dart';
 import 'package:all_college_event_app/features/screens/home/model/CategoriesModel.dart';
@@ -24,6 +25,7 @@ class _HomeModelState extends State<HomeModel> {
     return RefreshIndicator(
       onRefresh: () async{
         context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
+        context.read<CategoriesBloc>().add(FetchCategories());
       },
       child: ListView(
         children: [

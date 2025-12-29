@@ -30,10 +30,12 @@ class ForgotPasswordBloc extends Bloc<ForgotPasswordEvent, ForgotPasswordState> 
           }
         }
       }on DioException catch(e){
+
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(ForgotPasswordFail(errorMessage: error));
+
       } catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioException$e");
         emit(ForgotPasswordFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

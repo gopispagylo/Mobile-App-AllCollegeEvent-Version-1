@@ -21,12 +21,8 @@ class TrendingEventListBloc extends Bloc<TrendingEventListEvent, TrendingEventLi
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
-        final parameter = {
-          "" : ""
-        };
 
-        final response = await apiController.getMethod(endPoint: 'events', token: "token", data: parameter);
-        print("EventListBlocEventListBlocEventListBlocEventListBlocEventListBloc$response");
+        final response = await apiController.getMethodWithoutBody(endPoint: 'events', token: "token");
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
@@ -42,7 +38,6 @@ class TrendingEventListBloc extends Bloc<TrendingEventListEvent, TrendingEventLi
         // ------ error handle config --------
         HandleErrorConfig().handleDioError(e);
       } catch(e){
-        print("DioExceptionDioExceptionDioExceptionDioExceptionDioException$e");
         emit(TrendingEventListFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

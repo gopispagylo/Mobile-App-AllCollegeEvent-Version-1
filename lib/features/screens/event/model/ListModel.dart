@@ -48,17 +48,29 @@ class _ListModelState extends State<ListModel> {
 
                   // -------- field name ------------
                   final title = list['title'] ?? "No title";
-                  final featuredImagePath = list['bannerImage'];
+                  final featuredImagePath = list['bannerImage'] ?? '';
 
                   print("featuredImagePathfeaturedImagePathfeaturedImagePath$featuredImagePath");
 
-                  // --- date format -----
-                  final eventStartDateFormat = list['eventDate'];
-                  final parsedDate = DateFormat('dd/MM/yyyy').parse(eventStartDateFormat);
-                  final eventStartDate = DateFormat('dd MMM yyyy').format(parsedDate);
+                  // ------ date format -------
+                  final rawDate = list['eventDate']?.toString() ?? "";
+
+                  // 2. Safe Date Parsing
+                  String dateFormat = "Date TBD";
+
+                  if (rawDate.isNotEmpty) {
+                    try {
+                      // Use MM for months!
+                      final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
+                      dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                    } catch (e) {
+                      debugPrint("Date parsing error: $e");
+                      dateFormat = rawDate; // Fallback to raw string if parsing fails
+                    }
+                  }
 
                   // ---- venue ---
-                  final venue = list['venue'];
+                  final venue = list['venue'] ?? "no venue";
 
                   // -------- identity ---------
                   final identity = list['identity'];
@@ -171,7 +183,7 @@ class _ListModelState extends State<ListModel> {
                                         SizedBox(width: 5),
                                         Expanded(
                                           child: Text(
-                                            eventStartDate,
+                                            dateFormat,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,

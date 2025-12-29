@@ -38,11 +38,9 @@ class ChooseStateBloc extends Bloc<ChooseStateEvent, ChooseStateState> {
           }
         }
       } on DioException catch (e) {
-        print("DioExceptionDioExceptionDioExceptionDioException$e");
         final error = HandleErrorConfig().handleDioError(e);
         emit(ChooseStateFail(errorMessage: error));
       } catch (e) {
-        print("DioExceptionDioExceptionDioExceptionDioException$e");
         emit(ChooseStateFail(
           errorMessage: ConfigMessage().unexpectedErrorMsg,
         ));

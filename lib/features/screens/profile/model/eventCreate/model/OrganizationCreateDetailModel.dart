@@ -69,15 +69,34 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
         children: [
 
           Container(
-            margin: EdgeInsets.only(left: 16,right: 16),
+            margin: EdgeInsets.only(left: 16,right: 16,top: 10),
             child: Row(
               children: [
                 Expanded(
                   child: Column(
                     children: [
-                      Icon(Icons.newspaper),
+                      Stack(
+                        alignment: AlignmentGeometry.center,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                              value: 0.1,
+                              strokeWidth: 5,
+                              backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                              valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                            ),
+                          ),
+                          Icon(Icons.newspaper),
+                        ],
+                      ),
                       Container(
-                        child: Text(textAlign: TextAlign.center,"Organization Details"),
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
+                            fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                        )),
                       ),
                     ],
                   ),
@@ -85,9 +104,28 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
                 Expanded(
                   child: Column(
                     children: [
-                      Icon(Icons.newspaper),
+                      Stack(
+                        alignment: AlignmentGeometry.center,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                              value: 0.0,
+                              strokeWidth: 5,
+                              backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                              valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                            ),
+                          ),
+                          Icon(Icons.newspaper),
+                        ],
+                      ),
                       Container(
-                        child: Text(textAlign: TextAlign.center,"Event Details"),
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
+    fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+    )),
                       ),
                     ],
                   ),
@@ -95,9 +133,28 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
                 Expanded(
                   child: Column(
                     children: [
-                      Icon(Icons.newspaper),
+                      Stack(
+                        alignment: AlignmentGeometry.center,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                              value: 0.0,
+                              strokeWidth: 5,
+                              backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                              valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                            ),
+                          ),
+                          Icon(Icons.newspaper),
+                        ],
+                      ),
                       Container(
-                        child: Text(textAlign: TextAlign.center,"Media & Tickets"),
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                        ),),
                       ),
                     ],
                   ),
@@ -106,24 +163,26 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
             ),
           ),
 
-          // ------ Organization Dropdown ----------
-          Container(
-            margin: EdgeInsets.only(left: 16,right: 16,top: 20),
-            child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
-              builder: (context, orgCategoriesState) {
-                if(orgCategoriesState is OrgCategoriesLoading){
-                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                } else if(orgCategoriesState is OrgCategoriesSuccess){
-                 return SizedBox(
-                   width: 320,
-                   child: MyModels().customDropdown(label: "Event Host By *", hint: "Select your Organization Category", value: selectOrgCategories, onChanged: (orgCategory){
+          // ------ event host Dropdown ----------
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(left: 16,right: 16,top: 20),
+              child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
+                builder: (context, orgCategoriesState) {
+                  if(orgCategoriesState is OrgCategoriesLoading){
+                    return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                  } else if(orgCategoriesState is OrgCategoriesSuccess){
+                   return SizedBox(
+                     width: 320,
+                     child: MyModels().customDropdown(label: "Event Host By *", hint: "Select your Organization Category", value: selectOrgCategories, onChanged: (orgCategory){
 
-                   }, items: orgCategoriesState.orgCategoriesList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['categoryName']))).toList(), valid: Validators().validOrgCategories),
-                 );
-               } else if(orgCategoriesState is OrgCategoriesFail){
-                 return Center(child: Text(orgCategoriesState.errorMessage),);
-               } return SizedBox.shrink();
-              },
+                     }, items: orgCategoriesState.orgCategoriesList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['categoryName']))).toList(), valid: Validators().validOrgCategories),
+                   );
+                 } else if(orgCategoriesState is OrgCategoriesFail){
+                   return Center(child: Text(orgCategoriesState.errorMessage),);
+                 } return SizedBox.shrink();
+                },
+              ),
             ),
           ),
 
@@ -145,23 +204,25 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
           SizedBox(height: 20,),
 
           // ------- Organization Department --------
-          Container(
-            margin: EdgeInsets.only(left: 16,right: 16,top: 20),
-            child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
-              builder: (context, orgCategoriesState) {
-                if(orgCategoriesState is OrgCategoriesLoading){
-                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                } else if(orgCategoriesState is OrgCategoriesSuccess){
-                  return SizedBox(
-                    width: 320,
-                    child: MyModels().customDropdown(label: "Organization Department *", hint: "Select your Organization Department", value: selectOrgCategories, onChanged: (orgCategory){
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(left: 16,right: 16,top: 20),
+              child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
+                builder: (context, orgCategoriesState) {
+                  if(orgCategoriesState is OrgCategoriesLoading){
+                    return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                  } else if(orgCategoriesState is OrgCategoriesSuccess){
+                    return SizedBox(
+                      width: 320,
+                      child: MyModels().customDropdown(label: "Organization Department *", hint: "Select your Organization Department", value: selectOrgCategories, onChanged: (orgCategory){
 
-                    }, items: orgDepartment.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['name']))).toList(), valid: Validators().validOrgDepartment),
-                  );
-                } else if(orgCategoriesState is OrgCategoriesFail){
-                  return Center(child: Text(orgCategoriesState.errorMessage),);
-                } return SizedBox.shrink();
-              },
+                      }, items: orgDepartment.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['name']))).toList(), valid: Validators().validOrgDepartment),
+                    );
+                  } else if(orgCategoriesState is OrgCategoriesFail){
+                    return Center(child: Text(orgCategoriesState.errorMessage),);
+                  } return SizedBox.shrink();
+                },
+              ),
             ),
           ),
 
@@ -181,23 +242,25 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
           ),
 
           // ----- Select Eligible Department -------
-          Container(
-            margin: EdgeInsets.only(left: 16,right: 16,top: 20),
-            child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
-              builder: (context, orgCategoriesState) {
-                if(orgCategoriesState is OrgCategoriesLoading){
-                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                } else if(orgCategoriesState is OrgCategoriesSuccess){
-                  return SizedBox(
-                    width: 320,
-                    child: MyModels().customDropdown(label: "Eligible Department *", hint: "Select Eligible Department", value: selectOrgCategories, onChanged: (orgCategory){
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(left: 16,right: 16,top: 20),
+              child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
+                builder: (context, orgCategoriesState) {
+                  if(orgCategoriesState is OrgCategoriesLoading){
+                    return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                  } else if(orgCategoriesState is OrgCategoriesSuccess){
+                    return SizedBox(
+                      width: 320,
+                      child: MyModels().customDropdown(label: "Eligible Department *", hint: "Select Eligible Department", value: selectOrgCategories, onChanged: (orgCategory){
 
-                    }, items: orgDepartment.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['name']))).toList(), valid: Validators().validEligibleDepartment),
-                  );
-                } else if(orgCategoriesState is OrgCategoriesFail){
-                  return Center(child: Text(orgCategoriesState.errorMessage),);
-                } return SizedBox.shrink();
-              },
+                      }, items: orgDepartment.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['name']))).toList(), valid: Validators().validEligibleDepartment),
+                    );
+                  } else if(orgCategoriesState is OrgCategoriesFail){
+                    return Center(child: Text(orgCategoriesState.errorMessage),);
+                  } return SizedBox.shrink();
+                },
+              ),
             ),
           ),
 

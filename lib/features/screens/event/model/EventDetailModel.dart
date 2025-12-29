@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class EventDetailModel extends StatefulWidget {
@@ -35,6 +36,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
 
   // ------- Star index --------
   int starIndex = 0;
+  int selectedIndex = 0;
 
   List<String> photoList = [
     "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -120,6 +122,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                   animateToClosest: true,
                 ),
               ),
+
               Center(
                 child: AnimatedSmoothIndicator(
                   activeIndex: currentPage,
@@ -149,9 +152,24 @@ class _EventDetailModelState extends State<EventDetailModel> {
                         ),
                       ),
                     ),
-                    circleIcon(Icons.share),
-                    SizedBox(width: 10),
-                    circleIcon(Icons.bookmark_outline),
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.remove_red_eye_outlined,
+                          size: 20,
+                          color: MyColor().borderClr,
+                        ),
+                        SizedBox(width: 2),
+                        Text(
+                          "1234",
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: MyColor().blackClr,
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -185,1102 +203,711 @@ class _EventDetailModelState extends State<EventDetailModel> {
                     ),
                     Row(
                       children: [
-                        Icon(
-                          Icons.favorite_border,
-                          size: 18,
-                          color: MyColor().borderClr,
-                        ),
-                        SizedBox(width: 2),
-                        Text(
-                          "1234",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
+                        circleIcon(Icons.favorite_border),
+                        SizedBox(width: 10),
+                        circleIcon(Icons.share),
                       ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.remove_red_eye_outlined,
-                          size: 20,
-                          color: MyColor().borderClr,
-                        ),
-                        SizedBox(width: 2),
-                        Text(
-                          "1234",
-                          style: GoogleFonts.poppins(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
-                      ],
-                    ),
+                    )
                   ],
                 ),
               ),
 
-              // ------ Register Button ------
+              // ------ Event Details ------
               Center(
                 child: Container(
-                  width: 320,
-                  margin: EdgeInsets.only(top: 30, left: 16, right: 16),
-                  child: MyModels().customButton(
-                    onPressed: () {},
-                    title: "Register Now",
+                  margin: EdgeInsets.only(top: 20,left: 16,right: 16),
+                  decoration: BoxDecoration(
+                    color: MyColor().boxInnerClr,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
                   ),
-                ),
-              ),
-
-              // ------ Description ------
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16, top: 30),
-                child: Column(
-                  children: [
-                    Text(list['description'], maxLines: readMore ? null : 2),
-                    Align(
-                      alignment: AlignmentGeometry.topRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            readMore = !readMore;
-                          });
-                        },
-                        child: Text(
-                          readMore ? "Read less" : "Read more",
-                          style: const TextStyle(color: Colors.blue),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // -------- Event Begins ------
-
-              // ------ Venue & Ticket Details ---------
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Venue & Ticket Details",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: MyColor().blackClr,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 3),
-                            child: Icon(Iconsax.location_copy, size: 14),
-                          ),
-                          SizedBox(width: 5),
-                          Expanded(
-                            child: Text(
-                              "22nd, brindhavan avenue, Hall - A, saravanampatti, coimbatore.",
-                              style: GoogleFonts.poppins(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: MyColor().blackClr,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: MyColor().borderClr.withOpacity(
-                                    0.15,
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        tickerName(
-                                          title: 'Ticket Name',
-                                          icon: Iconsax.ticket,
-                                          backClr: MyColor().yellowClr,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          'Early bird registration',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: MyColor().blackClr,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          'Elite Registration',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: MyColor().blackClr,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: MyColor().borderClr.withOpacity(
-                                    0.15,
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        tickerName(
-                                          title: 'Price',
-                                          icon: Iconsax.ticket,
-                                          backClr: MyColor().redClr,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          '₹500',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: MyColor().blackClr,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          '₹500',
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: MyColor().blackClr,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: MyColor().borderClr.withOpacity(
-                                    0.15,
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      tickerName(
-                                        title: 'Timeline',
-                                        icon: Iconsax.clock,
-                                        backClr: MyColor().blueClr,
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        'Ends at 12/09',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: MyColor().blackClr,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        'Starts at 28/09',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: MyColor().blackClr,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: MyColor().borderClr.withOpacity(
-                                    0.15,
-                                  ),
-                                ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      tickerName(
-                                        title: 'Ticket Status',
-                                        icon: Iconsax.ticket,
-                                        backClr: MyColor().primaryClr,
-                                      ),
-                                      SizedBox(height: 5),
-                                      Text(
-                                        '₹500',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: MyColor().blackClr,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2),
-                                      Text(
-                                        '₹500',
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: MyColor().blackClr,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // -------- Event Host Details -------
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Event Host Details",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: MyColor().blackClr,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organization Name",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  list['org']['organizationName'],
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organizer Name",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "Nandhini J",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organizer Contact",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "+91 93455 67850",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organizer Department",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "B.Sc Computer Science",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 0,
-                  bottom: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organization Name",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "ECLearnix EdTech Private Limited",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organizer Name",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "Nandhini J",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organizer Contact",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "+91 93455 67850",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Organizer Department",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  "B.Sc Computer Science",
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // -------- Other Details ---------
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Other Details",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: MyColor().blackClr,
-                  ),
-                ),
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: 16,
-                      right: 0,
-                      top: 10,
-                      bottom: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: MyColor().boxInnerClr,
-                      border: Border.all(
-                        color: MyColor().borderClr.withOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Container(
-                      margin: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Perks",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                "• Awards",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Cash",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Certifications",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                "• Awards",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Cash",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: 16,
-                      right: 0,
-                      top: 10,
-                      bottom: 20,
-                    ),
-                    decoration: BoxDecoration(
-                      color: MyColor().boxInnerClr,
-                      border: Border.all(
-                        color: MyColor().borderClr.withOpacity(0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Container(
-                      margin: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Accommodations",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                "• Stay",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Washrooms",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Food",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Network",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Stay",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Washrooms",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                              Text(
-                                "• Food",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // --------- Discounts & Offers -------
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Discounts & Offers",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: MyColor().blackClr,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(16),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Iconsax.discount_circle),
-                      SizedBox(width: 5),
-                      Text(
-                        "Get 50% off on Elite tickets",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                          color: MyColor().blackClr,
-                        ),
-                      ),
+                      Expanded(child: customTabBar(title: 'Events Details', index: 0)),
+                      Expanded(child: customTabBar(title: 'Host Details', index: 1)),
                     ],
                   ),
                 ),
               ),
 
-              // --------- Tags ---------
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: Text(
-                  "Tags",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18,
-                    color: MyColor().blackClr,
-                  ),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(16),
-                  child: Wrap(
-                    children: List.generate(tags.length, (index) {
-                      return Container(
-                        margin: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
+             selectedIndex == 0 ? Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ------ Description ------
+                  Container(
+                    margin: EdgeInsets.only(left: 16, right: 16, top: 30),
+                    child: Column(
+                      children: [
+                        Text(list['description'], maxLines: readMore ? null : 2),
+                        Align(
+                          alignment: AlignmentGeometry.topRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                readMore = !readMore;
+                              });
+                            },
+                            child: Text(
+                              readMore ? "Read less" : "Read more",
+                              style: const TextStyle(color: Colors.blue),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(100),
                         ),
-                        padding: EdgeInsets.all(10),
-                        child: Text(tags[index]),
-                      );
-                    }),
+                      ],
+                    ),
                   ),
-                ),
-              ),
 
-              // --------- View Event Video --------
-              Container(
-                height: 48,
-                width: 360,
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(color: MyColor().primaryClr),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Iconsax.youtube, color: MyColor().primaryClr),
-                    Text(
-                      "View Event Video",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: MyColor().blackClr,
-                      ),
+                  // ------ Event video & website ---------
+                  Container(
+                    margin: EdgeInsets.only(left: 16,right: 16,top: 20),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Iconsax.youtube),
+                              Text('Youtube')
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(Iconsax.kyber_network_knc),
+                              Text('Website')
+                            ],
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Container(
+                          padding: EdgeInsets.only(left: 8,right: 8,top: 18,bottom: 18),
+                          decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Iconsax.map),
+                              Text('View Map Location')
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              Container(
-                height: 48,
-                width: 360,
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(bottom: 20, left: 16, right: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  border: Border.all(color: MyColor().primaryClr),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Iconsax.kyber_network_knc,
-                      color: MyColor().primaryClr,
-                    ),
-                    Text(
-                      "Visit Website",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: MyColor().blackClr,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // ---------- Follow -------
-              Container(
-                margin: EdgeInsets.only(
-                  left: 16,
-                  right: 16,
-                  top: 10,
-                  bottom: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: MyColor().boxInnerClr,
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
                   ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Container(
-                  margin: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+
+                  // ------ Ticket Details ---------
+                  Container(
+                    margin: EdgeInsets.only(
+                      top: 20,
+                      bottom: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: MyColor().boxInnerClr,
+                      border: Border.all(
+                        color: MyColor().borderClr.withOpacity(0.15),
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Container(
+                      margin: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Iconsax.instagram, color: Colors.red),
-                          Icon(Iconsax.instagram, color: Colors.red),
-                          Icon(Iconsax.instagram, color: Colors.red),
+
+                          // ------- Title -------
+                          Text(
+                            "Ticket Details",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              color: MyColor().blackClr,
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          // ---------- Grid view --------
+                          GridView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: 4,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              childAspectRatio: 1,
+                            ),
+                            itemBuilder: (context, index) {
+                              return Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: MyColor().blueClr.withOpacity(0.05),
+                                  border: Border.all(
+                                    color: MyColor().borderClr.withOpacity(0.15),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    tickerName(
+                                      title: 'Yet to start',
+                                      icon: Iconsax.ticket,
+                                      backClr: MyColor().yellowClr,
+                                    ),
+
+                                    const SizedBox(height: 6),
+
+                                    bulletText('Early bird registration',Iconsax.tag),
+                                    bulletText('500',Iconsax.tag),
+                                    bulletText('Ticket ends at 12/09',Iconsax.calendar),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      MyModels().customButton(
-                        onPressed: () {},
-                        title: "+ Follow",
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
 
-              // --------- Rate for Organizers Field -----
-              Container(
-                margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Rate for Organizers",
+
+                  // --------- Discounts & Offers -------
+                  Container(
+                    margin: EdgeInsets.only(left: 16, right: 16),
+                    child: Text(
+                      "Discounts & Offers",
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w600,
                         fontSize: 18,
                         color: MyColor().blackClr,
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => ReportPage()),
-                        );
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: MyColor().primaryClr.withOpacity(0.10),
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Iconsax.warning_2,
-                              color: MyColor().redClr,
-                            ),
-                            SizedBox(width: 5),
-                            Text(
-                              "Report Event",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12,
-                                color: MyColor().blackClr,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 10,
+                      bottom: 20,
                     ),
-                  ],
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(5, (index) {
-                  final isFilled = index < starIndex;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (starIndex == index + 1) {
-                          starIndex--;
-                        } else {
-                          starIndex = index + 1;
-                        }
-                      });
-                    },
+                    decoration: BoxDecoration(
+                      color: MyColor().boxInnerClr,
+                      border: Border.all(
+                        color: MyColor().borderClr.withOpacity(0.15),
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Container(
-                      margin: EdgeInsets.only(right: 5),
-                      child: Icon(
-                        isFilled ? Icons.star : Icons.star_border,
-                        color: isFilled
-                            ? MyColor().yellowClr
-                            : MyColor().borderClr,
-                        size: 30,
+                      margin: EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          Icon(Iconsax.discount_circle),
+                          SizedBox(width: 5),
+                          Text(
+                            "Get 50% off on Elite tickets",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                              color: MyColor().blackClr,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  );
-                }),
-              ),
-
-              // ----------- Review Field ----------
-              Container(
-                margin: EdgeInsets.only(bottom: 10, left: 16, right: 16),
-                child: MyModels().textFormFieldCommentLimited(
-                  context: context,
-                  label: '',
-                  hintText: 'Share Your Thoughts',
-                  valid: 'Please enter your ',
-                  controller: commentController,
-                  keyBoardType: TextInputType.multiline,
-                  textCapitalization: TextCapitalization.sentences,
-                  maxLines: 5,
-                  limit: 1500,
-                ),
-              ),
-
-              // ----- Send Button -----
-              Align(
-                alignment: AlignmentGeometry.topRight,
-                child: Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, bottom: 30),
-                  alignment: Alignment.center,
-                  height: 40,
-                  width: MediaQuery.of(context).size.width / 3,
-                  decoration: BoxDecoration(
-                    color: MyColor().primaryClr,
-                    borderRadius: BorderRadius.circular(100),
                   ),
-                  child: Text(
-                    "Send",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: MyColor().whiteClr,
-                      fontWeight: FontWeight.w500,
+
+                  // -------- Other Details ---------
+                  Container(
+                    margin: EdgeInsets.only(left: 16, right: 16),
+                    child: Text(
+                      "Other Details",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
                     ),
                   ),
-                ),
-              ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: 16,
+                          right: 0,
+                          top: 10,
+                          bottom: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: MyColor().boxInnerClr,
+                          border: Border.all(
+                            color: MyColor().borderClr.withOpacity(0.15),
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Container(
+                          margin: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Perks",
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: MyColor().blackClr,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Column(
+                                    children:List.generate(2, (index){
+                                      return Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.check_circle,
+                                            size: 16,
+                                            color: MyColor().greenClr,
+                                          ),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            "Awards",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: MyColor().borderClr,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Certifications",
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: MyColor().blackClr,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Column(
+                                    children:List.generate(2, (index){
+                                      return Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.check_rounded,
+                                            size: 16,
+                                            color: MyColor().greenClr,
+                                          ),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            "Awards",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: MyColor().borderClr,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: 16,
+                          right: 0,
+                          top: 10,
+                          bottom: 20,
+                        ),
+                        decoration: BoxDecoration(
+                          color: MyColor().boxInnerClr,
+                          border: Border.all(
+                            color: MyColor().borderClr.withOpacity(0.15),
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Container(
+                          margin: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Accommodations",
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: MyColor().blackClr,
+                                    ),
+                                  ),
+                                  SizedBox(height: 5),
+                                  Column(
+                                    children:List.generate(7, (index){
+                                      return Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.check_rounded,
+                                            size: 16,
+                                            color: MyColor().greenClr,
+                                          ),
+                                          SizedBox(width: 6),
+                                          Text(
+                                            "Awards",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: MyColor().borderClr,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // --------- Tags ---------
+                  Container(
+                    margin: EdgeInsets.only(left: 16, right: 16),
+                    child: Text(
+                      "Tags",
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 10,
+                      bottom: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: MyColor().boxInnerClr,
+                      border: Border.all(
+                        color: MyColor().borderClr.withOpacity(0.15),
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Container(
+                      margin: EdgeInsets.all(16),
+                      child: Wrap(
+                        children: List.generate(tags.length, (index) {
+                          return Container(
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              border: Border.all(
+                                color: MyColor().borderClr.withOpacity(0.15),
+                              ),
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            padding: EdgeInsets.all(10),
+                            child: Text(tags[index]),
+                          );
+                        }),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+                 : Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+
+                 SizedBox(height: 20,),
+
+                 // -------- Event Host Details -------
+                 Row(
+                   children: [
+                     Container(
+                       margin: EdgeInsets.only(left: 16, right: 16),
+                       child: Text(
+                         "Event Host Details",
+                         style: GoogleFonts.poppins(
+                           fontWeight: FontWeight.w600,
+                           fontSize: 18,
+                           color: MyColor().blackClr,
+                         ),
+                       ),
+                     ),
+                     Expanded(
+                       child: Container(
+                         margin: EdgeInsets.only(left: 16, right: 16, bottom: 0),
+                         alignment: Alignment.center,
+                         height: 40,
+                         decoration: BoxDecoration(
+                           color: MyColor().primaryClr,
+                           borderRadius: BorderRadius.circular(100),
+                         ),
+                         child: Text(
+                           "+ Follow",
+                           style: GoogleFonts.poppins(
+                             fontSize: 14,
+                             color: MyColor().whiteClr,
+                             fontWeight: FontWeight.w500,
+                           ),
+                         ),
+                       ),
+                     )
+                   ],
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.all(16),
+                   child: Column(
+                     children: List.generate(1, (index){
+                       return Container(
+                         margin: EdgeInsets.only(bottom: 20),
+                         child: Row(
+                           crossAxisAlignment: CrossAxisAlignment.start,
+                           children: [
+                             Expanded(
+                               child: _infoCard(
+                                 title: "Organization",
+                                 items: [
+                                   _infoRow(Iconsax.building,
+                                       "Avinashilingam Institute of Home science and Higher Education for Women"),
+                                   _infoRow(Iconsax.location,
+                                       "Coimbatore, Tamil Nadu, India"),
+                                 ],
+                               ),
+                             ),
+                             const SizedBox(width: 12),
+                             Expanded(
+                               child: _infoCard(
+                                 title: "Organizer",
+                                 items: [
+                                   _infoRow(Iconsax.profile_circle, "Vanisree M"),
+                                   _infoRow(Iconsax.call, "+91 98430 76340"),
+                                   _infoRow(
+                                       Iconsax.book, "B.Sc Computer Science"),
+                                 ],
+                               ),
+                             ),
+                           ],
+                         ),
+                       );
+                     }),
+                   ),
+                 ),
+
+                 // ------- Follow us on ------
+                 Container(
+                   margin: EdgeInsets.only(
+                     left: 16,
+                     right: 16,
+                     // top: 10,
+                     bottom: 20,
+                   ),
+                   decoration: BoxDecoration(
+                     color: MyColor().boxInnerClr,
+                     border: Border.all(
+                       color: MyColor().borderClr.withOpacity(0.15),
+                     ),
+                     borderRadius: BorderRadius.circular(8),
+                   ),
+                   child: Container(
+                     margin: EdgeInsets.all(16),
+                     child: Column(
+                       mainAxisAlignment: MainAxisAlignment.center,
+                       children: [
+                         Container(
+                           child: Row(
+                             mainAxisAlignment: MainAxisAlignment.center,
+                             children: [
+                               Text("Follow us on",style: GoogleFonts.poppins(
+                                 fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                               ),),
+                               SizedBox(width: 10),
+                               Row(
+                                 mainAxisAlignment: MainAxisAlignment.center,
+                                 children: [
+                                   Icon(Iconsax.instagram, color: Colors.red),
+                                   Icon(Iconsax.instagram, color: Colors.red),
+                                   Icon(Iconsax.instagram, color: Colors.red),
+                                 ],
+                               ),
+                             ],
+                           ),
+                         )
+                       ],
+                     ),
+                   ),
+                 ),
+
+                 // --------- Rate for Organizers Field -----
+                 Container(
+                   margin: EdgeInsets.only(left: 16, right: 16, bottom: 10),
+                   child: Text(
+                     "Rate for Organizers",
+                     style: GoogleFonts.poppins(
+                       fontWeight: FontWeight.w600,
+                       fontSize: 18,
+                       color: MyColor().blackClr,
+                     ),
+                   ),
+                 ),
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                   children: List.generate(5, (index) {
+                     final isFilled = index < starIndex;
+                     return GestureDetector(
+                       onTap: () {
+                         setState(() {
+                           if (starIndex == index + 1) {
+                             starIndex--;
+                           } else {
+                             starIndex = index + 1;
+                           }
+                         });
+                       },
+                       child: Container(
+                         margin: EdgeInsets.only(right: 5),
+                         child: Icon(
+                           isFilled ? Icons.star : Icons.star_border,
+                           color: isFilled
+                               ? MyColor().yellowClr
+                               : MyColor().borderClr,
+                           size: 30,
+                         ),
+                       ),
+                     );
+                   }),
+                 ),
+
+                 // ----------- Review Field ----------
+                 Container(
+                   margin: EdgeInsets.only(bottom: 10, left: 16, right: 16),
+                   child: MyModels().textFormFieldCommentLimited(
+                     context: context,
+                     label: '',
+                     hintText: 'Share Your Thoughts',
+                     valid: 'Please enter your ',
+                     controller: commentController,
+                     keyBoardType: TextInputType.multiline,
+                     textCapitalization: TextCapitalization.sentences,
+                     maxLines: 5,
+                     limit: 1500,
+                   ),
+                 ),
+
+                 // ----- Report & Send Button -----
+                 Container(
+                   margin: EdgeInsets.only(bottom: 30),
+                   child: Row(
+                     children: [
+                       Expanded(
+                         child: GestureDetector(
+                           onTap: (){
+                             Navigator.push(
+                               context,
+                               MaterialPageRoute(builder: (_) => ReportPage()),
+                             );
+                           },
+                           child: Container(
+                             margin: EdgeInsets.only(left: 16, right: 16,),
+                             alignment: Alignment.center,
+                             height: 40,
+                             decoration: BoxDecoration(
+                               color: MyColor().primaryBackgroundClr,
+                               borderRadius: BorderRadius.circular(100),
+                             ),
+                             child: Row(
+                               mainAxisAlignment: MainAxisAlignment.center,
+                               children: [
+                                 Icon(
+                                   Iconsax.warning_2,
+                                   color: MyColor().redClr,
+                                 ),
+                                 SizedBox(width: 5),
+                                 Text(
+                                   "Report Event",
+                                   style: GoogleFonts.poppins(
+                                     fontWeight: FontWeight.w500,
+                                     fontSize: 12,
+                                     color: MyColor().blackClr,
+                                   ),
+                                 ),
+                               ],
+                             ),
+                           ),
+                         ),
+                       ),
+                       Expanded(
+                         child: Container(
+                           margin: EdgeInsets.only(left: 16, right: 16, bottom: 0),
+                           alignment: Alignment.center,
+                           height: 40,
+                           decoration: BoxDecoration(
+                             color: MyColor().primaryClr,
+                             borderRadius: BorderRadius.circular(100),
+                           ),
+                           child: Text(
+                             "Send",
+                             style: GoogleFonts.poppins(
+                               fontSize: 14,
+                               color: MyColor().whiteClr,
+                               fontWeight: FontWeight.w500,
+                             ),
+                           ),
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+
+               ],
+             ),
             ],
           );
         } else if (eventDetailState is EventDetailFail) {
@@ -1317,6 +944,129 @@ class _EventDetailModelState extends State<EventDetailModel> {
       },
     );
   }
+
+  // --------- Custom Tab Bar --------------
+  Widget customTabBar({required String title, required int index}){
+    final selectedValue = selectedIndex == index;
+    return GestureDetector(
+      onTap: (){
+        setState(() {
+          selectedIndex = index;
+        });
+      },
+      child: Container(
+        padding: EdgeInsets.all(10),
+        margin: EdgeInsets.all(5),
+        alignment: AlignmentGeometry.center,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: !selectedValue ? MyColor().boxInnerClr : MyColor().blueClr.withOpacity(0.15)
+        ),
+        child: Text(title,style: GoogleFonts.poppins(
+            fontSize: 12,fontWeight: FontWeight.w600,color: MyColor().blackClr
+        ),),
+      ),
+    );
+  }
+
+  Widget bulletText(String text, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 4),
+            padding: EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: MyColor().boxInnerClr,
+              shape: BoxShape.circle
+            ),
+            child: Icon(icon,size: 10,color: MyColor().primaryClr,),
+          ),
+          const SizedBox(width: 6),
+
+          Expanded(
+            child: Text(
+              text,
+              // overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: MyColor().blackClr,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _infoCard({
+    required String title,
+    required List<Widget> items,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: MyColor().boxInnerClr,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          ...items,
+        ],
+      ),
+    );
+  }
+
+  Widget _infoRow(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: MyColor().primaryClr.withOpacity(0.15),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              icon,
+              size: 10,
+              color: MyColor().primaryClr,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey.shade700,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
 
 // --------- Fav & Add to cart Icon ---------
@@ -1341,15 +1091,15 @@ Widget colorLabel({
   return Container(
     padding: EdgeInsets.all(8),
     decoration: BoxDecoration(
-      color: color.withOpacity(0.15),
+      color: color.withOpacity(0.10),
       borderRadius: BorderRadius.circular(44),
-      border: Border.all(color: borderColor),
+      // border: Border.all(color: borderColor),
     ),
     child: Text(
       text,
       style: GoogleFonts.poppins(
         fontWeight: FontWeight.w500,
-        fontSize: 12,
+        fontSize: 10,
         color: MyColor().blackClr,
       ),
     ),
@@ -1365,20 +1115,15 @@ Widget tickerName({
   return Row(
     children: [
       Container(
+        padding: EdgeInsets.only(top: 2,bottom: 2,left: 5,right: 5),
         decoration: BoxDecoration(
           color: backClr.withOpacity(0.15),
-          shape: BoxShape.circle,
-          border: Border.all(color: backClr, width: 0.5),
+          borderRadius: BorderRadius.circular(8)
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(5.0),
-          child: Icon(icon, size: 12, color: backClr),
+        child: Text(
+          title,
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12),
         ),
-      ),
-      SizedBox(width: 5),
-      Text(
-        title,
-        style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12),
       ),
     ],
   );
@@ -1390,30 +1135,34 @@ Widget eventDetailShimmer() {
     children: [
 
       // -------- Carousel --------
-      Container(
-        margin: const EdgeInsets.all(16),
-        height: 180,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: MyColor().sliderDotClr,
-          borderRadius: BorderRadius.circular(12),
+      Shimmer(
+        child: Container(
+          margin: const EdgeInsets.all(16),
+          height: 180,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: MyColor().sliderDotClr,
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       ),
 
       // -------- Indicator --------
-      Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            5,
-                (_) => Padding(
-              padding: const EdgeInsets.all(4),
-              child: Container(
-                height: 10,
-                width: 10,
-                decoration: BoxDecoration(
-                  color: MyColor().sliderDotClr,
-                  shape: BoxShape.circle,
+      Shimmer(
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              5,
+                  (_) => Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  height: 10,
+                  width: 10,
+                  decoration: BoxDecoration(
+                    color: MyColor().sliderDotClr,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             ),
@@ -1422,176 +1171,192 @@ Widget eventDetailShimmer() {
       ),
 
       // -------- Title + Icons --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                height: 18,
-                decoration: BoxDecoration(
-                  color: MyColor().sliderDotClr,
-                  borderRadius: BorderRadius.circular(4),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: MyColor().sliderDotClr,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              height: 28,
-              width: 28,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                shape: BoxShape.circle,
+              const SizedBox(width: 10),
+              Container(
+                height: 28,
+                width: 28,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Container(
-              height: 28,
-              width: 28,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                shape: BoxShape.circle,
+              const SizedBox(width: 8),
+              Container(
+                height: 28,
+                width: 28,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  shape: BoxShape.circle,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
 
       // -------- Labels --------
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          children: [
-            Container(
-              height: 20,
-              width: 70,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(8),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              Container(
+                height: 20,
+                width: 70,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              height: 20,
-              width: 60,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(8),
+              const SizedBox(width: 10),
+              Container(
+                height: 20,
+                width: 60,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              height: 20,
-              width: 50,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(8),
+              const SizedBox(width: 10),
+              Container(
+                height: 20,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(8),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
 
       // -------- Register Button --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          height: 48,
-          decoration: BoxDecoration(
-            color: MyColor().sliderDotClr,
-            borderRadius: BorderRadius.circular(100),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            height: 48,
+            decoration: BoxDecoration(
+              color: MyColor().sliderDotClr,
+              borderRadius: BorderRadius.circular(100),
+            ),
           ),
         ),
       ),
 
       // -------- Description --------
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            Container(
-              height: 12,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Container(
-              height: 12,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(4),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Container(
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Container(
                 height: 12,
-                width: 70,
                 decoration: BoxDecoration(
                   color: MyColor().sliderDotClr,
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Container(
+                height: 12,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  height: 12,
+                  width: 70,
+                  decoration: BoxDecoration(
+                    color: MyColor().sliderDotClr,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
 
       const SizedBox(height: 20),
 
       // -------- Venue --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          height: 160,
-          decoration: BoxDecoration(
-            color: MyColor().sliderDotClr,
-            borderRadius: BorderRadius.circular(8),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            height: 160,
+            decoration: BoxDecoration(
+              color: MyColor().sliderDotClr,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
       ),
 
       // -------- Host --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          height: 140,
-          decoration: BoxDecoration(
-            color: MyColor().sliderDotClr,
-            borderRadius: BorderRadius.circular(8),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            height: 140,
+            decoration: BoxDecoration(
+              color: MyColor().sliderDotClr,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
       ),
 
       // -------- Discount --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: MyColor().sliderDotClr,
-            borderRadius: BorderRadius.circular(8),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            height: 60,
+            decoration: BoxDecoration(
+              color: MyColor().sliderDotClr,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
       ),
 
       // -------- Tags --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: List.generate(
-            6,
-                (_) => Container(
-              height: 32,
-              width: 80,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(100),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: List.generate(
+              6,
+                  (_) => Container(
+                height: 32,
+                width: 80,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(100),
+                ),
               ),
             ),
           ),
@@ -1599,45 +1364,49 @@ Widget eventDetailShimmer() {
       ),
 
       // -------- Buttons --------
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          children: [
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(100),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            children: [
+              Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(100),
+                ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              height: 48,
-              decoration: BoxDecoration(
-                color: MyColor().sliderDotClr,
-                borderRadius: BorderRadius.circular(100),
+              const SizedBox(height: 10),
+              Container(
+                height: 48,
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr,
+                  borderRadius: BorderRadius.circular(100),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
 
       const SizedBox(height: 20),
 
       // -------- Rating --------
-      Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(
-            5,
-                (_) => Padding(
-              padding: const EdgeInsets.all(4),
-              child: Container(
-                height: 30,
-                width: 30,
-                decoration: BoxDecoration(
-                  color: MyColor().sliderDotClr,
-                  shape: BoxShape.circle,
+      Shimmer(
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              5,
+                  (_) => Padding(
+                padding: const EdgeInsets.all(4),
+                child: Container(
+                  height: 30,
+                  width: 30,
+                  decoration: BoxDecoration(
+                    color: MyColor().sliderDotClr,
+                    shape: BoxShape.circle,
+                  ),
                 ),
               ),
             ),
@@ -1646,28 +1415,32 @@ Widget eventDetailShimmer() {
       ),
 
       // -------- Comment Box --------
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          height: 100,
-          decoration: BoxDecoration(
-            color: MyColor().sliderDotClr,
-            borderRadius: BorderRadius.circular(8),
+      Shimmer(
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Container(
+            height: 100,
+            decoration: BoxDecoration(
+              color: MyColor().sliderDotClr,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
       ),
 
       // -------- Send Button --------
-      Align(
-        alignment: Alignment.centerRight,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 16, bottom: 30),
-          child: Container(
-            height: 40,
-            width: 120,
-            decoration: BoxDecoration(
-              color: MyColor().sliderDotClr,
-              borderRadius: BorderRadius.circular(100),
+      Shimmer(
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16, bottom: 30),
+            child: Container(
+              height: 40,
+              width: 120,
+              decoration: BoxDecoration(
+                color: MyColor().sliderDotClr,
+                borderRadius: BorderRadius.circular(100),
+              ),
             ),
           ),
         ),
@@ -1675,4 +1448,5 @@ Widget eventDetailShimmer() {
     ],
   );
 }
+
 

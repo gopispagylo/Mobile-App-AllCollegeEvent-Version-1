@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/screens/home/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/HomeModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -24,6 +25,8 @@ class _HomePageState extends State<HomePage> {
         providers: [
           BlocProvider(
             create: (context) => TrendingEventListBloc(apiController: ApiController())..add(FetchTrendingEventList()),
+          ), BlocProvider(
+            create: (context) => CategoriesBloc(apiController: ApiController())..add(FetchCategories()),
           ),
         ],
           child: Scaffold(

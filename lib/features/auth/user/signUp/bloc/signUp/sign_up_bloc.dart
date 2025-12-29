@@ -27,12 +27,10 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           "type": event.type,
           'platform' : "mobile"
         };
-        print("SignUpBlocSignUpBlocSignUpBlocSignUpBlocSignUpBlocSignUpBloc$parameter");
 
         // Initial set base url
         await apiController.setBaseUrl();
         final response = await apiController.postMethod(endPoint: "auth/signup", data: parameter);
-        print("SignUpBlocSignUpBlocSignUpBlocSignUpBlocSignUpBlocSignUpBloc$response");
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){

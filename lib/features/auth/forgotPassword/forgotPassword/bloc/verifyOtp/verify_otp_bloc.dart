@@ -34,7 +34,8 @@ class VerifyOtpBloc extends Bloc<VerifyOtpEvent, VerifyOtpState> {
         }
       }on DioException catch(e){
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(VerifyOtpFail(errorMessage: error));
       } catch(e){
         emit(VerifyOtpFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

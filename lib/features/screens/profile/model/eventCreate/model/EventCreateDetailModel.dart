@@ -39,15 +39,34 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
       children: [
 
         Container(
-          margin: EdgeInsets.only(left: 16,right: 16),
+          margin: EdgeInsets.only(left: 16,right: 16,top: 10),
           child: Row(
             children: [
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Organization Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -55,9 +74,28 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 0.1,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Event Details"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      )),
                     ),
                   ],
                 ),
@@ -65,9 +103,28 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
               Expanded(
                 child: Column(
                   children: [
-                    Icon(Icons.newspaper),
+                    Stack(
+                      alignment: AlignmentGeometry.center,
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                            value: 0.0,
+                            strokeWidth: 5,
+                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                          ),
+                        ),
+                        Icon(Icons.newspaper),
+                      ],
+                    ),
                     Container(
-                      child: Text(textAlign: TextAlign.center,"Media & Tickets"),
+                      margin: EdgeInsets.only(top: 5),
+                      child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
+                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                      ),),
                     ),
                   ],
                 ),
@@ -84,27 +141,29 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
         SizedBox(height: 5,),
 
         // ---------- Category -----
-        Container(
-          margin: EdgeInsets.only(left: 16,right: 16,bottom: selectAceCategories != null ? 20 : 0),
-          child: BlocBuilder<AceCategoriesBloc, AceCategoriesState>(
-                    builder: (context, aceCategoriesState) {
-                      if(aceCategoriesState is AceCategoriesLoading){
-                        return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                      } else if(aceCategoriesState is AceCategoriesSuccess){
-                        return SizedBox(
-                          width: 320,
-                          child: MyModels().customDropdown(label: "Category *", hint: "Select Event Category", value: selectAceCategories, onChanged: (category){
-                            setState(() {
-                              selectAceCategories = category;
-                            });
-                            context.read<EventTypeBloc>().add(ClickedEventType(identity: selectAceCategories!));
-                          }, items: aceCategoriesState.aceCategoriesList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['categoryName']))).toList(), valid: Validators().validOrgCategories),
-                        );
-                      } else if(aceCategoriesState is AceCategoriesFail){
-                        return Center(child: Text(aceCategoriesState.errorMessage),);
-                      } return SizedBox.shrink();
-                    },
-                  ),
+        Center(
+          child: Container(
+            margin: EdgeInsets.only(left: 16,right: 16,bottom: selectAceCategories != null ? 20 : 0),
+            child: BlocBuilder<AceCategoriesBloc, AceCategoriesState>(
+                      builder: (context, aceCategoriesState) {
+                        if(aceCategoriesState is AceCategoriesLoading){
+                          return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                        } else if(aceCategoriesState is AceCategoriesSuccess){
+                          return SizedBox(
+                            width: 320,
+                            child: MyModels().customDropdown(label: "Category *", hint: "Select Event Category", value: selectAceCategories, onChanged: (category){
+                              setState(() {
+                                selectAceCategories = category;
+                              });
+                              context.read<EventTypeBloc>().add(ClickedEventType(identity: selectAceCategories!));
+                            }, items: aceCategoriesState.aceCategoriesList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['categoryName']))).toList(), valid: Validators().validOrgCategories),
+                          );
+                        } else if(aceCategoriesState is AceCategoriesFail){
+                          return Center(child: Text(aceCategoriesState.errorMessage),);
+                        } return SizedBox.shrink();
+                      },
+                    ),
+          ),
         ),
 
         // ------ event type -----
@@ -221,56 +280,58 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
         ),
 
         // ------ tags list ------
-        BlocBuilder<SearchableKeyBloc, SearchableKeyState>(
-          builder: (context, state) {
-            if(state is SearchableKeyLoading){
-              return Center(child: CircularProgressIndicator(),);
-            }
-            if(state is AddSuccess){
-              return Container(
-                margin: EdgeInsets.only(left: 16, right: 16,top: 20),
-                child: Wrap(
-                  runSpacing: 5,
-                  spacing: 5,
-                  children: List.generate(state.searchableKeyList.length, (index){
-                    return Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(right: 5,bottom: 5),
-                        decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(state.searchableKeyList[index], style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                  fontFamily: "Sora"
-                              )),
-                              SizedBox(width: 20,),
-                              GestureDetector(
-                                onTap: (){
-                                  context.read<SearchableKeyBloc>().add(RemoveClickSearchableKey(index: index));
-                                },
-                                child: Icon(
-                                  Iconsax.close_circle, color: MyColor().redClr,
-                                  size: 25,),
-                              ),
-                            ],
+        Center(
+          child: BlocBuilder<SearchableKeyBloc, SearchableKeyState>(
+            builder: (context, state) {
+              if(state is SearchableKeyLoading){
+                return Center(child: CircularProgressIndicator(),);
+              }
+              if(state is AddSuccess){
+                return Container(
+                  margin: EdgeInsets.only(left: 16, right: 16,top: 20),
+                  child: Wrap(
+                    runSpacing: 5,
+                    spacing: 5,
+                    children: List.generate(state.searchableKeyList.length, (index){
+                      return Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(right: 5,bottom: 5),
+                          decoration: BoxDecoration(
+                            color: MyColor().boxInnerClr,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(state.searchableKeyList[index], style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    fontFamily: "Sora"
+                                )),
+                                SizedBox(width: 20,),
+                                GestureDetector(
+                                  onTap: (){
+                                    context.read<SearchableKeyBloc>().add(RemoveClickSearchableKey(index: index));
+                                  },
+                                  child: Icon(
+                                    Iconsax.close_circle, color: MyColor().redClr,
+                                    size: 25,),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
-                ),
-              );
-            }
-            return Container();
-          },
+                      );
+                    }),
+                  ),
+                );
+              }
+              return Container();
+            },
+          ),
         ),
 
         // ----- Event Title ------
@@ -279,9 +340,11 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
         SizedBox(height: 20,),
 
         // ------ about the event -------
-        Container(
-            margin: EdgeInsets.only(left: 16,right: 16),
-            child: MyModels().textFormFieldCommentLimited(context: context, label: "About the Event*", hintText: "About the Event", valid: "Please enter about the event", controller: aboutController, keyBoardType: TextInputType.text, textCapitalization: TextCapitalization.sentences, maxLines: 10, limit: 1000)),
+        Center(
+          child: Container(
+              margin: EdgeInsets.only(left: 16,right: 16),
+              child: MyModels().textFormFieldCommentLimited(context: context, label: "About the Event*", hintText: "About the Event", valid: "Please enter about the event", controller: aboutController, keyBoardType: TextInputType.text, textCapitalization: TextCapitalization.sentences, maxLines: 10, limit: 1000)),
+        ),
 
         // ------- back & Continue -------
         Container(
