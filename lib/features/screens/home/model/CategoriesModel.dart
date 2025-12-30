@@ -1,4 +1,4 @@
-import 'package:all_college_event_app/features/screens/home/bloc/categories/categories_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -127,18 +127,45 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
       scrollDirection: Axis.horizontal,
       child: Row(
         children: List.generate(6, (index) {
-          return Shimmer(
-            child: Container(
-              margin: EdgeInsets.only(
-                left: 16,
-                right: index == 5 ? 16 : 0,
-                top: 15,
-              ),
-              height: 104,
-              width: 104,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                color: MyColor().sliderDotClr,
+          return Container(
+            margin: EdgeInsets.only(top: 20,left: 16,right: index == 6 - 1 ? 16 : 0),
+            height: 104,
+            width: 104,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Colors.white,
+              border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Icon placeholder
+                  Shimmer(
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        color: MyColor().sliderDotClr,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Text placeholder
+                  Shimmer(
+                    child: Container(
+                      height: 10,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        color: MyColor().sliderDotClr,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           );

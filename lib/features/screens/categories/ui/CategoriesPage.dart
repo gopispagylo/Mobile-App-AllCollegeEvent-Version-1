@@ -1,7 +1,9 @@
-
+import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/screens/categories/model/GridViewModel.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoriesPage extends StatefulWidget {
   const CategoriesPage({super.key});
@@ -19,7 +21,10 @@ class _CategoriesPageState extends State<CategoriesPage> {
         backgroundColor: MyColor().whiteClr,
         toolbarHeight: 0,
       ),
-      body: GridViewModel(),
+      body: BlocProvider(
+        create: (context) => CategoriesBloc(apiController: ApiController())..add(FetchCategories()),
+        child: GridViewModel(),
+      ),
     );
   }
 }

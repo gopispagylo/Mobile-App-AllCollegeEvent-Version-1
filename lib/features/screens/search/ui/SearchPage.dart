@@ -1,5 +1,9 @@
+import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/screens/search/bloc/searchEventListBloc/search_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/search/model/SearchModel.dart';
+import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,7 +16,12 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SearchModel(),
+      backgroundColor: MyColor().whiteClr,
+      appBar: AppBar(toolbarHeight: 0, backgroundColor: MyColor().whiteClr),
+      body: BlocProvider(
+        create: (context) => SearchEventListBloc(apiController: ApiController())..add(FetchSearchEventList()),
+        child: SearchModel(),
+      ),
     );
   }
 }

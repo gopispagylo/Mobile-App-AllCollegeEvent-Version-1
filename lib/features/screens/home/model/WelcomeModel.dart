@@ -125,19 +125,6 @@ class _WelcomeModelState extends State<WelcomeModel> {
                       ),
                     ),
                     prefixIcon: Icon(Icons.search, size: 18),
-                    suffixIcon: GestureDetector(
-                      onTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: MyColor().locationClr,
-                            borderRadius: BorderRadius.circular(100),
-                          ),
-                          child: Icon(Icons.tune, size: 18),
-                        ),
-                      ),
-                    ),
                     hintText: "Search Events",
                     hintStyle: GoogleFonts.poppins(
                       fontWeight: FontWeight.w400,

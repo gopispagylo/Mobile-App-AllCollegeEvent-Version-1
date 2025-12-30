@@ -4,6 +4,7 @@ import 'package:all_college_event_app/data/controller/DeepLinkService/DeepLinkSe
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreenPage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
+import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -52,6 +53,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  // ----- global unfocused the keyboard -----
+  @override
+  void dispose() {
+    GlobalUnFocus.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

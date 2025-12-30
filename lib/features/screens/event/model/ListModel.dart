@@ -1,6 +1,5 @@
 
 import 'package:all_college_event_app/features/screens/event/bloc/eventListBloc/event_list_bloc.dart';
-import 'package:all_college_event_app/features/screens/event/model/EventDetailModel.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
