@@ -1,8 +1,8 @@
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
-import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/chooseStateBloc/choose_state_bloc.dart';
-import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/cityBloc/city_bloc.dart';
-import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/ui/AccountCreationPage.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/chooseStateBloc/choose_state_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/cityBloc/city_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
@@ -344,6 +344,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
 ),
 
                 SizedBox(height: 20,),
+
                 // ------- city dropdown --------
                 BlocBuilder<CityBloc, CityState>(
   builder: (context, cityState) {

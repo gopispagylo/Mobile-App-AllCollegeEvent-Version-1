@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Validators {
@@ -6,7 +5,9 @@ class Validators {
     if (value == null || value.isEmpty) {
       return "Please enter your email";
     }
-    if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value)) {
+    if (!RegExp(
+      r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+    ).hasMatch(value)) {
       return 'Invalid email address';
     }
     return null;
@@ -16,7 +17,9 @@ class Validators {
     if (value == null || value.isEmpty) {
       return "Please enter your phone(whatsapp)";
     }
-    if (!RegExp(r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$').hasMatch(value)) {
+    if (!RegExp(
+      r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+    ).hasMatch(value)) {
       return 'Invalid email address';
     }
     return null;
@@ -26,7 +29,9 @@ class Validators {
     if (value == null || value.isEmpty) {
       return "Please enter your phone(alternate)";
     }
-    if (!RegExp(r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$').hasMatch(value)) {
+    if (!RegExp(
+      r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+    ).hasMatch(value)) {
       return 'Invalid email address';
     }
     return null;
@@ -52,189 +57,210 @@ class Validators {
     return null;
   }
 
-  String? validFirstname (String? value) {
+  String? validFirstname(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your first name";
     }
     return null;
   }
 
-  String? validLastname (String? value) {
+  String? validLastname(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your last name";
     }
     return null;
   }
 
-  String? validPayment (String? value) {
+  String? validPayment(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your payment";
     }
     return null;
   }
 
-  String? validName (String? value) {
+  String? validName(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your name";
     }
     return null;
   }
-  String? validTicketName (String? value) {
+
+  String? validTicketName(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your ticker name";
     }
     return null;
   }
-  String? validAmount (String? value) {
+
+  String? validAmount(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your amount";
     }
     return null;
-  } String? validDescription (String? value) {
+  }
+
+  String? validDescription(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your description";
     }
     return null;
   }
 
-  String? validTitle (String? value) {
+  String? validTitle(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter title";
     }
     return null;
   }
 
-
-  String? validDomainMail (String? value) {
+  String? validDomainMail(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your domain mail id";
     }
     return null;
   }
 
-  String? validPhone (String? value) {
+  String? validPhone(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your phone number";
     }
     return null;
   }
 
-  String? validAbout (String? value) {
+  String? validAbout(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your about the event";
     }
     return null;
   }
 
-  String? validPinPut (String? value) {
+  String? validPinPut(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your verified OTP";
     }
     return null;
   }
-  String? validCountry (String? value) {
-    if (value == null || value.isEmpty) {
-      return "Please select your country";
-    }
-    return null;
-  }String? validState (String? value) {
+
+  String? validCountry(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your country";
     }
     return null;
   }
 
-  String? validCity (String? value) {
+  String? validState(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your country";
     }
     return null;
   }
 
-  String? validOrgCategories (String? value) {
+  String? validCity(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your country";
+    }
+    return null;
+  }
+
+  String? validOrgCategories(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your organization category";
     }
     return null;
   }
 
-  String? validPerks (String? value) {
+  String? validPerks(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your perks";
     }
     return null;
   }
-  String? validCertification (String? value) {
+
+  String? validCertification(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your certification";
     }
     return null;
-  } String? validTotalCount (String? value) {
+  }
+
+  String? validTypeOfEvents(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your type of events";
+    }
+    return null;
+  }
+
+  String? validTotalCount(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your total count";
     }
     return null;
-  } String? validAccommodation (String? value) {
+  }
+
+  String? validAccommodation(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your accommodation";
     }
     return null;
   }
 
-  String? validOrgDepartment (String? value) {
+  String? validOrgDepartment(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your organization department";
     }
     return null;
   }
 
-  String? validTimeZone (String? value) {
+  String? validTimeZone(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your time zone";
     }
     return null;
   }
 
-  String? validEligibleDepartment (String? value) {
+  String? validEligibleDepartment(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your eligible department";
     }
     return null;
   }
 
-  String? validOrganizationName (String? value) {
-    if (value == null || value.isEmpty) {
-      return "Please select your organization name";
-    }
-    return null;
-  }
-  String? validOrganizationPhone (String? value) {
+  String? validOrganizationName(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your organization name";
     }
     return null;
   }
 
-  String? validLocation (String? value) {
+  String? validOrganizationPhone(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your organization name";
+    }
+    return null;
+  }
+
+  String? validLocation(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your location";
     }
     return null;
   }
-
 }
 
-
-
 class ImageLoader {
-  Widget build(BuildContext context, Widget? child, ImageChunkEvent? loadingProgress) {
+  Widget build(
+    BuildContext context,
+    Widget? child,
+    ImageChunkEvent? loadingProgress,
+  ) {
     if (loadingProgress == null) {
       return child ?? const SizedBox();
     } else {
       return Center(
         child: CircularProgressIndicator(
           value: loadingProgress.expectedTotalBytes != null
-              ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+              ? loadingProgress.cumulativeBytesLoaded /
+                    (loadingProgress.expectedTotalBytes ?? 1)
               : null,
         ),
       );

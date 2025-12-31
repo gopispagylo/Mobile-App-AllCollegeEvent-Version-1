@@ -49,7 +49,6 @@ class _ListModelState extends State<ListModel> {
                   final title = list['title'] ?? "No title";
                   final featuredImagePath = list['bannerImage'] ?? '';
 
-                  print("featuredImagePathfeaturedImagePathfeaturedImagePath$featuredImagePath");
 
                   // ------ date format -------
                   final rawDate = list['eventDate']?.toString() ?? "";

@@ -1,8 +1,8 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
-import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/chooseStateBloc/choose_state_bloc.dart';
-import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/cityBloc/city_bloc.dart';
-import 'package:all_college_event_app/features/auth/organizer/signUp/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/features/auth/organizer/signUp/model/OrganizationDetailModel.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/chooseStateBloc/choose_state_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/cityBloc/city_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
