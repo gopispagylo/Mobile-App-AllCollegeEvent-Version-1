@@ -3,11 +3,13 @@ import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBlo
 import 'package:all_college_event_app/features/screens/report/ui/ReportPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -38,13 +40,6 @@ class _EventDetailModelState extends State<EventDetailModel> {
   int starIndex = 0;
   int selectedIndex = 0;
 
-  List<String> photoList = [
-    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  ];
-
   final descriptionText =
       "Mathematics is one of the most essential subjects for developing logical thinking, analytical skills, and structured problem-solving abilities. A strong foundation in mathematics helps students understand patterns, build reasoning skills, and apply concepts to real-life situations.";
 
@@ -59,6 +54,12 @@ class _EventDetailModelState extends State<EventDetailModel> {
     "#internationalconf",
     "#internationalconf",
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    print("sghkghdfgdfhgdhjhjghgfhjghdfgh${widget.identity}");
+  }
 
   @override
   void dispose() {
@@ -78,12 +79,12 @@ class _EventDetailModelState extends State<EventDetailModel> {
             children: [
               // --------- Carousel Slider ------
               CarouselSlider.builder(
-                itemCount: photoList.length,
+                itemCount: list['bannerImages'].length,
                 itemBuilder: (BuildContext context, index, realIndex) {
-                  final sliderList = photoList[index];
+                  final sliderList = list['bannerImages'][index];
                   return GestureDetector(
                     onTap: () {
-                      // print("sliderListsliderListsliderListsliderListsliderList${sliderList['id']}");
+
                     },
                     child: Container(
                       margin: EdgeInsets.only(
@@ -99,7 +100,15 @@ class _EventDetailModelState extends State<EventDetailModel> {
                         ),
                       ),
                       clipBehavior: Clip.antiAlias,
-                      child: Image.network(sliderList, fit: BoxFit.cover),
+                      child: CachedNetworkImage(
+                        imageUrl: sliderList,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(color: MyColor().primaryClr,),
+                        ),
+                        errorWidget: (context, url, error) => const Icon(Icons.image_not_supported),
+                      ),
+
                     ),
                   );
                 },
@@ -110,7 +119,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                     });
                   },
                   enlargeCenterPage: true,
-                  autoPlay: false,
+                  autoPlay: true,
                   autoPlayCurve: Curves.fastOutSlowIn,
                   enableInfiniteScroll: true,
                   autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -126,7 +135,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
               Center(
                 child: AnimatedSmoothIndicator(
                   activeIndex: currentPage,
-                  count: photoList.length,
+                  count: list['bannerImages'].length,
                   effect: WormEffect(
                     dotHeight: 12,
                     dotWidth: 12,
@@ -262,6 +271,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                   Container(
                     margin: EdgeInsets.only(left: 16,right: 16,top: 20),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           padding: EdgeInsets.all(8),
@@ -348,7 +358,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                           GridView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 4,
+                            itemCount: list['tickets'].length,
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 2,
                               crossAxisSpacing: 10,
@@ -356,6 +366,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                               childAspectRatio: 1,
                             ),
                             itemBuilder: (context, index) {
+                              final ticket = list['tickets'][index];
                               return Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -371,16 +382,15 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                   children: [
 
                                     tickerName(
-                                      title: 'Yet to start',
+                                      title: ticket['name'],
                                       icon: Iconsax.ticket,
                                       backClr: MyColor().yellowClr,
                                     ),
 
                                     const SizedBox(height: 6),
-
-                                    bulletText('Early bird registration',Iconsax.tag),
-                                    bulletText('500',Iconsax.tag),
-                                    bulletText('Ticket ends at 12/09',Iconsax.calendar),
+                                    bulletText(ticket['description'],Iconsax.tag),
+                                    bulletText(ticket['price'].toString(),Iconsax.tag),
+                                    bulletText('Ticket ends at ${DateFormat('dd/MM').format(DateTime.parse(ticket['sellingTo']))}',Iconsax.calendar),
                                   ],
                                 ),
                               );
@@ -484,7 +494,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                   ),
                                   SizedBox(height: 5),
                                   Column(
-                                    children:List.generate(2, (index){
+                                    children:List.generate(list['eventPerks'].length, (index){
                                       return Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -495,7 +505,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                           ),
                                           SizedBox(width: 6),
                                           Text(
-                                            "Awards",
+                                            list['eventPerks'][index]['perk']['perkName'] ?? '',
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: MyColor().borderClr,
@@ -521,29 +531,25 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                     ),
                                   ),
                                   SizedBox(height: 5),
-                                  Column(
-                                    children:List.generate(2, (index){
-                                      return Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Icons.check_rounded,
-                                            size: 16,
-                                            color: MyColor().greenClr,
-                                          ),
-                                          SizedBox(width: 6),
-                                          Text(
-                                            "Awards",
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              color: MyColor().borderClr,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                  ),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Icon(
+                                        Icons.check_rounded,
+                                        size: 16,
+                                        color: MyColor().greenClr,
+                                      ),
+                                      SizedBox(width: 6),
+                                      Text(
+                                        list['cert']['certName'] ?? '',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          color: MyColor().borderClr,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  )
                                 ],
                               ),
                             ],
@@ -582,7 +588,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                   ),
                                   SizedBox(height: 5),
                                   Column(
-                                    children:List.generate(7, (index){
+                                    children:List.generate(list['eventAccommodations'].length, (index){
                                       return Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
@@ -593,7 +599,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                           ),
                                           SizedBox(width: 6),
                                           Text(
-                                            "Awards",
+                                            list['eventAccommodations'][index]['accommodation']['accommodationName'] ?? '',
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: MyColor().borderClr,
@@ -642,7 +648,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                     child: Container(
                       margin: EdgeInsets.all(16),
                       child: Wrap(
-                        children: List.generate(tags.length, (index) {
+                        children: List.generate(list['tags'].length, (index) {
                           return Container(
                             margin: EdgeInsets.all(5),
                             decoration: BoxDecoration(
@@ -653,7 +659,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                               borderRadius: BorderRadius.circular(100),
                             ),
                             padding: EdgeInsets.all(10),
-                            child: Text(tags[index]),
+                            child: Text("#${list['tags'][index] ?? ''}"),
                           );
                         }),
                       ),
@@ -705,7 +711,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                  Padding(
                    padding: const EdgeInsets.all(16),
                    child: Column(
-                     children: List.generate(1, (index){
+                     children: List.generate(list['Collaborator'].length, (index){
                        return Container(
                          margin: EdgeInsets.only(bottom: 20),
                          child: Row(
@@ -716,9 +722,9 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                  title: "Organization",
                                  items: [
                                    _infoRow(Iconsax.building,
-                                       "Avinashilingam Institute of Home science and Higher Education for Women"),
+                                       list['Collaborator'][index]['member']['organizationName']),
                                    _infoRow(Iconsax.location,
-                                       "Coimbatore, Tamil Nadu, India"),
+                                       list['Collaborator'][index]['member']['location']),
                                  ],
                                ),
                              ),
@@ -727,10 +733,10 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                child: _infoCard(
                                  title: "Organizer",
                                  items: [
-                                   _infoRow(Iconsax.profile_circle, "Vanisree M"),
-                                   _infoRow(Iconsax.call, "+91 98430 76340"),
+                                   _infoRow(Iconsax.profile_circle, list['Collaborator'][index]['member']['organizerName']),
+                                   _infoRow(Iconsax.call, list['Collaborator'][index]['member']['organizerNumber']),
                                    _infoRow(
-                                       Iconsax.book, "B.Sc Computer Science"),
+                                       Iconsax.book, list['Collaborator'][index]['member']['orgDept']),
                                  ],
                                ),
                              ),
@@ -826,18 +832,20 @@ class _EventDetailModelState extends State<EventDetailModel> {
                  ),
 
                  // ----------- Review Field ----------
-                 Container(
-                   margin: EdgeInsets.only(bottom: 10, left: 16, right: 16),
-                   child: MyModels().textFormFieldCommentLimited(
-                     context: context,
-                     label: '',
-                     hintText: 'Share Your Thoughts',
-                     valid: 'Please enter your ',
-                     controller: commentController,
-                     keyBoardType: TextInputType.multiline,
-                     textCapitalization: TextCapitalization.sentences,
-                     maxLines: 5,
-                     limit: 1500,
+                 Center(
+                   child: Container(
+                     margin: EdgeInsets.only(bottom: 10, left: 16, right: 16),
+                     child: MyModels().textFormFieldCommentLimited(
+                       context: context,
+                       label: '',
+                       hintText: 'Share Your Thoughts',
+                       valid: 'Please enter your ',
+                       controller: commentController,
+                       keyBoardType: TextInputType.multiline,
+                       textCapitalization: TextCapitalization.sentences,
+                       maxLines: 5,
+                       limit: 1500,
+                     ),
                    ),
                  ),
 

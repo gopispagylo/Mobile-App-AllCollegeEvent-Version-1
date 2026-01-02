@@ -33,10 +33,12 @@ class TrendingEventListBloc extends Bloc<TrendingEventListEvent, TrendingEventLi
             emit(TrendingEventListFail(errorMessage: responseBody['message']));
           }
         }
-
       }on DioException catch(e){
+
         // ------ error handle config --------
-        HandleErrorConfig().handleDioError(e);
+        final error = HandleErrorConfig().handleDioError(e);
+        emit(TrendingEventListFail(errorMessage: error));
+
       } catch(e){
         emit(TrendingEventListFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

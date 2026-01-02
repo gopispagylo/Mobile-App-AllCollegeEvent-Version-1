@@ -80,13 +80,11 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                         }
                       }
 
-                      print("object");
-
                       // ------ event mode ------
                       final eventMode = list['mode'];
 
                       // ------- image path ---------
-                      final featuredImage = list['bannerImage'];
+                      final featuredImage = list['bannerImages'][0] ?? '';
 
                       // -------- identity ---------
                       final identity = list['identity'];

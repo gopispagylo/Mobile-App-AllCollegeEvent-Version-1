@@ -52,10 +52,17 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
   ];
   
   // -------- dropdown value -------
-  String? selectOrgCategories;
+  String? selectOrganizationDepart;
+  String? selectHostBy;
+  String? selectEligibleDepart;
+
+  final List<String> eligibleList = [];
 
   // ------ Controllers -------
   final organizationNameController = TextEditingController();
+  final locationController = TextEditingController();
+  final organizerNumberController = TextEditingController();
+  final organizerNameController = TextEditingController();
 
 
   // ------- form global key -------
@@ -174,8 +181,10 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
                   } else if(orgCategoriesState is OrgCategoriesSuccess){
                    return SizedBox(
                      width: 320,
-                     child: MyModels().customDropdown(label: "Event Host By *", hint: "Select your Organization Category", value: selectOrgCategories, onChanged: (orgCategory){
-
+                     child: MyModels().customDropdown(label: "Event Host By *", hint: "Select your Organization Category", value: selectHostBy, onChanged: (hostBy){
+                       setState(() {
+                         selectHostBy = hostBy;
+                       });
                      }, items: orgCategoriesState.orgCategoriesList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['categoryName']))).toList(), valid: Validators().validOrgCategories),
                    );
                  } else if(orgCategoriesState is OrgCategoriesFail){
@@ -194,12 +203,16 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
           SizedBox(height: 20,),
 
           // ----- Location --------
-          MyModels().customTextField(label: "Location *", controller: organizationNameController, hintText: "Enter Organization Name", validator: Validators().validLocation, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false),
+          MyModels().customTextField(label: "Location *", controller: locationController, hintText: "Enter Organization Name", validator: Validators().validLocation, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false),
 
           SizedBox(height: 20,),
 
+          // ---------- Organizer Name --------
+          MyModels().customTextField(label: "Organizer Name *", controller: organizerNameController, hintText: "Phone number", validator: Validators().validOrganizationPhone, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false),
+
+          SizedBox(height: 20,),
           // ---------- Organizer Number --------
-          MyModels().customTextField(label: "Organizer Number *", controller: organizationNameController, hintText: "Phone number", validator: Validators().validOrganizationPhone, textInputType: TextInputType.text, textCapitalization: TextCapitalization.words, readOnly: false),
+          MyModels().customTextField(label: "Organizer Number *", controller: organizerNumberController, hintText: "Phone number", validator: Validators().validOrganizationPhone, textInputType: TextInputType.phone, textCapitalization: TextCapitalization.words, readOnly: false),
 
           SizedBox(height: 20,),
 
@@ -214,8 +227,10 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
                   } else if(orgCategoriesState is OrgCategoriesSuccess){
                     return SizedBox(
                       width: 320,
-                      child: MyModels().customDropdown(label: "Organization Department *", hint: "Select your Organization Department", value: selectOrgCategories, onChanged: (orgCategory){
-
+                      child: MyModels().customDropdown(label: "Organization Department *", hint: "Select your Organization Department", value: selectOrganizationDepart, onChanged: (organizationDep){
+                        setState(() {
+                          selectOrganizationDepart = organizationDep;
+                        });
                       }, items: orgDepartment.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['name']))).toList(), valid: Validators().validOrgDepartment),
                     );
                   } else if(orgCategoriesState is OrgCategoriesFail){
@@ -252,8 +267,10 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
                   } else if(orgCategoriesState is OrgCategoriesSuccess){
                     return SizedBox(
                       width: 320,
-                      child: MyModels().customDropdown(label: "Eligible Department *", hint: "Select Eligible Department", value: selectOrgCategories, onChanged: (orgCategory){
-
+                      child: MyModels().customDropdown(label: "Eligible Department *", hint: "Select Eligible Department", value: selectEligibleDepart, onChanged: (eligibleDep){
+                        setState(() {
+                          eligibleList.add(eligibleDep);
+                        });
                       }, items: orgDepartment.map((e)=> DropdownMenuItem<String>(value: e['code'],child: Text(e['name']))).toList(), valid: Validators().validEligibleDepartment),
                     );
                   } else if(orgCategoriesState is OrgCategoriesFail){
@@ -267,9 +284,17 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
           // ------- Continue -------
           GestureDetector(
             onTap: (){
-              // if(formKey.currentState!.validate()){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> EventCreateDetailPage()));
-              // }
+              if(formKey.currentState!.validate()){
+                Navigator.push(context, MaterialPageRoute(builder: (_)=> EventCreateDetailPage(orgDetailList: {
+                  'event_host_by' : selectHostBy,
+                  'org_name' : organizationNameController.text,
+                  'location' : locationController.text,
+                  'organizer_number' : organizerNumberController.text,
+                  'organizer_name' : organizerNumberController.text,
+                  'org_dep' : selectOrganizationDepart,
+                  'org_eligible_dep' : eligibleList,
+                  },)));
+              }
             },
             child: Align(
               alignment: AlignmentGeometry.topRight,

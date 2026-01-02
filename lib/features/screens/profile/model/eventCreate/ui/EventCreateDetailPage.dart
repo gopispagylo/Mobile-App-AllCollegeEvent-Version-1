@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EventCreateDetailPage extends StatefulWidget {
-  const EventCreateDetailPage({super.key});
+  final Map<String,dynamic> orgDetailList;
+
+  const EventCreateDetailPage({super.key, required this.orgDetailList});
 
   @override
   State<EventCreateDetailPage> createState() => _EventCreateDetailPageState();
@@ -43,7 +45,7 @@ class _EventCreateDetailPageState extends State<EventCreateDetailPage> {
             create: (context) => SearchableKeyBloc(),
           ),
         ],
-        child: EventCreateDetailModel(),
+        child: EventCreateDetailModel(orgDetailList: widget.orgDetailList,),
       ),
     );
   }

@@ -49,6 +49,15 @@ class ApiController {
     return response;
   }
 
+  // ---------- post a form data ----------
+  Future<Response> postMethodWithFormData({required String endPoint, required String token, required FormData data}) async{
+    final response = await dio.post(endPoint,data: data,options: Options(headers: {
+      "token" : token,
+      "Content-Type": "multipart/form-data",
+    }));
+    return response;
+  }
+
   // Get Method
   Future<Response> getMethod({required String endPoint,required String token, required Map<String,dynamic> data}) async{
     final response = await dio.get(endPoint,data: data,options: Options(

@@ -47,7 +47,7 @@ class _ListModelState extends State<ListModel> {
 
                   // -------- field name ------------
                   final title = list['title'] ?? "No title";
-                  final featuredImagePath = list['bannerImage'] ?? '';
+                  final featuredImagePath = list['bannerImages'][0] ?? '';
 
 
                   // ------ date format -------
@@ -308,7 +308,7 @@ Widget circleIcon(IconData icon) {
 // ---------- Skeleton loading ui model -------
 Widget eventCardShimmer() {
   return Container(
-    margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+    margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16,top: 20),
     padding: const EdgeInsets.all(10),
     decoration: BoxDecoration(
       color: Colors.white,

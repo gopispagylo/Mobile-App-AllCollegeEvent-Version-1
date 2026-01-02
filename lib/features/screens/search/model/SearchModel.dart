@@ -33,7 +33,7 @@ class _SearchModelState extends State<SearchModel> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: [
         // ----------- search bar ----------
         Center(
@@ -154,267 +154,269 @@ class _SearchModelState extends State<SearchModel> {
         ),
 
         // -------- event list ------
-        BlocBuilder<SearchEventListBloc, SearchEventListState>(
-          builder: (context, searchEventListState) {
-            if (searchEventListState is SearchEventListLoading) {
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return eventCardShimmer();
-                },
-              );
-            }
-            else if (searchEventListState is SearchEventListSuccess) {
-              return RefreshIndicator(
-                color: MyColor().primaryClr,
-                onRefresh: () async{
-                  context.read<SearchEventListBloc>().add(FetchSearchEventList());
-                },
-                child: Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, top: 20,),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: searchEventListState.searchEventList.length,
-                    itemBuilder: (context, index) {
-                      final list = searchEventListState.searchEventList[index];
-
-                      // -------- field name ------------
-                      final title = list['title'] ?? "No title";
-                      final featuredImagePath = list['bannerImage'] ?? '';
-
-                      print("featuredImagePathfeaturedImagePathfeaturedImagePath$featuredImagePath");
-
-                      // ------ date format -------
-                      final rawDate = list['eventDate']?.toString() ?? "";
-
-                      // 2. Safe Date Parsing
-                      String dateFormat = "Date TBD";
-
-                      if (rawDate.isNotEmpty) {
-                        try {
-                          // Use MM for months!
-                          final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
-                          dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
-                        } catch (e) {
-                          debugPrint("Date parsing error: $e");
-                          dateFormat = rawDate; // Fallback to raw string if parsing fails
+        Expanded(
+          child: BlocBuilder<SearchEventListBloc, SearchEventListState>(
+            builder: (context, searchEventListState) {
+              if (searchEventListState is SearchEventListLoading) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    return eventCardShimmer();
+                  },
+                );
+              }
+              else if (searchEventListState is SearchEventListSuccess) {
+                return RefreshIndicator(
+                  color: MyColor().primaryClr,
+                  onRefresh: () async{
+                    context.read<SearchEventListBloc>().add(FetchSearchEventList());
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(left: 16, right: 16, top: 20,),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: searchEventListState.searchEventList.length,
+                      itemBuilder: (context, index) {
+                        final list = searchEventListState.searchEventList[index];
+          
+                        // -------- field name ------------
+                        final title = list['title'] ?? "No title";
+                        final featuredImagePath = list['bannerImages'][0] ?? '';
+                        print('featuredImagePathfeaturedImagePathfeaturedImagePath$featuredImagePath');
+          
+          
+                        // ------ date format -------
+                        final rawDate = list['eventDate']?.toString() ?? "";
+          
+                        // 2. Safe Date Parsing
+                        String dateFormat = "Date TBD";
+          
+                        if (rawDate.isNotEmpty) {
+                          try {
+                            // Use MM for months!
+                            final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
+                            dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                          } catch (e) {
+                            debugPrint("Date parsing error: $e");
+                            dateFormat = rawDate; // Fallback to raw string if parsing fails
+                          }
                         }
-                      }
-
-                      // ---- venue ---
-                      final venue = list['venue'] ?? "no venue";
-
-                      // -------- identity ---------
-                      final identity = list['identity'];
-
-                      // ------- Tween Animation -----------
-                      return TweenAnimationBuilder(
-                        tween: Tween(begin: 50.0, end: 0.0),
-                        duration: Duration(milliseconds: 600),
-                        builder: (context, value, child) {
-                          return Transform.translate(offset: Offset(0, value),
-                              child: Opacity(
-                                opacity: 1 - (value / 50),
-                                child: child,)
-                          );
-                        },
-                        child: GestureDetector(
-                          onTap: () {
-                            if(!isRecent){
-                              Navigator.push(
-                                  context,
-                                  PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title),
-                                      transitionsBuilder: (_, animation, __, child){
-                                        return SlideTransition( position: Tween(
-                                          begin: const Offset(1, 0),
-                                          end: Offset.zero,
-                                        ).animate(animation),
-                                          child: child,);
-                                      }
-                                  )
-                              );
-                            } else{
-                              GlobalUnFocus.unFocus();
-                              setState(() {
-                                isRecent = false;
-                              });
-                            }
+          
+                        // ---- venue ---
+                        final venue = list['venue'] ?? "no venue";
+          
+                        // -------- identity ---------
+                        final identity = list['identity'];
+          
+                        // ------- Tween Animation -----------
+                        return TweenAnimationBuilder(
+                          tween: Tween(begin: 50.0, end: 0.0),
+                          duration: Duration(milliseconds: 600),
+                          builder: (context, value, child) {
+                            return Transform.translate(offset: Offset(0, value),
+                                child: Opacity(
+                                  opacity: 1 - (value / 50),
+                                  child: child,)
+                            );
                           },
-                          child: Container(
-                            margin: EdgeInsets.only(left: 0, bottom: 16),
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: MyColor().whiteClr,
-                              border: Border.all(
-                                color: MyColor().borderClr.withOpacity(0.15),
+                          child: GestureDetector(
+                            onTap: () {
+                              if(!isRecent){
+                                Navigator.push(
+                                    context,
+                                    PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title),
+                                        transitionsBuilder: (_, animation, __, child){
+                                          return SlideTransition( position: Tween(
+                                            begin: const Offset(1, 0),
+                                            end: Offset.zero,
+                                          ).animate(animation),
+                                            child: child,);
+                                        }
+                                    )
+                                );
+                              } else{
+                                GlobalUnFocus.unFocus();
+                                setState(() {
+                                  isRecent = false;
+                                });
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 0, bottom: 16),
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: MyColor().whiteClr,
+                                border: Border.all(
+                                  color: MyColor().borderClr.withOpacity(0.15),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    height: 110,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: CachedNetworkImage(
-                                      imageUrl: featuredImagePath,
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
-                                      errorWidget: (context, url, error) =>
-                                      const Icon(Icons.image_not_supported),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 2,
+                                    child: Container(
+                                      height: 110,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: CachedNetworkImage(
+                                        imageUrl: featuredImagePath,
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                                        errorWidget: (context, url, error) =>
+                                        const Icon(Icons.image_not_supported),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  flex: 4,
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                title,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
+                                  Expanded(
+                                    flex: 4,
+                                    child: Container(
+                                      margin: EdgeInsets.only(left: 10),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  title,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(width: 5),
-                                            Row(
-                                              children: [
-                                                circleIcon(Icons.favorite_border),
-                                                SizedBox(width: 5),
-                                                circleIcon(Icons.bookmark_outline),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          children: [
-                                            chip(
-                                              "Paid",
-                                              MyColor().primaryBackgroundClr
-                                                  .withOpacity(0.35),
-                                            ),
-                                            chip(
-                                              "Entertainment",
-                                              MyColor().blueBackgroundClr.withOpacity(
-                                                0.35,
+                                              SizedBox(width: 5),
+                                              Row(
+                                                children: [
+                                                  circleIcon(Icons.favorite_border),
+                                                  SizedBox(width: 5),
+                                                  circleIcon(Icons.bookmark_outline),
+                                                ],
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 10),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.calendar_month, size: 14),
-                                            SizedBox(width: 5),
-                                            Expanded(
-                                              child: Text(
-                                                dateFormat,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 5),
-                                        Row(
-                                          children: [
-                                            Icon(Icons.location_on_outlined, size: 14),
-                                            SizedBox(width: 5),
-                                            Expanded(
-                                              child: Text(
-                                                venue,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                vertical: 3,
-                                                horizontal: 8,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: MyColor().primaryBackgroundClr
+                                            ],
+                                          ),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            children: [
+                                              chip(
+                                                "Paid",
+                                                MyColor().primaryBackgroundClr
                                                     .withOpacity(0.35),
-                                                borderRadius: BorderRadius.circular(8),
                                               ),
-                                              child: Text(
-                                                "Ongoing",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: MyColor().blackClr,
+                                              chip(
+                                                "Entertainment",
+                                                MyColor().blueBackgroundClr.withOpacity(
+                                                  0.35,
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                          SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.calendar_month, size: 14),
+                                              SizedBox(width: 5),
+                                              Expanded(
+                                                child: Text(
+                                                  dateFormat,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 5),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.location_on_outlined, size: 14),
+                                              SizedBox(width: 5),
+                                              Expanded(
+                                                child: Text(
+                                                  venue,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 3,
+                                                  horizontal: 8,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  color: MyColor().primaryBackgroundClr
+                                                      .withOpacity(0.35),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: Text(
+                                                  "Ongoing",
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: MyColor().blackClr,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                );
+              }
+              else if (searchEventListState is SearchEventListFail) {
+                return RefreshIndicator(
+                  onRefresh: () async{
+                    context.read<SearchEventListBloc>().add(FetchSearchEventList());
+                  },
+                  child: Center(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        Center(
+                          child: SizedBox(
+                            height: 250,
+                            child: Image.asset(ImagePath().errorMessageImg),
+                          ),
+                        ),
+                        Center(
+                          child: Text(
+                            "No Results Found",
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                              color: MyColor().blackClr,
                             ),
                           ),
                         ),
-                      );
-                    },
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
-            else if (searchEventListState is SearchEventListFail) {
-              return RefreshIndicator(
-                onRefresh: () async{
-                  context.read<SearchEventListBloc>().add(FetchSearchEventList());
-                },
-                child: Center(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: [
-                      Center(
-                        child: SizedBox(
-                          height: 250,
-                          child: Image.asset(ImagePath().errorMessageImg),
-                        ),
-                      ),
-                      Center(
-                        child: Text(
-                          "No Results Found",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }
-            return SizedBox.shrink();
-          },
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
         ),
 
       ],

@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MediaAndTicketsPage extends StatefulWidget {
-  const MediaAndTicketsPage({super.key});
+  final Map<String,dynamic> orgDetailList;
+
+  const MediaAndTicketsPage({super.key, required this.orgDetailList});
 
   @override
   State<MediaAndTicketsPage> createState() => _MediaAndTicketsPageState();
@@ -43,7 +45,7 @@ class _MediaAndTicketsPageState extends State<MediaAndTicketsPage> {
             create: (context) => AccommodationBloc(apiController: ApiController())..add(FetchAccommodation()),
           ),
         ],
-        child: MediaAndTicketsModel(),
+        child: MediaAndTicketsModel(orgDetailList: widget.orgDetailList,),
       ),
     );
   }

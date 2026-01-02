@@ -36,6 +36,12 @@ class DateTimeBlock {
   late TextEditingController startController;
   late TextEditingController endController;
 
-  DateTimeBlock() : startController = TextEditingController(),endController = TextEditingController();
+  late TextEditingController startTimeController;
+  late TextEditingController endTimeController;
+
+  late TextEditingController startDateController;
+  late TextEditingController endDateController;
+
+  DateTimeBlock() : startController = TextEditingController(),startDateController = TextEditingController(),startTimeController = TextEditingController(),endController = TextEditingController(),endDateController = TextEditingController(),endTimeController = TextEditingController();
 
 }

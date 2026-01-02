@@ -22,6 +22,7 @@ class SearchEventListBloc extends Bloc<SearchEventListEvent, SearchEventListStat
         await apiController.setBaseUrl();
 
         final response = await apiController.getMethodWithoutBody(endPoint: 'events', token: "token",);
+        print("responseresponseresponseresponseresponse$response");
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){

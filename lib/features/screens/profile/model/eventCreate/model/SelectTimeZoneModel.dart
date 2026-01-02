@@ -8,7 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class SelectTimeZoneModel extends StatefulWidget {
-  const SelectTimeZoneModel({super.key});
+  final Map<String,dynamic> orgDetailList;
+
+  const SelectTimeZoneModel({super.key, required this.orgDetailList});
 
   @override
   State<SelectTimeZoneModel> createState() => _SelectTimeZoneModelState();
@@ -18,8 +20,8 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
 
   // ------- time zone --------
   final List<String> timeZoneList = [
-    '(UTC-12:00)',
-    '(UTC-24:00)',
+    'India',
+    'USA',
   ];
 
   // ------ dropdown value -------
@@ -30,6 +32,9 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
   final List<DateTimeBlock> dateTimeBlock = [
     DateTimeBlock(),
   ];
+
+  // ------- form global key -------
+  final formKey = GlobalKey<FormState>();
 
 
   @override
@@ -43,283 +48,312 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Form(
+      key: formKey,
+      child: ListView(
 
-      children: [
+        children: [
 
-        Container(
-          margin: EdgeInsets.only(left: 16,right: 16,top: 10),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: AlignmentGeometry.center,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: CircularProgressIndicator(
-                            color: MyColor().primaryClr,
-                            value: 1,
-                            strokeWidth: 5,
-                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
-                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
-                          ),
-                        ),
-                        Icon(Icons.newspaper),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 5),
-                      child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
-                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
-                      )),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: AlignmentGeometry.center,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: CircularProgressIndicator(
-                            color: MyColor().primaryClr,
-                            value: 0.5,
-                            strokeWidth: 5,
-                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
-                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
-                          ),
-                        ),
-                        Icon(Icons.newspaper),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 5),
-                      child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
-                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
-                      )),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Stack(
-                      alignment: AlignmentGeometry.center,
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: CircularProgressIndicator(
-                            color: MyColor().primaryClr,
-                            value: 0.0,
-                            strokeWidth: 5,
-                            backgroundColor: MyColor().borderClr.withOpacity(0.30),
-                            valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
-                          ),
-                        ),
-                        Icon(Icons.newspaper),
-                      ],
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 5),
-                      child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
-                          fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
-                      ),),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        SizedBox(height: 20,),
-        
-        // ------ time zone ---------
-        Center(
-          child: Container(
-            margin: EdgeInsets.only(left: 16,right: 16),
-            child: MyModels().customDropdown(label: "Time Zone *", hint: "select your time zone", value: selectTimeZone, onChanged: (onChanged){
-
-            }, items: timeZoneList.map((e)=> DropdownMenuItem<String>(value: e,child: Text(e))).toList(), valid: Validators().validTimeZone),
-          ),
-        ),
-
-        ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: dateTimeBlock.length,
-            itemBuilder: (context, index) {
-              final bloc = dateTimeBlock[index];
-
-              // ------ find last index -------
-              final bool isLast = index == dateTimeBlock.length - 1;
-              return Container(
-                margin: EdgeInsets.only(top: 16,
-                    right: 16,
-                    left: 16,
-                    bottom: index == dateTimeBlock.length - 1 ? 20 : 0),
-                padding: EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    color: MyColor().whiteClr,
-                    border: Border.all(
-                        color: MyColor().borderClr.withOpacity(0.15)),
-                    borderRadius: BorderRadius.circular(8)
-                ),
-                child: Column(
-                  children: [
-
-                    // SizedBox(height: 20,),
-
-                    Center(
-                      child: MyModels().customDateAndTimeUi(
-                          controller: bloc.startController, onTap: () async {
-                        final result = await DateAndTimeController()
-                            .selectedDateAndTimePicker(context);
-
-                        if (result != null) {
-                          bloc.startController.text = result;
-                        }
-                      }, label: "Start Date & Time *"),
-                    ),
-
-                    SizedBox(height: 20,),
-
-                    Center(
-                      child: MyModels().customDateAndTimeUi(
-                          controller: bloc.endController, onTap: () async {
-                        final result = await DateAndTimeController()
-                            .selectedDateAndTimePicker(context);
-
-                        if (result != null) {
-                          bloc.endController.text = result;
-                        }
-                      }, label: "End Date & Time *"),
-                    ),
-
-                    // --- add & date button ------
-                    if(isLast) Container(
-                      margin: EdgeInsets.only(top: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+          Container(
+            margin: EdgeInsets.only(left: 16,right: 16,top: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: AlignmentGeometry.center,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                dateTimeBlock.add(DateTimeBlock());
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(7),
-                              decoration: BoxDecoration(
-                                  color: MyColor().boxInnerClr,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: MyColor().borderClr.withOpacity(
-                                          0.15))
-                              ),
-                              child: Icon(Iconsax.add_circle_copy,
-                                color: MyColor().greenClr,),
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                              value: 1,
+                              strokeWidth: 5,
+                              backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                              valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
                             ),
                           ),
-                          if(dateTimeBlock.length > 1) SizedBox(width: 10,),
-                          if(dateTimeBlock.length > 1) GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                bloc.startController.dispose();
-                                bloc.endController.dispose();
-                                dateTimeBlock.removeAt(index);
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(7),
-                              decoration: BoxDecoration(
-                                  color: MyColor().boxInnerClr,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                      color: MyColor().borderClr.withOpacity(
-                                          0.15))
-                              ),
-                              child: Icon(
-                                Iconsax.trash_copy, color: MyColor().redClr,),
-                            ),
-                          ),
+                          Icon(Icons.newspaper),
                         ],
                       ),
-                    ),
-
-                  ],
-                ),
-              );
-            }),
-
-        // ------- back & Continue -------
-        Container(
-          margin: EdgeInsets.only(left: 16,right: 16,bottom: 20),
-          child: Row(
-            children: [
-              // ------- Save & Continue -------
-              Expanded(
-                child: GestureDetector(
-                  onTap: (){
-                    Navigator.pop(context);
-                  },
-                  child: Align(
-                    alignment: AlignmentGeometry.topRight,
-                    child: Container(
-                        margin: EdgeInsets.only(top: 20,right: 0),
-                        height: 48,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: MyColor().whiteClr,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: MyColor().primaryClr)
-                        ),
-                        child: Text("Back",style: GoogleFonts.poppins(
-                            fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().primaryClr
-                        ),)),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(textAlign: TextAlign.center,"Organization Details",style: GoogleFonts.poppins(
+                            fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                        )),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(width: 16,),
-              Expanded(
-                child: GestureDetector(
-                  onTap: (){
-                    // if(formKey.currentState!.validate()){
-                    Navigator.push(context, MaterialPageRoute(builder: (_)=> MediaAndTicketsPage()));
-                    // }
-                  },
-                  child: Align(
-                    alignment: AlignmentGeometry.topRight,
-                    child: Container(
-                        margin: EdgeInsets.only(top: 20,right: 0),
-                        height: 48,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                            color: MyColor().primaryClr,
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(color: MyColor().primaryClr)
-                        ),
-                        child: Text("Continue",style: GoogleFonts.poppins(
-                            fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().whiteClr
-                        ),)),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: AlignmentGeometry.center,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                              value: 0.5,
+                              strokeWidth: 5,
+                              backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                              valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                            ),
+                          ),
+                          Icon(Icons.newspaper),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(textAlign: TextAlign.center,"Event Details",style: GoogleFonts.poppins(
+                            fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                        )),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                Expanded(
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: AlignmentGeometry.center,
+                        children: [
+                          SizedBox(
+                            height: 50,
+                            width: 50,
+                            child: CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                              value: 0.0,
+                              strokeWidth: 5,
+                              backgroundColor: MyColor().borderClr.withOpacity(0.30),
+                              valueColor: AlwaysStoppedAnimation(MyColor().primaryClr),
+                            ),
+                          ),
+                          Icon(Icons.newspaper),
+                        ],
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(textAlign: TextAlign.center,"Media & Tickets",style: GoogleFonts.poppins(
+                            fontSize: 13,fontWeight: FontWeight.w600,color: MyColor().blackClr
+                        ),),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
 
-      ],
+          SizedBox(height: 20,),
+
+          // ------ time zone ---------
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(left: 16,right: 16),
+              child: MyModels().customDropdown(label: "Time Zone *", hint: "select your time zone", value: selectTimeZone, onChanged: (onChanged){
+                setState(() {
+                  selectTimeZone = onChanged;
+                });
+              }, items: timeZoneList.map((e)=> DropdownMenuItem<String>(value: e,child: Text(e))).toList(), valid: Validators().validTimeZone),
+            ),
+          ),
+
+          // --------- date & time builder ui ------
+          ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: dateTimeBlock.length,
+              itemBuilder: (context, index) {
+                final bloc = dateTimeBlock[index];
+
+                // ------ find last index -------
+                final bool isLast = index == dateTimeBlock.length - 1;
+                return Container(
+                  margin: EdgeInsets.only(top: 16,
+                      right: 16,
+                      left: 16,
+                      bottom: index == dateTimeBlock.length - 1 ? 20 : 0),
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                      color: MyColor().whiteClr,
+                      border: Border.all(
+                          color: MyColor().borderClr.withOpacity(0.15)),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Column(
+                    children: [
+
+                      // SizedBox(height: 20,),
+
+                      Center(
+                        child: MyModels().customDateAndTimeUi(
+                            controller: bloc.startController, onTap: () async {
+                          final result = await DateAndTimeController()
+                              .selectedDateAndTimePicker(context);
+                          if (result != null) {
+                            bloc.startController.text = result;
+                            final splitResultStart = result.split(',');
+                            bloc.startDateController.text = splitResultStart[0];
+                            bloc.startTimeController.text = splitResultStart[1];
+                          }
+                        }, label: "Start Date & Time *"),
+                      ),
+
+                      SizedBox(height: 20,),
+
+                      Center(
+                        child: MyModels().customDateAndTimeUi(
+                            controller: bloc.endController, onTap: () async {
+                          final result = await DateAndTimeController()
+                              .selectedDateAndTimePicker(context);
+
+                          if (result != null) {
+                            bloc.endController.text = result;
+                            final splitResultEnd = result.split(',');
+                            bloc.endDateController.text = splitResultEnd[0];
+                            bloc.endTimeController.text = splitResultEnd[1];
+                          }
+
+                        }, label: "End Date & Time *"),
+                      ),
+
+                      // --- add & date button ------
+                      if(isLast) Container(
+                        margin: EdgeInsets.only(top: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  dateTimeBlock.add(DateTimeBlock());
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                    color: MyColor().boxInnerClr,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: MyColor().borderClr.withOpacity(
+                                            0.15))
+                                ),
+                                child: Icon(Iconsax.add_circle_copy,
+                                  color: MyColor().greenClr,),
+                              ),
+                            ),
+                            if(dateTimeBlock.length > 1) SizedBox(width: 10,),
+                            if(dateTimeBlock.length > 1) GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  bloc.startController.dispose();
+                                  bloc.endController.dispose();
+                                  dateTimeBlock.removeAt(index);
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(7),
+                                decoration: BoxDecoration(
+                                    color: MyColor().boxInnerClr,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                        color: MyColor().borderClr.withOpacity(
+                                            0.15))
+                                ),
+                                child: Icon(
+                                  Iconsax.trash_copy, color: MyColor().redClr,),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                    ],
+                  ),
+                );
+              }),
+
+          // ------- back & Continue -------
+          Container(
+            margin: EdgeInsets.only(left: 16,right: 16,bottom: 20),
+            child: Row(
+              children: [
+
+                // ------- Save & Continue -------
+                Expanded(
+                  child: GestureDetector(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Align(
+                      alignment: AlignmentGeometry.topRight,
+                      child: Container(
+                          margin: EdgeInsets.only(top: 20,right: 0),
+                          height: 48,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: MyColor().whiteClr,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: MyColor().primaryClr)
+                          ),
+                          child: Text("Back",style: GoogleFonts.poppins(
+                              fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().primaryClr
+                          ),)),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 16,),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: (){
+
+                      if (formKey.currentState!.validate()) {
+                        for (var block in dateTimeBlock) {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (_) =>
+                                  MediaAndTicketsPage(orgDetailList: {
+                                    ...widget.orgDetailList,
+                                    'calendars' : [
+                                      {
+                                        'timeZone' : selectTimeZone,
+                                        'startDate' : block.startDateController.text,
+                                        'endDate' : block.endDateController.text,
+                                        'startTime' : block.startTimeController.text,
+                                        'endTime' : block.endTimeController.text,
+                                      }
+                                    ],
+                                  },)));
+                        }
+                      }
+                    },
+                    child: Align(
+                      alignment: AlignmentGeometry.topRight,
+                      child: Container(
+                          margin: EdgeInsets.only(top: 20,right: 0),
+                          height: 48,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: MyColor().primaryClr,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(color: MyColor().primaryClr)
+                          ),
+                          child: Text("Continue",style: GoogleFonts.poppins(
+                              fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().whiteClr
+                          ),)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+        ],
+      ),
     );
   }
 }

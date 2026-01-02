@@ -4,13 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SelectTimeZonePage extends StatefulWidget {
-  const SelectTimeZonePage({super.key});
+  final Map<String,dynamic> orgDetailList;
+
+  const SelectTimeZonePage({super.key, required this.orgDetailList});
 
   @override
   State<SelectTimeZonePage> createState() => _SelectTimeZonePageState();
 }
 
 class _SelectTimeZonePageState extends State<SelectTimeZonePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("orgDetailListorgDetailListorgDetailListorgDetailListorgDetailList${widget.orgDetailList}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +35,7 @@ class _SelectTimeZonePageState extends State<SelectTimeZonePage> {
         ),
       ),
       backgroundColor: MyColor().whiteClr,
-      body: SelectTimeZoneModel(),
+      body: SelectTimeZoneModel(orgDetailList: widget.orgDetailList,),
     );
   }
 }
