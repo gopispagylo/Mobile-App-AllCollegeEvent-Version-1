@@ -39,17 +39,6 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
   bool obscureTexPassword = true;
   bool obscureTexConfirmPassword = true;
 
-
-  @override
-  void initState() {
-    super.initState();
-   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.country}");
-   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.city}");
-   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.state}");
-   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.orgName}");
-   print("1234567890poiuytrewqasdfghjklmnbvcxz${widget.categories}");
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(

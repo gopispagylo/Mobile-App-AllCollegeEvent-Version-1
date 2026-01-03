@@ -134,7 +134,6 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
            ),
          ),
 
-
           // ------- Upcoming & Past events
           Center(
             child: Container(
@@ -180,7 +179,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
 
                           // -------- field name ------------
                           final title = list['title'] ?? "No title";
-                          final featuredImagePath = list['bannerImage'] ?? '';
+                          final featuredImagePath = list['bannerImages'][0] ?? '';
 
 
                           // ------ date format -------

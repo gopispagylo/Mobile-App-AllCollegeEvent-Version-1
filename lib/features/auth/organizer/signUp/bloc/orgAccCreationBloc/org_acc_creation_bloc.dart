@@ -56,6 +56,7 @@ class OrgAccCreationBloc extends Bloc<OrgAccCreationEvent, OrgAccCreationState> 
           }
         }
       } on DioException catch(e){
+        print('OrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBlocOrgAccCreationBloc$e');
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(OrgSignUpFail(errorMessage: error));

@@ -44,64 +44,295 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
             color: MyColor().blackClr
         ),),
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: [
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(top: 20),
+      body: Container(
+        margin: EdgeInsets.only(left: 16,right: 16),
+        child: Column(
+          children: [
+
+            // -------- 1st and 2nd and 3rd board ui -----------
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: MyColor().yellowClr.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              color: MyColor().primaryClr,
+                              shape: BoxShape.circle
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        Text(textAlign: TextAlign.center,"Swaram Club",style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                        ),),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('4.7',style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,fontSize: 8
+                            ),),
+                            Row(
+                              children: List.generate(4, (index){
+                                return  Icon(Icons.star,size: 13,color: MyColor().yellowClr,);
+                              }),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                Text("1",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                )),
+                                Text("Events",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                ),),
+                              ],
+                            ),
+                            SizedBox(width: 16,),
+                            Column(
+                              children: [
+                                Text("1500",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                )),
+                                Text("Views",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                ),),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: MyColor().yellowClr.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: BoxDecoration(
+                              color: MyColor().primaryClr,
+                              shape: BoxShape.circle
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        Text(textAlign: TextAlign.center,"Swaram Club",style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().blackClr
+                        ),),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('4.7',style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,fontSize: 10
+                            ),),
+                            Row(
+                              children: List.generate(4, (index){
+                                return  Icon(Icons.star,size: 13,color: MyColor().yellowClr,);
+                              }),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                Text("1",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().blackClr
+                                )),
+                                Text("Events",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().blackClr
+                                ),),
+                              ],
+                            ),
+                            SizedBox(width: 16,),
+                            Column(
+                              children: [
+                                Text("1500",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().blackClr
+                                )),
+                                Text("Views",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().blackClr
+                                ),),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      color: MyColor().yellowClr.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(8)
+                  ),
+                  child: Container(
+                    margin: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                              color: MyColor().primaryClr,
+                              shape: BoxShape.circle
+                          ),
+                        ),
+                        SizedBox(height: 10,),
+                        Text(textAlign: TextAlign.center,"Swaram Club",style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                        ),),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('4.7',style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,fontSize: 8
+                            ),),
+                            Row(
+                              children: List.generate(4, (index){
+                                return  Icon(Icons.star,size: 13,color: MyColor().yellowClr,);
+                              }),
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: [
+                                Text("1",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                )),
+                                Text("Events",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                ),),
+                              ],
+                            ),
+                            SizedBox(width: 16,),
+                            Column(
+                              children: [
+                                Text("1500",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                )),
+                                Text("Views",style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,fontSize: 10,color: MyColor().blackClr
+                                ),),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 20,),
+
+            // ---------- list of leaders ----------------
+            Container(
+              padding: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: MyColor().boxInnerClr,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+                borderRadius: BorderRadius.circular(5),
+                color: MyColor().blueClr
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  customTabBar(title: 'This Week', index: 0),
-                  customTabBar(title: 'All time', index: 1),
+                  Expanded(
+                    flex: 1,
+                    child: Text("Rank",style: GoogleFonts.poppins(
+                      fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                    ),),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text("Organizer",style: GoogleFonts.poppins(
+                      fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                    ),),
+                  ),
+                  Text("Events",style: GoogleFonts.poppins(
+                    fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                  ),),
+                  SizedBox(width: 20,),
+                  Text("Views",style: GoogleFonts.poppins(
+                    fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                  ),),
                 ],
               ),
             ),
-          ),
-          Center(
-            child: Container(
-              width: 100,
-              decoration: BoxDecoration(
-                color: MyColor().primaryBackgroundClr,
-              ),
-              child: Container(
-                margin: EdgeInsets.all(10),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                        color: MyColor().primaryClr,
-                        shape: BoxShape.circle
+
+            // ------ builder ui -------------
+            Expanded(
+              child: ListView.builder(
+                  itemCount: 1,
+                  itemBuilder: (context,index){
+                return Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: MyColor().boxInnerClr,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: Text("Rank",style: GoogleFonts.poppins(
+                            fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                        ),),
                       ),
-                    ),
-                    SizedBox(height: 10,),
-                    Text(textAlign: TextAlign.center,"Swaram Club",style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().blackClr
-                    ),),
-                    SizedBox(height: 10,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("1"),
-                        Text("1500"),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+                      Expanded(
+                        flex: 3,
+                        child: Text("Organizer",style: GoogleFonts.poppins(
+                            fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                        ),),
+                      ),
+                      Text("Events",style: GoogleFonts.poppins(
+                          fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                      ),),
+                      SizedBox(width: 20,),
+                      Text("Views",style: GoogleFonts.poppins(
+                          fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                      ),),
+                    ],
+                  ),
+                );
+              }),
+            )
+
+          ],
+        ),
       ),
     );
   }

@@ -48,18 +48,20 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="myapp" android:host="email-verify" />
+                <data
+                    android:host="email-verify"
+                    android:scheme="myapp" />
             </intent-filter>
 
-            <!-- Deep link from email -->
+            // ------- host deep link ----------
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                    android:scheme="http"
-                    android:host="3.6.238.72"
-                    android:pathPrefix="/auth/email-verify"/>
+                    android:host="https"
+                    android:scheme="www.allcollegeevent.com"
+                    android:pathPrefix="/auth/email-verify?" />
             </intent-filter>
 
         </activity>

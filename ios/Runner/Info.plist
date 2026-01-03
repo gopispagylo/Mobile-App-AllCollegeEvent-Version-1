@@ -42,17 +42,12 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 
-
-	// --------- deep link --------
-	<key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-        <key>CFBundleURLSchemes</key>
+    // ------ deep link ------
+    	<key>AssociatedDomains</key>
         <array>
-          <string>myapp</string>
+          <string>applinks:www.allcollegeevent.com</string>
         </array>
-      </dict>
-    </array>
+
 
     // ------- Google Open ----------
     <key>LSApplicationQueriesSchemes</key>

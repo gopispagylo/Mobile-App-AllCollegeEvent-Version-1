@@ -1,10 +1,14 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/controller/DeepLinkService/DeepLinkService.dart';
+import 'package:all_college_event_app/data/toast/AceToast.dart';
+import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
+import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreenPage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';

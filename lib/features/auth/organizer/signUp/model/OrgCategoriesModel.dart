@@ -66,6 +66,7 @@ class _OrgCategoriesModelState extends State<OrgCategoriesModel> {
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+
             // -------- TabBar --------
             Column(
               children: [
@@ -206,6 +207,7 @@ class _OrgCategoriesModelState extends State<OrgCategoriesModel> {
                 ),
               ],
             ),
+
             // -------- Button --------
             Column(
               children: [
@@ -263,6 +265,7 @@ class _OrgCategoriesModelState extends State<OrgCategoriesModel> {
                 SizedBox(height: 50),
               ],
             )
+
           ],
         ),
       ],

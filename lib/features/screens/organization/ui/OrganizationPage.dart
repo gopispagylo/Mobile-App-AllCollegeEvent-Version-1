@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OrganizationPage extends StatefulWidget {
-  const OrganizationPage({super.key});
+  final String title;
+
+  const OrganizationPage({super.key, required this.title});
 
   @override
   State<OrganizationPage> createState() => _OrganizationPageState();
@@ -22,7 +24,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
       appBar: AppBar(
         backgroundColor: MyColor().whiteClr,
         title: Text(
-         "widget.title",
+          widget.title,
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,

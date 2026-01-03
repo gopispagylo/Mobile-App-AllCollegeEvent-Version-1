@@ -14,29 +14,6 @@ class HomeCategoriesModel extends StatefulWidget {
 
 class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
 
-  List<Map<String, dynamic>> categoriesList = [
-    {
-      "title": "Hackathon",
-      "image": "assets/images/hackathon.png",
-      "bgColor": 0xFFE7F7FF,
-    },
-    {
-      "title": "Conference",
-      "image": "assets/images/conference.png",
-      "bgColor": 0xFFFDF1DC,
-    },
-    {
-      "title": "Athletics",
-      "image": "assets/images/athletics.png",
-      "bgColor": 0xFFFFE8E8,
-    },
-    {
-      "title": "Competition",
-      "image": "assets/images/competition.png",
-      "bgColor": 0xFFF4EAFF,
-    },
-  ];
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CategoriesBloc, CategoriesState>(
@@ -77,17 +54,17 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: List.generate(categoriesList.length, (index) {
+                    children: List.generate(categoriesState.categoriesList.length, (index) {
                       final list = categoriesState.categoriesList[index];
                       return Container(
                         margin: EdgeInsets.only(left: 16,
-                            right: index == categoriesList.length - 1 ? 16 : 0,
+                            right: index == categoriesState.categoriesList.length - 1 ? 16 : 0,
                             top: 15),
                         height: 104,
                         width: 104,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Color(categoriesList[index]['bgColor'])
+                            color: MyColor().boxInnerClr
                         ),
                         child: Container(
                           margin: EdgeInsets.all(10),

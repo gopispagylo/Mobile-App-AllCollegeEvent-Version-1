@@ -1,9 +1,14 @@
 import 'dart:io';
 
+import 'package:all_college_event_app/data/toast/AceToast.dart';
+import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerifyModel extends StatefulWidget {
@@ -17,20 +22,54 @@ class VerifyModel extends StatefulWidget {
 
 class _VerifyModelState extends State<VerifyModel> {
 
-  // -------- open gmail ----------
-  Future<void> openGmail() async {
-    if (Platform.isAndroid) {
-      // await openGmailApp();
-    } else if (Platform.isIOS) {
-      final Uri gmailUri = Uri.parse('googlegmail://');
-      if (await canLaunchUrl(gmailUri)) {
-        await launchUrl(gmailUri, mode: LaunchMode.externalApplication);
-      } else {
-        await launchUrl(
-          Uri.parse('https://mail.google.com/'),
-          mode: LaunchMode.externalApplication,
-        );
+  // ---------- deep link -----
+  final appLinks = AppLinks();
+
+  @override
+  void initState() {
+    super.initState();
+    // ---- when the app is running fetch a deep linking ---------
+    appLinks.uriLinkStream.listen((uri){
+      handleAppLink(uri);
+    });
+  }
+
+
+  // ----- initial deep link ------
+  void handleAppLink(Uri uri) async {
+    try {
+
+      // -------- this is a your app receiving a uri ----------
+      if (uri.host == 'email-verify') {
+
+        final status = uri.queryParameters['status'];
+
+        if (status == 'success') {
+          WidgetsBinding.instance.addPostFrameCallback((_) async{
+
+            // ------- after using a context dispose --------
+            if(!mounted) return;
+
+            MyModels().alertDialogContentCustom(
+              context: context,
+              content: const Text("Successfully verified"),
+            );
+
+            await Future.delayed(const Duration(seconds: 2));
+
+            // ------- after using a context dispose --------
+            if(!mounted) return;
+
+            if (context.mounted) {
+              Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>OrganizerLoginPage(whichScreen: 'org')), (route)=> false);
+            }
+
+          });
+
+        }
       }
+    } catch (e, stackTrace) {
+      FlutterToast().flutterToast("App link error", ToastificationType.error, ToastificationStyle.flat);
     }
   }
 
@@ -68,30 +107,7 @@ class _VerifyModelState extends State<VerifyModel> {
                     color: MyColor().borderClr
                 ),),
             ),
-
             SizedBox(height: 20,),
-
-            Center(
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      fixedSize: Size(320, 48),
-                      elevation: 0,
-                      backgroundColor: MyColor().primaryClr,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadiusGeometry.circular(50)
-                      )
-                  ),
-                  onPressed: () async{
-                    // if (!result.didOpen) {
-                    //   showNoMailAppsDialog(context);
-                    // }
-                   await openGmail();
-                  }, child: Text("Open gmail",style: GoogleFonts.poppins(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: MyColor().whiteClr
-              ),)),
-            ),
           ],
         ),
       ),
