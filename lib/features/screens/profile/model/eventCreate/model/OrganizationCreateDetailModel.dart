@@ -286,13 +286,13 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
             onTap: (){
               if(formKey.currentState!.validate()){
                 Navigator.push(context, MaterialPageRoute(builder: (_)=> EventCreateDetailPage(orgDetailList: {
-                  'event_host_by' : selectHostBy,
-                  'org_name' : organizationNameController.text,
+                  'hostIdentity' : selectHostBy,
+                  'organizationName' : organizationNameController.text,
                   'location' : locationController.text,
-                  'organizer_number' : organizerNumberController.text,
-                  'organizer_name' : organizerNumberController.text,
-                  'org_dep' : selectOrganizationDepart,
-                  'org_eligible_dep' : eligibleList,
+                  'organizerNumber' : organizerNumberController.text,
+                  'organizerName' : organizerNameController.text,
+                  'orgDept' : selectOrganizationDepart,
+                  'eligibleDeptIdentities' : eligibleList,
                   },)));
               }
             },

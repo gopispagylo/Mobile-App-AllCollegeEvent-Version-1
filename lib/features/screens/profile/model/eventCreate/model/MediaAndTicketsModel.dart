@@ -1,14 +1,22 @@
+import 'dart:io';
+
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/multipleImageController/image_controller_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/accommodation/accommodation_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/certification/certification_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/perks/perks_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/PaymentPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
+import 'package:toastification/toastification.dart';
 
 class MediaAndTicketsModel extends StatefulWidget {
   final Map<String,dynamic> orgDetailList;
@@ -40,12 +48,6 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
 
   // ------- form global key -------
   final formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    print("orgDetailListorgDetailListorgDetailListorgDetailList${widget.orgDetailList}");
-  }
 
 
   @override
@@ -156,22 +158,86 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
             decoration: BoxDecoration(
               color: MyColor().boxInnerClr,
               borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
             ),
-            child: Container(
-              margin: EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Icon(Iconsax.document_cloud,color: MyColor().borderClr,),
-                  SizedBox(height: 5,),
-                  Text("Choose a file or drag & drop it here.",style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,fontSize: 14,color: MyColor().blackClr
-                  )),
-                  SizedBox(height: 5,),
-                  Text(textAlign: TextAlign.center,"JPEG/JPG/PNG must be 1200×480 px or 1:1 ratio, and under 500 kb",style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,fontSize: 12,color: MyColor().borderClr
-                  ),),
-                ],
-              ),
+            child: BlocBuilder<ImageControllerBloc, ImageControllerState>(
+              builder: (context, imageMultipleState) {
+
+                List<PlatformFile> images = [];
+
+                if(imageMultipleState is ImageMultipleSuccess){
+                  images = imageMultipleState.getMultipleImages;
+                }
+
+                return GestureDetector(
+                  onTap: () {
+                    final bloc = context.read<ImageControllerBloc>();
+                    if(bloc.getMultipleImages.length >= 4){
+                      FlutterToast().flutterToast("You can only select up to 4 images", ToastificationType.error, ToastificationStyle.flat);
+                    } else{
+                      context.read<ImageControllerBloc>().add(ChooseImagePickerMultiple(source: ImageSource.gallery));
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Icon(Iconsax.document_cloud, color: MyColor().borderClr,),
+                        SizedBox(height: 5,),
+                        Text("Choose a file or drag & drop it here.",
+                            style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                color: MyColor().blackClr
+                            )),
+                        SizedBox(height: 5,),
+                        Text(textAlign: TextAlign.center,
+                          "JPEG/JPG/PNG must be 1200×480 px or 1:1 ratio, and under 500 kb",
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                              color: MyColor().borderClr
+                          ),),
+
+                        // ------ show a image ---------
+                        if(imageMultipleState is ImageMultipleLoading) Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                        if(images.isNotEmpty) GridView.builder(
+                          shrinkWrap: true,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+                          itemCount: images.length,
+                          itemBuilder: (BuildContext context, int index) {
+                          final list = images[index];
+                          return Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+                                    borderRadius: BorderRadiusGeometry.circular(8),
+                                  ),
+                                  child: ClipRRect(
+                                      borderRadius: BorderRadiusGeometry.circular(8),
+                                      child: Image.file(File(list.path!),fit: BoxFit.cover,))),
+                              Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      context.read<ImageControllerBloc>().add(RemoveImageMultiple(index: index));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Icon(Iconsax.close_circle,color: MyColor().redClr,),
+                                    ),
+                                  )),
+                            ],
+                          );
+                        },),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ),
 
@@ -247,7 +313,6 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
                               perksList.add(onChanged);
                               // perksValue = onChanged;
                             });
-                            print('perksListperksListperksListperksList$perksList');
                           },
                           items: perksState.perksList.map((e) =>
                               DropdownMenuItem<String>(
@@ -369,6 +434,17 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
                 Expanded(
                   child: GestureDetector(
                     onTap: (){
+
+                      final images = context.read<ImageControllerBloc>().state;
+
+                      List<PlatformFile> getImages = [];
+
+                      if(images is ImageMultipleSuccess){
+                        getImages = images.getMultipleImages;
+                      }
+
+                      print("dkjfsdhjkdsjhkdfsjhkdsfhjkdsfjhkdsfjhk${getImages}");
+
                       if(formKey.currentState!.validate()){
                       Navigator.push(context, MaterialPageRoute(builder: (_)=> PaymentPage(orgDetailList: {
                         ...widget.orgDetailList,
@@ -378,11 +454,11 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
                             "instagram": instagramController.text,
                             "linkedin": linkedInController.text
                         },
-
                         'perkIdentities' : perksList,
                         'accommodationIdentities' : accommodationList,
                         'certIdentity' : certificationValue,
-                      },)));
+                        'bannerImages' : getImages
+                      })));
                       }
                     },
                     child: Align(
@@ -405,6 +481,7 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
               ],
             ),
           ),
+
 
         ],
       ),

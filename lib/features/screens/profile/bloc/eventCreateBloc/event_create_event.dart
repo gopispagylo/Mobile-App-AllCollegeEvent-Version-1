@@ -27,7 +27,7 @@ class ClickEventCreate extends EventCreateEvent {
 
   final Map<String, dynamic> socialLinks;
 
-  final String bannerImages;
+  final List<PlatformFile> bannerImages;
 
   ClickEventCreate({
     required this.title,

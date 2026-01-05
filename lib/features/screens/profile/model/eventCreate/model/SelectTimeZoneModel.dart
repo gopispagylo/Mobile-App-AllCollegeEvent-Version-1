@@ -24,8 +24,19 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
     'USA',
   ];
 
+  // -------- switch --------
+  bool checkMultipleDates = false;
+
+  // ------------- event mode ----------
+  final List<Map<String, String>> eventMode = [
+    {'Offline' : "OFFLINE"},
+    {'Online' : "ONLINE"},
+    {'Hybrid' : "HYBRID"},
+  ];
+
   // ------ dropdown value -------
   String? selectTimeZone;
+  String? selectEventMode;
 
 
   // ------ store date time dynamic ------
@@ -35,7 +46,6 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
 
   // ------- form global key -------
   final formKey = GlobalKey<FormState>();
-
 
   @override
   void dispose() {
@@ -151,6 +161,7 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
 
           SizedBox(height: 20,),
 
+
           // ------ time zone ---------
           Center(
             child: Container(
@@ -163,6 +174,32 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
             ),
           ),
 
+
+          // -------  Add multiple dates switch -----
+
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 10),
+              width: 320,
+              child: Row(
+                children: [
+                  Text('Add Multiple Dates',style: GoogleFonts.poppins(
+                      fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().primaryClr
+                  ),),
+                  Transform.scale(
+                    scale: 0.7,
+                    child: Switch(value: checkMultipleDates, onChanged: (onChanged){
+                      setState(() {
+                        checkMultipleDates = onChanged;
+                      });
+                    }),
+                  )
+                ],
+              ),
+            ),
+          ),
+
+
           // --------- date & time builder ui ------
           ListView.builder(
               shrinkWrap: true,
@@ -174,15 +211,13 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                 // ------ find last index -------
                 final bool isLast = index == dateTimeBlock.length - 1;
                 return Container(
-                  margin: EdgeInsets.only(top: 16,
+                  margin: EdgeInsets.only(
                       right: 16,
                       left: 16,
                       bottom: index == dateTimeBlock.length - 1 ? 20 : 0),
                   padding: EdgeInsets.all(16),
                   decoration: BoxDecoration(
                       color: MyColor().whiteClr,
-                      border: Border.all(
-                          color: MyColor().borderClr.withOpacity(0.15)),
                       borderRadius: BorderRadius.circular(8)
                   ),
                   child: Column(
@@ -224,29 +259,32 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
 
                       // --- add & date button ------
                       if(isLast) Container(
+                        width: 320,
                         margin: EdgeInsets.only(top: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  dateTimeBlock.add(DateTimeBlock());
-                                });
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(7),
-                                decoration: BoxDecoration(
-                                    color: MyColor().boxInnerClr,
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                        color: MyColor().borderClr.withOpacity(
-                                            0.15))
+                           if(checkMultipleDates) Container(
+                             child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    dateTimeBlock.add(DateTimeBlock());
+                                  });
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(7),
+                                  decoration: BoxDecoration(
+                                      color: MyColor().boxInnerClr,
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(
+                                          color: MyColor().borderClr.withOpacity(
+                                              0.15))
+                                  ),
+                                  child: Icon(Iconsax.add_circle_copy,
+                                    color: MyColor().greenClr,),
                                 ),
-                                child: Icon(Iconsax.add_circle_copy,
-                                  color: MyColor().greenClr,),
                               ),
-                            ),
+                           ),
                             if(dateTimeBlock.length > 1) SizedBox(width: 10,),
                             if(dateTimeBlock.length > 1) GestureDetector(
                               onTap: () {
@@ -277,6 +315,26 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                   ),
                 );
               }),
+
+
+          // ----- event mode -------
+          Column(
+            children: [
+              MyModels().customDropdown(label: "Event Mode",
+                  hint: "Select the event mode",
+                  value: selectEventMode,
+                  onChanged: (eventMode) {
+                    setState(() {
+                      selectEventMode = eventMode;
+                    });
+                  },
+                  items: eventMode.map((e) => DropdownMenuItem<String>(
+                      value: e.values.first, child: Text(e.keys.first)))
+                      .toList(),
+                  valid: Validators().validEventMode)
+            ],
+          ),
+
 
           // ------- back & Continue -------
           Container(
@@ -327,6 +385,7 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                                         'endTime' : block.endTimeController.text,
                                       }
                                     ],
+                                    'mode' : selectEventMode
                                   },)));
                         }
                       }

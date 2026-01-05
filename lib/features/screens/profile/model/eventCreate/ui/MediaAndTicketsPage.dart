@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/multipleImageController/image_controller_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/accommodation/accommodation_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/certification/certification_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/perks/perks_bloc.dart';
@@ -35,15 +36,15 @@ class _MediaAndTicketsPageState extends State<MediaAndTicketsPage> {
       backgroundColor: MyColor().whiteClr,
       body: MultiBlocProvider(
         providers: [
-          BlocProvider(
-            create: (context) => PerksBloc(apiController: ApiController())..add(FetchPerks()),
-          ),
-          BlocProvider(
-            create: (context) => CertificationBloc(apiController: ApiController())..add(FetchCertification()),
-          ),
-          BlocProvider(
-            create: (context) => AccommodationBloc(apiController: ApiController())..add(FetchAccommodation()),
-          ),
+
+          BlocProvider(create: (context) => PerksBloc(apiController: ApiController())..add(FetchPerks())),
+
+          BlocProvider(create: (context) => CertificationBloc(apiController: ApiController())..add(FetchCertification())),
+
+          BlocProvider(create: (context) => AccommodationBloc(apiController: ApiController())..add(FetchAccommodation())),
+
+          BlocProvider(create: (context) => ImageControllerBloc()),
+
         ],
         child: MediaAndTicketsModel(orgDetailList: widget.orgDetailList,),
       ),

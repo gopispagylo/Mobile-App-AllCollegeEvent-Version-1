@@ -1,6 +1,7 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/auth/user/signUp/bloc/signUp/sign_up_bloc.dart';
 import 'package:all_college_event_app/features/auth/user/signUp/model/SignUpModel.dart';
+import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -19,6 +20,8 @@ class _SignUpPageState extends State<SignUpPage> {
     return BlocProvider(
       create: (context) => SignUpBloc(apiController: ApiController()),
       child: Scaffold(
+        // resizeToAvoidBottomInset: false,
+        backgroundColor: MyColor().whiteClr,
         body: SignUpModel(whichScreen: widget.whichScreen),
       ),
     );

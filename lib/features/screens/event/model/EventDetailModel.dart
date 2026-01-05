@@ -124,7 +124,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                   enableInfiniteScroll: true,
                   autoPlayAnimationDuration: Duration(milliseconds: 800),
                   viewportFraction: 1,
-                  aspectRatio: 1.9,
+                  aspectRatio: 1.7,
                   clipBehavior: Clip.antiAlias,
                   pageSnapping: true,
                   padEnds: true,
@@ -388,7 +388,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                     ),
 
                                     const SizedBox(height: 6),
-                                    bulletText(ticket['description'],Iconsax.tag),
+                                    bulletText(ticket['description'] ?? '',Iconsax.tag),
                                     bulletText(ticket['price'].toString(),Iconsax.tag),
                                     bulletText('Ticket ends at ${DateFormat('dd/MM').format(DateTime.parse(ticket['sellingTo']))}',Iconsax.calendar),
                                   ],

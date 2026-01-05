@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     return BlocProvider(
       create: (context) => LoginBloc(apiController: ApiController()),
       child: Scaffold(
+        // resizeToAvoidBottomInset: false,
         backgroundColor: MyColor().whiteClr,
         body: LoginModel(whichScreen: widget.whichScreen,),
       ),

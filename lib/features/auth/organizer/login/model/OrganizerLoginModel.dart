@@ -35,187 +35,184 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MyColor().whiteClr,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 16, right: 16),
-            child: Form(
-              key: formKey,
-              child: ListView(
-                children: [
-                  SizedBox(
-                    height: 250,
-                    child: Image.asset(ImagePath().orgLoginImg),
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain),
+        ),
+        Container(
+          margin: EdgeInsets.only(left: 16, right: 16),
+          child: Form(
+            key: formKey,
+            child: ListView(
+              children: [
+                SizedBox(
+                  height: 250,
+                  child: Image.asset(ImagePath().orgLoginImg),
+                ),
+                SizedBox(height: 20,),
+                Text(
+                  textAlign: TextAlign.center,
+                  ConfigMessage().loginOrgHeadMsg,
+                  style: TextStyle(
+                    fontFamily: "blMelody",
+                    fontSize: 30,
+                    fontWeight: FontWeight.w500,
                   ),
-                  SizedBox(height: 20,),
-                  Text(
-                    textAlign: TextAlign.center,
-                    ConfigMessage().loginOrgHeadMsg,
-                    style: TextStyle(
-                      fontFamily: "blMelody",
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                    ),
+                ),
+                Text(
+                  textAlign: TextAlign.center,
+                  ConfigMessage().loginOrgSubHeadMsg,
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
                   ),
-                  Text(
-                    textAlign: TextAlign.center,
-                    ConfigMessage().loginOrgSubHeadMsg,
-                    style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 25),
-                  MyModels().customTextField(
-                    label: "Domain Mail ID",
-                    controller: emailController,
-                    hintText: "Enter your domain mail id",
-                    validator: Validators().validDomainMail, textCapitalization: TextCapitalization.none, textInputType: TextInputType.emailAddress, readOnly: false,
-                  ),
-                  SizedBox(height: 20),
-                  MyModels().customTextFieldPassword(
-                    label: "Password",
-                    controller: passwordController,
-                    hintText: "Enter your password",
-                    errorText: Validators().validPassword,
-                    obscureText: obscureTex,
-                    eyeIcon: Container(
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            obscureTex = !obscureTex;
-                          });
-                        },
-                        icon: !obscureTex
-                            ? Icon(Icons.visibility)
-                            : Icon(Icons.visibility_off),
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ForgotPasswordPage(
-                              whichScreen: 'organizerLogin',
-                            ),
-                          ),
-                        );
+                ),
+                SizedBox(height: 25),
+                MyModels().customTextField(
+                  label: "Domain Mail ID",
+                  controller: emailController,
+                  hintText: "Enter your domain mail id",
+                  validator: Validators().validDomainMail, textCapitalization: TextCapitalization.none, textInputType: TextInputType.emailAddress, readOnly: false,
+                ),
+                SizedBox(height: 20),
+                MyModels().customTextFieldPassword(
+                  label: "Password",
+                  controller: passwordController,
+                  hintText: "Enter your password",
+                  errorText: Validators().validPassword,
+                  obscureText: obscureTex,
+                  eyeIcon: Container(
+                    child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          obscureTex = !obscureTex;
+                        });
                       },
-                      child: Container(
-                        alignment: Alignment.topRight,
-                        width: 320,
-                        margin: EdgeInsets.only(top: 12),
-                        child: Text(
-                          "Forgot Password?",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ),
+                      icon: !obscureTex
+                          ? Icon(Icons.visibility)
+                          : Icon(Icons.visibility_off),
                     ),
                   ),
-                  SizedBox(height: 30),
-                  BlocConsumer<OrgLoginBloc, OrgLoginState>(
-                    listener: (context, orgLoginState) {
-                      if (orgLoginState is OrgSuccess) {
-                        emailController.clear();
-                        passwordController.clear();
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                BottomNavigationBarPage(pageIndex: 0),
-                          ),
-                          (route) => false,
-                        );
-                      } else if (orgLoginState is OrgFail) {
-                        FlutterToast().flutterToast(orgLoginState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
-                      }
-                    },
-                    builder: (context, orgLoginState) {
-                      return Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(320, 48),
-                            elevation: 0,
-                            backgroundColor: MyColor().primaryClr,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(50),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (formKey.currentState!.validate()) {
-                              context.read<OrgLoginBloc>().add(
-                                ClickedOrgLogin(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  type: widget.whichScreen,
-                                ),
-                              );
-                            }
-                          },
-                          child: orgLoginState is OrgLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
-                            "Sign in",
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: MyColor().whiteClr,
-                            ),
+                ),
+                Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ForgotPasswordPage(
+                            whichScreen: 'organizerLogin',
                           ),
                         ),
                       );
                     },
-                  ),
-
-                  SizedBox(height: 25),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Didn’t have an Account!?",
+                    child: Container(
+                      alignment: Alignment.topRight,
+                      width: 320,
+                      margin: EdgeInsets.only(top: 12),
+                      child: Text(
+                        "Forgot Password?",
                         style: GoogleFonts.poppins(
-                          fontSize: 14,
                           fontWeight: FontWeight.w500,
+                          fontSize: 14,
                         ),
                       ),
-                      SizedBox(width: 8),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  OrgSignUpPage(type: widget.whichScreen),
-                            ),
-                          );
+                    ),
+                  ),
+                ),
+                SizedBox(height: 30),
+                BlocConsumer<OrgLoginBloc, OrgLoginState>(
+                  listener: (context, orgLoginState) {
+                    if (orgLoginState is OrgSuccess) {
+                      emailController.clear();
+                      passwordController.clear();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              BottomNavigationBarPage(pageIndex: 0),
+                        ),
+                            (route) => false,
+                      );
+                    } else if (orgLoginState is OrgFail) {
+                      FlutterToast().flutterToast(orgLoginState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+                    }
+                  },
+                  builder: (context, orgLoginState) {
+                    return Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(320, 48),
+                          elevation: 0,
+                          backgroundColor: MyColor().primaryClr,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadiusGeometry.circular(50),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (formKey.currentState!.validate()) {
+                            context.read<OrgLoginBloc>().add(
+                              ClickedOrgLogin(
+                                email: emailController.text,
+                                password: passwordController.text,
+                                type: widget.whichScreen,
+                              ),
+                            );
+                          }
                         },
-                        child: Text(
-                          "Sign Up",
+                        child: orgLoginState is OrgLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
+                          "Sign in",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
-                            color: MyColor().primaryClr,
                             fontWeight: FontWeight.w600,
+                            color: MyColor().whiteClr,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 50),
-                ],
-              ),
+                    );
+                  },
+                ),
+
+                SizedBox(height: 25),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Didn’t have an Account!?",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                OrgSignUpPage(type: widget.whichScreen),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Sign Up",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: MyColor().primaryClr,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 50),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -120,7 +120,7 @@ class MyModels{
   }
 
   // ----------- Custom Dropdown ------------
-  Column customDropdown({required String label,required String hint,required dynamic value,required dynamic onChanged,required List<DropdownMenuItem<String>> items,required FormFieldValidator<String?> valid}){
+  Column customDropdown<T>({required String label,required String hint,required dynamic value,required dynamic onChanged,required List<DropdownMenuItem<T>> items,required FormFieldValidator<T?>? valid}){
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -133,7 +133,7 @@ class MyModels{
         ),
         SizedBox(
           width: 320,
-          child: DropdownButtonFormField<String>(
+          child: DropdownButtonFormField<T>(
             iconEnabledColor: MyColor().primaryClr,
             hint: Text(hint,style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w400,

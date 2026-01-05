@@ -248,8 +248,11 @@ class _MySpaceModelState extends State<MySpaceModel> {
                   ),), (){
                     Navigator.pop(context);
                   }, ()async{
+
                     await DBHelper().deleteAllLoginData();
                     await DBHelper().deleteUser();
+                    await DBHelper().deleteUserId();
+
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
                   }, "Cancel", "Logout");
                 },

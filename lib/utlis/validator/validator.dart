@@ -148,6 +148,13 @@ class Validators {
     return null;
   }
 
+  String? validEventMode(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your event mode";
+    }
+    return null;
+  }
+
   String? validState(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your country";

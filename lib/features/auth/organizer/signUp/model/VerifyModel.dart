@@ -34,7 +34,6 @@ class _VerifyModelState extends State<VerifyModel> {
     });
   }
 
-
   // ----- initial deep link ------
   void handleAppLink(Uri uri) async {
     try {
@@ -52,7 +51,9 @@ class _VerifyModelState extends State<VerifyModel> {
 
             MyModels().alertDialogContentCustom(
               context: context,
-              content: const Text("Successfully verified"),
+              content: Text("Successfully verified",style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,color: MyColor().primaryClr,fontSize: 18
+              ),),
             );
 
             await Future.delayed(const Duration(seconds: 2));

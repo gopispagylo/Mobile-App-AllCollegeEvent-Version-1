@@ -402,10 +402,10 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
                       Navigator.push(context, MaterialPageRoute(builder: (_)=> SelectTimeZonePage(orgDetailList: {
                         ... widget.orgDetailList,
                         'tags' : tagsList,
-                        'event_title' : titleController.text,
-                        'category' : selectAceCategories,
-                        'event_type' : selectEventType,
-                        'about' : aboutController.text,
+                        'title' : titleController.text,
+                        'categoryIdentity' : selectAceCategories,
+                        'eventTypeIdentity' : selectEventType,
+                        'description' : aboutController.text,
                       },)));
                       }
                     },

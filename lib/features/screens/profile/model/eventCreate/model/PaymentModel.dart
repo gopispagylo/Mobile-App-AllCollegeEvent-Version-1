@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
@@ -11,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:toastification/toastification.dart';
 
 class PaymentModel extends StatefulWidget {
@@ -39,7 +38,7 @@ class _PaymentModelState extends State<PaymentModel> {
   ];
 
   // --- dropdown value ----
-  String? countValue;
+  int? countValue;
   bool freeOrPaid = false;
 
   // ------ local stored ticket ------
@@ -50,6 +49,15 @@ class _PaymentModelState extends State<PaymentModel> {
 
   // ------- form global key -------
   final formKey = GlobalKey<FormState>();
+
+
+  // ------- backend send date&time format change --------
+  String toIsoDate(String dateText) {
+    final inputFormat = DateFormat("dd MMM yyyy, hh:mm a");
+    final dateTime = inputFormat.parse(dateText);
+
+    return dateTime.toUtc().toIso8601String();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +296,9 @@ class _PaymentModelState extends State<PaymentModel> {
                   ], rows: List.generate(ticketList.length, (index){
                 final ticket = ticketList[index];
                     return DataRow(cells: [
-                      DataCell(Text(ticket['ticket_name'] ?? "-")),
-                      DataCell(Text(ticket['amount']?.toString() ?? "free")),
-                      DataCell(Text(ticket['total_count']?.toString() ?? "-")),
+                      DataCell(Text(ticket['name'] ?? "-")),
+                      DataCell(Text(ticket['price']?.toString() ?? "free")),
+                      DataCell(Text(ticket['totalQuantity']?.toString() ?? "-")),
                       DataCell(GestureDetector(
                           onTap: () {
                             editTicket(index);
@@ -387,36 +395,45 @@ class _PaymentModelState extends State<PaymentModel> {
                     ),
                   ),
                   onPressed: ticketList.isNotEmpty ?  () {
-                    // print("object")
                     if(formKey.currentState!.validate()){
+
                       final orgDetail = widget.orgDetailList;
-                      print("ajfjsdgfjksdhfkjshjhsgjhdfgfdghjfshjg${orgDetail['certIdentity']}");
+
+                      print("jshddfjshgdfshjdfshjkdfshdfshkdfshjkdfs$orgDetail");
+
                       context.read<EventCreateBloc>().add(ClickEventCreate(
-                          title: orgDetail['event_title'],
-                          description: orgDetail['about'],
-                          mode: 'ONLINE',
-                          categoryIdentity: orgDetail['category'],
-                          eventTypeIdentity: orgDetail['event_type'],
+                          title: orgDetail['title'],
+                          description: orgDetail['description'],
+                          mode: orgDetail['mode'],
+                          categoryIdentity: orgDetail['categoryIdentity'],
+                          eventTypeIdentity: orgDetail['eventTypeIdentity'],
                           perkIdentities: orgDetail['perkIdentities'],
                           accommodationIdentities: orgDetail['accommodationIdentities'],
                           certIdentity: orgDetail['certIdentity'],
-                          eligibleDeptIdentities: orgDetail['org_eligible_dep'],
+                          eligibleDeptIdentities: orgDetail['eligibleDeptIdentities'],
                           tags: orgDetail['tags'],
                           collaborators: [
                             {
-                              'hostIdentity' : orgDetail['event_host_by'],
-                              'organizationName' : orgDetail['org_name'],
-                              'organizerNumber' : orgDetail['organizer_number'],
-                              'orgDept' : orgDetail['org_dep'],
-                              'organizerName' : orgDetail['organizer_name'],
+                              'hostIdentity' : orgDetail['hostIdentity'],
+                              'organizationName' : orgDetail['organizationName'],
+                              'organizerNumber' : orgDetail['organizerNumber'],
+                              'orgDept' : orgDetail['orgDept'],
+                              'organizerName' : orgDetail['organizerName'],
                               'location' : orgDetail['location'],
                             }
                           ],
                           calendars: orgDetail['calendars'],
-                          tickets: ticketList,
+                          tickets: ticketList.map((ticket){
+                            return {
+                              ...ticket,
+                              'sellingFrom': toIsoDate(ticket['sellingFrom']),
+                              'sellingTo': toIsoDate(ticket['sellingTo']),
+                            };
+                          }).toList(),
                           paymentLink: paymentController.text,
                           socialLinks: {},
-                          bannerImages: ''));
+                          bannerImages: orgDetail['bannerImages']
+                      ));
                     }
                   } : null,
                   child: eventCreateState is EventCreateLoading
@@ -466,12 +483,28 @@ class _PaymentModelState extends State<PaymentModel> {
                   }
                 }, label: "Selling From *"),
                 SizedBox(height: 20,),
-                MyModels().customDropdown(label: "Total Count *", hint: "Select Total Count", value: countValue, onChanged: (onChanged){
-                  setState((){
-                    countValue = onChanged;
-                  });
-                }, items: countList.map((e)=> DropdownMenuItem<String>(value: e.toString(),child: Text(e.toString()))).toList(), valid: Validators().validTotalCount),
-                SizedBox(height: 10,),
+            MyModels().customDropdown<int>(
+              label: "Total Count *",
+              hint: "Select Total Count",
+              value: countValue,
+              onChanged: (value) {
+                setState(() {
+                  countValue = value;
+                });
+              },
+              items: countList.map((e) => DropdownMenuItem<int>(
+                  value: e,
+                  child: Text(e.toString()),
+                ),
+              ).toList(),
+              valid: (value) {
+                if (value == null) {
+                  return 'Please select total count';
+                }
+                return null;
+              },
+            ),
+            SizedBox(height: 10,),
                 Row(
                   children: [
                     Text( freeOrPaid ? "Paid" : "Free",style: GoogleFonts.poppins(
@@ -504,15 +537,15 @@ class _PaymentModelState extends State<PaymentModel> {
   void addTicket() {
 
       final ticketData = {
-        'ticket_name': ticketNameController.text,
+        'name': ticketNameController.text,
         'description': descriptionController.text,
-        'selling_from': sellingFromController.text,
-        'selling_upto': sellingUpToController.text,
-        'total_count': countValue ?? 0,
-        'paid': freeOrPaid,
-        if (amountController.text.isNotEmpty)
-          'amount': amountController.text,
+        'sellingFrom': sellingFromController.text,
+        'sellingTo': sellingUpToController.text,
+        'totalQuantity': countValue,
+        'isPaid': freeOrPaid,
+        if (amountController.text.isNotEmpty)'price': amountController.text,
       };
+
 
       setState(() {
         if(editingIndex == null){
@@ -522,6 +555,7 @@ class _PaymentModelState extends State<PaymentModel> {
         }
       });
 
+      print("bdhsdjhdhjdfjhdf$ticketList");
     // clear form
     ticketNameController.clear();
     descriptionController.clear();
@@ -537,18 +571,18 @@ class _PaymentModelState extends State<PaymentModel> {
 
   // --------- edit ticket --------
   void editTicket(int index) {
+
     final ticket = ticketList[index];
 
     // ---------- fill fields ----------
-    ticketNameController.text = ticket['ticket_name'] ?? '';
+    ticketNameController.text = ticket['name'] ?? '';
     descriptionController.text = ticket['description'] ?? '';
-    sellingFromController.text = ticket['selling_from'] ?? '';
-    sellingUpToController.text = ticket['selling_upto'] ?? '';
-    amountController.text = ticket['amount']?.toString() ?? '';
-    countValue = ticket['total_count'].toString();
-    freeOrPaid = ticket['paid'] ?? false;
+    sellingFromController.text = ticket['sellingFrom'] ?? '';
+    sellingUpToController.text = ticket['sellingTo'] ?? '';
+    amountController.text = ticket['price']?.toString() ?? '';
+    countValue = ticket['totalQuantity'];
+    freeOrPaid = ticket['isPaid'] ?? false;
 
-    print("countValuecountValuecountValuecountValue$countValue");
     editingIndex = index;
 
     // ------ ticket ui dialog -------

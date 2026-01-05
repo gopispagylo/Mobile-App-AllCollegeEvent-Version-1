@@ -178,7 +178,8 @@ class _LoginModelState extends State<LoginModel> {
                             borderRadius: BorderRadiusGeometry.circular(50),
                           ),
                         ),
-                        onPressed: () {
+
+                        onPressed: emailController.text.isNotEmpty && passwordController.text.isNotEmpty ?  () {
                           if (formKey.currentState!.validate()) {
                             context.read<LoginBloc>().add(
                               ClickedLogin(
@@ -188,7 +189,7 @@ class _LoginModelState extends State<LoginModel> {
                               ),
                             );
                           }
-                        },
+                        } : null,
                         child: loginState is LoginLoading
                             ? Center(
                                 child: CircularProgressIndicator(
