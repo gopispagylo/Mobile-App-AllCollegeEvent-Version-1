@@ -19,6 +19,8 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
       try{
 
+        print("gfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfg${event.whichUser}");
+
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -27,10 +29,12 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
         // ----- get a user id -----
         final userId = await DBHelper().getUserId();
+
         print("userIduserIduserIduserIduserIduserId$userId");
         print("tokentokentokentokentokentokentoken$token");
 
-        final response = await apiController.getMethodWithoutBody(endPoint: 'admin/users/$userId', token: token!);
+
+        final response = await apiController.getMethodWithoutBody(endPoint: event.whichUser == "Organizer" ? 'organizations/$userId' : 'users/$userId', token: token!);
         print("UserProfileBlocUserProfileBlocUserProfileBlocUserProfileBloc$response");
 
         if(response.statusCode == 200){
@@ -44,12 +48,14 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           }
         }
       } on DioException catch(e){
+        print("jfhjfjfjfjfjfjfjffj$e");
 
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(UserProfileFail(errorMessage: error));
 
       } catch(e){
+        print("jfhjfjfjfjfjfjfjffj$e");
         emit(UserProfileFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

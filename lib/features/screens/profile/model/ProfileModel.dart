@@ -38,7 +38,7 @@ class _ProfileModelState extends State<ProfileModel> {
           GestureDetector(
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (_)=> EditProfileModel(whichScreen: widget.whichScreen,))).then((_){
-                  context.read<UserProfileBloc>().add(ClickedUserProfile());
+                  context.read<UserProfileBloc>().add(ClickedUserProfile(whichUser: widget.whichScreen));
                 });
               },
               child: customContainer(name: "Edit Profile", icon: Icons.arrow_forward_ios, borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),

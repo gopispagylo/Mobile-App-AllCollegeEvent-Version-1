@@ -17,7 +17,6 @@ class SearchEventListBloc extends Bloc<SearchEventListEvent, SearchEventListStat
       emit(SearchEventListLoading());
 
       try{
-
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -28,13 +27,16 @@ class SearchEventListBloc extends Bloc<SearchEventListEvent, SearchEventListStat
           if(responseBody['status'] == true){
             searchEventList.clear();
             searchEventList.addAll(responseBody['data']);
-            emit(SearchEventListSuccess(searchEventList: List.from(searchEventList)));
+            if(responseBody['data'].isNotEmpty){
+              emit(SearchEventListSuccess(searchEventList: List.from(searchEventList)));
+            } else{
+              emit(SearchEventListFail(errorMessage: "No data found"));
+            }
           }else{
             emit(SearchEventListFail(errorMessage: responseBody['message']));
           }
         }
-
-      }on DioException catch(e){
+      } on DioException catch(e){
 
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);

@@ -183,6 +183,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
                                         onPressed: deleteController.text.trim() == "Delete" ?  () async{
                                           await DBHelper().deleteAllLoginData();
                                           await DBHelper().deleteUserId();
+                                          await DBHelper().deleteToken();
 
                                           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
                                         } : null,
@@ -252,6 +253,8 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     await DBHelper().deleteAllLoginData();
                     await DBHelper().deleteUser();
                     await DBHelper().deleteUserId();
+                    await DBHelper().deleteToken();
+
 
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
                   }, "Cancel", "Logout");

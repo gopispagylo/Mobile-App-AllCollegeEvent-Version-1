@@ -1,7 +1,7 @@
-import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
+import 'package:all_college_event_app/features/auth/user/login/bloc/googleSignInBloc/google_sign_in_bloc.dart';
 import 'package:all_college_event_app/features/auth/user/login/bloc/login/login_bloc.dart';
 import 'package:all_college_event_app/features/auth/user/signUp/ui/SignUpPage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
@@ -31,7 +31,7 @@ class _LoginModelState extends State<LoginModel> {
   final passwordController = TextEditingController();
 
   final googleSignIn = GoogleSignIn(
-    clientId: dotenv.env['CLIENT_ID'],
+    serverClientId: dotenv.env['CLIENT_ID'],
     scopes: ['email', 'profile'],
   );
 
@@ -46,19 +46,25 @@ class _LoginModelState extends State<LoginModel> {
     try {
       final user = await googleSignIn.signIn();
       if (user == null) {
-        print(
-          "googleSignInFunctionFailgoogleSignInFunctionFailgoogleSignInFunctionFailgoogleSignInFunctionFail",
-        );
+        FlutterToast().flutterToast("Google Sign In error", ToastificationType.error, ToastificationStyle.flat);
         return;
       }
 
       final googleAuth = await user.authentication;
       final idToken = googleAuth.idToken;
 
+      if(!mounted) return;
+
+      print("idTokenidTokenidTokenidTokenidTokenidTokenidTokenidToken$idToken");
+
+      // -------- api controller -----------
+      context.read<GoogleSignInBloc>().add(ClickGoogleSignIn(googleToken: idToken!));
+
       // Get Google Token
       await googleSignIn.disconnect();
+
     } catch (e) {
-      print('googleSignInFunctionFailgoogleSignInFunctionFail$e');
+      debugPrint("Google Sign In error $e");
     }
   }
 

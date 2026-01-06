@@ -6,41 +6,55 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'trending_event_list_event.dart';
+
 part 'trending_event_list_state.dart';
 
-class TrendingEventListBloc extends Bloc<TrendingEventListEvent, TrendingEventListState> {
+class TrendingEventListBloc
+    extends Bloc<TrendingEventListEvent, TrendingEventListState> {
   final ApiController apiController;
   final List<dynamic> trendingEventList = [];
-  TrendingEventListBloc({required this.apiController}) : super(TrendingEventListInitial()) {
-    on<FetchTrendingEventList>((event, emit) async{
 
+  TrendingEventListBloc({required this.apiController})
+    : super(TrendingEventListInitial()) {
+    on<FetchTrendingEventList>((event, emit) async {
       emit(TrendingEventListLoading());
 
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
-
-        final response = await apiController.getMethodWithoutBody(endPoint: 'events', token: "token");
-        if(response.statusCode == 200){
+        final response = await apiController.getMethodWithoutBody(
+          endPoint: 'events',
+          token: "token",
+        );
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             trendingEventList.clear();
             trendingEventList.addAll(responseBody['data']);
-            emit(TrendingEventListSuccess(trendingEventList: List.from(trendingEventList)));
-          }else{
+            if (responseBody['data'].isNotEmpty) {
+              emit(
+                TrendingEventListSuccess(
+                  trendingEventList: List.from(trendingEventList),
+                ),
+              );
+            } else {
+              emit(TrendingEventListFail(errorMessage: "No data found"));
+            }
+          } else {
             emit(TrendingEventListFail(errorMessage: responseBody['message']));
           }
         }
-      }on DioException catch(e){
-
+      } on DioException catch (e) {
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(TrendingEventListFail(errorMessage: error));
-
-      } catch(e){
-        emit(TrendingEventListFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+      } catch (e) {
+        emit(
+          TrendingEventListFail(
+            errorMessage: ConfigMessage().unexpectedErrorMsg,
+          ),
+        );
       }
     });
   }

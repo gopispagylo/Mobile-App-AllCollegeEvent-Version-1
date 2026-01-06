@@ -25,7 +25,6 @@ class HandleErrorConfig{
         return ConfigMessage().serverError;
       }
     }
-
     return ConfigMessage().somethingWentWrongMsg;
   }
 

@@ -32,7 +32,11 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
           if(responseBody['status'] == true){
             eventList.clear();
             eventList.addAll(responseBody['data']);
-            emit(EventSuccess(eventList: List.from(eventList)));
+            if(responseBody['data'].isNotEmpty){
+              emit(EventSuccess(eventList: List.from(eventList)));
+            }else{
+              emit(EventFail(errorMessage: "No data found"));
+            }
           }else{
             emit(EventFail(errorMessage: responseBody['message']));
           }

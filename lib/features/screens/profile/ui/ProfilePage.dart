@@ -16,6 +16,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
   // ------- find user assign the value ------
   String? checkUser;
 
@@ -28,10 +29,11 @@ class _ProfilePageState extends State<ProfilePage> {
   // ------- find a user --------
   Future<void> getUser() async {
     String? user = await DBHelper().getUser();
-    // checkUser = await DBHelper().getUser();
     setState(() {
       checkUser = user;
     });
+
+    print("useruseruseruseruser$user");
   }
 
   @override
@@ -46,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => UserProfileBloc(apiController: ApiController())..add(ClickedUserProfile()),
+          create: (context) => UserProfileBloc(apiController: ApiController())..add(ClickedUserProfile(whichUser: checkUser!)),
         ),
       ],
       child: Builder(
@@ -55,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
             backgroundColor: MyColor().whiteClr,
             body: RefreshIndicator(
               onRefresh: () async{
-                context.read<UserProfileBloc>().add(ClickedUserProfile());
+                context.read<UserProfileBloc>().add(ClickedUserProfile(whichUser: checkUser!));
               },
               child: ListView(
                 children: [

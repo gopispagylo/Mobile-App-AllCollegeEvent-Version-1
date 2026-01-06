@@ -363,7 +363,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
-                              childAspectRatio: 1,
+                              childAspectRatio: 0.7,
                             ),
                             itemBuilder: (context, index) {
                               final ticket = list['tickets'][index];
@@ -459,137 +459,86 @@ class _EventDetailModelState extends State<EventDetailModel> {
                       ),
                     ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 16,
-                          right: 0,
-                          top: 10,
-                          bottom: 20,
-                        ),
-                        decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Perks",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Column(
-                                    children:List.generate(list['eventPerks'].length, (index){
-                                      return Row(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Icon(
-                                            Icons.check_circle,
-                                            size: 16,
-                                            color: MyColor().greenClr,
-                                          ),
-                                          SizedBox(width: 6),
-                                          Text(
-                                            list['eventPerks'][index]['perk']['perkName'] ?? '',
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              color: MyColor().borderClr,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                  ),
-                                ],
+
+
+                  Container(
+                    margin: EdgeInsets.only(right: 16,left: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              right: 0,
+                              top: 10,
+                              bottom: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              border: Border.all(
+                                color: MyColor().borderClr.withOpacity(0.15),
                               ),
-                              SizedBox(height: 10),
-                              Column(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.all(16),
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Certifications",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: MyColor().blackClr,
+                                 if(list['eventPerks'].isNotEmpty) Container(
+                                   margin: EdgeInsets.only(bottom: 10),
+                                   child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Perks",
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            color: MyColor().blackClr,
+                                          ),
+                                        ),
+                                        SizedBox(height: 5),
+                                        Column(
+                                          children:List.generate(list['eventPerks'].length, (index){
+                                            return Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  Icons.check_circle,
+                                                  size: 16,
+                                                  color: MyColor().greenClr,
+                                                ),
+                                                SizedBox(width: 6),
+                                                Text(
+                                                  list['eventPerks'][index]['perk']['perkName'] ?? '',
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    color: MyColor().borderClr,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          }),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Row(
+                                 ),
+
+                                 if(list['cert']['certName'].isNotEmpty) Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Icon(
-                                        Icons.check_rounded,
-                                        size: 16,
-                                        color: MyColor().greenClr,
-                                      ),
-                                      SizedBox(width: 6),
                                       Text(
-                                        list['cert']['certName'] ?? '',
+                                        "Certifications",
                                         style: GoogleFonts.poppins(
-                                          fontSize: 12,
-                                          color: MyColor().borderClr,
-                                          fontWeight: FontWeight.w500,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
                                         ),
                                       ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                          left: 16,
-                          right: 0,
-                          top: 10,
-                          bottom: 20,
-                        ),
-                        decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Accommodations",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  SizedBox(height: 5),
-                                  Column(
-                                    children:List.generate(list['eventAccommodations'].length, (index){
-                                      return Row(
+                                      SizedBox(height: 5),
+                                      Row(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Icon(
@@ -599,7 +548,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                           ),
                                           SizedBox(width: 6),
                                           Text(
-                                            list['eventAccommodations'][index]['accommodation']['accommodationName'] ?? '',
+                                            list['cert']['certName'] ?? '',
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: MyColor().borderClr,
@@ -607,16 +556,78 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                             ),
                                           ),
                                         ],
-                                      );
-                                    }),
+                                      )
+                                    ],
                                   ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      if(list['eventAccommodations'].isNotEmpty)  Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: 16,
+                              right: 0,
+                              top: 10,
+                              bottom: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              color: MyColor().boxInnerClr,
+                              border: Border.all(
+                                color: MyColor().borderClr.withOpacity(0.15),
+                              ),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Accommodations",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Column(
+                                        children:List.generate(list['eventAccommodations'].length, (index){
+                                          return Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Icons.check_rounded,
+                                                size: 16,
+                                                color: MyColor().greenClr,
+                                              ),
+                                              SizedBox(width: 6),
+                                              Text(
+                                                list['eventAccommodations'][index]['accommodation']['accommodationName'] ?? '',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  color: MyColor().borderClr,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
 
                   // --------- Tags ---------
@@ -1122,15 +1133,18 @@ Widget tickerName({
 }) {
   return Row(
     children: [
-      Container(
-        padding: EdgeInsets.only(top: 2,bottom: 2,left: 5,right: 5),
-        decoration: BoxDecoration(
-          color: backClr.withOpacity(0.15),
-          borderRadius: BorderRadius.circular(8)
-        ),
-        child: Text(
-          title,
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12),
+      Expanded(
+        child: Container(
+          padding: EdgeInsets.only(top: 2,bottom: 2,left: 5,right: 5),
+          decoration: BoxDecoration(
+            color: backClr.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(8)
+          ),
+          child: Text(
+            overflow: TextOverflow.ellipsis,
+            title,
+            style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12),
+          ),
         ),
       ),
     ],

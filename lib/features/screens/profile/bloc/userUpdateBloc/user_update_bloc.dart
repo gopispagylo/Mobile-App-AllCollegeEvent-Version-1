@@ -4,6 +4,7 @@ import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.d
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:meta/meta.dart';
 
 part 'user_update_event.dart';
@@ -26,31 +27,69 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
         final userId = await DBHelper().getUserId();
 
         // -------- Build request body --------
-        final Map<String, dynamic> parameter = {};
+        // -------- Build form data --------
+        final formData = FormData();
 
-        if (event.name.trim().isNotEmpty) {
-          parameter['name'] = event.name.trim();
+// ------- required fields -------
+        if (event.whichUser.trim().isNotEmpty) {
+          formData.fields.add(
+            MapEntry('type', event.whichUser.trim()),
+          );
         }
+
+        formData.fields.add(
+          MapEntry('identity', userId.toString()),
+        );
+
+// ------- name / org name -------
+        if (event.whichUser == 'org') {
+          if (event.name.trim().isNotEmpty) {
+            formData.fields.add(
+              MapEntry('organizationName', event.name.trim()),
+            );
+          }
+        } else {
+          if (event.name.trim().isNotEmpty) {
+            formData.fields.add(
+              MapEntry('name', event.name.trim()),
+            );
+          }
+        }
+
+        // ------- image upload -------
+
+        if(event.profileImage != null){
+          formData.files.add(MapEntry('profileImage', await MultipartFile.fromFile(
+            event.profileImage!.path!,
+            filename: event.profileImage!.name
+          )));
+        }
+
+        // ------- other fields -------
         if (event.state.trim().isNotEmpty) {
-          parameter['state'] = event.state.trim();
+          formData.fields.add(MapEntry('state', event.state.trim()));
         }
         if (event.city.trim().isNotEmpty) {
-          parameter['city'] = event.city.trim();
+          formData.fields.add(MapEntry('city', event.city.trim()));
         }
         if (event.country.trim().isNotEmpty) {
-          parameter['country'] = event.country.trim();
+          formData.fields.add(MapEntry('country', event.country.trim()));
         }
         if (event.phone.trim().isNotEmpty) {
-          parameter['phone'] = event.phone.trim();
+          formData.fields.add(MapEntry('phone', event.phone.trim()));
         }
 
-        print("UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$parameter");
-        final response = await apiController.putMethod(endPoint: 'user/$userId', token: token!, data: parameter);
+        print('FORM DATA → ${formData.fields.length}');
+        print('FORM FILES → ${formData.files}');
+
+
+        final response = await apiController.postMethodWithFormData(endPoint: 'auth/update-profile', token: token!, data: formData);
+
         print("UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$response");
 
         if(response.statusCode == 200){
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if(responseBody['success'] == true){
           emit(UserUpdateSuccess());
           }else{
             emit(UserUpdateFail(errorMessage: responseBody['message']));
@@ -62,6 +101,7 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
       emit(UserUpdateFail(errorMessage: errorMessage));
 
       } catch(e){
+        print("kakakakakakakakakakakakak$e");
         emit(UserUpdateFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

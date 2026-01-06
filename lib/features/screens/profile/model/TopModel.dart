@@ -2,9 +2,11 @@ import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toastification/toastification.dart';
 
@@ -20,6 +22,7 @@ class TopModel extends StatefulWidget {
 class _ProfileModelState extends State<TopModel> {
   @override
   Widget build(BuildContext context) {
+
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
@@ -33,20 +36,33 @@ class _ProfileModelState extends State<TopModel> {
             margin: EdgeInsets.all(16),
             child: Column(
               children: [
+
                 Center(
                   child: Container(
                     height: 100,
                     width: 100,
                     decoration: BoxDecoration(
-                      color: Colors.red,
                       shape: BoxShape.circle,
+                      border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: CachedNetworkImage(
+                      imageUrl: list['profileImage'] ?? '',
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      errorWidget: (context, url, error) => Icon(
+                        Iconsax.profile_circle,
+                        color: MyColor().borderClr,
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 5),
                 Text(
                   textAlign: TextAlign.center,
-                  list['name'],
+                  list['name'] ?? list['organizationName'],
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,

@@ -31,7 +31,6 @@ class ImageControllerBloc extends Bloc<ImageControllerEvent, ImageControllerStat
 
         final remainingSlots = maxImages - getMultipleImages.length;
 
-        // 4 - 5
 
         // ---------- suppose you add a 5 images then show a error like below ------------
         if (remainingSlots <= 0) {

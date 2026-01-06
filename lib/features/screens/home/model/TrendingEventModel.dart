@@ -283,7 +283,6 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
   }
 }
 
-
 // --------- Fav & Add to cart Icon ---------
 Widget circleIcon(IconData icon) {
   return Container(

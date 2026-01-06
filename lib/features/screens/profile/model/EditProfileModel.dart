@@ -1,15 +1,22 @@
+import 'dart:io';
+
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/singleImageController/single_image_controller_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userUpdateBloc/user_update_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/ResetPasswordModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toastification/toastification.dart';
 
@@ -59,12 +66,14 @@ class _EditProfileModelState extends State<EditProfileModel> {
   String? selectedCountry;
   String? selectedState;
   String? selectedCity;
+  String? profileImage;
 
   // ------ global key -------
   final formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
@@ -73,10 +82,15 @@ class _EditProfileModelState extends State<EditProfileModel> {
         BlocProvider(
           create: (context) =>
               UserProfileBloc(apiController: ApiController())
-                ..add(ClickedUserProfile()),
+                ..add(ClickedUserProfile(whichUser: widget.whichScreen)),
         ),
+        
         BlocProvider(
           create: (context) => UserUpdateBloc(apiController: ApiController()),
+        ),
+        
+        BlocProvider(
+          create: (context) => SingleImageControllerBloc(),
         ),
       ],
       child: Scaffold(
@@ -97,7 +111,6 @@ class _EditProfileModelState extends State<EditProfileModel> {
             if (userProfileState is UserProfileSuccess) {
               final list = userProfileState.userProfileList[0];
 
-              setState(() {
                 selectedCity = list['city'];
                 selectedState = list['state'];
                 selectedCountry = list['country'];
@@ -108,7 +121,9 @@ class _EditProfileModelState extends State<EditProfileModel> {
                 nameController.text = checkUser
                     ? list['name']
                     : list['organizationName'];
-              });
+
+                profileImage = list['profileImage'];
+
             }
           },
           child: BlocBuilder<UserProfileBloc, UserProfileState>(
@@ -118,7 +133,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
               } else if (userProfileState is UserProfileSuccess) {
                 return RefreshIndicator(
                   onRefresh: () async {
-                    context.read<UserProfileBloc>().add(ClickedUserProfile());
+                    context.read<UserProfileBloc>().add(ClickedUserProfile(whichUser: widget.whichScreen));
                   },
                   child: Container(
                     margin: EdgeInsets.all(16),
@@ -126,16 +141,104 @@ class _EditProfileModelState extends State<EditProfileModel> {
                       key: formKey,
                       child: ListView(
                         children: [
-                          Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                              color: MyColor().boxInnerClr,
-                              border: Border.all(
-                                color: MyColor().borderClr.withOpacity(0.15),
-                              ),
-                              shape: BoxShape.circle,
+                          
+                          // ------ profile image --------
+                          Center(
+                            child: BlocBuilder<SingleImageControllerBloc, SingleImageControllerState>(
+                              builder: (context, profileImageState) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Stack(
+                                      alignment: AlignmentGeometry.center,
+                                      children: [
+                                        Container(
+                                          height: 100,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: MyColor().boxInnerClr,
+                                            border: Border.all(
+                                              color: MyColor().borderClr.withOpacity(0.15),
+                                            ),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          clipBehavior: Clip.antiAlias, // ensures child respects circle
+                                          child: profileImageState is SingleImageSuccess &&
+                                              profileImageState.imagePath.path != null
+                                              ? ClipOval(
+                                            child: Image.file(
+                                              File(profileImageState.imagePath.path!),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          )
+                                              : (profileImage != null && profileImage!.isNotEmpty)
+                                              ? ClipOval(
+                                            child: CachedNetworkImage(
+                                              imageUrl: profileImage!,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) => Center(
+                                                child: CircularProgressIndicator(
+                                                  color: MyColor().primaryClr,
+                                                ),
+                                              ),
+                                              errorWidget: (context, url, error) => Icon(
+                                                Iconsax.profile_circle,
+                                                color: MyColor().borderClr,
+                                                size: 30,
+                                              ),
+                                            ),
+                                          )
+                                              : Icon(
+                                            Iconsax.profile_circle,
+                                            size: 30,
+                                            color: MyColor().borderClr,
+                                          ),
+                                        ),
+
+                                        Positioned(right: 0,bottom: 0,child: GestureDetector(
+                                          onTap: (){
+                                            context.read<SingleImageControllerBloc>().add(ChooseImagePickerSingle(source: ImageSource.gallery));
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: MyColor().boxInnerClr,
+                                              shape: BoxShape.circle,
+                                              border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(7.0),
+                                              child: Icon(Iconsax.camera,size: 20,color: MyColor().borderClr,),
+                                            ),
+                                          ),
+                                        ))
+                                      ],
+                                    ),
+                                    if(profileImageState is SingleImageSuccess) GestureDetector(
+                                      onTap: (){
+                                        context.read<SingleImageControllerBloc>().add(RemoveSingleImage());
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 20),
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadiusGeometry
+                                              .circular(8),
+                                        ),
+                                        child: Text(
+                                          "Remove", style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w500,
+                                            color: MyColor().redClr,
+                                            fontSize: 14
+                                        ),),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
                             ),
                           ),
+                          
+                          // --------- basic details ---------
                           Container(
                             margin: EdgeInsets.only(bottom: 10, top: 10),
                             child: Text(
@@ -147,6 +250,8 @@ class _EditProfileModelState extends State<EditProfileModel> {
                               ),
                             ),
                           ),
+                          
+                          // --------- email -------------
                           MyModels().customTextField(
                             label: checkUser ? "Email ID" : "Domain Email ID",
                             controller: domainMailController,
@@ -161,6 +266,8 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             readOnly: true,
                           ),
                           SizedBox(height: 20),
+                          
+                          // ------ phone number ---------
                           MyModels().customTextField(
                             label: "Phone number",
                             controller: phoneController,
@@ -171,6 +278,8 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             readOnly: false,
                           ),
                           SizedBox(height: 20),
+                          
+                          // ------ full name ---------
                           MyModels().customTextField(
                             label: "Full Name",
                             controller: nameController,
@@ -180,6 +289,8 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             textCapitalization: TextCapitalization.words,
                             readOnly: false,
                           ),
+                          
+                          // ------ location details ---------
                           Container(
                             margin: EdgeInsets.only(top: 30),
                             child: Text(
@@ -203,9 +314,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                 setState(() {
                                   selectedCountry = onChanged;
                                 });
-                                print(
-                                  "selectedCountryselectedCountryselectedCountryselectedCountryselectedCountry$selectedCountry",
-                                );
+                                print("cococococococococococo$selectedCountry");
                               },
                               items: countryList
                                   .map(
@@ -230,9 +339,6 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                 setState(() {
                                   selectedState = onChanged;
                                 });
-                                print(
-                                  "selectedStateselectedStateselectedStateselectedStateselectedState$selectedState",
-                                );
                               },
                               items: stateList
                                   .map(
@@ -257,9 +363,6 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                 setState(() {
                                   selectedCity = onChanged;
                                 });
-                                print(
-                                  "selectedCityselectedCityselectedCityselectedCityselectedCity$selectedCity",
-                                );
                               },
                               items: cityList
                                   .map(
@@ -273,6 +376,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             ),
                           ),
 
+                          // ------- forgot password --------
                           GestureDetector(
                             onTap: () {
                               Navigator.push(
@@ -327,14 +431,27 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                       ),
                                     ),
                                     onPressed: () {
+                                      final state = context.read<SingleImageControllerBloc>().state;
+
+                                      PlatformFile? image;
+
+                                      if (state is SingleImageSuccess) {
+                                        image = state.imagePath;
+                                      }
+
                                       // if (formKey.currentState!.validate()) {
-                                        context.read<UserUpdateBloc>().add(
-                                            ClickUserUpdate(
-                                                state: selectedState ?? '',
-                                                city: selectedCity ?? '',
-                                                country: selectedCountry ?? '',
-                                                phone: phoneController.text,
-                                                name: nameController.text));
+                                      context.read<UserUpdateBloc>().add(
+                                          ClickUserUpdate(
+                                              state: selectedState ?? '',
+                                              city: selectedCity ?? '',
+                                              country: selectedCountry ?? '',
+                                              phone: phoneController.text,
+                                              name: nameController.text,
+                                              whichUser: widget.whichScreen ==
+                                                  'Organizer'
+                                                  ? 'org'
+                                                  : 'user',
+                                              profileImage: image));
                                       // }
                                     },
                                     child: userUpdateState is UserUpdateLoading
@@ -364,7 +481,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
               } else if (userProfileState is UserProfileFail) {
                 return RefreshIndicator(
                   onRefresh: () async {
-                    context.read<UserProfileBloc>().add(ClickedUserProfile());
+                    context.read<UserProfileBloc>().add(ClickedUserProfile(whichUser: widget.whichScreen));
                   },
                   child: Center(
                     child: ListView(

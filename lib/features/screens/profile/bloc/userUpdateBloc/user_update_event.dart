@@ -4,11 +4,13 @@ part of 'user_update_bloc.dart';
 sealed class UserUpdateEvent {}
 
 class ClickUserUpdate extends UserUpdateEvent{
+  final String whichUser;
   final String state;
   final String city;
   final String country;
   final String phone;
   final String name;
+  final PlatformFile? profileImage;
 
-  ClickUserUpdate({required this.state, required this.city, required this.country, required this.phone, required this.name});
+  ClickUserUpdate({required this.state, required this.city, required this.country, required this.phone, required this.name, required this.whichUser, required this.profileImage});
 }
