@@ -10,6 +10,7 @@ class ClickEventCreate extends EventCreateEvent {
   final String mode;
   final String categoryIdentity;
   final String eventTypeIdentity;
+  final String eventLink;
 
 
   final List<String> eligibleDeptIdentities;
@@ -26,6 +27,7 @@ class ClickEventCreate extends EventCreateEvent {
   final String paymentLink;
 
   final Map<String, dynamic> socialLinks;
+  final Map<String, dynamic> location;
 
   final List<PlatformFile> bannerImages;
 
@@ -35,6 +37,7 @@ class ClickEventCreate extends EventCreateEvent {
     required this.mode,
     required this.categoryIdentity,
     required this.eventTypeIdentity,
+    required this.eventLink,
     required this.certIdentity,
     required this.eligibleDeptIdentities,
     required this.tags,
@@ -45,6 +48,7 @@ class ClickEventCreate extends EventCreateEvent {
     required this.accommodationIdentities,
     required this.paymentLink,
     required this.socialLinks,
+    required this.location,
     required this.bannerImages,
   });
 }

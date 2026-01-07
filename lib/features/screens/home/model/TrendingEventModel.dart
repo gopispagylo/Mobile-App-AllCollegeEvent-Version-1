@@ -62,23 +62,17 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                     children: List.generate(trendingEventState.trendingEventList.length, (index) {
 
                       final list = trendingEventState.trendingEventList[index];
+
                       final title = list['title'];
-                      final venue = list['venue'];
+
+                      final venue = list['org']['city'];
+                      final price = list['tickets'][0]['price'];
+
 
                       // ------ date format -------
-                      final rawDate = list['eventDate']?.toString() ?? "";
-                      // 2. Safe Date Parsing
-                      String dateFormat = "Date TBD";
-                      if (rawDate.isNotEmpty) {
-                        try {
-                          // Use MM for months!
-                          final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
-                          dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
-                        } catch (e) {
-                          debugPrint("Date parsing error: $e");
-                          dateFormat = rawDate; // Fallback to raw string if parsing fails
-                        }
-                      }
+                      final rawDate = list['calendars'][0]['startDate'];
+
+                      final parsedDate = DateFormat('dd MMM yy').format(DateTime.parse(rawDate));
 
                       // ------ event mode ------
                       final eventMode = list['mode'];
@@ -88,6 +82,9 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                       // -------- identity ---------
                       final identity = list['identity'];
+
+                      // --------- categoryName ------
+                      final categoryName = list['categoryName'];
 
                       return GestureDetector(
                         onTap: () {
@@ -106,6 +103,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
+
                               // ------ featured image -------
                               Container(
                                 height: 130,
@@ -129,8 +127,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                 child: Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: Text(title,
@@ -151,8 +148,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                     ),
                                     SizedBox(height: 10,),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
@@ -172,7 +168,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                               size: 15,),
                                             SizedBox(width: 5,),
                                             Text(
-                                              "₹1999", style: GoogleFonts.poppins(
+                                              "₹$price", style: GoogleFonts.poppins(
                                                 fontWeight: FontWeight.w400,
                                                 fontSize: 12
                                             ),),
@@ -189,7 +185,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                           children: [
                                             Icon(Icons.calendar_month, size: 15,),
                                             SizedBox(width: 5,),
-                                            Text(dateFormat,
+                                            Text(parsedDate,
                                               style: GoogleFonts.poppins(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 12
@@ -224,7 +220,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                               // ------- event content --------
                               Container(
                                 margin: EdgeInsets.only(bottom: 10, right: 10),
-                                width: 52,
+                                // width: 52,
                                 padding: EdgeInsets.only(
                                     left: 10, right: 10, top: 5, bottom: 5),
                                 decoration: BoxDecoration(
@@ -234,7 +230,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                     borderRadius: BorderRadiusGeometry.circular(
                                         40)
                                 ),
-                                child: Text("Paid", style: GoogleFonts.poppins(
+                                child: Text(categoryName, style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 12
                                 )),

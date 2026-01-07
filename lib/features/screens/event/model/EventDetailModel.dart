@@ -28,6 +28,7 @@ class EventDetailModel extends StatefulWidget {
 }
 
 class _EventDetailModelState extends State<EventDetailModel> {
+
   // Smooth Indicator controller
   final scrollController = CarouselSliderController();
 
@@ -40,26 +41,8 @@ class _EventDetailModelState extends State<EventDetailModel> {
   int starIndex = 0;
   int selectedIndex = 0;
 
-  final descriptionText =
-      "Mathematics is one of the most essential subjects for developing logical thinking, analytical skills, and structured problem-solving abilities. A strong foundation in mathematics helps students understand patterns, build reasoning skills, and apply concepts to real-life situations.";
-
   bool readMore = false;
 
-  List<String> tags = [
-    "#conference2025",
-    "#international",
-    "#2025",
-    "#allconference",
-    "#internationalconf",
-    "#internationalconf",
-    "#internationalconf",
-  ];
-
-  @override
-  void initState() {
-    super.initState();
-    print("sghkghdfgdfhgdhjhjghgfhjghdfgh${widget.identity}");
-  }
 
   @override
   void dispose() {
@@ -75,8 +58,11 @@ class _EventDetailModelState extends State<EventDetailModel> {
           return eventDetailShimmer();
         } else if (eventDetailState is EventDetailSuccess) {
           final list = eventDetailState.eventDetailList[0];
+
+          final checkPaid = list['tickets'][0]['isPaid'];
           return ListView(
             children: [
+
               // --------- Carousel Slider ------
               CarouselSlider.builder(
                 itemCount: list['bannerImages'].length,
@@ -131,6 +117,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                   animateToClosest: true,
                 ),
               ),
+
 
               Center(
                 child: AnimatedSmoothIndicator(
@@ -192,19 +179,19 @@ class _EventDetailModelState extends State<EventDetailModel> {
                     Row(
                       children: [
                         colorLabel(
-                          text: 'Conference',
+                          text: list['categoryName'],
                           color: MyColor().yellowClr,
                           borderColor: MyColor().yellowClr,
                         ),
                         SizedBox(width: 10),
                         colorLabel(
-                          text: 'Online',
+                          text: checkPaid ?  'Online' : 'Offline',
                           color: MyColor().blueClr,
                           borderColor: MyColor().blueClr,
                         ),
                         SizedBox(width: 10),
                         colorLabel(
-                          text: 'Paid',
+                          text: checkPaid ? 'Paid' : "Free",
                           color: MyColor().primaryClr,
                           borderColor: MyColor().primaryClr,
                         ),
@@ -248,7 +235,9 @@ class _EventDetailModelState extends State<EventDetailModel> {
                     margin: EdgeInsets.only(left: 16, right: 16, top: 30),
                     child: Column(
                       children: [
-                        Text(list['description'], maxLines: readMore ? null : 2),
+                        Text(textAlign: TextAlign.justify,list['description'],style: GoogleFonts.poppins(
+                          fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                        ), maxLines: readMore ? null : 2),
                         Align(
                           alignment: AlignmentGeometry.topRight,
                           child: GestureDetector(
@@ -259,7 +248,10 @@ class _EventDetailModelState extends State<EventDetailModel> {
                             },
                             child: Text(
                               readMore ? "Read less" : "Read more",
-                              style: const TextStyle(color: Colors.blue),
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,color: MyColor().blueClr
+                              ),
                             ),
                           ),
                         ),
@@ -363,10 +355,25 @@ class _EventDetailModelState extends State<EventDetailModel> {
                               crossAxisCount: 2,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
-                              childAspectRatio: 0.7,
+                              childAspectRatio: 1,
                             ),
                             itemBuilder: (context, index) {
                               final ticket = list['tickets'][index];
+
+                              final formatter = DateFormat('dd-MM-yyyy');
+
+                              DateTime now = DateTime.now();
+                              final today = DateTime(now.year,now.month,now.day);
+
+                              final ticketStartDate = formatter.parse(list['tickets'][index]['sellingFrom']);
+                              final ticketEndDate = formatter.parse(list['tickets'][index]['sellingTo']);
+
+                              final findStartDate = ticketStartDate.isAfter(today);
+                              final findEndDate = ticketEndDate.isAfter(today);
+
+                              bool checkStatusForDate = findEndDate == findStartDate;
+
+
                               return Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
@@ -376,21 +383,43 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                   ),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-
-                                    tickerName(
-                                      title: ticket['name'],
-                                      icon: Iconsax.ticket,
-                                      backClr: MyColor().yellowClr,
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(2),
+                                          margin: EdgeInsets.only(right: 10),
+                                          decoration: BoxDecoration(
+                                            color: MyColor().yellowClr.withOpacity(0.15),
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(color: MyColor().yellowClr)
+                                          ),
+                                          child: Icon(Icons.star,color: MyColor().yellowClr,size: 15,),
+                                        ),
+                                        Expanded(child: Text(ticket['name'],overflow: TextOverflow.ellipsis,style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12)))
+                                      ],
                                     ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 10),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text("Ticket ends at ${DateFormat('dd/MM').format(DateTime.parse(ticket['sellingTo']))}",style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: MyColor().blackClr,
+                                            ),),
+                                          ),
+                                          Text(ticket['price'].toString(),style: GoogleFonts.poppins(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: MyColor().blackClr,
+                                          )),
 
-                                    const SizedBox(height: 6),
-                                    bulletText(ticket['description'] ?? '',Iconsax.tag),
-                                    bulletText(ticket['price'].toString(),Iconsax.tag),
-                                    bulletText('Ticket ends at ${DateFormat('dd/MM').format(DateTime.parse(ticket['sellingTo']))}',Iconsax.calendar),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
@@ -1125,31 +1154,6 @@ Widget colorLabel({
   );
 }
 
-// ---------- Custom Ticket name -------
-Widget tickerName({
-  required String title,
-  required IconData icon,
-  required Color backClr,
-}) {
-  return Row(
-    children: [
-      Expanded(
-        child: Container(
-          padding: EdgeInsets.only(top: 2,bottom: 2,left: 5,right: 5),
-          decoration: BoxDecoration(
-            color: backClr.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(8)
-          ),
-          child: Text(
-            overflow: TextOverflow.ellipsis,
-            title,
-            style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 12),
-          ),
-        ),
-      ),
-    ],
-  );
-}
 
 // -------- skeleton loader ---------
 Widget eventDetailShimmer() {

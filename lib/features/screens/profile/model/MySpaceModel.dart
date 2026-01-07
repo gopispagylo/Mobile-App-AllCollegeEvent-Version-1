@@ -287,6 +287,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
           SizedBox(height: 30,),
           Center(
             child: Wrap(
+              alignment: WrapAlignment.center,
               children: [
                 customText(text: 'About Us'),
                  Container(
@@ -406,7 +407,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Text(text, style: GoogleFonts.poppins(
-        fontSize: 14, color: MyColor().borderClr, fontWeight: FontWeight.w600
+        fontSize: 14, color: MyColor().borderClr, fontWeight: FontWeight.w500
     ),),
   );
 }

@@ -133,6 +133,19 @@ class Validators {
     }
     return null;
   }
+  String? validGoogleMeet(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your google meet link";
+    }
+    return null;
+  }
+
+  String? validVenue(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your venue";
+    }
+    return null;
+  }
 
   String? validPinPut(String? value) {
     if (value == null || value.isEmpty) {

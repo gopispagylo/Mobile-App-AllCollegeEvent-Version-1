@@ -60,6 +60,12 @@ class _PaymentModelState extends State<PaymentModel> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    print("lalallalalalaalalalaalalalal${widget.orgDetailList}");
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
@@ -412,16 +418,16 @@ class _PaymentModelState extends State<PaymentModel> {
                           certIdentity: orgDetail['certIdentity'],
                           eligibleDeptIdentities: orgDetail['eligibleDeptIdentities'],
                           tags: orgDetail['tags'],
-                          collaborators: [
-                            {
-                              'hostIdentity' : orgDetail['hostIdentity'],
-                              'organizationName' : orgDetail['organizationName'],
-                              'organizerNumber' : orgDetail['organizerNumber'],
-                              'orgDept' : orgDetail['orgDept'],
-                              'organizerName' : orgDetail['organizerName'],
-                              'location' : orgDetail['location'],
-                            }
-                          ],
+                          collaborators: List<Map<String, dynamic>>.from(
+                            orgDetail['orgDetailList'].map((item) => {
+                              'hostIdentity': item['hostIdentity'],
+                              'organizationName': item['organizationName'],
+                              'organizerNumber': item['organizerNumber'],
+                              'orgDept': item['orgDept'],
+                              'organizerName': item['organizerName'],
+                              'location': item['location'],
+                            }),
+                          ),
                           calendars: orgDetail['calendars'],
                           tickets: ticketList.map((ticket){
                             return {
@@ -432,7 +438,13 @@ class _PaymentModelState extends State<PaymentModel> {
                           }).toList(),
                           paymentLink: paymentController.text,
                           socialLinks: {},
-                          bannerImages: orgDetail['bannerImages']
+                          bannerImages: orgDetail['bannerImages'], eventLink: orgDetail['eventLink'] ?? '', location: orgDetail['location'] != null && orgDetail['location'].isNotEmpty ? {
+                        "country": orgDetail['location']['country'],
+                        "state": orgDetail['location']['state'],
+                        "city": orgDetail['location']['city'],
+                        "mapLink": orgDetail['location']['mapLink'],
+                        "venue": orgDetail['location']['venue'],
+                      } : {}
                       ));
                     }
                   } : null,

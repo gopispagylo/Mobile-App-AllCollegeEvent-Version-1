@@ -45,16 +45,17 @@ class _ProfileModelState extends State<TopModel> {
                       shape: BoxShape.circle,
                       border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                     ),
-                    clipBehavior: Clip.antiAlias,
-                    child: CachedNetworkImage(
-                      imageUrl: list['profileImage'] ?? '',
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      errorWidget: (context, url, error) => Icon(
-                        Iconsax.profile_circle,
-                        color: MyColor().borderClr,
+                    child: ClipOval(
+                      child: CachedNetworkImage(
+                        imageUrl: list['profileImage'] ?? '',
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          Iconsax.profile_circle,
+                          color: MyColor().borderClr,
+                        ),
                       ),
                     ),
                   ),

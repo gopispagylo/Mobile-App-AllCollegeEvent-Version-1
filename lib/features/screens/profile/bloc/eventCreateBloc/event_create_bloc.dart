@@ -38,6 +38,7 @@ class EventCreateBloc extends Bloc<EventCreateEvent, EventCreateState> {
         MapEntry('title', event.title),
         MapEntry('description', event.description),
         MapEntry('mode', event.mode),
+        MapEntry('eventLink', event.eventLink),
         MapEntry('categoryIdentity', event.categoryIdentity),
         MapEntry('eventTypeIdentity', event.eventTypeIdentity),
         MapEntry('certIdentity', event.certIdentity),
@@ -59,6 +60,11 @@ class EventCreateBloc extends Bloc<EventCreateEvent, EventCreateState> {
         MapEntry('calendars', jsonEncode(event.calendars)),
         MapEntry('tickets', jsonEncode(event.tickets)),
       ]);
+
+      // --------------- event details -------------
+      formData.fields.add(
+        MapEntry("location", jsonEncode(event.location))
+      );
 
       // ------- multiple image -------
       if (event.bannerImages.isNotEmpty) {

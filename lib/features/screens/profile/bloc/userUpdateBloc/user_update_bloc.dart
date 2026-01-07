@@ -26,11 +26,10 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
         // ----- get a user id -----
         final userId = await DBHelper().getUserId();
 
-        // -------- Build request body --------
         // -------- Build form data --------
         final formData = FormData();
 
-// ------- required fields -------
+        // ------- required fields -------
         if (event.whichUser.trim().isNotEmpty) {
           formData.fields.add(
             MapEntry('type', event.whichUser.trim()),
@@ -41,7 +40,7 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
           MapEntry('identity', userId.toString()),
         );
 
-// ------- name / org name -------
+        // ------- name / org name -------
         if (event.whichUser == 'org') {
           if (event.name.trim().isNotEmpty) {
             formData.fields.add(

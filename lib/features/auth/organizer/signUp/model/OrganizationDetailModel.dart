@@ -28,51 +28,6 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
   // Global Key
   final formKey = GlobalKey<FormState>();
 
-  // ----- Country -------
-  List<Map<String, String>> countryList = [
-    {
-      "country": "India",
-      "code": "IN",
-    },
-    {
-      "country": "United States",
-      "code": "US",
-    },
-    {
-      "country": "Japan",
-      "code": "JP",
-    },
-    {
-      "country": "Germany",
-      "code": "DE",
-    },
-    {
-      "country": "Australia",
-      "code": "AU",
-    },
-  ];
-
-  // -------- City -------
-  List<Map<String, String>> cityList = [
-    {"city": "Mumbai", "code": "MB"},
-    {"city": "New York", "code": "NY"},
-    {"city": "Tokyo", "code": "TK"},
-    {"city": "Sydney", "code": "SY"},
-    {"city": "Paris", "code": "PR"},
-  ];
-
-
-  // --------- State ---------
-  List<Map<String, String>> stateList = [
-    {"state": "Maharashtra", "code": "MH"},
-    {"state": "California", "code": "CA"},
-    {"state": "New South Wales", "code": "NSW"},
-    {"state": "Karnataka", "code": "KA"},
-    {"state": "Bavaria", "code": "BY"},
-  ];
-
-
-
 
   // ------- Dropdown select value -----
   String? selectedCountry;
