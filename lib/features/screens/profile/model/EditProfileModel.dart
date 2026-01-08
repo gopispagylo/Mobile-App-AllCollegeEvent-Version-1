@@ -39,11 +39,11 @@ class _EditProfileModelState extends State<EditProfileModel> {
   final phoneController = TextEditingController();
 
 
-
   // ------- Dropdown select value -----
   String? selectedCountry;
   String? selectedState;
   String? selectedCity;
+  String selectedPinCode = "641001";
   String? profileImage;
 
   // ------ global key -------
@@ -233,14 +233,17 @@ class _EditProfileModelState extends State<EditProfileModel> {
                           ),
                           
                           // --------- basic details ---------
-                          Container(
-                            margin: EdgeInsets.only(bottom: 10, top: 10),
-                            child: Text(
-                              "Basic Details",
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: MyColor().blackClr,
+                          Center(
+                            child: Container(
+                              width: 320,
+                              margin: EdgeInsets.only(bottom: 10, top: 10),
+                              child: Text(
+                                "Basic Details",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: MyColor().blackClr,
+                                ),
                               ),
                             ),
                           ),
@@ -271,6 +274,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             textCapitalization: TextCapitalization.none,
                             readOnly: false,
                           ),
+
                           SizedBox(height: 20),
                           
                           // ------ full name ---------
@@ -281,287 +285,318 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             validator: Validators().validName,
                             textInputType: TextInputType.text,
                             textCapitalization: TextCapitalization.words,
-                            readOnly: false,
+                            readOnly: true,
                           ),
                           
                           // ------ location details ---------
-                          Container(
-                            margin: EdgeInsets.only(top: 30),
-                            child: Text(
-                              "Location details",
-                              style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                color: MyColor().blackClr,
+                          Center(
+                            child: Container(
+                              width: 320,
+                              margin: EdgeInsets.only(top: 30),
+                              child: Text(
+                                "Location details",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: MyColor().blackClr,
+                                ),
                               ),
                             ),
                           ),
 
-                          // ------ Country dropdown --------
-                          BlocBuilder<CountryBloc, CountryState>(
-                            builder: (context, countryState) {
-                              if(countryState is CountryLoading){
-                                return Center(child: Container(
-                                    margin: EdgeInsets.only(top: 20),
-                                    child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
-                              }
-                              else if(countryState is CountrySuccess){
-                                return Center(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.only(bottom: 12,top: 20),
-                                        child: Text("Country",style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600
-                                        ),),
-                                      ),
-                                      SizedBox(
-                                        width: 320,
-                                        child: DropdownButtonFormField<String>(
-                                          iconEnabledColor: MyColor().primaryClr,
-                                          hint: Text("Select your Country",style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 12,
-                                              color: MyColor().hintTextClr
-                                          ),),
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            color: MyColor().primaryClr,
-                                            fontWeight: FontWeight.w600,
+                          // ------ ready only for county, state and city  ---------
+
+                          if(widget.whichScreen == 'Organizer')  Column(
+                           children: [
+                             // ----- country read only field ------
+                             Container(
+                                 margin: EdgeInsets.only(top: 20),
+                                 child: MyModels().readyOnlyTextField(value: selectedCountry!, label: 'Country')),
+
+                             // ----- state read only field ------
+                             Container(
+                                 margin: EdgeInsets.only(top: 20),
+                                 child: MyModels().readyOnlyTextField(value: selectedState!, label: 'State')),
+
+                             // ----- city read only field ------
+                             Container(
+                                 margin: EdgeInsets.only(top: 20),
+                                 child: MyModels().readyOnlyTextField(value: selectedCity!, label: 'City')),
+
+                             // ----- pin code -------
+                             Container(
+                                 margin: EdgeInsets.only(top: 20),
+                                 child: MyModels().readyOnlyTextField(value: selectedPinCode, label: 'Pincode')),
+                           ],
+                         ),
+
+                          // ------ drop down for county, state and city ---------
+                          if(widget.whichScreen == 'User')  Column(
+                            children: [
+                              // ------ Country dropdown --------
+                              BlocBuilder<CountryBloc, CountryState>(
+                                builder: (context, countryState) {
+                                  if(countryState is CountryLoading){
+                                    return Center(child: Container(
+                                        margin: EdgeInsets.only(top: 20),
+                                        child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
+                                  }
+                                  else if(countryState is CountrySuccess){
+                                    return Center(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(bottom: 12,top: 20),
+                                            child: Text("Country",style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600
+                                            ),),
                                           ),
-                                          iconDisabledColor: MyColor().blackClr,
-                                          value: selectedCountry,
-                                          decoration: InputDecoration(
-                                            suffixIcon: Padding(
-                                              padding: const EdgeInsets.only(right: 12),
-                                              child: Icon(Icons.arrow_drop_down,),
-                                            ),
-                                            // iconColor: MyColor().primaryClr,
-                                            contentPadding: EdgeInsets.all(10),
-                                            enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                                borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                                borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                                            ),
-                                            focusedErrorBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(12),
-                                                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                                            ),
-                                          ),
-                                          onChanged: (onChanged){
-                                            setState(() {
-                                              selectedCountry = onChanged;
-                                            });
-
-                                            // ---- get a state ------
-                                            context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountry!));
-                                          },
-                                          items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['name'],child: Text(e['name'].toString()))).toList(),
-                                          validator: Validators().validCountry,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else if(countryState is CountryFail){
-                                return Text(countryState.errorMessage);
-                              } return SizedBox.shrink();
-                            },
-                          ),
-
-                          // ------- state dropdown --------
-                          BlocBuilder<ChooseStateBloc, ChooseStateState>(
-                            builder: (context, chooseState) {
-                              if (chooseState is ChooseStateLoading) {
-                                return Center(child: Container(
-                                    margin: EdgeInsets.only(top: 20),
-                                    child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
-                              } else if (chooseState is ChooseStateSuccess) {
-
-                                return Container(
-                                  margin: EdgeInsets.only(top: 20),
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(bottom: 12),
-                                          child: Text("State", style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600
-                                          ),),
-                                        ),
-                                        SizedBox(
-                                          width: 320,
-                                          child: DropdownButtonFormField<String>(
-                                            iconEnabledColor: MyColor().primaryClr,
-                                            hint: Text("Select your State",
-                                              style: GoogleFonts.poppins(
+                                          SizedBox(
+                                            width: 320,
+                                            child: DropdownButtonFormField<String>(
+                                              iconEnabledColor: MyColor().primaryClr,
+                                              hint: Text("Select your Country",style: GoogleFonts.poppins(
                                                   fontWeight: FontWeight.w400,
                                                   fontSize: 12,
                                                   color: MyColor().hintTextClr
                                               ),),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              color: MyColor().primaryClr,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                            iconDisabledColor: MyColor().blackClr,
-                                            value: selectedState,
-                                            decoration: InputDecoration(
-                                              suffixIcon: Padding(
-                                                padding: const EdgeInsets.only(right: 12),
-                                                child: Icon(Icons.arrow_drop_down,),
-                                              ),
-                                              // iconColor: MyColor().primaryClr,
-                                              contentPadding: EdgeInsets.all(10),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().borderClr,
-                                                      width: 0.5)
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().primaryClr,
-                                                      width: 0.5)
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().redClr, width: 0.5)
-                                              ),
-                                              focusedErrorBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().redClr, width: 0.5)
-                                              ),
-                                            ),
-                                            onChanged: (onChanged) {
-                                              setState(() {
-                                                selectedState = onChanged;
-                                              });
-
-                                              // ----- get city -----
-                                              context.read<CityBloc>().add(FetchCity(
-                                                  stateCode: selectedState!,
-                                                  countryCode: selectedCountry!));
-                                            },
-                                            items: chooseState.stateList.map((e) =>
-                                                DropdownMenuItem<String>(value: e['name'],
-                                                    child: Text(e['name'].toString())))
-                                                .toList(),
-                                            validator: Validators().validState,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else if (chooseState is ChooseStateFail) {
-                                return Center(child: Text(chooseState.errorMessage),);
-                              }
-                              return SizedBox.shrink();
-                            },
-                          ),
-
-                          // ------- city dropdown --------
-                          BlocBuilder<CityBloc, CityState>(
-                            builder: (context, cityState) {
-                              if (cityState is CityLoading) {
-                                return Center(child: Container(
-                                    margin: EdgeInsets.only(top: 20),
-                                    child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
-                              } else if (cityState is CitySuccess) {
-                                return Container(
-                                  margin: EdgeInsets.only(top: 20),
-                                  child: Center(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(bottom: 12),
-                                          child: Text("City", style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600
-                                          ),),
-                                        ),
-                                        SizedBox(
-                                          width: 320,
-                                          child: DropdownButtonFormField<String>(
-                                            iconEnabledColor: MyColor().primaryClr,
-                                            hint: Text("Select your city",
                                               style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12,
-                                                  color: MyColor().hintTextClr
-                                              ),),
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              color: MyColor().primaryClr,
-                                              fontWeight: FontWeight.w600,
+                                                fontSize: 14,
+                                                color: MyColor().primaryClr,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                              disabledHint: Text("lalalalal"),
+                                              iconDisabledColor: MyColor().blackClr,
+                                              value: selectedCountry,
+                                              decoration: InputDecoration(
+                                                suffixIcon: Padding(
+                                                  padding: const EdgeInsets.only(right: 12),
+                                                  child: Icon(Icons.arrow_drop_down,),
+                                                ),
+                                                // iconColor: MyColor().primaryClr,
+                                                contentPadding: EdgeInsets.all(10),
+                                                enabledBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
+                                                ),
+                                                focusedBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
+                                                ),
+                                                errorBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                                                ),
+                                                focusedErrorBorder: OutlineInputBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                                                ),
+                                              ),
+                                              onChanged: (onChanged){
+                                                // ---- get a state ------
+                                                context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountry!));
+                                              },
+                                              items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['name'],child: Text(e['name'].toString()))).toList(),
+                                              validator: Validators().validCountry,
                                             ),
-                                            iconDisabledColor: MyColor().blackClr,
-                                            value: selectedCity,
-                                            decoration: InputDecoration(
-                                              suffixIcon: Padding(
-                                                padding: const EdgeInsets.only(right: 12),
-                                                child: Icon(Icons.arrow_drop_down,),
-                                              ),
-                                              // iconColor: MyColor().primaryClr,
-                                              contentPadding: EdgeInsets.all(10),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().borderClr,
-                                                      width: 0.5)
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().primaryClr,
-                                                      width: 0.5)
-                                              ),
-                                              errorBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().redClr, width: 0.5)
-                                              ),
-                                              focusedErrorBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(12),
-                                                  borderSide: BorderSide(
-                                                      color: MyColor().redClr, width: 0.5)
-                                              ),
-                                            ),
-                                            onChanged: (onChanged) {
-                                              selectedCity = onChanged;
-                                            },
-                                            items: cityState.cityList.map((e) =>
-                                                DropdownMenuItem<String>(
-                                                    value: e, child: Text(e.toString())))
-                                                .toList(),
-                                            validator: Validators().validState,
                                           ),
+                                        ],
+                                      ),
+                                    );
+                                  } else if(countryState is CountryFail){
+                                    return Text(countryState.errorMessage);
+                                  } return SizedBox.shrink();
+                                },
+                              ),
+
+                              // ------- state dropdown --------
+                              BlocBuilder<ChooseStateBloc, ChooseStateState>(
+                                builder: (context, chooseState) {
+                                  if (chooseState is ChooseStateLoading) {
+                                    return Center(child: Container(
+                                        margin: EdgeInsets.only(top: 20),
+                                        child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
+                                  } else if (chooseState is ChooseStateSuccess) {
+
+                                    return Container(
+                                      margin: EdgeInsets.only(top: 20),
+                                      child: Center(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(bottom: 12),
+                                              child: Text("State", style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600
+                                              ),),
+                                            ),
+                                            SizedBox(
+                                              width: 320,
+                                              child: DropdownButtonFormField<String>(
+                                                iconEnabledColor: MyColor().primaryClr,
+                                                hint: Text("Select your State",
+                                                  style: GoogleFonts.poppins(
+                                                      fontWeight: FontWeight.w400,
+                                                      fontSize: 12,
+                                                      color: MyColor().hintTextClr
+                                                  ),),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  color: MyColor().primaryClr,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                iconDisabledColor: MyColor().blackClr,
+                                                value: selectedState,
+                                                decoration: InputDecoration(
+                                                  suffixIcon: Padding(
+                                                    padding: const EdgeInsets.only(right: 12),
+                                                    child: Icon(Icons.arrow_drop_down,),
+                                                  ),
+                                                  // iconColor: MyColor().primaryClr,
+                                                  contentPadding: EdgeInsets.all(10),
+                                                  enabledBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().borderClr,
+                                                          width: 0.5)
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().primaryClr,
+                                                          width: 0.5)
+                                                  ),
+                                                  errorBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().redClr, width: 0.5)
+                                                  ),
+                                                  focusedErrorBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().redClr, width: 0.5)
+                                                  ),
+                                                ),
+                                                onChanged: (onChanged) {
+                                                  setState(() {
+                                                    selectedState = onChanged;
+                                                  });
+
+                                                  // ----- get city -----
+                                                  context.read<CityBloc>().add(FetchCity(
+                                                      stateCode: selectedState!,
+                                                      countryCode: selectedCountry!));
+                                                },
+                                                items: chooseState.stateList.map((e) =>
+                                                    DropdownMenuItem<String>(value: e['name'],
+                                                        child: Text(e['name'].toString())))
+                                                    .toList(),
+                                                validator: Validators().validState,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              } else if (cityState is CityFail) {
-                                return Center(child: Text(cityState.errorMessage),);
-                              }
-                              return SizedBox();
-                            },
+                                      ),
+                                    );
+                                  } else if (chooseState is ChooseStateFail) {
+                                    return Center(child: Text(chooseState.errorMessage),);
+                                  }
+                                  return SizedBox.shrink();
+                                },
+                              ),
+
+                              // ------- city dropdown --------
+                              BlocBuilder<CityBloc, CityState>(
+                                builder: (context, cityState) {
+                                  if (cityState is CityLoading) {
+                                    return Center(child: Container(
+                                        margin: EdgeInsets.only(top: 20),
+                                        child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
+                                  } else if (cityState is CitySuccess) {
+                                    return Container(
+                                      margin: EdgeInsets.only(top: 20),
+                                      child: Center(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(bottom: 12),
+                                              child: Text("City", style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w600
+                                              ),),
+                                            ),
+                                            SizedBox(
+                                              width: 320,
+                                              child: DropdownButtonFormField<String>(
+                                                iconEnabledColor: MyColor().primaryClr,
+                                                hint: Text("Select your city",
+                                                  style: GoogleFonts.poppins(
+                                                      fontWeight: FontWeight.w400,
+                                                      fontSize: 12,
+                                                      color: MyColor().hintTextClr
+                                                  ),),
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  color: MyColor().primaryClr,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                                iconDisabledColor: MyColor().blackClr,
+                                                value: selectedCity,
+                                                decoration: InputDecoration(
+                                                  suffixIcon: Padding(
+                                                    padding: const EdgeInsets.only(right: 12),
+                                                    child: Icon(Icons.arrow_drop_down,),
+                                                  ),
+                                                  // iconColor: MyColor().primaryClr,
+                                                  contentPadding: EdgeInsets.all(10),
+                                                  enabledBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().borderClr,
+                                                          width: 0.5)
+                                                  ),
+                                                  focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().primaryClr,
+                                                          width: 0.5)
+                                                  ),
+                                                  errorBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().redClr, width: 0.5)
+                                                  ),
+                                                  focusedErrorBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      borderSide: BorderSide(
+                                                          color: MyColor().redClr, width: 0.5)
+                                                  ),
+                                                ),
+                                                onChanged: (onChanged) {
+                                                  selectedCity = onChanged;
+                                                },
+                                                items: cityState.cityList.map((e) =>
+                                                    DropdownMenuItem<String>(
+                                                        value: e, child: Text(e.toString())))
+                                                    .toList(),
+                                                validator: Validators().validState,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  } else if (cityState is CityFail) {
+                                    return Center(child: Text(cityState.errorMessage),);
+                                  }
+                                  return SizedBox();
+                                },
+                              ),
+                            ],
                           ),
 
                           // ------- forgot password --------
@@ -630,9 +665,9 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                       // if (formKey.currentState!.validate()) {
                                       context.read<UserUpdateBloc>().add(
                                           ClickUserUpdate(
-                                              state: selectedState ?? '',
-                                              city: selectedCity ?? '',
-                                              country: selectedCountry ?? '',
+                                              userState: selectedState!,
+                                              city: selectedCity!,
+                                              country: selectedCountry!,
                                               phone: phoneController.text,
                                               name: nameController.text,
                                               whichUser: widget.whichScreen ==

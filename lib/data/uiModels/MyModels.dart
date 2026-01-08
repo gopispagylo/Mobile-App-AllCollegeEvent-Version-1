@@ -142,8 +142,8 @@ class MyModels{
             ),),
             style: GoogleFonts.poppins(
               fontSize: 14,
-              color: MyColor().primaryClr,
-              fontWeight: FontWeight.w600,
+              color: MyColor().blackClr,
+              fontWeight: FontWeight.w500,
             ),
             iconDisabledColor: MyColor().blackClr,
             value: value,
@@ -287,39 +287,58 @@ class MyModels{
   }
 
   // -------- Social Media Field -----------
-  SizedBox customSocialMedia({required dynamic prefix, required TextEditingController controller, required String hintText,}) {
-    return SizedBox(
-      width: 320,
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(10),
-          enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+  Center customSocialMedia({required dynamic prefix, required TextEditingController controller, required String hintText,required String label}) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 12),
+            child: Text(label,style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600
+            ),),
           ),
-          focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
-          ),
-          errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                  color: MyColor().redClr, width: 0.5)
-          ),
-          hintText: hintText,
-          hintStyle: GoogleFonts.poppins(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-              color: MyColor().hintTextClr
-          ),
-          prefixIcon: prefix,
+          SizedBox(
+            width: 320,
+            child: TextFormField(
+              controller: controller,
+              onTapOutside: (outSideTap){
+                WidgetsBinding.instance.focusManager.primaryFocus!.unfocus();
+              },
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+                ),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                        color: MyColor().redClr, width: 0.5)
+                ),
 
-        ),
+                hintText: hintText,
+                hintStyle: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                    color: MyColor().hintTextClr
+                ),
+                prefixIcon: prefix,
+
+              ),
+            ),
+          ),
+        ],
       ),
     );
 }
@@ -348,7 +367,7 @@ class MyModels{
             style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
-                color: MyColor().primaryClr,
+                color: MyColor().blackClr,
                 fontFamily: "Sora"
             ),
             controller: controller,
@@ -585,4 +604,49 @@ class MyModels{
       ],
     );
   }
+
+  Center readyOnlyTextField({required String value,required String label}){
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin: EdgeInsets.only(bottom: 12),
+            child: Text(label,style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600
+            ),),
+          ),
+          SizedBox(
+            width: 320,
+            child: TextFormField(
+              initialValue: value,
+              readOnly: true,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(10),
+                enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+                ),
+                errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
 }

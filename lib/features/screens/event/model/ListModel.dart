@@ -47,7 +47,12 @@ class _ListModelState extends State<ListModel> {
 
                   // -------- field name ------------
                   final title = list['title'] ?? "No title";
-                  final featuredImagePath = list['bannerImages'][0] ?? '';
+
+                  final featuredImagePath =
+                  (list['bannerImages'] != null &&
+                      list['bannerImages'].isNotEmpty)
+                      ? list['bannerImages'][0]
+                      : '';
 
 
                   // ------ date format -------
@@ -72,6 +77,7 @@ class _ListModelState extends State<ListModel> {
 
                   // -------- identity ---------
                   final identity = list['identity'];
+                  final paymentLink = list['paymentLink'];
 
                   // ------- Tween Animation -----------
                   return TweenAnimationBuilder(
@@ -88,7 +94,7 @@ class _ListModelState extends State<ListModel> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title),
+                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,),
                             transitionsBuilder: (_, animation, __, child){
                             return SlideTransition( position: Tween(
                               begin: const Offset(1, 0),

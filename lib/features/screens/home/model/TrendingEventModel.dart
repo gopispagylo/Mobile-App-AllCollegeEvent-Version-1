@@ -75,20 +75,27 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                       final parsedDate = DateFormat('dd MMM yy').format(DateTime.parse(rawDate));
 
                       // ------ event mode ------
-                      final eventMode = list['mode'];
+                      String eventMode;
+
+                      if(list['mode'] == "ONLINE"){
+                        eventMode = 'Online';
+                      }else{
+                        eventMode = "Offline";
+                      }
 
                       // ------- image path ---------
-                      final featuredImage = list['bannerImages'][0] ?? '';
+                      final featuredImage = (list['bannerImages'] != null && list['bannerImages'].isNotEmpty) ? list['bannerImages'][0] : '';
 
                       // -------- identity ---------
                       final identity = list['identity'];
+                      final paymentLink = list['paymentLink'];
 
                       // --------- categoryName ------
                       final categoryName = list['categoryName'];
 
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => EventDetailPage(identity: identity, title: title,)));
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => EventDetailPage(identity: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,)));
                         },
                         child: Container(
                           margin: EdgeInsets.only(right: 16, left: index == 0 ? 16 : 0, top: 15),

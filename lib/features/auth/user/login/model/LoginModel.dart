@@ -46,19 +46,21 @@ class _LoginModelState extends State<LoginModel> {
     try {
       final user = await googleSignIn.signIn();
       if (user == null) {
-        FlutterToast().flutterToast("Google Sign In error", ToastificationType.error, ToastificationStyle.flat);
+        FlutterToast().flutterToast(
+          "Google Sign In error",
+          ToastificationType.error,
+          ToastificationStyle.flat,
+        );
         return;
       }
 
       final googleAuth = await user.authentication;
       final idToken = googleAuth.idToken;
 
-      if(!mounted) return;
-
-      print("idTokenidTokenidTokenidTokenidTokenidTokenidTokenidToken$idToken");
-
       // -------- api controller -----------
-      context.read<GoogleSignInBloc>().add(ClickGoogleSignIn(googleToken: idToken!));
+      context.read<GoogleSignInBloc>().add(
+        ClickGoogleSignIn(googleToken: idToken!),
+      );
 
       // Get Google Token
       await googleSignIn.disconnect();
@@ -73,7 +75,7 @@ class _LoginModelState extends State<LoginModel> {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain,),
+          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain),
         ),
         Container(
           margin: EdgeInsets.only(left: 16, right: 16),
@@ -85,7 +87,7 @@ class _LoginModelState extends State<LoginModel> {
                   height: 250,
                   child: Image.asset(ImagePath().authLoginImg),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(height: 20),
                 Text(
                   textAlign: TextAlign.center,
                   ConfigMessage().loginUserHeadMsg,
@@ -108,7 +110,10 @@ class _LoginModelState extends State<LoginModel> {
                   label: "Email",
                   controller: emailController,
                   hintText: "Enter your mail id",
-                  validator: Validators().validEmail, textInputType: TextInputType.emailAddress, textCapitalization: TextCapitalization.none, readOnly: false,
+                  validator: Validators().validEmail,
+                  textInputType: TextInputType.emailAddress,
+                  textCapitalization: TextCapitalization.none,
+                  readOnly: false,
                 ),
                 SizedBox(height: 20),
                 MyModels().customTextFieldPassword(
@@ -170,7 +175,11 @@ class _LoginModelState extends State<LoginModel> {
                       emailController.clear();
                       passwordController.clear();
                     } else if (loginState is LoginFail) {
-                      FlutterToast().flutterToast(loginState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+                      FlutterToast().flutterToast(
+                        loginState.errorMessage,
+                        ToastificationType.error,
+                        ToastificationStyle.flat,
+                      );
                     }
                   },
                   builder: (context, loginState) {
@@ -185,17 +194,21 @@ class _LoginModelState extends State<LoginModel> {
                           ),
                         ),
 
-                        onPressed: emailController.text.isNotEmpty && passwordController.text.isNotEmpty ?  () {
-                          if (formKey.currentState!.validate()) {
-                            context.read<LoginBloc>().add(
-                              ClickedLogin(
-                                email: emailController.text,
-                                password: passwordController.text,
-                                type: widget.whichScreen,
-                              ),
-                            );
-                          }
-                        } : null,
+                        onPressed:
+                            emailController.text.isNotEmpty &&
+                                passwordController.text.isNotEmpty
+                            ? () {
+                                if (formKey.currentState!.validate()) {
+                                  context.read<LoginBloc>().add(
+                                    ClickedLogin(
+                                      email: emailController.text,
+                                      password: passwordController.text,
+                                      type: widget.whichScreen,
+                                    ),
+                                  );
+                                }
+                              }
+                            : null,
                         child: loginState is LoginLoading
                             ? Center(
                                 child: CircularProgressIndicator(
@@ -241,37 +254,64 @@ class _LoginModelState extends State<LoginModel> {
                 SizedBox(height: 15),
 
                 // Google SignIn
-                Center(
-                  child: GestureDetector(
-                    onTap: googleSignInFunction,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 48,
-                      width: 320,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.white,
-                        border: Border.all(
-                          color: Colors.grey.shade400,
-                          width: 0.5,
+                BlocConsumer<GoogleSignInBloc, GoogleSignInState>(
+                  listener: (context, googleSignInState) {
+                    if (googleSignInState is GoogleSignInSuccess) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BottomNavigationBarPage(pageIndex: 0),
                         ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(ImagePath().googleImg, height: 30),
-                          const SizedBox(width: 10),
-                          Text(
-                            "Continue with Google",
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 14,
+                        (route) => false,
+                      );
+                    } else if (googleSignInState is GoogleSignInFail) {
+                      FlutterToast().flutterToast(
+                        googleSignInState.errorMessage,
+                        ToastificationType.error,
+                        ToastificationStyle.flat,
+                      );
+                    }
+                  },
+                  builder: (context, googleSignInState) {
+                    return Center(
+                      child: GestureDetector(
+                        onTap: googleSignInFunction,
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 48,
+                          width: 320,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 0.5,
                             ),
                           ),
-                        ],
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(ImagePath().googleImg, height: 30),
+                              const SizedBox(width: 10),
+                              googleSignInState is GoogleSignInLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: MyColor().primaryClr,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Continue with Google",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
                 SizedBox(height: 25),
                 Row(

@@ -48,6 +48,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
             // -------- set a user id --------
             await db.insertUserId(responseBody['data']['identity']);
+
           } else {
             emit(LoginFail(errorMessage: responseBody['message']));
           }

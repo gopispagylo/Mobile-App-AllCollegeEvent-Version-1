@@ -26,6 +26,9 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
         // ----- get a user id -----
         final userId = await DBHelper().getUserId();
 
+        print("userIduserIduserIduserId$userId");
+        print("tokentokentokentokentoken$token");
+
         // -------- Build form data --------
         final formData = FormData();
 
@@ -56,7 +59,6 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
         }
 
         // ------- image upload -------
-
         if(event.profileImage != null){
           formData.files.add(MapEntry('profileImage', await MultipartFile.fromFile(
             event.profileImage!.path!,
@@ -65,8 +67,9 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
         }
 
         // ------- other fields -------
-        if (event.state.trim().isNotEmpty) {
-          formData.fields.add(MapEntry('state', event.state.trim()));
+        print("statestatestatestatestate${event.userState}");
+        if (event.userState.trim().isNotEmpty) {
+          formData.fields.add(MapEntry('state', event.userState.trim()));
         }
         if (event.city.trim().isNotEmpty) {
           formData.fields.add(MapEntry('city', event.city.trim()));
@@ -78,7 +81,7 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
           formData.fields.add(MapEntry('phone', event.phone.trim()));
         }
 
-        print('FORM DATA → ${formData.fields.length}');
+        print('FORM DATA → ${formData.fields.map((e)=> e.value)}');
         print('FORM FILES → ${formData.files}');
 
 
@@ -95,6 +98,7 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
           }
         }
       }on DioException catch(e){
+        print("kakakakakakakakakakakakak$e");
         // ------ error handle config --------
       final errorMessage =  HandleErrorConfig().handleDioError(e);
       emit(UserUpdateFail(errorMessage: errorMessage));

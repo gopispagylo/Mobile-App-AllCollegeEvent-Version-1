@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
@@ -17,6 +18,10 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
     on<ClickGoogleSignIn>((event, emit) async {
       try {
 
+        DBHelper db = DBHelper();
+
+        await apiController.setBaseUrl();
+
         final parameter = {'googleToken': event.googleToken};
 
         final response = await apiController.postMethod(
@@ -27,7 +32,18 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
+
             emit(GoogleSignInSuccess());
+            // --------- insert the bool value on the sqLite data base ------------
+            await db.insertIsLogin("isLogin", true);
+            await db.insertingIsSplash('isSplash', true);
+
+            // ------- set token ---------
+            await db.insertToken(responseBody['token']);
+
+            // -------- set a user id --------
+            await db.insertUserId(responseBody['data']['identity']);
+
           } else {
             emit(GoogleSignInFail(errorMessage: responseBody['message']));
           }

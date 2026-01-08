@@ -8,6 +8,7 @@ import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateD
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/perks/perks_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/PaymentPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -32,11 +33,10 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
   // -------- Controllers -------
   final linkedInController = TextEditingController();
   final instagramController = TextEditingController();
-  final faceBookController = TextEditingController();
-  final twitterController = TextEditingController();
-  final youtubeController = TextEditingController();
-  final telegramController = TextEditingController();
   final whatsappController = TextEditingController();
+  final webSiteController = TextEditingController();
+  final eventVideoController = TextEditingController();
+
 
   // ------- dropdown value ----
   String? perksValue;
@@ -247,48 +247,43 @@ class _MediaAndTicketsModelState extends State<MediaAndTicketsModel> {
               margin: EdgeInsets.only(left: 16,right: 16,top: 20),
               child: Column(
                 children: [
+
                   Container(
                     margin: EdgeInsets.only(bottom: 20),
                     child: MyModels().customSocialMedia(prefix: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",height: 20,),
-                    ), controller: linkedInController, hintText: 'Enter your linked in url'),
+                      child: Image.asset(ImagePath().whatsapp,height: 20,),
+                    ), controller: whatsappController, hintText: 'Enter your whatsapp in url', label: 'Whats App'),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 20),
                     child: MyModels().customSocialMedia(prefix: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",height: 20,),
-                    ), controller: linkedInController, hintText: 'Enter your instagram url'),
+                      child: Image.asset(ImagePath().linkedIn,height: 20,),
+                    ), controller: linkedInController, hintText: 'Enter your linked in url',label: 'LinkedIn'),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 20),
                     child: MyModels().customSocialMedia(prefix: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",height: 20,),
-                    ), controller: linkedInController, hintText: 'Enter your facebook url'),
+                      child: Image.asset(ImagePath().instagram,height: 20,),
+                    ), controller: instagramController, hintText: 'Enter your instagram url',label: 'Instagram'),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 20),
                     child: MyModels().customSocialMedia(prefix: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",height: 20,),
-                    ), controller: linkedInController, hintText: 'Enter your twitter url'),
+                      child: Image.asset(ImagePath().website,height: 20,),
+                    ), controller: webSiteController, hintText: 'Enter your website url',label: 'Website'),
                   ),
                   Container(
                     margin: EdgeInsets.only(bottom: 20),
                     child: MyModels().customSocialMedia(prefix: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",height: 20,),
-                    ), controller: linkedInController, hintText: 'Enter your youtube url'),
+                      child: Image.asset(ImagePath().video,height: 20,),
+                    ), controller: eventVideoController, hintText: 'Enter your event video url',label: 'Event Video'),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    child: MyModels().customSocialMedia(prefix: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.network("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/2021_Facebook_icon.svg/2048px-2021_Facebook_icon.svg.png",height: 20,),
-                    ), controller: linkedInController, hintText: 'Enter your telegram url'),
-                  ),
+
                 ],
               ),
             ),

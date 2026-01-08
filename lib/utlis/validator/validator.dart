@@ -133,6 +133,13 @@ class Validators {
     }
     return null;
   }
+
+  String? validContactAdmin(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please enter your describe your request";
+    }
+    return null;
+  }
   String? validGoogleMeet(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your google meet link";
@@ -248,6 +255,13 @@ class Validators {
   String? validOrganizationName(String? value) {
     if (value == null || value.isEmpty) {
       return "Please select your organization name";
+    }
+    return null;
+  }
+
+  String? validComment(String? value) {
+    if (value == null || value.isEmpty) {
+      return "Please select your thoughts";
     }
     return null;
   }

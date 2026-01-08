@@ -175,6 +175,17 @@ class _MyEventsModelState extends State<MyEventsModel> {
                             // ------ date format -------
                             final rawDate = list['calendars'][0]['startDate'];
 
+
+                            String parsedDate;
+
+                            try {
+                              parsedDate = DateFormat('dd MMM yy').format(
+                                  DateTime.parse(rawDate));
+                            } catch (e) {
+                              parsedDate = rawDate;
+                            }
+
+
                             // -------- event mode ------
                             final mode = list['mode'];
 
@@ -212,11 +223,10 @@ class _MyEventsModelState extends State<MyEventsModel> {
                             final location = mode == 'ONLINE' ? 'Online' : list['location']['city'] ?? "no city";
 
 
-                            final parsedDate = DateFormat('dd MMM yy').format(DateTime.parse(rawDate));
-
 
                             // -------- identity ---------
                             final identity = list['identity'];
+                            final paymentLink = list['paymentLink'];
 
                             // ------- Tween Animation -----------
                             return TweenAnimationBuilder(
@@ -233,7 +243,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                      PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title),
+                                      PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
                                           transitionsBuilder: (_, animation, __, child){
                                             return SlideTransition( position: Tween(
                                               begin: const Offset(1, 0),
@@ -363,7 +373,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                                     onTap: (){
                                                       Navigator.push(
                                                           context,
-                                                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title),
+                                                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
                                                               transitionsBuilder: (_, animation, __, child){
                                                                 return SlideTransition( position: Tween(
                                                                   begin: const Offset(1, 0),

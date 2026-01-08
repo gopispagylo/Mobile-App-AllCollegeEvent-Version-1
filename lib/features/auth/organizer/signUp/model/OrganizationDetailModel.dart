@@ -144,7 +144,9 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                 BlocBuilder<CountryBloc, CountryState>(
                   builder: (context, countryState) {
                     if(countryState is CountryLoading){
-                      return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                      return Center(child: Container(
+                          margin: EdgeInsets.only(top: 30),
+                          child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
                     }
                     else if(countryState is CountrySuccess){
                       return Center(
@@ -223,8 +225,9 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                 BlocBuilder<ChooseStateBloc, ChooseStateState>(
                   builder: (context, chooseState) {
                     if (chooseState is ChooseStateLoading) {
-                      return Center(child: CircularProgressIndicator(
-                        color: MyColor().primaryClr,),);
+                      return Center(child: Container(
+                          margin: EdgeInsets.only(top: 30),
+                          child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
                     } else if (chooseState is ChooseStateSuccess) {
                       return Container(
                         margin: EdgeInsets.only(top: 20),
@@ -319,8 +322,9 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                 BlocBuilder<CityBloc, CityState>(
                   builder: (context, cityState) {
                     if (cityState is CityLoading) {
-                      return Center(child: CircularProgressIndicator(
-                        color: MyColor().primaryClr,),);
+                      return Center(child: Container(
+                          margin: EdgeInsets.only(top: 30),
+                          child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
                     } else if (cityState is CitySuccess) {
                       return Container(
                         margin: EdgeInsets.only(top: 20),

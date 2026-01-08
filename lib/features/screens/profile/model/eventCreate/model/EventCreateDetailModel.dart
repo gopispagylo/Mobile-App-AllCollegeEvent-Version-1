@@ -160,6 +160,7 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
                               child: MyModels().customDropdown(label: "Category *", hint: "Select Event Category", value: selectAceCategories, onChanged: (category){
                                 setState(() {
                                   selectAceCategories = category;
+                                  selectEventType = null;
                                 });
                                 context.read<EventTypeBloc>().add(ClickedEventType(identity: selectAceCategories!));
                               }, items: aceCategoriesState.aceCategoriesList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['categoryName']))).toList(), valid: Validators().validOrgCategories),
@@ -198,94 +199,96 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
           ),
 
           // ------ tags ------
-          Container(
-            margin: EdgeInsets.only(left: 16,right: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  child: Text(
-                    "Tags *",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontFamily: "Sora",
-                      fontSize: 16,
+          Center(
+            child: Container(
+              width: 320,
+              margin: EdgeInsets.only(left: 16,right: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Text(
+                      "Tags *",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: "Sora",
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 10,),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                        flex: 3,
-                        child: TextFormField(
-                          inputFormatters: [
-                            FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))
-                          ],
-                          textCapitalization: TextCapitalization.words,
-                          style: TextStyle(
+                  SizedBox(height: 10,),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          flex: 3,
+                          child: TextFormField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))
+                            ],
+                            textCapitalization: TextCapitalization.words,
+                            style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: MyColor().primaryClr,
-                              fontFamily: "Sora"
-                          ),
-                          controller: searchableKeywordsController,
-                          onTapUpOutside: (outSideClick){
-                            FocusManager.instance.primaryFocus!.unfocus();
-                          },
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
+                              color: MyColor().blackClr,
                             ),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
-                            ),
-                            errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                            ),
-                            focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                            ),
-                            hint: Text("#TAGS",style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: MyColor().hintTextClr
-                            ),),
-                          ),
-                        )),
-                    Expanded(
-                        flex: 1,
-                        child: GestureDetector(
-                          onTap: (){
-                            if(searchableKeywordsController.text.isNotEmpty){
-                              context.read<SearchableKeyBloc>().add(ClickSearchableKey(searchableText: "#${searchableKeywordsController.text}"));
-                              searchableKeywordsController.clear();
-                            }else{
-                              FlutterToast().flutterToast("At least add one searchable keywords", ToastificationType.error, ToastificationStyle.flat);
-                            }
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(left: 10),
-                              alignment: Alignment.center,
-                              height: 55,
-                              decoration: BoxDecoration(
-                                  color: MyColor().primaryClr,
-                                  borderRadius: BorderRadius.all(Radius.circular(10))
+                            controller: searchableKeywordsController,
+                            onTapUpOutside: (outSideClick){
+                              FocusManager.instance.primaryFocus!.unfocus();
+                            },
+                            keyboardType: TextInputType.text,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
                               ),
-                              child: Text("Add",style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w600,fontSize: 14,color: MyColor().whiteClr
-                              ),)),
-                        ))
-                  ],
-                ),
-              ],
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                              ),
+                              hint: Text("#TAGS",style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: MyColor().hintTextClr
+                              ),),
+                            ),
+                          )),
+                      Expanded(
+                          flex: 1,
+                          child: GestureDetector(
+                            onTap: (){
+                              if(searchableKeywordsController.text.isNotEmpty){
+                                context.read<SearchableKeyBloc>().add(ClickSearchableKey(searchableText: "#${searchableKeywordsController.text}"));
+                                searchableKeywordsController.clear();
+                              }else{
+                                FlutterToast().flutterToast("At least add one searchable keywords", ToastificationType.error, ToastificationStyle.flat);
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(left: 10),
+                                alignment: Alignment.center,
+                                height: 55,
+                                decoration: BoxDecoration(
+                                    color: MyColor().primaryClr,
+                                    borderRadius: BorderRadius.all(Radius.circular(10))
+                                ),
+                                child: Text("Add",style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,fontSize: 14,color: MyColor().whiteClr
+                                ),)),
+                          ))
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -345,7 +348,9 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
           ),
 
           // ----- Event Title ------
-          MyModels().customTextFieldWithLimitWithoutValid(label: "Offers", hintText: 'Enter Offers', controller: offerController, textInputType: TextInputType.none, textCapitalization: TextCapitalization.none, limit: 50, readOnly: false),
+          Container(
+              margin: EdgeInsets.only(top: 10),
+              child: MyModels().customTextFieldWithLimitWithoutValid(label: "Offers", hintText: 'Enter Offers', controller: offerController, textInputType: TextInputType.text, textCapitalization: TextCapitalization.none, limit: 50, readOnly: false)),
 
           SizedBox(height: 20,),
 

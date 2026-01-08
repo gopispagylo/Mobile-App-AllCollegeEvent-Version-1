@@ -1,5 +1,4 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
-import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBloc/event_detail_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/model/EventDetailModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -10,9 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 class EventDetailPage extends StatefulWidget {
   final String identity;
   final String title;
+  final String whichScreen;
+  final String paymentLink;
 
   const EventDetailPage(
-      {super.key, required this.identity, required this.title});
+      {super.key, required this.identity, required this.title, required this.whichScreen, required this.paymentLink});
 
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
@@ -37,7 +38,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             ),
           ),
         ),
-        body: EventDetailModel(identity: widget.identity, title: widget.title,),
+        body: EventDetailModel(identity: widget.identity, title: widget.title, whichScreen: widget.whichScreen, paymentLink: widget.paymentLink,),
       ),
     );
   }

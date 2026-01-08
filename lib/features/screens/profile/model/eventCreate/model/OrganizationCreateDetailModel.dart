@@ -19,7 +19,9 @@ class OrganizationCreateDetailModel extends StatefulWidget {
 
 class _OrganizationCreateDetailModelState
     extends State<OrganizationCreateDetailModel> {
+
   List<Map<String, dynamic>> orgDepartment = [
+
     {"code": "CSE", "name": "Computer Science and Engineering"},
     {"code": "IT", "name": "Information Technology"},
     {"code": "ECE", "name": "Electronics and CE"},
@@ -319,7 +321,7 @@ class _OrganizationCreateDetailModelState
                   ),
 
                   // ------- Organization Department --------
-                  Center(
+                 if(item.selectHostBy == "29d8620d-9d1f-414c-a53d-c1d1574b17a7" || item.selectHostBy == "2d78a998-263b-403c-b757-0c92c56004f8" ) Center(
                     child: Container(
                       margin: EdgeInsets.only(left: 16, right: 16, top: 20),
                       child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(

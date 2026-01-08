@@ -6,6 +6,7 @@ import 'package:all_college_event_app/features/screens/profile/model/eventCreate
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class MySpaceModel extends StatefulWidget {
@@ -242,19 +243,23 @@ class _MySpaceModelState extends State<MySpaceModel> {
               SizedBox(width: 25,),
               GestureDetector(
                 onTap: (){
+
                   MyModels().alertDialogCustomizeEdit(context, "Are you sure?", Text("You can sign back in anytime. Want to switch accounts?",style: GoogleFonts.poppins(
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
                       color: MyColor().secondaryClr
                   ),), (){
                     Navigator.pop(context);
-                  }, ()async{
+                  }, () async{
+
+                    final googleSignIn = GoogleSignIn();
 
                     await DBHelper().deleteAllLoginData();
                     await DBHelper().deleteUser();
                     await DBHelper().deleteUserId();
                     await DBHelper().deleteToken();
 
+                    await googleSignIn.signOut();
 
                     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
                   }, "Cancel", "Logout");

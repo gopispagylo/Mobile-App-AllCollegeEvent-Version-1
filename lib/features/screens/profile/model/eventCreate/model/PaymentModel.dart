@@ -4,6 +4,7 @@ import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateBloc/event_create_bloc.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -324,7 +325,7 @@ class _PaymentModelState extends State<PaymentModel> {
 
           // -------- back and preview and submit ---------
           Container(
-            margin: EdgeInsets.only(left: 16,right: 16),
+            margin: EdgeInsets.only(left: 16,right: 16,top: 30),
             child: Row(
               children: [
                 Expanded(
@@ -335,7 +336,6 @@ class _PaymentModelState extends State<PaymentModel> {
                     child: Align(
                       alignment: AlignmentGeometry.topRight,
                       child: Container(
-                          margin: EdgeInsets.only(top: 20,right: 0),
                           height: 48,
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
@@ -351,118 +351,92 @@ class _PaymentModelState extends State<PaymentModel> {
                 ),
                 SizedBox(width: 16,),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: (){
-                      // Navigator.pop(context);
+                  child: BlocConsumer<EventCreateBloc, EventCreateState>(
+                    listener: (context, eventCreateState) {
+                      if (eventCreateState is EventCreateSuccess) {
+                        FlutterToast().flutterToast("Event created successfully 🎉", ToastificationType.success, ToastificationStyle.flat);
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => BottomNavigationBarPage(pageIndex: 4,)));
+                      }
                     },
-                    child: Align(
-                      alignment: AlignmentGeometry.topRight,
-                      child: Container(
-                          margin: EdgeInsets.only(top: 20,right: 0),
-                          height: 48,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              color: MyColor().whiteClr,
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(color: MyColor().primaryClr)
+                    builder: (context, eventCreateState) {
+                      return ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(0, 48),
+                          backgroundColor: MyColor().primaryClr,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text("Preview",style: GoogleFonts.poppins(
-                                  fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().primaryClr
-                              ),),
-                              Icon(Iconsax.eye_copy,color: MyColor().primaryClr,)
-                            ],
-                          )),
-                    ),
+                        ),
+                        onPressed: ticketList.isNotEmpty ?  () {
+                          MyModels().alertDialogCustomizeEdit(context, 'Event Submitted Successfully', Text(textAlign: TextAlign.center,ConfigMessage().confirmMessageForEventCreate,style: GoogleFonts.poppins(
+                            fontSize: 14,color: MyColor().blackClr,fontWeight: FontWeight.w500,
+                          ),), (){
+                            Navigator.pop(context);
+                          }, (){ if(formKey.currentState!.validate()){
+
+                            final orgDetail = widget.orgDetailList;
+
+                            context.read<EventCreateBloc>().add(ClickEventCreate(
+                                title: orgDetail['title'],
+                                description: orgDetail['description'],
+                                mode: orgDetail['mode'],
+                                categoryIdentity: orgDetail['categoryIdentity'],
+                                eventTypeIdentity: orgDetail['eventTypeIdentity'],
+                                perkIdentities: orgDetail['perkIdentities'],
+                                accommodationIdentities: orgDetail['accommodationIdentities'],
+                                certIdentity: orgDetail['certIdentity'],
+                                eligibleDeptIdentities: orgDetail['eligibleDeptIdentities'],
+                                tags: orgDetail['tags'],
+                                collaborators: List<Map<String, dynamic>>.from(
+                                  orgDetail['orgDetailList'].map((item) => {
+                                    'hostIdentity': item['hostIdentity'],
+                                    'organizationName': item['organizationName'],
+                                    'organizerNumber': item['organizerNumber'],
+                                    'orgDept': item['orgDept'],
+                                    'organizerName': item['organizerName'],
+                                    'location': item['location'],
+                                  }),
+                                ),
+                                calendars: orgDetail['calendars'],
+                                tickets: ticketList.map((ticket){
+                                  return {
+                                    ...ticket,
+                                    'sellingFrom': toIsoDate(ticket['sellingFrom']),
+                                    'sellingTo': toIsoDate(ticket['sellingTo']),
+                                  };
+                                }).toList(),
+                                paymentLink: paymentController.text,
+                                socialLinks: {},
+                                bannerImages: orgDetail['bannerImages'], eventLink: orgDetail['eventLink'] ?? '', location: orgDetail['location'] != null && orgDetail['location'].isNotEmpty ? {
+                              "country": orgDetail['location']['country'],
+                              "state": orgDetail['location']['state'],
+                              "city": orgDetail['location']['city'],
+                              "mapLink": orgDetail['location']['mapLink'],
+                              "venue": orgDetail['location']['venue'],
+                            } : {}
+                            ));
+                          }}, "Cancel", "Confirm");
+                        } : null,
+                        child: eventCreateState is EventCreateLoading
+                            ? Center(
+                          child: CircularProgressIndicator(color: MyColor().whiteClr,),)
+                            : Text(
+                          "Submit",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: MyColor().whiteClr,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
+                )
               ],
             ),
           ),
           SizedBox(height: 20,),
-          BlocConsumer<EventCreateBloc, EventCreateState>(
-            listener: (context, eventCreateState) {
-              if (eventCreateState is EventCreateSuccess) {
-                FlutterToast().flutterToast("Event created successfully 🎉", ToastificationType.success, ToastificationStyle.flat);
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => BottomNavigationBarPage(pageIndex: 4,)));
-              }
-            },
-            builder: (context, eventCreateState) {
-              return Container(
-                margin: EdgeInsets.only(left: 16, right: 16),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: Size(320, 48),
-                    backgroundColor: MyColor().primaryClr,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  onPressed: ticketList.isNotEmpty ?  () {
-                    if(formKey.currentState!.validate()){
 
-                      final orgDetail = widget.orgDetailList;
-
-                      print("jshddfjshgdfshjdfshjkdfshdfshkdfshjkdfs$orgDetail");
-
-                      context.read<EventCreateBloc>().add(ClickEventCreate(
-                          title: orgDetail['title'],
-                          description: orgDetail['description'],
-                          mode: orgDetail['mode'],
-                          categoryIdentity: orgDetail['categoryIdentity'],
-                          eventTypeIdentity: orgDetail['eventTypeIdentity'],
-                          perkIdentities: orgDetail['perkIdentities'],
-                          accommodationIdentities: orgDetail['accommodationIdentities'],
-                          certIdentity: orgDetail['certIdentity'],
-                          eligibleDeptIdentities: orgDetail['eligibleDeptIdentities'],
-                          tags: orgDetail['tags'],
-                          collaborators: List<Map<String, dynamic>>.from(
-                            orgDetail['orgDetailList'].map((item) => {
-                              'hostIdentity': item['hostIdentity'],
-                              'organizationName': item['organizationName'],
-                              'organizerNumber': item['organizerNumber'],
-                              'orgDept': item['orgDept'],
-                              'organizerName': item['organizerName'],
-                              'location': item['location'],
-                            }),
-                          ),
-                          calendars: orgDetail['calendars'],
-                          tickets: ticketList.map((ticket){
-                            return {
-                              ...ticket,
-                              'sellingFrom': toIsoDate(ticket['sellingFrom']),
-                              'sellingTo': toIsoDate(ticket['sellingTo']),
-                            };
-                          }).toList(),
-                          paymentLink: paymentController.text,
-                          socialLinks: {},
-                          bannerImages: orgDetail['bannerImages'], eventLink: orgDetail['eventLink'] ?? '', location: orgDetail['location'] != null && orgDetail['location'].isNotEmpty ? {
-                        "country": orgDetail['location']['country'],
-                        "state": orgDetail['location']['state'],
-                        "city": orgDetail['location']['city'],
-                        "mapLink": orgDetail['location']['mapLink'],
-                        "venue": orgDetail['location']['venue'],
-                      } : {}
-                      ));
-                    }
-                  } : null,
-                  child: eventCreateState is EventCreateLoading
-                      ? Center(
-                    child: CircularProgressIndicator(color: MyColor().whiteClr,),)
-                      : Text(
-                    "Submit",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: MyColor().whiteClr,
-                    ),
-                  ),
-                ),
-              );
-            },
-          )
         ],
       ),
     );
@@ -601,5 +575,36 @@ class _PaymentModelState extends State<PaymentModel> {
     ticketDialog();
 
   }
+
+// Expanded(
+//   child: GestureDetector(
+//     onTap: (){
+//       // Navigator.pop(context);
+//     },
+//     child: Align(
+//       alignment: AlignmentGeometry.topRight,
+//       child: Container(
+//           margin: EdgeInsets.only(top: 20,right: 0),
+//           height: 48,
+//           alignment: Alignment.center,
+//           decoration: BoxDecoration(
+//               color: MyColor().whiteClr,
+//               borderRadius: BorderRadius.circular(30),
+//               border: Border.all(color: MyColor().primaryClr)
+//           ),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               Text("Preview",style: GoogleFonts.poppins(
+//                   fontSize: 14,fontWeight: FontWeight.w600,color: MyColor().primaryClr
+//               ),),
+//               Icon(Iconsax.eye_copy,color: MyColor().primaryClr,)
+//             ],
+//           )),
+//     ),
+//   ),
+// ),
+
+
 
 }
