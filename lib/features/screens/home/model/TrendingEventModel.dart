@@ -65,8 +65,15 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                       final title = list['title'];
 
-                      final venue = list['org']['city'];
-                      final price = list['tickets'][0]['price'];
+                      String venue;
+
+                      String price;
+                      if (list['tickets'][0]['price'] != null &&
+                          list['tickets'][0]['price'] != 0) {
+                        price = "₹${list['tickets'][0]['price'].toString()}";
+                      } else {
+                        price = "Free";
+                      }
 
 
                       // ------ date format -------
@@ -79,8 +86,10 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                       if(list['mode'] == "ONLINE"){
                         eventMode = 'Online';
+                        venue = 'Online';
                       }else{
                         eventMode = "Offline";
+                        venue = list['org']['city'];
                       }
 
                       // ------- image path ---------
@@ -145,6 +154,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                             ),),
                                         ),
                                         Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
                                           children: [
                                             circleIcon(Icons.favorite_border),
                                             SizedBox(width: 5,),
@@ -159,11 +169,11 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                       children: [
                                         Row(
                                           children: [
-                                            Icon(Icons.location_on, size: 15,),
+                                            Icon(Iconsax.location_copy, size: 15,),
                                             SizedBox(width: 5,),
-                                            Text(venue ?? '',
+                                            Text(venue,
                                               style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w400,
+                                                  fontWeight: FontWeight.w500,
                                                   fontSize: 12
                                               ),),
                                           ],
@@ -171,12 +181,12 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                                         Row(
                                           children: [
-                                            Icon(Icons.local_activity_outlined,
+                                            Icon(Iconsax.ticket_copy,
                                               size: 15,),
                                             SizedBox(width: 5,),
                                             Text(
-                                              "₹$price", style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w400,
+                                              price, style: GoogleFonts.poppins(
+                                                fontWeight: FontWeight.w500,
                                                 fontSize: 12
                                             ),),
                                           ],
@@ -190,36 +200,17 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                       children: [
                                         Row(
                                           children: [
-                                            Icon(Icons.calendar_month, size: 15,),
+                                            Icon(Iconsax.calendar_copy, size: 15,),
                                             SizedBox(width: 5,),
                                             Text(parsedDate,
                                               style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w400,
-                                                  fontSize: 12
-                                              ),),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Container(
-                                              height: 8,
-                                              width: 8,
-                                              decoration: BoxDecoration(
-                                                  color: eventMode == "offline" ? MyColor().redClr : MyColor().greenClr,
-                                                  shape: BoxShape.circle
-                                              ),
-                                            ),
-                                            SizedBox(width: 5,),
-                                            Text(eventMode,
-                                              style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w400,
+                                                  fontWeight: FontWeight.w500,
                                                   fontSize: 12
                                               ),),
                                           ],
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 5,),
                                   ],
                                 ),
                               ),
@@ -227,15 +218,10 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                               // ------- event content --------
                               Container(
                                 margin: EdgeInsets.only(bottom: 10, right: 10),
-                                // width: 52,
-                                padding: EdgeInsets.only(
-                                    left: 10, right: 10, top: 5, bottom: 5),
+                                padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
                                 decoration: BoxDecoration(
-                                    color: MyColor().primaryBackgroundClr,
-                                    border: Border.all(
-                                        color: MyColor().primaryClr),
-                                    borderRadius: BorderRadiusGeometry.circular(
-                                        40)
+                                    color: MyColor().primaryClr.withOpacity(0.10),
+                                    borderRadius: BorderRadiusGeometry.circular(40)
                                 ),
                                 child: Text(categoryName, style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w400,

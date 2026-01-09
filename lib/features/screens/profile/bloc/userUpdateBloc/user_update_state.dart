@@ -14,3 +14,14 @@ class UserUpdateFail extends UserUpdateState{
 
   UserUpdateFail({required this.errorMessage});
 }
+
+// ------------ social link state -----------------
+class SocialLinkOrganizerLoading extends UserUpdateState{}
+
+class SocialLinkOrganizerSuccess extends UserUpdateState{}
+
+class SocialLinkOrganizerFail extends UserUpdateState{
+  final String errorMessage;
+
+  SocialLinkOrganizerFail({required this.errorMessage});
+}

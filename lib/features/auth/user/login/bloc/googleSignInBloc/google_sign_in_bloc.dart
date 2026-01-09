@@ -34,8 +34,10 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
           if (responseBody['status'] == true) {
 
             emit(GoogleSignInSuccess());
+
             // --------- insert the bool value on the sqLite data base ------------
             await db.insertIsLogin("isLogin", true);
+
             await db.insertingIsSplash('isSplash', true);
 
             // ------- set token ---------

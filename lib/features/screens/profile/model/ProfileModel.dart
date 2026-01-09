@@ -44,7 +44,7 @@ class _ProfileModelState extends State<ProfileModel> {
               child: customContainer(name: "Edit Profile", icon: Icons.arrow_forward_ios, borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
          if(!checkUser) GestureDetector(
               onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> SocialLinksModel()));
+                Navigator.push(context, MaterialPageRoute(builder: (_)=> SocialLinksModel(whichScreen: widget.whichScreen,)));
               },
               child: customContainer(name: "Social Links", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)))),
           if(!checkUser)  SizedBox(height: 24,),

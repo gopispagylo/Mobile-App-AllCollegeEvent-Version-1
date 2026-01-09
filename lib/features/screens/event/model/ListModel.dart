@@ -54,7 +54,6 @@ class _ListModelState extends State<ListModel> {
                       ? list['bannerImages'][0]
                       : '';
 
-
                   // ------ date format -------
                   final rawDate = list['eventDate']?.toString() ?? "";
 
@@ -77,6 +76,7 @@ class _ListModelState extends State<ListModel> {
 
                   // -------- identity ---------
                   final identity = list['identity'];
+
                   final paymentLink = list['paymentLink'];
 
                   // ------- Tween Animation -----------
@@ -107,7 +107,6 @@ class _ListModelState extends State<ListModel> {
                       },
                       child: Container(
                         margin: EdgeInsets.only(left: 0, bottom: 16),
-                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           color: MyColor().whiteClr,
                           border: Border.all(
@@ -121,14 +120,14 @@ class _ListModelState extends State<ListModel> {
                             Expanded(
                               flex: 2,
                               child: Container(
-                                height: 110,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomLeft: Radius.circular(10)),
                                 ),
                                 clipBehavior: Clip.antiAlias,
                                 child: CachedNetworkImage(
                                   imageUrl: featuredImagePath,
                                   fit: BoxFit.cover,
+                                  height: 110,
                                   placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
                                   errorWidget: (context, url, error) =>
                                   const Icon(Icons.image_not_supported),
@@ -138,6 +137,7 @@ class _ListModelState extends State<ListModel> {
                             Expanded(
                               flex: 4,
                               child: Container(
+                                padding: EdgeInsets.all(5),
                                 margin: EdgeInsets.only(left: 10),
                                 child: Column(
                                   children: [

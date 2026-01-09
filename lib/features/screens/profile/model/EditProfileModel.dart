@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/chooseStateBloc/choose_state_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/cityBloc/city_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/singleImageController/single_image_controller_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userUpdateBloc/user_update_bloc.dart';
-import 'package:all_college_event_app/features/screens/profile/model/ResetPasswordModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
@@ -285,7 +285,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                             validator: Validators().validName,
                             textInputType: TextInputType.text,
                             textCapitalization: TextCapitalization.words,
-                            readOnly: true,
+                            readOnly: widget.whichScreen == 'User' ? false : true ,
                           ),
                           
                           // ------ location details ---------
@@ -331,7 +331,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                          ),
 
                           // ------ drop down for county, state and city ---------
-                          if(widget.whichScreen == 'User')  Column(
+                          if(widget.whichScreen == 'User') Column(
                             children: [
                               // ------ Country dropdown --------
                               BlocBuilder<CountryBloc, CountryState>(
@@ -605,7 +605,9 @@ class _EditProfileModelState extends State<EditProfileModel> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => ResetPasswordModel(),
+                                  builder: (_) =>
+                                      ForgotPasswordPage(
+                                        whichScreen: widget.whichScreen == "User" ? 'user' : 'organizerLogin',),
                                 ),
                               );
                             },

@@ -1,7 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/bloc/forgotPasswordBloc/forgot_password_bloc.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/bloc/resetPassword/reset_password_bloc.dart';
-import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/bloc/verifyOtp/verify_otp_bloc.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/model/ForgotPasswordModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

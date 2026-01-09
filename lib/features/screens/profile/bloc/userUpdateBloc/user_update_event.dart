@@ -14,3 +14,12 @@ class ClickUserUpdate extends UserUpdateEvent{
 
   ClickUserUpdate({required this.userState, required this.city, required this.country, required this.phone, required this.name, required this.whichUser, required this.profileImage});
 }
+
+
+// ------------ social link event -----------------
+class SocialLinkOrganizer extends UserUpdateEvent {
+  final String whichUser;
+  final Map<String,dynamic> socialLink;
+
+  SocialLinkOrganizer({required this.socialLink,required this.whichUser});
+}

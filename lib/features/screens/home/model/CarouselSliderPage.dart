@@ -1,8 +1,7 @@
-import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'dart:async';
+
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CarouselSliderPage extends StatefulWidget {
   const CarouselSliderPage({super.key});
@@ -12,8 +11,6 @@ class CarouselSliderPage extends StatefulWidget {
 }
 
 class _CarouselSliderPageState extends State<CarouselSliderPage> {
-  // Smooth Indicator controller
-  final scrollController = CarouselSliderController();
 
   int currentPage = 0;
 
@@ -27,78 +24,100 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
     ImagePath().banner_7,
   ];
 
+  final PageController _pageController = PageController(viewportFraction: 0.50);
+  int _currentPage = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Auto-scroll logic
+    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < photoList.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          alignment: Alignment.topLeft,
-          margin: EdgeInsets.only(left: 16, right: 16, top: 24),
-          child: Text(
-            "Top Spotlights",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              fontFamily: "blMelody",
-            ),
-          ),
-        ),
-        SizedBox(height: 15),
-        CarouselSlider.builder(
-          itemCount: photoList.length,
-          itemBuilder: (BuildContext context, index, realIndex) {
-            final sliderList = photoList[index];
-            return GestureDetector(
-              onTap: () {
-                // print("sliderListsliderListsliderListsliderListsliderList${sliderList['id']}");
-              },
-              child: Container(
-                margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: MyColor().borderClr.withOpacity(0.15),
+    return SizedBox(
+      height: 300,
+      width: double.infinity,
+      child: PageView.builder(
+        controller: _pageController,
+        itemCount: photoList.length,
+        onPageChanged: (index) => setState(() => _currentPage = index),
+        itemBuilder: (context, index) {
+          return AnimatedBuilder(
+            animation: _pageController,
+            builder: (context, child) {
+              double value = 1;
+              if (_pageController.position.haveDimensions) {
+                value = index.toDouble() - (_pageController.page ?? 0);
+              } else {
+                // Initial value before scroll starts
+                value = index.toDouble() - _currentPage.toDouble();
+              }
+
+              // Apply rotations and scaling based on distance from center
+              double scale = (1 - (value.abs() * 0.25)).clamp(0.78, 1.0);
+              double rotation = value * 0.15;
+              double translateX = value * 0;
+              double opacity = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
+
+              return Transform.translate(
+                offset: Offset(translateX, 0),
+                child: Transform.rotate(
+                  angle: rotation,
+                  child: Opacity(
+                    opacity: opacity,
+                    child: Transform.scale(
+                      scale: scale,
+                      child: _card(photoList[index], index == _currentPage),
+                    ),
                   ),
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(11),
-                  child: Image.asset(sliderList, fit: BoxFit.cover),
-                ),
-              ),
-            );
-          },
-          options: CarouselOptions(
-            onPageChanged: (index, reason) {
-              setState(() {
-                currentPage = index;
-              });
+              );
             },
-            enlargeCenterPage: true,
-            autoPlay: false,
-            autoPlayCurve: Curves.fastOutSlowIn,
-            enableInfiniteScroll: true,
-            autoPlayAnimationDuration: Duration(milliseconds: 800),
-            viewportFraction: 1,
-            aspectRatio: 1.9,
-            clipBehavior: Clip.antiAlias,
-            pageSnapping: true,
-            padEnds: true,
-            animateToClosest: true,
-          ),
-        ),
-        AnimatedSmoothIndicator(
-          activeIndex: currentPage,
-          count: photoList.length,
-          effect: WormEffect(
-            dotHeight: 12,
-            dotWidth: 12,
-            activeDotColor: MyColor().primaryClr,
-            dotColor: MyColor().sliderDotClr,
-            spacing: 8,
-          ),
-        ),
-      ],
+          );
+        },
+      ),
     );
   }
+
+  Widget _card(String imagePath, bool isCenter) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          )
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Image.asset(imagePath, fit: BoxFit.cover),
+    );
+  }
+
 }

@@ -267,7 +267,7 @@ class _EventCreateDetailModelState extends State<EventCreateDetailModel> {
                           child: GestureDetector(
                             onTap: (){
                               if(searchableKeywordsController.text.isNotEmpty){
-                                context.read<SearchableKeyBloc>().add(ClickSearchableKey(searchableText: "#${searchableKeywordsController.text}"));
+                                context.read<SearchableKeyBloc>().add(ClickSearchableKey(searchableText: searchableKeywordsController.text));
                                 searchableKeywordsController.clear();
                               }else{
                                 FlutterToast().flutterToast("At least add one searchable keywords", ToastificationType.error, ToastificationStyle.flat);

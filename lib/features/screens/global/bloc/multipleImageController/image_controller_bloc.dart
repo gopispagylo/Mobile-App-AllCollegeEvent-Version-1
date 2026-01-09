@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
@@ -51,9 +52,20 @@ class ImageControllerBloc extends Bloc<ImageControllerEvent, ImageControllerStat
           return;
         }
 
-        final selectedFiles = result.files.take(remainingSlots);
+        // ----- find a duplicate image ------
+        final findDuplicateFile = result.files.where((e){
+          return !getMultipleImages.any((exitingFile)=> exitingFile.path == e.path || exitingFile.name == e.name);
+        }).take(remainingSlots).toList();
 
-        for(final file in selectedFiles){
+        print("findDuplicateFilefindDuplicateFilefindDuplicateFile$findDuplicateFile");
+
+        if(findDuplicateFile.isEmpty){
+          emit(ImageMultipleFail(errorMessage: "Selected images are already added"));
+          emit(ImageMultipleSuccess(getMultipleImages: List.from(getMultipleImages)));
+          return;
+        }
+
+        for(final file in findDuplicateFile){
 
           var imageFile = File(file.path!);
 
@@ -87,7 +99,7 @@ class ImageControllerBloc extends Bloc<ImageControllerEvent, ImageControllerStat
             PlatformFile(name: file.name, size: await imageFile.length(), path: imageFile.path)
           );
         }
-        
+
         emit(ImageMultipleSuccess(getMultipleImages: getMultipleImages));
 
       }on DioException catch(e){

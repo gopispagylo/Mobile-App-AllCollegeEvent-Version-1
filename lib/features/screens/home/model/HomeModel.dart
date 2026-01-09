@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeModel extends StatefulWidget {
-  const HomeModel({super.key});
+  final ScrollController scrollController;
+
+  const HomeModel({super.key, required this.scrollController});
 
   @override
   State<HomeModel> createState() => _HomeModelState();
@@ -28,28 +30,32 @@ class _HomeModelState extends State<HomeModel> {
         context.read<CategoriesBloc>().add(FetchCategories());
         context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
       },
-      child: ListView(
-        children: [
+      child: SingleChildScrollView(
+        controller: widget.scrollController,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
 
-          // Welcome UI
-          WelcomeModel(),
+            // Welcome UI
+            WelcomeModel(),
 
-          // CarouselSlider UI
-          CarouselSliderPage(),
+            // CarouselSlider UI
+            CarouselSliderPage(),
 
-          // Categories UI
-          HomeCategoriesModel(),
+            // Categories UI
+            HomeCategoriesModel(),
 
-          // Trending Event UI
-          TrendingEventModel(),
+            // Trending Event UI
+            TrendingEventModel(),
 
-          // Top Organizer UI
-          TopOrganizerModel(),
+            // Top Organizer UI
+            TopOrganizerModel(),
 
-          // Countries & Cities UI
-          CountriesAndCitiesModel(),
+            // Countries & Cities UI
+            CountriesAndCitiesModel(),
 
-        ],
+          ],
+        ),
       ),
     );
   }

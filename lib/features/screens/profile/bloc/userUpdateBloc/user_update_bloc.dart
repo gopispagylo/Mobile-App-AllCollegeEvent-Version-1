@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
@@ -106,6 +108,67 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
       } catch(e){
         print("kakakakakakakakakakakakak$e");
         emit(UserUpdateFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+      }
+    });
+
+    // ---------- update social media links ----------
+    on<SocialLinkOrganizer>((event, emit) async{
+      emit(SocialLinkOrganizerLoading());
+      try{
+
+        // --------- set a base url -------
+        await apiController.setBaseUrl();
+
+        // ----- access token data base -------
+        final token = await DBHelper().getToken();
+
+        // ----- get a user id -----
+        final userId = await DBHelper().getUserId();
+
+        // -------- Build form data --------
+        final formData = FormData();
+
+        // ------- social link -----------
+        formData.fields.add(
+          MapEntry('socialLinks', jsonEncode(event.socialLink))
+        );
+
+        if (event.whichUser.trim().isNotEmpty) {
+          formData.fields.add(
+            MapEntry('type', event.whichUser.trim()),
+          );
+        }
+
+        formData.fields.add(
+          MapEntry('identity', userId.toString()),
+        );
+
+        print(
+            'FORM DATA → ${formData.fields.map((e) => '${e.key}: ${e.value}').toList()}'
+        );
+
+
+        final response = await apiController.postMethodWithFormData(endPoint: 'auth/update-profile', token: token!, data: formData);
+
+        print("UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$response");
+
+        if(response.statusCode == 200){
+          final responseBody = response.data;
+          if(responseBody['success'] == true){
+            emit(SocialLinkOrganizerSuccess());
+          }else{
+            emit(SocialLinkOrganizerFail(errorMessage: responseBody['message']));
+          }
+        }
+      }on DioException catch(e){
+        print("kakakakakakakakakakakakak$e");
+        // ------ error handle config --------
+        final errorMessage =  HandleErrorConfig().handleDioError(e);
+        emit(SocialLinkOrganizerFail(errorMessage: errorMessage));
+
+      } catch(e){
+        print("kakakakakakakakakakakakak$e");
+        emit(SocialLinkOrganizerFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

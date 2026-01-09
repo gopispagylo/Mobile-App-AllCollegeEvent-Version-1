@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
