@@ -244,12 +244,6 @@ class _EventDetailModelState extends State<EventDetailModel> {
                             color: MyColor().blueClr,
                             borderColor: MyColor().blueClr,
                           ),
-                          SizedBox(width: 10),
-                          colorLabel(
-                            text: checkPaid ? 'Paid' : "Free",
-                            color: MyColor().primaryClr,
-                            borderColor: MyColor().primaryClr,
-                          ),
                         ],
                       ),
                       Row(

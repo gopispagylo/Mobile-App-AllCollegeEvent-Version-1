@@ -41,4 +41,9 @@ class ConfigMessage {
   // ------ confirm create event message ---------
   final String confirmMessageForEventCreate = "Your event details under your organization have been successfully filled. Please review all the information carefully. If everything looks correct, click Confirm to submit your event. Once confirmed, your event will be sent for admin review and approval. After approval, the event will be published and visible to users. Do you want to proceed with event submission?";
 
+
+  // -------- about us message ---------------
+  final String contactUsTitle = "We’re Here for You";
+  final String contactUsContent = "Let’s connect - we are here to answer your queries";
+
 }

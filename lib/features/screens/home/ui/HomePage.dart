@@ -27,64 +27,69 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => TrendingEventListBloc(apiController: ApiController())..add(FetchTrendingEventList()),
-        ), BlocProvider(
-          create: (context) => CategoriesBloc(apiController: ApiController())..add(FetchCategories()),
-        ), BlocProvider(
-          create: (context) => TopOrganizerBloc(apiController: ApiController())..add(FetchTopOrganizer()),
-        ),
-      ],
-        child: Scaffold(
-          backgroundColor: MyColor().whiteClr,
-          body: NotificationListener<UserScrollNotification>(
-          onNotification: (notification) {
-            if (notification.direction == ScrollDirection.reverse) {
-              if (!isScrolling) {
-                setState(() => isScrolling = true);
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => TrendingEventListBloc(apiController: ApiController())..add(FetchTrendingEventList()),
+          ), BlocProvider(
+            create: (context) => CategoriesBloc(apiController: ApiController())..add(FetchCategories()),
+          ), BlocProvider(
+            create: (context) => TopOrganizerBloc(apiController: ApiController())..add(FetchTopOrganizer()),
+          ),
+        ],
+          child: Scaffold(
+            backgroundColor: MyColor().whiteClr,
+            body: NotificationListener<UserScrollNotification>(
+            onNotification: (notification) {
+              if (notification.direction == ScrollDirection.reverse) {
+                if (!isScrolling) {
+                  setState(() => isScrolling = true);
+                }
               }
-            }
-            if (notification.direction == ScrollDirection.forward) {
-              if (isScrolling) {
-                setState(() => isScrolling = false);
+              if (notification.direction == ScrollDirection.forward) {
+                if (isScrolling) {
+                  setState(() => isScrolling = false);
+                }
               }
-            }
-            return false;
-          },
+              return false;
+            },
 
-          child: HomeModel(scrollController: scrollController),
-        ),
+            child: HomeModel(scrollController: scrollController),
+          ),
 
-        floatingActionButton: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              transitionBuilder: (child, animation) {
-                return ScaleTransition(scale: animation, child: child);
-              },
-              child: isScrolling
-                  ? FloatingActionButton.extended(
-                backgroundColor: MyColor().primaryClr,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(100)),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+          floatingActionButton: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (child, animation) {
+                  return ScaleTransition(scale: animation, child: child);
                 },
-                icon:  Icon(Icons.add,color: MyColor().whiteClr,size: 25,),
-                label: Text("Create Event",style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,color: MyColor().whiteClr,fontSize: 14
-                ),),
-              )
-                  : FloatingActionButton(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(100)),
-                backgroundColor: MyColor().primaryClr,
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
-                },
-                child: Icon(Icons.add, size: 25,color: MyColor().whiteClr),
+                child: isScrolling
+                    ? FloatingActionButton.extended(
+                  backgroundColor: MyColor().primaryClr,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(100)),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                  },
+                  icon:  Icon(Icons.add,color: MyColor().whiteClr,size: 25,),
+                  label: Text("Create Event",style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w600,color: MyColor().whiteClr,fontSize: 14
+                  ),),
+                )
+                    : FloatingActionButton(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(100)),
+                  backgroundColor: MyColor().primaryClr,
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                  },
+                  child: Icon(Icons.add, size: 25,color: MyColor().whiteClr),
+                ),
               ),
-            ),
 
-        ),
+          ),
+      ),
     );
   }
 }

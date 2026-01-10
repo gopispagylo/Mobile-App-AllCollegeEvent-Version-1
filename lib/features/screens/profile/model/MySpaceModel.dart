@@ -3,6 +3,7 @@ import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MyEventsModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/OrganizationCreateDetailPage.dart';
+import 'package:all_college_event_app/features/screens/staticPages/ui/ContactUs.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -303,7 +304,17 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     thickness: 1,
                   ),
                 ),
-                customText(text: 'Contact us'),
+                GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> ContactUs(),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
+                        return SlideTransition(position: animation.drive(tween),child: child);
+                      },
+                        transitionDuration: Duration(milliseconds: 400)
+                      ));
+                    },
+                    child: customText(text: 'Contact us')),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
