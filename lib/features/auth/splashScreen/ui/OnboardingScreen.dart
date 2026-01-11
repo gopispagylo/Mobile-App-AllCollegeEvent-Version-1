@@ -2,19 +2,19 @@ import 'package:all_college_event_app/features/auth/splashScreen/model/SplashScr
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 
-class SplashScreenPage extends StatefulWidget {
-  const SplashScreenPage({super.key});
+class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({super.key});
 
   @override
-  State<SplashScreenPage> createState() => _SplashScreenPageState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _SplashScreenPageState extends State<SplashScreenPage> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: MyColor().whiteClr,
-      body: SplashScreenModel(),
+      body: OnboardingScreenModel(),
     );
   }
 }

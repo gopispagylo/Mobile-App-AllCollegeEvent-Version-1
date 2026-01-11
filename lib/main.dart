@@ -5,7 +5,8 @@ import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
-import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreenPage.dart';
+import 'package:all_college_event_app/features/auth/splashScreen/ui/OnboardingScreen.dart';
+import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreen.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
 import 'package:app_links/app_links.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+
   // ----- global unfocused the keyboard -----
   @override
   void dispose() {
@@ -79,7 +81,7 @@ class _MyAppState extends State<MyApp> {
           ),
           home: widget.isSplash
               ? widget.isLogin ? BottomNavigationBarPage(pageIndex: 0) : CheckUserPage()
-              : SplashScreenPage()
+              : SplashScreen()
           // home: BottomNavigationBarPage(pageIndex: 0),
         ),
       ),

@@ -33,6 +33,15 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
   // Global Key
   final formKey = GlobalKey<FormState>();
 
+
+  // ------ dispose after using controller --------
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(

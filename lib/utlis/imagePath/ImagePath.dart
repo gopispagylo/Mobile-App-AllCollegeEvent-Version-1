@@ -44,4 +44,10 @@ class ImagePath{
   final video = "assets/image/video.png";
   final website = "assets/image/world-wide-web.png";
 
+
+  // ------- splash screen images --------
+  final splashScreenFirst = "assets/image/Frame 2147226298.png";
+  final splashScreenTSecond = "assets/image/Frame 2147226299.png";
+  final splashScreenThird = "assets/image/Frame 2147226301.png";
+
 }

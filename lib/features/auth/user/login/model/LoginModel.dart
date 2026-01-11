@@ -70,6 +70,15 @@ class _LoginModelState extends State<LoginModel> {
     }
   }
 
+  // ------- dispose ------
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Stack(

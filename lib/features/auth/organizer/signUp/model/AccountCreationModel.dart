@@ -39,6 +39,15 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
   bool obscureTexPassword = true;
   bool obscureTexConfirmPassword = true;
 
+  // ------ dispose after using controller --------
+  @override
+  void dispose() {
+    domainMailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
