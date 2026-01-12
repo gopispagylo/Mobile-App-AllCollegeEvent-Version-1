@@ -1,10 +1,10 @@
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
+import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreen.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class OnboardingScreenModel extends StatefulWidget {
   const OnboardingScreenModel({super.key});
@@ -13,8 +13,8 @@ class OnboardingScreenModel extends StatefulWidget {
   State<OnboardingScreenModel> createState() => _OnboardingScreenModelState();
 }
 
-class _OnboardingScreenModelState extends State<OnboardingScreenModel> with SingleTickerProviderStateMixin {
-
+class _OnboardingScreenModelState extends State<OnboardingScreenModel>
+    with SingleTickerProviderStateMixin {
   // ------- Page Controller --------
   final pageController = PageController();
 
@@ -30,43 +30,54 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel> with Sing
 
   double opacity = 0;
 
-
   final List<Map<String, String>> eventList = [
     {
       "image": ImagePath().splashScreenFirst,
       "title": "Discover Every Event",
-      "description": "Events for all — academic, corporate, creative, cultural, and professional.",
+      "description":
+          "Events for all — academic, corporate, creative, cultural, and professional.",
     },
     {
       "image": ImagePath().splashScreenTSecond,
       "title": "Create Events Easily",
-      "description": "Publish your event in minutes with simple and powerful tools.",
+      "description":
+          "Publish your event in minutes with simple and powerful tools.",
     },
     {
       "image": ImagePath().splashScreenThird,
       "title": "Join & Participate",
-      "description": "Register quickly, get reminders, and never miss an opportunity.",
+      "description":
+          "Register quickly, get reminders, and never miss an opportunity.",
     },
   ];
 
   // ---------- Next page function --------
   void nextPage() {
-    if(initialIndex < eventList.length - 1) {
-      pageController.nextPage(duration: Duration(milliseconds: 300), curve: Curves.easeInSine);
-    } else{
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> CheckUserPage()));
+    if (initialIndex < eventList.length - 1) {
+      pageController.nextPage(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInSine,
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => CheckUserPage()),
+      );
     }
   }
 
   @override
   void initState() {
     super.initState();
-    animatedContainer = AnimationController(vsync: this,duration: Duration(milliseconds: 700));
+    animatedContainer = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 700),
+    );
     scale = Tween<double>(begin: 0.1, end: 1).animate(
-        CurvedAnimation(parent: animatedContainer, curve: Curves.easeInOut));
+      CurvedAnimation(parent: animatedContainer, curve: Curves.easeInOut),
+    );
     playAnimation();
   }
-
 
   void playAnimation() {
     animatedContainer.reset();
@@ -97,15 +108,34 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel> with Sing
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent
-      ),
+      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Scaffold(
         body: Container(
           margin: EdgeInsets.only(top: 50),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => CheckUserPage()),
+                    (route) => false,
+                  );
+                },
+                child: Container(
+                  margin: EdgeInsets.only(right: 16),
+                  alignment: AlignmentGeometry.topRight,
+                  child: Text(
+                    "Skip",
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      color: MyColor().secondaryClr,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
               Expanded(
                 child: PageView.builder(
                   controller: pageController,
@@ -115,58 +145,56 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel> with Sing
                     setState(() {
                       initialIndex = onChanged;
                     });
-                    // playAnimation();
+                    playAnimation();
                   },
                   itemBuilder: (context, index) {
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ScaleTransition(scale: scale,
-                        child: Image.asset(eventList[index]['image']!)),
+                        ScaleTransition(
+                          scale: scale,
+                          child: Image.asset(eventList[index]['image']!),
+                        ),
                         SizedBox(height: 10),
-                        AnimatedOpacity(
-                          opacity: opacity,
-                           curve: Curves.easeInOut,
-                          duration: Duration(milliseconds: 700),
-                          child: AnimatedSlide(
-                            offset: offsetBottom, duration: Duration(milliseconds: 700),
-                            child: Column(
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.only(left: 16, right: 16),
-                                  child: Text(
-                                    eventList[index]['title']!,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 24,
-                                      fontFamily: "blMelody",
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
+                        Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 16, right: 16),
+                              child: Text(
+                                eventList[index]['title']!,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24,
+                                  fontFamily: "blMelody",
+                                  color: MyColor().blackClr,
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(left: 16, right: 16,top: 10),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    eventList[index]['description']!,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        )
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: 16,
+                                right: 16,
+                                top: 10,
+                              ),
+                              child: Text(
+                                textAlign: TextAlign.center,
+                                eventList[index]['description']!,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: MyColor().blackClr,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     );
                   },
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(bottom: 80),
+                margin: EdgeInsets.only(bottom: 60),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(3, (index) {
@@ -193,41 +221,59 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel> with Sing
             ],
           ),
         ),
-        floatingActionButton: initialIndex != eventList.length - 1 ?  AnimatedSlide(
-          duration: Duration(milliseconds: 700),
-          offset: offsetRightSide,
-          child: FloatingActionButton(
-            elevation: 0,
-            onPressed: nextPage,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(100),
-            ),
-            backgroundColor: MyColor().primaryClr,
-            child: Icon(Icons.arrow_forward_ios,color: MyColor().whiteClr,size: 20,),
-          ),
-        )
+        floatingActionButton: initialIndex != eventList.length - 1
+            ? AnimatedSlide(
+                duration: Duration(milliseconds: 700),
+                offset: offsetRightSide,
+                child: FloatingActionButton(
+                  elevation: 0,
+                  onPressed: nextPage,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  backgroundColor: MyColor().primaryClr,
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: MyColor().whiteClr,
+                    size: 20,
+                  ),
+                ),
+              )
             : GestureDetector(
-          onTap: (){
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> CheckUserPage()));
-          },
-          child: Container(
-            decoration: BoxDecoration(color: MyColor().primaryClr,borderRadius: BorderRadius.circular(100)),
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text("Get Started",style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: MyColor().whiteClr
-                  ),),
-                  Icon(Icons.arrow_forward_ios,color: MyColor().whiteClr,size: 20,),
-                ],
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => SplashScreen()),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: MyColor().primaryClr,
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Get Started",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: MyColor().whiteClr,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: MyColor().whiteClr,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }

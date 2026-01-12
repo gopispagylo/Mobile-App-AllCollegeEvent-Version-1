@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/OnboardingScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -25,7 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
       size = MediaQuery.of(context).size.longestSide * 2;
     });
     await Future.delayed(Duration(milliseconds: 2200));
-    Navigator.pushAndRemoveUntil(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => OnboardingScreen(),
+    Navigator.pushAndRemoveUntil(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => CheckUserPage(),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var tween = Tween(end: Offset.zero,begin: Offset(1, 0)).chain(CurveTween(curve: Curves.easeInOut));
       return SlideTransition(position: animation.drive(tween),child: child,);

@@ -123,14 +123,14 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel> with 
           Container(
             margin: EdgeInsets.only(top: 30),
             child: SizedBox(
-              height: 370,
+              height: 470,
               child: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   children: [
 
                     // First Tab Bar View
-                    Column(
-                      // physics: NeverScrollableScrollPhysics(),
+                    ListView(
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
                         GridView.builder(
                           itemCount: countries.length,
@@ -178,12 +178,13 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel> with 
                                 fontSize: 14,
                                 color: MyColor().blackClr
                               ),)),
-                        )
+                        ),
                       ],
                     ),
 
                     // Second Tab Bar View
-                    Column(
+                    ListView(
+                      physics: NeverScrollableScrollPhysics(),
                       children: [
                         GridView.builder(
                           itemCount: topCities.length,
@@ -234,6 +235,7 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel> with 
                         )
                       ],
                     )
+
                   ]),
             ),
           )

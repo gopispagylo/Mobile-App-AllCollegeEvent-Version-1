@@ -5,6 +5,7 @@ import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
+import 'package:all_college_event_app/features/auth/splashScreen/model/SplashScreenModel.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/OnboardingScreen.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreen.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
@@ -81,7 +82,7 @@ class _MyAppState extends State<MyApp> {
           ),
           home: widget.isSplash
               ? widget.isLogin ? BottomNavigationBarPage(pageIndex: 0) : CheckUserPage()
-              : SplashScreen()
+              : OnboardingScreenModel()
           // home: BottomNavigationBarPage(pageIndex: 0),
         ),
       ),

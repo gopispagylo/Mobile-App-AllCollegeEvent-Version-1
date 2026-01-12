@@ -30,7 +30,7 @@
     </queries>
 
     <application
-        android:label="Ace"
+        android:label="AllCollegeEvent"
         android:name="${applicationName}"
         android:icon="@drawable/all_college_event_logo">
 
