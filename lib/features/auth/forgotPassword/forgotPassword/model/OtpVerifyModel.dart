@@ -32,6 +32,13 @@ class _OtpVerifyModelState extends State<OtpVerifyModel> {
   // ----------- Global key for input field ---------
   final formKey = GlobalKey<FormState>();
 
+
+  @override
+  void dispose() {
+    pinPutController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

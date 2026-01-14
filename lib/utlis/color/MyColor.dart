@@ -18,9 +18,9 @@ final bottomNavBarClr = Color(0xffEFEFEF);
 final sliderDotClr = Color(0xffD9D9D9);
 final locationClr = Color(0xffF0F0F0);
 final greenClr = Color(0xff1DA339);
-final yellowClr = Color(0xffFFCA3A);
+final yellowClr = Color(0xffFB9D10);
 final yellowBgClr = Color(0xffFFF7E8);
 final blueClr = Color(0xff46A6F4);
-
+final purpleClr = Color(0xff230641);
 
 }

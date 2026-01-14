@@ -29,8 +29,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ],
       child: Scaffold(
-        // resizeToAvoidBottomInset: false,
-        backgroundColor: MyColor().whiteClr,
         body: LoginModel(whichScreen: widget.whichScreen,),
       ),
     );

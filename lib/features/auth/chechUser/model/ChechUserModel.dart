@@ -73,8 +73,8 @@ class _CheckUserModelState extends State<CheckUserModel> {
                               },
                               child: Container(
                                   alignment: Alignment.center,
-                                  margin: EdgeInsets.only(right: index == 0 ? 20 : 10),
-                                  padding: EdgeInsets.all(40),
+                                  margin: EdgeInsets.only(right: index == 0 ? 10 : 10),
+                                  padding: EdgeInsets.all(30),
                                   decoration: BoxDecoration(
                                       color: selectUser == role ? MyColor().primaryClr : MyColor().boxInnerClr,
                                       borderRadius: BorderRadius.circular(16),
@@ -107,9 +107,9 @@ class _CheckUserModelState extends State<CheckUserModel> {
 
                           // ------- initial delete ---------
                           await DBHelper().deleteUser();
-                            print("InitialInsertTheUserValue");
-                            // ------ insert user -------------
-                            await DBHelper().insertUser(selectUser!);
+
+                          // ------ insert user -------------
+                          await DBHelper().insertUser(selectUser!);
 
                           if(selectUser == 'User'){
                             Navigator.push(context, MaterialPageRoute(builder: (_)=> LoginPage(whichScreen: 'user',)));

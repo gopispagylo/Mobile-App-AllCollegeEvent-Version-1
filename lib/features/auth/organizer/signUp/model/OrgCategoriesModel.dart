@@ -62,7 +62,7 @@ class _OrgCategoriesModelState extends State<OrgCategoriesModel> {
     return Stack(
       children: [
         Positioned.fill(child: Image.asset(
-            ImagePath().backgroundImg, fit: BoxFit.contain)),
+            ImagePath().backgroundImg, fit: BoxFit.cover)),
         Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

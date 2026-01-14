@@ -34,13 +34,19 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
   String? selectedState;
   String? selectedCity;
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Positioned.fill(child: Image.asset(
-            ImagePath().backgroundImg, fit: BoxFit.contain)),
+            ImagePath().backgroundImg, fit: BoxFit.cover)),
         Container(
           margin: EdgeInsets.only(left: 16, right: 16),
           child: Form(

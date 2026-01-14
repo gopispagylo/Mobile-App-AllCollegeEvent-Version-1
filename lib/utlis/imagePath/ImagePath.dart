@@ -50,4 +50,14 @@ class ImagePath{
   final splashScreenTSecond = "assets/image/Frame 2147226299.png";
   final splashScreenThird = "assets/image/Frame 2147226301.png";
 
+  // ----------- static page -------
+  final contactUs = "assets/image/contact_us.png";
+
+  // ----------- about us ----------------
+  final pinFirst = "assets/image/pin_1.png";
+  final pinSecond = "assets/image/pin_2.png";
+  final pinThird = "assets/image/pin_3.png";
+  final lineVictor = "assets/image/arc_4.png";
+  final ourJourney = "assets/image/our journey bg.png";
+
 }

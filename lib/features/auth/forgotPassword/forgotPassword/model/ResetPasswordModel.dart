@@ -38,9 +38,10 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
   bool obscureTexConfirmPassword = true;
 
   @override
-  void initState() {
-    super.initState();
-    print("whichScreenwhichScreenwhichScreenwhichScreen${widget.whichScreen}");
+  void dispose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override

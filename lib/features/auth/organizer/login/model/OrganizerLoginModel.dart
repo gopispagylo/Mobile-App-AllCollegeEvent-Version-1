@@ -47,7 +47,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
     return Stack(
       children: [
         Positioned.fill(
-          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.contain),
+          child: Image.asset(ImagePath().backgroundImg, fit: BoxFit.cover),
         ),
         Container(
           margin: EdgeInsets.only(left: 16, right: 16),

@@ -129,6 +129,7 @@ class ApiController {
 
   // Android setup
  if(Platform.isAndroid){
+
    // Get a file of pubspec yaml file.
    final yamlFile = await rootBundle.loadString('pubspec.yaml');
    final versionName = loadYaml(yamlFile)['version'] ?? '';
@@ -141,6 +142,7 @@ class ApiController {
 
   // IOS setup
   if(Platform.isIOS){
+
     // Get a file of pubspec yaml file.
     final yamlString = await rootBundle.loadString('pubspec.yaml');
     final yamlVersion = loadYaml(yamlString)['version'] ?? '';

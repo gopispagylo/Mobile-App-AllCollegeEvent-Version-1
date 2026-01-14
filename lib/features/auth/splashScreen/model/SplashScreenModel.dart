@@ -115,7 +115,7 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
+              if(initialIndex != eventList.length - 1) GestureDetector(
                 onTap: () {
                   Navigator.pushAndRemoveUntil(
                     context,
@@ -140,7 +140,7 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel>
                 child: PageView.builder(
                   controller: pageController,
                   itemCount: eventList.length,
-                  physics: NeverScrollableScrollPhysics(),
+                  // physics: NeverScrollableScrollPhysics(),
                   onPageChanged: (onChanged) {
                     setState(() {
                       initialIndex = onChanged;

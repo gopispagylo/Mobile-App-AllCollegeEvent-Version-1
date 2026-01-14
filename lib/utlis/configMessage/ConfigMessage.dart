@@ -45,5 +45,9 @@ class ConfigMessage {
   // -------- about us message ---------------
   final String contactUsTitle = "We’re Here for You";
   final String contactUsContent = "Let’s connect - we are here to answer your queries";
+  final aboutText = "AllCollegeEvent is a centralized platform to discover and engage with academic and professional events from colleges, universities, and institutions.  It keeps opportunities organized in one place so you never miss important updates or deadlines.";
+  final missionText = "Our mission is to connect learners and organizers through a single platform that simplifies event discovery, participation, and collaboration.";
+  final visionText = "Our vision is to be the world’s most trusted platform for academic and professional event engagement.";
+  final valueText = "Built on trust, accessibility, and innovation to empower learning and collaboration.";
 
 }

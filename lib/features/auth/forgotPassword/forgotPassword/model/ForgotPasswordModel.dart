@@ -28,6 +28,14 @@ class _ForgotPasswordModelState extends State<ForgotPasswordModel> {
   // ----------- Global key for input field ---------
   final formKey = GlobalKey<FormState>();
 
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

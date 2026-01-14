@@ -3,7 +3,12 @@ import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MyEventsModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/OrganizationCreateDetailPage.dart';
+import 'package:all_college_event_app/features/screens/staticPages/ui/AboutUs.dart';
 import 'package:all_college_event_app/features/screens/staticPages/ui/ContactUs.dart';
+import 'package:all_college_event_app/features/screens/staticPages/ui/Faq.dart';
+import 'package:all_college_event_app/features/screens/staticPages/ui/FeedBack.dart';
+import 'package:all_college_event_app/features/screens/staticPages/ui/PrivacyPolicy.dart';
+import 'package:all_college_event_app/features/screens/staticPages/ui/TermsCondition.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -295,8 +300,18 @@ class _MySpaceModelState extends State<MySpaceModel> {
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
-                customText(text: 'About Us'),
-                 Container(
+                GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> AboutUs(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
+                            return SlideTransition(position: animation.drive(tween),child: child);
+                          },
+                          transitionDuration: Duration(milliseconds: 400)
+                      ));
+                    },
+                    child: customText(text: 'About Us')),
+                Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
                   child: VerticalDivider(
@@ -323,7 +338,17 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     thickness: 1,
                   ),
                 ),
-                customText(text: 'Feedback'),
+                GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> FeedBack(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
+                            return SlideTransition(position: animation.drive(tween),child: child);
+                          },
+                          transitionDuration: Duration(milliseconds: 400)
+                      ));
+                    },
+                    child: customText(text: 'Feedback')),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
@@ -332,7 +357,16 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     thickness: 1,
                   ),
                 ),
-                customText(text: 'FAQ'),
+                GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => Faq(),transitionDuration: Duration(milliseconds: 400),
+                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        var tween = Tween(end: Offset.zero,begin: Offset(1, 0)).chain(CurveTween(curve: Curves.easeInOut));
+                        return SlideTransition(position: animation.drive(tween),child: child,);
+                      },
+                      ));
+                    },
+                    child: customText(text: 'FAQ')),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
@@ -341,7 +375,17 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     thickness: 1,
                   ),
                 ),
-                customText(text: 'Privacy Policy'),
+                GestureDetector(
+                    onTap: (){
+                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> PrivacyPolicy(),
+                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                            var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
+                            return SlideTransition(position: animation.drive(tween),child: child);
+                          },
+                          transitionDuration: Duration(milliseconds: 400)
+                      ));
+                    },
+                    child: customText(text: 'Privacy Policy')),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
@@ -350,7 +394,14 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     thickness: 1,
                   ),
                 ),
-                customText(text: 'Terms & Conditions'),
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => TermsCondition(),transitionDuration: Duration(milliseconds: 400),transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                        var tween = Tween(begin: Offset(1, 0),end: Offset.zero).chain(CurveTween(curve: Curves.easeInOut));
+                        return SlideTransition(position: animation.drive(tween),child: child,);
+                      },));
+                    },
+                    child: customText(text: 'Terms & Conditions')),
               ],
             ),
           ),

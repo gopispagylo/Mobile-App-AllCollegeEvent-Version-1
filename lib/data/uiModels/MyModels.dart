@@ -62,6 +62,52 @@ class MyModels{
     );
   }
 
+
+  // --------- contact us fields ---------
+  Center customContactUseFields({required TextEditingController controller, required FormFieldValidator<String>? validator, required TextInputType textInputType, required TextCapitalization textCapitalization, required String hintText}){
+   return Center(
+     child: SizedBox(
+       width: 320,
+       child: TextFormField(
+         controller: controller,
+         validator: validator,
+         onTapOutside: (outSideTab){
+           WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+         },
+         keyboardType: textInputType,
+         textCapitalization: textCapitalization,
+         decoration: InputDecoration(
+           fillColor: MyColor().whiteClr,
+           filled: true,
+           contentPadding: EdgeInsets.all(10),
+           enabledBorder: OutlineInputBorder(
+               borderRadius: BorderRadius.circular(12),
+               borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+           ),
+           focusedBorder: OutlineInputBorder(
+               borderRadius: BorderRadius.circular(12),
+               borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+           ),
+           errorBorder: OutlineInputBorder(
+               borderRadius: BorderRadius.circular(12),
+               borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+           ),
+           focusedErrorBorder: OutlineInputBorder(
+               borderRadius: BorderRadius.circular(12),
+               borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+           ),
+           hintText: hintText,
+           hintStyle: GoogleFonts.poppins(
+               fontWeight: FontWeight.w400,
+               fontSize: 12,
+               color: MyColor().hintTextClr
+           ),
+         ),
+       ),
+     ),
+   );
+  }
+
   // --------- TextField Password ---------
   Center customTextFieldPassword({required String label, required TextEditingController controller, required String hintText, required FormFieldValidator<String>? errorText, required bool obscureText, required Widget eyeIcon}){
     return Center(
