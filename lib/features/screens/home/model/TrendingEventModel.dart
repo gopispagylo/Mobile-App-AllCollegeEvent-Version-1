@@ -96,7 +96,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                       final featuredImage = (list['bannerImages'] != null && list['bannerImages'].isNotEmpty) ? list['bannerImages'][0] : '';
 
                       // -------- identity ---------
-                      final identity = list['identity'];
+                      final identity = list['slug'];
                       final paymentLink = list['paymentLink'];
 
                       // --------- categoryName ------

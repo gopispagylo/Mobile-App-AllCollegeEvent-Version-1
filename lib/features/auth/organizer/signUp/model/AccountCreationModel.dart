@@ -148,7 +148,7 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                   "Account Creation",
                   style: TextStyle(
                     fontFamily: "blMelody",
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -239,7 +239,7 @@ class _AccountCreationModelState extends State<AccountCreationModel> {
                         child: orgAccCreationState is OrgSignUpLoading ? Center(
                           child: CircularProgressIndicator(
                             color: MyColor().whiteClr,),) : Text(
-                          "Verify your Domain",
+                          "Create Account",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,

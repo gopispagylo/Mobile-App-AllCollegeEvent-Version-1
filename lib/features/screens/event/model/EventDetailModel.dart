@@ -86,6 +86,8 @@ class _EventDetailModelState extends State<EventDetailModel> {
 
             String startAndEndEvent = "${dateFormat.format(DateTime.parse(list['calendars'][0]['startDate']))} to ${dateFormat.format(DateTime.parse(list['calendars'][0]['endDate']))}";
 
+            print("socialLinkssocialLinkssocialLinkssocialLinkssocialLinkssocialLinks${list['socialLinks']['linkedin']}");
+
             return ListView(
               children: [
                 // --------- Carousel Slider ------
@@ -204,6 +206,8 @@ class _EventDetailModelState extends State<EventDetailModel> {
                         ),
                       ),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.remove_red_eye_outlined,
@@ -1370,17 +1374,16 @@ class _EventDetailModelState extends State<EventDetailModel> {
                           ),
 
                           // ------- Follow us on ------
-                          if (list['socialLinks']['linkedin'] != null &&
-                              list['socialLinks']['linkedin'].isNotEmpty &&
-                              list['socialLinks']['instagram'] != null &&
-                              list['socialLinks']['instagram'].isNotEmpty &&
-                              list['socialLinks']['whatsapp'] != null &&
+                          if (list['socialLinks']['linkedin'] != null ||
+                              list['socialLinks']['linkedin'].isNotEmpty ||
+                              list['socialLinks']['instagram'] != null ||
+                              list['socialLinks']['instagram'].isNotEmpty ||
+                              list['socialLinks']['whatsapp'] != null ||
                               list['socialLinks']['whatsapp'].isNotEmpty)
                             Container(
                               margin: EdgeInsets.only(
                                 left: 16,
                                 right: 16,
-                                // top: 10,
                                 bottom: 20,
                               ),
                               decoration: BoxDecoration(
@@ -1395,99 +1398,96 @@ class _EventDetailModelState extends State<EventDetailModel> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Container(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Follow us on",
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: MyColor().blackClr,
-                                            ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Follow us on",
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: MyColor().blackClr,
                                           ),
-                                          SizedBox(width: 10),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              if (list['socialLinks']['whatsapp'] !=
-                                                      null &&
-                                                  list['socialLinks']['whatsapp']
-                                                      .isNotEmpty)
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    final whatsApp = Uri.parse(
-                                                      list['socialLinks']['whatsapp'],
-                                                    );
-                                                    await launchUrl(
-                                                      whatsApp,
-                                                      mode: LaunchMode
-                                                          .externalApplication,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(5),
-                                                    child: Image.asset(
-                                                      ImagePath().whatsapp,
-                                                      height: 40,
-                                                    ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            if (list['socialLinks']['whatsapp'] !=
+                                                    null &&
+                                                list['socialLinks']['whatsapp']
+                                                    .isNotEmpty)
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  final whatsApp = Uri.parse(
+                                                    list['socialLinks']['whatsapp'],
+                                                  );
+                                                  await launchUrl(
+                                                    whatsApp,
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Image.asset(
+                                                    ImagePath().whatsapp,
+                                                    height: 40,
                                                   ),
                                                 ),
+                                              ),
 
-                                              if (list['socialLinks']['instagram'] !=
-                                                      null &&
-                                                  list['socialLinks']['instagram']
-                                                      .isNotEmpty)
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    final whatsApp = Uri.parse(
-                                                      list['socialLinks']['instagram'],
-                                                    );
-                                                    await launchUrl(
-                                                      whatsApp,
-                                                      mode: LaunchMode
-                                                          .externalApplication,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(5),
-                                                    child: Image.asset(
-                                                      ImagePath().instagram,
-                                                      height: 37,
-                                                    ),
+                                            if (list['socialLinks']['instagram'] !=
+                                                    null &&
+                                                list['socialLinks']['instagram']
+                                                    .isNotEmpty)
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  final whatsApp = Uri.parse(
+                                                    list['socialLinks']['instagram'],
+                                                  );
+                                                  await launchUrl(
+                                                    whatsApp,
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Image.asset(
+                                                    ImagePath().instagram,
+                                                    height: 37,
                                                   ),
                                                 ),
+                                              ),
 
-                                              if (list['socialLinks']['linkedin'] !=
-                                                      null &&
-                                                  list['socialLinks']['linkedin']
-                                                      .isNotEmpty)
-                                                GestureDetector(
-                                                  onTap: () async {
-                                                    final whatsApp = Uri.parse(
-                                                      list['socialLinks']['linkedin'],
-                                                    );
-                                                    await launchUrl(
-                                                      whatsApp,
-                                                      mode: LaunchMode
-                                                          .externalApplication,
-                                                    );
-                                                  },
-                                                  child: Container(
-                                                    padding: EdgeInsets.all(5),
-                                                    child: Image.asset(
-                                                      ImagePath().linkedIn,
-                                                      height: 35,
-                                                    ),
+                                            if (list['socialLinks']['linkedin'] !=
+                                                    null &&
+                                                list['socialLinks']['linkedin']
+                                                    .isNotEmpty)
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  final whatsApp = Uri.parse(
+                                                    list['socialLinks']['linkedin'],
+                                                  );
+                                                  await launchUrl(
+                                                    whatsApp,
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                },
+                                                child: Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Image.asset(
+                                                    ImagePath().linkedIn,
+                                                    height: 35,
                                                   ),
                                                 ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),

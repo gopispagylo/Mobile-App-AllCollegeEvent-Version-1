@@ -68,7 +68,7 @@ class _SignUpModelState extends State<SignUpModel> {
                   ConfigMessage().signUpUserHeadMsg,
                   style: TextStyle(
                     fontFamily: "blMelody",
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -76,7 +76,7 @@ class _SignUpModelState extends State<SignUpModel> {
                   textAlign: TextAlign.center,
                   ConfigMessage().signUpUserSubHeadMsg,
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 14,color: MyColor().borderClr,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

@@ -75,7 +75,9 @@ class _ListModelState extends State<ListModel> {
                   final venue = list['venue'] ?? "no venue";
 
                   // -------- identity ---------
-                  final identity = list['identity'];
+                  final identity = list['slug'];
+
+                  // final identity = list['slug'];
 
                   final paymentLink = list['paymentLink'];
 

@@ -31,6 +31,7 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
         };
 
         final response = await apiController.getMethod(endPoint: 'events/${event.identity}', token: token!, data: parameter);
+        print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){

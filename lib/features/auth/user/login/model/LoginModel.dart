@@ -104,7 +104,7 @@ class _LoginModelState extends State<LoginModel> {
                     ConfigMessage().loginUserHeadMsg,
                     style: TextStyle(
                       fontFamily: "blMelody",
-                      fontSize: 30,
+                      fontSize: 24,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -112,7 +112,7 @@ class _LoginModelState extends State<LoginModel> {
                     textAlign: TextAlign.center,
                     ConfigMessage().loginUserSubHeadMsg,
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 14,color: MyColor().borderClr,
                       fontWeight: FontWeight.w500,
                     ),
                   ),

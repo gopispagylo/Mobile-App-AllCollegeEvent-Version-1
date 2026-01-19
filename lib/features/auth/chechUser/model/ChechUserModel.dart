@@ -46,14 +46,14 @@ class _CheckUserModelState extends State<CheckUserModel> {
                     textAlign: TextAlign.center,
                     ConfigMessage().checkUserHeadMsg, style: TextStyle(
                       fontFamily: "blMelody",
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700
                   ),),
                   Text(
                     textAlign: TextAlign.center,
                     ConfigMessage().checkUserSubHeadMsg, style: GoogleFonts.poppins(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,color: MyColor().borderClr
                   ),),
                   SizedBox(height: 30,),
                   Center(

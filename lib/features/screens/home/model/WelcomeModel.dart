@@ -110,7 +110,7 @@ class _WelcomeModelState extends State<WelcomeModel> {
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(10),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(100),
                       borderSide: BorderSide(
                         color: MyColor().borderClr,
                         width: 0.5,

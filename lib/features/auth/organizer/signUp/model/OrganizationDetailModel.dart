@@ -141,7 +141,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                   "Organization Details",
                   style: TextStyle(
                     fontFamily: "blMelody",
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -445,7 +445,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                       Navigator.push(context, MaterialPageRoute(builder: (_)=> AccountCreationPage(country: selectedCountry ?? "", city: selectedCity ?? "", state: selectedState ?? "", orgName: nameController.text, categories: widget.categories, type: widget.type,)));
                     },
                     child: Text(
-                      "Verify your Domain",
+                      "Continue",
                       style: GoogleFonts.poppins(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

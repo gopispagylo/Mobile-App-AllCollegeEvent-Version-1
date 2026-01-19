@@ -95,7 +95,9 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                       SizedBox(width: 5,),
                                       Row(
                                         children: [
-                                          Icon(Icons.bookmark,color: MyColor().primaryClr,),
+                                          circleIcon(Icons.favorite_border),
+                                          SizedBox(width: 5),
+                                          circleIcon(Icons.bookmark_outline),
                                         ],
                                       ),
                                     ],
@@ -173,6 +175,19 @@ class _SavedEventModelState extends State<SavedEventModel> {
       ),
     );
   }
+}
+
+// --------- Fav & Add to cart Icon ---------
+Widget circleIcon(IconData icon) {
+  return Container(
+    padding: EdgeInsets.all(10),
+    decoration: BoxDecoration(
+      border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+      color: MyColor().boxInnerClr,
+      shape: BoxShape.circle,
+    ),
+    child: Icon(icon, size: 15),
+  );
 }
 
 // --------- Dummy Button ---------

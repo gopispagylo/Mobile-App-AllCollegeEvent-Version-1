@@ -225,7 +225,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
 
 
                             // -------- identity ---------
-                            final identity = list['identity'];
+                            final identity = list['slug'];
                             final paymentLink = list['paymentLink'];
 
                             // ------- Tween Animation -----------

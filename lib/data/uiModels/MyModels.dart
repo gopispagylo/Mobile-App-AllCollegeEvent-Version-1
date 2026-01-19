@@ -273,7 +273,7 @@ class MyModels{
                           height: 40,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: MyColor().primaryClr, width: 1),
+                            border: Border.all(color: MyColor().borderClr, width: 1),
                             color: Colors.white,
                           ),
                           child: Text(
@@ -281,7 +281,7 @@ class MyModels{
                             style: GoogleFonts.poppins(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
-                                color: MyColor().primaryClr
+                                color: MyColor().borderClr
                             ),
                           ),
                         ),

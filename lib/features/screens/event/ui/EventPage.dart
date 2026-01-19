@@ -4,6 +4,7 @@ import 'package:all_college_event_app/features/screens/event/model/EventListMode
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class EventPage extends StatefulWidget {
   const EventPage({super.key});
@@ -21,7 +22,11 @@ class _EventPageState extends State<EventPage> {
       create: (context) => EventListBloc(apiController: ApiController())..add(FetchEventList()),
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 0,
+          title: Text("All Events",style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            color: MyColor().blackClr,
+          ),),
           backgroundColor: MyColor().whiteClr,
         ),
         backgroundColor: MyColor().whiteClr,

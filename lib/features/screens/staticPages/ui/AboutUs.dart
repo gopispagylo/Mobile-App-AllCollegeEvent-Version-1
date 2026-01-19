@@ -16,7 +16,8 @@ class _AboutUsState extends State<AboutUs> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColor().boxInnerClr,
-        title: Text("About Us",style: GoogleFonts.poppins(
+        title: Text("About Us",
+          style: GoogleFonts.poppins(
           fontWeight: FontWeight.w600,
           fontSize: 18,
           color: MyColor().blackClr,

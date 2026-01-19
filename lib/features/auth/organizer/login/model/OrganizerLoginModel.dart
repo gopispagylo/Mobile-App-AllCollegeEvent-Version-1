@@ -65,7 +65,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                   ConfigMessage().loginOrgHeadMsg,
                   style: TextStyle(
                     fontFamily: "blMelody",
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -73,7 +73,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                   textAlign: TextAlign.center,
                   ConfigMessage().loginOrgSubHeadMsg,
                   style: GoogleFonts.poppins(
-                    fontSize: 18,
+                    fontSize: 14,color: MyColor().borderClr,
                     fontWeight: FontWeight.w500,
                   ),
                 ),

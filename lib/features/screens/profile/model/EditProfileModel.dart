@@ -611,16 +611,25 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                 ),
                               );
                             },
-                            child: Container(
-                              width: 320,
+                            child: Align(
                               alignment: Alignment.topRight,
-                              margin: EdgeInsets.only(top: 12),
-                              child: Text(
-                                "Forgot Password?",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 14,
-                                  color: MyColor().primaryClr,
+                              child: Container(
+                                width: 320,
+                                margin: EdgeInsets.only(top: 12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(Iconsax.lock,size: 18,color: MyColor().primaryClr,),
+                                    SizedBox(width: 3,),
+                                    Text(
+                                      "Change Password?",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                        color: MyColor().primaryClr,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),

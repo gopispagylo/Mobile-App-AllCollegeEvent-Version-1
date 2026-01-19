@@ -2,6 +2,7 @@ import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MyEventsModel.dart';
+import 'package:all_college_event_app/features/screens/profile/model/NotificationModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/OrganizationCreateDetailPage.dart';
 import 'package:all_college_event_app/features/screens/staticPages/ui/AboutUs.dart';
 import 'package:all_college_event_app/features/screens/staticPages/ui/ContactUs.dart';
@@ -38,6 +39,8 @@ class _MySpaceModelState extends State<MySpaceModel> {
 
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
+
+    print("checkUsercheckUsercheckUsercheckUser$checkUser");
 
     return Container(
       margin: EdgeInsets.only(left: 16,right: 16),
@@ -82,14 +85,25 @@ class _MySpaceModelState extends State<MySpaceModel> {
             ),),
           ),
           SizedBox(height: 10,),
-          customCheckBox(name: 'Notifications', borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)), value: checkNotification, onChanged: (value) {
-            setState(() {
-              checkNotification = value;
-            });
-          }),
+          GestureDetector(
+            onTap: !checkUser ? (){
+              Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> NotificationModel(),
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
+                    return SlideTransition(position: animation.drive(tween),child: child);
+                  },
+                  transitionDuration: Duration(milliseconds: 400)
+              ));
+          } : null,
+            child: customCheckBox(name: 'Notifications', borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)), value: checkNotification, onChanged: (value) {
+              setState(() {
+                checkNotification = value;
+              });
+            }),
+          ),
 
           // ----- only visible for organizer ----------
-        if(!checkUser)  customCheckBox(name: 'Email Settings', borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)), value: checkEmailSetting, onChanged: (value) {
+        if(checkUser) customCheckBox(name: 'Email Settings', borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)), value: checkEmailSetting, onChanged: (value) {
             setState(() {
               checkEmailSetting = value;
             });
@@ -208,7 +222,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
                                           backgroundColor: MyColor().whiteClr,
                                           shape: RoundedRectangleBorder(
                                             borderRadius: BorderRadius.circular(8),
-                                            side: BorderSide(color: MyColor().primaryClr)
+                                            side: BorderSide(color: MyColor().borderClr)
                                           ),
                                           elevation: 0
                                         ),
@@ -219,7 +233,7 @@ class _MySpaceModelState extends State<MySpaceModel> {
                                           style: GoogleFonts.poppins(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w600,
-                                              color: MyColor().primaryClr
+                                              color: MyColor().borderClr
                                           ),)),
                                   ),
                                 ],
@@ -414,6 +428,34 @@ class _MySpaceModelState extends State<MySpaceModel> {
       ),
     );
   }
+
+  // --------- Check Box -------
+  Widget customCheckBox({required String name,required dynamic borderRadius, required dynamic value,required ValueChanged onChanged}) {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: MyColor().boxInnerClr,
+        borderRadius: borderRadius,
+      ),
+      child: Container(
+        margin: EdgeInsets.only(left: 16,right: 16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(name,style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: MyColor().blackClr
+            ),),
+            widget.whichScreen == "User" ?  Transform.scale(
+                scale: 0.7,
+                child: Switch(value: value, onChanged: onChanged,)) : Icon(Icons.arrow_forward_ios,size: 18,)
+          ],
+        ),
+      ),
+    );
+  }
+
 }
 
   // ----------- Custom Widget -------
@@ -442,32 +484,6 @@ class _MySpaceModelState extends State<MySpaceModel> {
   );
 }
 
-  // --------- Check Box -------
-  Widget customCheckBox({required String name,required dynamic borderRadius, required dynamic value,required ValueChanged onChanged}) {
-  return Container(
-    height: 48,
-    decoration: BoxDecoration(
-      color: MyColor().boxInnerClr,
-      borderRadius: borderRadius,
-    ),
-    child: Container(
-      margin: EdgeInsets.only(left: 16,right: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(name,style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-              color: MyColor().blackClr
-          ),),
-          Transform.scale(
-              scale: 0.7,
-              child: Switch(value: value, onChanged: onChanged,))
-        ],
-      ),
-    ),
-  );
-}
 
   // ------- custom text -------
   Widget customText({required String text}) {
