@@ -25,7 +25,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
 
         if(response.statusCode == 200){
           final responseBody = response.data;
-          if(responseBody['success'] == true){
+          if(responseBody['status'] == true){
             categoriesList.clear();
             categoriesList.addAll(responseBody['data']);
             if(categoriesList.isNotEmpty){

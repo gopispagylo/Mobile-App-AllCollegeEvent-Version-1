@@ -1,5 +1,8 @@
 import 'package:all_college_event_app/features/screens/categories/ui/CategoriesPage.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventPage.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
+import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
+import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/ui/HomePage.dart';
 import 'package:all_college_event_app/features/screens/profile/ui/ProfilePage.dart';
 import 'package:all_college_event_app/features/screens/search/ui/SearchPage.dart';
@@ -7,6 +10,7 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_symbols_icons/symbols.dart';
 

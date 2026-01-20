@@ -36,7 +36,6 @@ class _ProfileModelState extends State<TopModel> {
             margin: EdgeInsets.all(16),
             child: Column(
               children: [
-
                 Center(
                   child: Container(
                     height: 100,
@@ -85,17 +84,15 @@ class _ProfileModelState extends State<TopModel> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+
                     // ---------- only show for organizer ----------
                     if (!checkUser)
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: MyColor().boxInnerClr,
+                            color: MyColor().primaryClr.withOpacity(0.07),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: MyColor().borderClr.withOpacity(0.15),
-                            ),
                           ),
                           child: Column(
                             children: [
@@ -119,16 +116,14 @@ class _ProfileModelState extends State<TopModel> {
                           ),
                         ),
                       ),
+
                     if (!checkUser) SizedBox(width: 3),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(12),
+                        padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
+                          color: MyColor().greenClr.withOpacity(0.07),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
                         ),
                         child: Column(
                           children: [
@@ -157,13 +152,10 @@ class _ProfileModelState extends State<TopModel> {
                     if (!checkUser)
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: MyColor().boxInnerClr,
+                            color: MyColor().yellowClr.withOpacity(0.07),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: MyColor().borderClr.withOpacity(0.15),
-                            ),
                           ),
                           child: Column(
                             children: [
@@ -192,13 +184,10 @@ class _ProfileModelState extends State<TopModel> {
                     if (!checkUser)
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
-                            color: MyColor().boxInnerClr,
+                            color: MyColor().redClr.withOpacity(0.07),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(
-                              color: MyColor().borderClr.withOpacity(0.15),
-                            ),
                           ),
                           child: Column(
                             children: [

@@ -11,6 +11,7 @@ import 'package:all_college_event_app/features/screens/staticPages/ui/FeedBack.d
 import 'package:all_college_event_app/features/screens/staticPages/ui/PrivacyPolicy.dart';
 import 'package:all_college_event_app/features/screens/staticPages/ui/TermsCondition.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -33,6 +34,15 @@ class _MySpaceModelState extends State<MySpaceModel> {
 
   // ---------- Controller ------
   final deleteController = TextEditingController();
+  final whatsAppNumberController = TextEditingController();
+
+
+  @override
+  void dispose() {
+    deleteController.dispose();
+    whatsAppNumberController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +114,110 @@ class _MySpaceModelState extends State<MySpaceModel> {
 
           // ----- only visible for organizer ----------
         if(checkUser) customCheckBox(name: 'Email Settings', borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)), value: checkEmailSetting, onChanged: (value) {
-            setState(() {
-              checkEmailSetting = value;
-            });
+           MyModels().alertDialogContentCustom(context: context, content: Container(
+             child: Column(
+               mainAxisSize: MainAxisSize.min,
+               children: [
+                 Text("Receive timely updates and important notifications via WhatsApp.",style: GoogleFonts.poppins(
+                   fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
+                 ),),
+
+                 Container(
+                   margin: EdgeInsets.only(top: 20,bottom: 20),
+                   child: TextFormField(
+                     controller: whatsAppNumberController,
+                     validator: Validators().validPhoneWhatsapp,
+                     onTapOutside: (outSideTab){
+                       WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
+                     },
+                     keyboardType: TextInputType.number,
+                     decoration: InputDecoration(
+                       contentPadding: EdgeInsets.all(10),
+                       enabledBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12),
+                           borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
+                       ),
+                       focusedBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12),
+                           borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
+                       ),
+                       errorBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12),
+                           borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
+                       ),
+                       focusedErrorBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12),
+                           borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                       ),
+                       hintText: "Enter Your WhatsApp Number",
+                       hintStyle: GoogleFonts.poppins(
+                           fontWeight: FontWeight.w400,
+                           fontSize: 12,
+                           color: MyColor().hintTextClr
+                       ),
+                     ),
+                   ),
+                 ),
+
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   children: [
+                     Expanded(
+                       child: InkWell(
+                         onTap: (){
+                           Navigator.pop(context);
+                         },
+                         child: Container(
+                           alignment: Alignment.center,
+                           height: 40,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(8),
+                             border: Border.all(color: MyColor().borderClr, width: 1),
+                             color: Colors.white,
+                           ),
+                           child: Text(
+                             "Cancel",
+                             style: GoogleFonts.poppins(
+                                 fontSize: 14,
+                                 fontWeight: FontWeight.w600,
+                                 color: MyColor().borderClr
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
+                     const SizedBox(width: 10),
+                     Expanded(
+                       child: InkWell(
+                         onTap: (){
+                           setState(() {
+                             checkEmailSetting = value;
+                           });
+                           Navigator.pop(context);
+                         },
+                         child: Container(
+                           alignment: Alignment.center,
+                           height: 40,
+                           decoration: BoxDecoration(
+                             borderRadius: BorderRadius.circular(8),
+                             color: MyColor().primaryClr,
+                           ),
+                           child: Text(
+                             "Subscribe",
+                             style: GoogleFonts.poppins(
+                                 fontSize: 14,
+                                 fontWeight: FontWeight.w600,
+                                 color: MyColor().whiteClr
+                             ),
+                           ),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ],
+             ),
+           ));
           }),
           SizedBox(height: 24,),
           Container(

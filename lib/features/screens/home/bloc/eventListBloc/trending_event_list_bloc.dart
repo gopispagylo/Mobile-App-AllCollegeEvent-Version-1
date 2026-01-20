@@ -17,9 +17,11 @@ class TrendingEventListBloc
   TrendingEventListBloc({required this.apiController})
     : super(TrendingEventListInitial()) {
     on<FetchTrendingEventList>((event, emit) async {
-      emit(TrendingEventListLoading());
 
+      emit(TrendingEventListLoading());
       try {
+
+        print('jhsjhdshjkdsjhdsjhdsjhdsjhdsajhadsjhadsjhasdjhadssadjh');
         // --------- set a base url -------
         await apiController.setBaseUrl();
 

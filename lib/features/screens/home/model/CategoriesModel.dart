@@ -1,8 +1,10 @@
-import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path/path.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class HomeCategoriesModel extends StatefulWidget {
@@ -16,11 +18,12 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoriesBloc, CategoriesState>(
-      builder: (context, categoriesState) {
-        if(categoriesState is CategoriesLoading){
+    return BlocBuilder<EventTypeAllBloc, EventTypeAllState>(
+      builder: (context, eventTypeAll) {
+        if(eventTypeAll is EventTypeAllLoading){
           return categoryShimmer();
-        } else if(categoriesState is CategoriesSuccess){
+        } else if(eventTypeAll is EventTypeSuccessAll){
+
           return Column(
             children: [
               Container(
@@ -33,12 +36,17 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                         fontSize: 18,
                         fontFamily: "blMelody"
                     ),),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text("See all",style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500
-                      ),),
+                    GestureDetector(
+                      onTap: (){
+                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> ));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text("See all",style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500
+                        ),),
+                      ),
                     )
                   ],
                 ),
@@ -54,26 +62,36 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    children: List.generate(categoriesState.categoriesList.length, (index) {
-                      final list = categoriesState.categoriesList[index];
+                    children: List.generate(eventTypeAll.eventTypeList.length, (index) {
+                      final list = eventTypeAll.eventTypeList[index];
+                      final bgColor = list['color'];
+                      final splitBGColor = bgColor.replaceFirst("#","0xff");
+
                       return Container(
                         margin: EdgeInsets.only(left: 16,
-                            right: index == categoriesState.categoriesList.length - 1 ? 16 : 0,
+                            right: index == eventTypeAll.eventTypeList.length - 1 ? 16 : 0,
                             top: 15),
                         height: 104,
                         width: 104,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: MyColor().boxInnerClr
+                            color: Color(int.tryParse(splitBGColor)!.toInt()),
+                          border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                          // boxShadow: [
+                          //   BoxShadow(color: MyColor().blackClr.withOpacity(0.10),offset: Offset(5, 5),blurRadius: 2)
+                          // ]
                         ),
                         child: Container(
                           margin: EdgeInsets.all(10),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.note),
-                              Text(list['categoryName'],
-                                overflow: TextOverflow.ellipsis,
+                              CachedNetworkImage(imageUrl: list['imageUrl'] ?? '',height: 45,placeholder: (context, url) {
+                                return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                              },),
+                              Text(list['name'],
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
                                 style: GoogleFonts.poppins(
                                   fontWeight: FontWeight.w500,
                                   fontSize: 12,
@@ -88,10 +106,10 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
               ),
             ],
           );
-        } else if(categoriesState is CategoriesFail){
+        } else if(eventTypeAll is EventTypeFailAll){
           return Center(child: Container(
               margin: EdgeInsets.only(top: 30),
-              child: Text(categoriesState.errorMessage)),);
+              child: Text(eventTypeAll.errorMessage)),);
         } return SizedBox.shrink();
       },
     );

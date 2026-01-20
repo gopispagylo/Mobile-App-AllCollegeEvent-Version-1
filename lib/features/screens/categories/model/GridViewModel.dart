@@ -1,6 +1,8 @@
 import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -14,29 +16,6 @@ class GridViewModel extends StatefulWidget {
 }
 
 class _GridViewModelState extends State<GridViewModel> {
-
-  List<Map<String, dynamic>> categoriesList = [
-    {
-      "title": "Hackathon",
-      "image": "assets/images/hackathon.png",
-      "bgColor": 0xFFE7F7FF,
-    },
-    {
-      "title": "Conference",
-      "image": "assets/images/conference.png",
-      "bgColor": 0xFFFDF1DC,
-    },
-    {
-      "title": "Athletics",
-      "image": "assets/images/athletics.png",
-      "bgColor": 0xFFFFE8E8,
-    },
-    {
-      "title": "Competition",
-      "image": "assets/images/competition.png",
-      "bgColor": 0xFFF4EAFF,
-    },
-  ];
 
 
   @override
@@ -92,11 +71,11 @@ class _GridViewModelState extends State<GridViewModel> {
         // GridView
         Expanded(child: Container(
           margin: EdgeInsets.only(left: 16,right: 16),
-          child: BlocBuilder<CategoriesBloc, CategoriesState>(
-            builder: (context, categoriesState) {
-              if (categoriesState is CategoriesLoading) {
+          child: BlocBuilder<EventTypeAllBloc, EventTypeAllState>(
+            builder: (context, eventTypeAll) {
+              if (eventTypeAll is EventTypeAllLoading) {
                 return GridView.builder(
-                  itemCount: 9,
+                  itemCount: 40,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 10,
@@ -106,30 +85,36 @@ class _GridViewModelState extends State<GridViewModel> {
                     return categoryCardShimmer();
                   },
                 );
-              } else if (categoriesState is CategoriesSuccess) {
+              } else if (eventTypeAll is EventTypeSuccessAll) {
                 return RefreshIndicator(
                   onRefresh: () async {
-                    context.read<CategoriesBloc>().add(FetchCategories());
+                    context.read<EventTypeAllBloc>().add(EventTypeAll());
                   },
                   child: GridView.builder(
-                      itemCount: categoriesState.categoriesList.length,
+                      itemCount: eventTypeAll.eventTypeList.length,
                       itemBuilder: (context, index) {
-                        final list = categoriesState.categoriesList[index];
+                        final list = eventTypeAll.eventTypeList[index];
+                        final bgColor = list['color'];
+                        final splitBGColor = bgColor.replaceFirst("#","0xff");
                         return Container(
                           height: 104,
                           width: 104,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12),
-                              color: Color(categoriesList[index]['bgColor'])
+                              color: Color(int.tryParse(splitBGColor)!.toInt()),
+                              border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                           ),
                           child: Container(
                             margin: EdgeInsets.all(10),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.note),
-                                Text(list['categoryName'],
-                                  overflow: TextOverflow.ellipsis,
+                                CachedNetworkImage(imageUrl: list['imageUrl'] ?? '',height: 45,placeholder: (context, url) {
+                                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                                },),
+                                Text(list['name'],
+                                  maxLines: 2,
+                                  textAlign: TextAlign.center,
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 12,
@@ -142,9 +127,11 @@ class _GridViewModelState extends State<GridViewModel> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
-                          crossAxisCount: 3)),
+                          crossAxisCount: 3,
+                        childAspectRatio: 1
+                      )),
                 );
-              } else if (categoriesState is CategoriesFail) {
+              } else if (eventTypeAll is EventTypeFailAll) {
                 return RefreshIndicator(
                   onRefresh: () async {
                     context.read<CategoriesBloc>().add(FetchCategories());

@@ -100,7 +100,8 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                       final paymentLink = list['paymentLink'];
 
                       // --------- categoryName ------
-                      final categoryName = list['categoryName'];
+                      final categoryName = list['categoryName'] ?? "No Categories";
+
 
                       return GestureDetector(
                         onTap: () {

@@ -43,6 +43,10 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
             // ------- set token ---------
             await db.insertToken(responseBody['token']);
 
+            final token = await db.getToken();
+
+            print("tokentokentokentokentokentokentokentokentokentoken$token");
+
             // -------- set a user id --------
             await db.insertUserId(responseBody['data']['identity']);
 
@@ -56,9 +60,7 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
         final error = HandleErrorConfig().handleDioError(e);
         emit(GoogleSignInFail(errorMessage: error));
       } catch (e) {
-        emit(
-          GoogleSignInFail(errorMessage: ConfigMessage().unexpectedErrorMsg),
-        );
+        emit(GoogleSignInFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

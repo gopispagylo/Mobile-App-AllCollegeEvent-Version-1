@@ -18,6 +18,7 @@ class TopOrganizerBloc extends Bloc<TopOrganizerEvent, TopOrganizerState> {
       emit(TopOrganizerLoading());
 
       try{
+        print('jhsjhdshjkdsjhdsjhdsjhdsjhdsajhadsjhadsjhasdjhadssadjh');
 
         // --------- set a base url -------
         await apiController.setBaseUrl();
@@ -25,7 +26,11 @@ class TopOrganizerBloc extends Bloc<TopOrganizerEvent, TopOrganizerState> {
         // ------------ get a token -------
         final token = await DBHelper().getToken();
 
+        print("tokentokentokentokentokentokentoken$token");
+
         final response = await apiController.getMethodWithoutBody(endPoint: 'organizations/', token: token!);
+
+        print("TopOrganizerBlocTopOrganizerBlocTopOrganizerBlocTopOrganizerBloc$response");
 
         if(response.statusCode == 200){
           final responseBody = response.data;
@@ -38,12 +43,14 @@ class TopOrganizerBloc extends Bloc<TopOrganizerEvent, TopOrganizerState> {
           }
         }
       }on DioException catch(e){
+        print("TopOrganizerBlocTopOrganizerBlocTopOrganizerBlocTopOrganizerBloc$e");
 
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(TopOrganizerFail(errorMessage: error));
 
       } catch(e){
+        print("TopOrganizerBlocTopOrganizerBlocTopOrganizerBlocTopOrganizerBloc$e");
         emit(TopOrganizerFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

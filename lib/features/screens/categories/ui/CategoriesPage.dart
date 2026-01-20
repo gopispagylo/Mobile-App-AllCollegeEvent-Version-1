@@ -1,6 +1,7 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/screens/categories/model/GridViewModel.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
         ),),
       ),
       body: BlocProvider(
-        create: (context) => CategoriesBloc(apiController: ApiController())..add(FetchCategories()),
+        create: (context) => EventTypeAllBloc(apiController: ApiController())..add(EventTypeAll()),
         child: GridViewModel(),
       ),
     );

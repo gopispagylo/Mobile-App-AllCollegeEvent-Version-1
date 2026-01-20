@@ -1,4 +1,4 @@
-import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/CarouselSliderPage.dart';
@@ -21,13 +21,24 @@ class HomeModel extends StatefulWidget {
 
 class _HomeModelState extends State<HomeModel> {
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async{
+      await Future.delayed(Duration(milliseconds: 400));
+      context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
+      context.read<EventTypeAllBloc>().add(EventTypeAll());
+      context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async{
         context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
-        context.read<CategoriesBloc>().add(FetchCategories());
+        context.read<EventTypeAllBloc>().add(EventTypeAll());
         context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
       },
       child: SingleChildScrollView(

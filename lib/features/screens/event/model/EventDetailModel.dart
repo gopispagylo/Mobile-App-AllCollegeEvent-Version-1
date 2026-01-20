@@ -238,7 +238,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                       Row(
                         children: [
                           colorLabel(
-                            text: list['categoryName'],
+                            text: list['categoryName'] ?? "No Categories",
                             color: MyColor().yellowClr,
                             borderColor: MyColor().yellowClr,
                           ),
