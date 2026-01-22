@@ -109,6 +109,112 @@ class _EventListModelState extends State<EventListModel> {
                       fontSize: 12,
                       color: MyColor().hintTextClr
                   ),
+                  suffixIcon: GestureDetector(
+                    onTap: () async{
+                      final result = await Navigator.push(context, PageRouteBuilder(pageBuilder: (_,__,___)=> FilterPage(),
+                          transitionsBuilder: (_, animation, __, child){
+                            return SlideTransition(position: Tween(
+                                begin: Offset(-1, 0),
+                                end: Offset.zero
+                            ).animate(animation),child: child,);
+                          }
+                      ));
+
+                      if (result != null) {
+
+                        final Map<String, dynamic> apiMap = {};
+                        final List<String> displayList = [];
+
+                        for (final item in result) {
+
+                          // ---- API values ----
+                          switch (item.type) {
+
+                            case "eventTypes":
+                              apiMap['eventTypes'] = item.keys;
+                              break;
+
+                            case "modes":
+                              apiMap['modes'] = item.keys;
+                              break;
+
+                            case "eligibleDeptIdentities":
+                              apiMap['eligibleDeptIdentities'] = item.keys;
+                              break;
+
+                            case "certIdentity":
+                              apiMap['certIdentity'] = item.keys.first;
+                              break;
+
+                            case "eventTypeIdentity":
+                              apiMap['eventTypeIdentity'] = item.keys.first;
+                              break;
+
+                            case "perkIdentities":
+                              apiMap['perkIdentities'] = item.keys;
+                              break;
+
+                            case "accommodationIdentities":
+                              apiMap['accommodationIdentities'] = item.keys;
+                              break;
+
+                            case "country":
+                              apiMap['country'] = item.keys.first;
+                              break;
+
+                            case "state":
+                              apiMap['state'] = item.keys.first;
+                              break;
+
+                            case "city":
+                              apiMap['city'] = item.keys.first;
+                              break;
+
+                            case "dateRange":
+                              apiMap['dateRange'] = item.keys.first;
+                              break;
+                          }
+
+                          // ---- Display values (chips) ----
+                          displayList.addAll(item.values);
+                        }
+
+                        setState(() {
+                          filterPageValues['api'] = apiMap;
+                          filterPageValues['display'] = displayList;
+                        });
+
+                        // ---- Fetch using stored filters ----
+                        context.read<EventListBloc>().add(
+                          FetchEventList(
+                            eventTypes: apiMap['eventTypes'],
+                            modes: apiMap['modes'],
+                            eligibleDeptIdentities: apiMap['eligibleDeptIdentities'],
+                            certIdentity: apiMap['certIdentity'],
+                            eventTypeIdentity: apiMap['eventTypeIdentity'],
+                            perkIdentities: apiMap['perkIdentities'],
+                            accommodationIdentities: apiMap['accommodationIdentities'],
+                            country: apiMap['country'],
+                            state: apiMap['state'],
+                            city: apiMap['city'],
+                            startDate: apiMap['dateRange'],
+                          ),
+                        );
+                      }
+
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                          // color: MyColor().boxInnerClr,
+                          // border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+                          borderRadius: BorderRadius.circular(100)
+                      ),
+                      child: Icon(
+                        Icons.tune,
+                      ),
+                    ),
+                  )
                 ),
               )),
         ),
@@ -117,113 +223,113 @@ class _EventListModelState extends State<EventListModel> {
           margin: EdgeInsets.only(left: 16,right: 0),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () async{
-                  final result = await Navigator.push(context, PageRouteBuilder(pageBuilder: (_,__,___)=> FilterPage(),
-                      transitionsBuilder: (_, animation, __, child){
-                        return SlideTransition(position: Tween(
-                            begin: Offset(-1, 0),
-                            end: Offset.zero
-                        ).animate(animation),child: child,);
-                      }
-                  ));
-
-                  if (result != null) {
-
-                    final Map<String, dynamic> apiMap = {};
-                    final List<String> displayList = [];
-
-                    for (final item in result) {
-
-                      // ---- API values ----
-                      switch (item.type) {
-
-                        case "eventTypes":
-                          apiMap['eventTypes'] = item.keys;
-                          break;
-
-                        case "modes":
-                          apiMap['modes'] = item.keys;
-                          break;
-
-                        case "eligibleDeptIdentities":
-                          apiMap['eligibleDeptIdentities'] = item.keys;
-                          break;
-
-                        case "certIdentity":
-                          apiMap['certIdentity'] = item.keys.first;
-                          break;
-
-                        case "eventTypeIdentity":
-                          apiMap['eventTypeIdentity'] = item.keys.first;
-                          break;
-
-                        case "perkIdentities":
-                          apiMap['perkIdentities'] = item.keys;
-                          break;
-
-                        case "accommodationIdentities":
-                          apiMap['accommodationIdentities'] = item.keys;
-                          break;
-
-                        case "country":
-                          apiMap['country'] = item.keys.first;
-                          break;
-
-                        case "state":
-                          apiMap['state'] = item.keys.first;
-                          break;
-
-                        case "city":
-                          apiMap['city'] = item.keys.first;
-                          break;
-
-                        case "dateRange":
-                          apiMap['dateRange'] = item.keys.first;
-                          break;
-                      }
-
-                      // ---- Display values (chips) ----
-                      displayList.addAll(item.values);
-                    }
-
-                    setState(() {
-                      filterPageValues['api'] = apiMap;
-                      filterPageValues['display'] = displayList;
-                    });
-
-                    // ---- Fetch using stored filters ----
-                    context.read<EventListBloc>().add(
-                      FetchEventList(
-                        eventTypes: apiMap['eventTypes'],
-                        modes: apiMap['modes'],
-                        eligibleDeptIdentities: apiMap['eligibleDeptIdentities'],
-                        certIdentity: apiMap['certIdentity'],
-                        eventTypeIdentity: apiMap['eventTypeIdentity'],
-                        perkIdentities: apiMap['perkIdentities'],
-                        accommodationIdentities: apiMap['accommodationIdentities'],
-                        country: apiMap['country'],
-                        state: apiMap['state'],
-                        city: apiMap['city'],
-                        startDate: apiMap['dateRange'],
-                      ),
-                    );
-                  }
-
-                },
-                child: Container(
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                      color: MyColor().boxInnerClr,
-                      border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
-                      borderRadius: BorderRadius.circular(100)
-                  ),
-                  child: Icon(
-                    Icons.tune,
-                  ),
-                ),
-              ),
-              SizedBox(width: 10,),
+              // GestureDetector(
+              //   onTap: () async{
+              //     final result = await Navigator.push(context, PageRouteBuilder(pageBuilder: (_,__,___)=> FilterPage(),
+              //         transitionsBuilder: (_, animation, __, child){
+              //           return SlideTransition(position: Tween(
+              //               begin: Offset(-1, 0),
+              //               end: Offset.zero
+              //           ).animate(animation),child: child,);
+              //         }
+              //     ));
+              //
+              //     if (result != null) {
+              //
+              //       final Map<String, dynamic> apiMap = {};
+              //       final List<String> displayList = [];
+              //
+              //       for (final item in result) {
+              //
+              //         // ---- API values ----
+              //         switch (item.type) {
+              //
+              //           case "eventTypes":
+              //             apiMap['eventTypes'] = item.keys;
+              //             break;
+              //
+              //           case "modes":
+              //             apiMap['modes'] = item.keys;
+              //             break;
+              //
+              //           case "eligibleDeptIdentities":
+              //             apiMap['eligibleDeptIdentities'] = item.keys;
+              //             break;
+              //
+              //           case "certIdentity":
+              //             apiMap['certIdentity'] = item.keys.first;
+              //             break;
+              //
+              //           case "eventTypeIdentity":
+              //             apiMap['eventTypeIdentity'] = item.keys.first;
+              //             break;
+              //
+              //           case "perkIdentities":
+              //             apiMap['perkIdentities'] = item.keys;
+              //             break;
+              //
+              //           case "accommodationIdentities":
+              //             apiMap['accommodationIdentities'] = item.keys;
+              //             break;
+              //
+              //           case "country":
+              //             apiMap['country'] = item.keys.first;
+              //             break;
+              //
+              //           case "state":
+              //             apiMap['state'] = item.keys.first;
+              //             break;
+              //
+              //           case "city":
+              //             apiMap['city'] = item.keys.first;
+              //             break;
+              //
+              //           case "dateRange":
+              //             apiMap['dateRange'] = item.keys.first;
+              //             break;
+              //         }
+              //
+              //         // ---- Display values (chips) ----
+              //         displayList.addAll(item.values);
+              //       }
+              //
+              //       setState(() {
+              //         filterPageValues['api'] = apiMap;
+              //         filterPageValues['display'] = displayList;
+              //       });
+              //
+              //       // ---- Fetch using stored filters ----
+              //       context.read<EventListBloc>().add(
+              //         FetchEventList(
+              //           eventTypes: apiMap['eventTypes'],
+              //           modes: apiMap['modes'],
+              //           eligibleDeptIdentities: apiMap['eligibleDeptIdentities'],
+              //           certIdentity: apiMap['certIdentity'],
+              //           eventTypeIdentity: apiMap['eventTypeIdentity'],
+              //           perkIdentities: apiMap['perkIdentities'],
+              //           accommodationIdentities: apiMap['accommodationIdentities'],
+              //           country: apiMap['country'],
+              //           state: apiMap['state'],
+              //           city: apiMap['city'],
+              //           startDate: apiMap['dateRange'],
+              //         ),
+              //       );
+              //     }
+              //
+              //   },
+              //   child: Container(
+              //     padding: EdgeInsets.all(12),
+              //     decoration: BoxDecoration(
+              //         color: MyColor().boxInnerClr,
+              //         border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
+              //         borderRadius: BorderRadius.circular(100)
+              //     ),
+              //     child: Icon(
+              //       Icons.tune,
+              //     ),
+              //   ),
+              // ),
+              // SizedBox(width: 10,),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
@@ -271,17 +377,17 @@ class _EventListModelState extends State<EventListModel> {
                 );
               },
               child: Container(
-                margin: EdgeInsets.only(left: 16, right: 16, top: 20,),
+                margin: EdgeInsets.only(left: 16, right: 16, top: 16,),
                 child: ListView.builder(
                   itemCount: eventListState.eventList.length,
                   itemBuilder: (context, index) {
+
                     final list = eventListState.eventList[index];
 
                     // -------- field name ------------
                     final title = list['title'] ?? "No title";
 
-                    final featuredImagePath =
-                    (list['bannerImages'] != null &&
+                    final featuredImagePath = (list['bannerImages'] != null &&
                         list['bannerImages'].isNotEmpty)
                         ? list['bannerImages'][0]
                         : '';
@@ -328,19 +434,12 @@ class _EventListModelState extends State<EventListModel> {
                         onTap: () {
                           Navigator.push(
                               context,
-                              PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,),
-                                  transitionsBuilder: (_, animation, __, child){
-                                    return SlideTransition( position: Tween(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                      child: child,);
-                                  }
-                              )
+                              MaterialPageRoute(builder: (_)=> EventDetailPage(identity: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,))
                           );
                         },
                         child: Container(
                           margin: EdgeInsets.only(left: 0, bottom: 16),
+                          padding: EdgeInsets.only(left: 10,right: 5,bottom: 5,top: 5),
                           decoration: BoxDecoration(
                             color: MyColor().whiteClr,
                             border: Border.all(
@@ -355,16 +454,19 @@ class _EventListModelState extends State<EventListModel> {
                                 flex: 2,
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomLeft: Radius.circular(10)),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   clipBehavior: Clip.antiAlias,
-                                  child: CachedNetworkImage(
-                                    imageUrl: featuredImagePath,
-                                    fit: BoxFit.cover,
-                                    height: 110,
-                                    placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
-                                    errorWidget: (context, url, error) =>
-                                    const Icon(Icons.image_not_supported),
+                                  child: Hero(
+                                    tag: 'event_image_$identity',
+                                    child: CachedNetworkImage(
+                                      imageUrl: featuredImagePath,
+                                      fit: BoxFit.cover,
+                                      height: 110,
+                                      placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                                      errorWidget: (context, url, error) =>
+                                      const Icon(Icons.image_not_supported),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -540,7 +642,7 @@ class _EventListModelState extends State<EventListModel> {
   // ----------- filter pop up ui ---------------
   Widget filterChip(String text, int index) {
     return Container(
-      height: 48,
+      height: 45,
       margin: const EdgeInsets.only(right: 5),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
@@ -592,7 +694,7 @@ Widget circleIcon(IconData icon) {
 // ---------- Skeleton loading ui model -------
 Widget eventCardShimmer() {
   return Container(
-    margin: const EdgeInsets.only(bottom: 16, left: 16, right: 16,top: 20),
+    margin: const EdgeInsets.only(left: 16, right: 16,top: 16),
     padding: const EdgeInsets.all(10),
     decoration: BoxDecoration(
       color: Colors.white,

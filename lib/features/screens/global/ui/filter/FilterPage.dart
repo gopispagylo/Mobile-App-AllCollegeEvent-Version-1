@@ -18,9 +18,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 
 class FilterItem {
-  final String type;        // API key type
-  final List<String> keys;  // API keys
-  final List<String> values; // Display names
+  final String type;
+  final List<String> keys;
+  final List<String> values;
 
   FilterItem({required this.type, required this.keys, required this.values});
 }

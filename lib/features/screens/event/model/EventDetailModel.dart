@@ -86,7 +86,6 @@ class _EventDetailModelState extends State<EventDetailModel> {
 
             String startAndEndEvent = "${dateFormat.format(DateTime.parse(list['calendars'][0]['startDate']))} to ${dateFormat.format(DateTime.parse(list['calendars'][0]['endDate']))}";
 
-            print("socialLinkssocialLinkssocialLinkssocialLinkssocialLinkssocialLinks${list['socialLinks']['linkedin']}");
 
             return ListView(
               children: [
@@ -113,16 +112,19 @@ class _EventDetailModelState extends State<EventDetailModel> {
                             ),
                           ),
                           clipBehavior: Clip.antiAlias,
-                          child: CachedNetworkImage(
-                            imageUrl: sliderList,
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) => Center(
-                              child: CircularProgressIndicator(
-                                color: MyColor().primaryClr,
+                          child: Hero(
+                            tag: 'event_image_${widget.identity}',
+                            child: CachedNetworkImage(
+                              imageUrl: sliderList,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Center(
+                                child: CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
+                                ),
                               ),
+                              errorWidget: (context, url, error) =>
+                                  const Icon(Icons.image_not_supported),
                             ),
-                            errorWidget: (context, url, error) =>
-                                const Icon(Icons.image_not_supported),
                           ),
                         ),
                       );

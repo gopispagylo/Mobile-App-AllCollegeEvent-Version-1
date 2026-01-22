@@ -69,9 +69,9 @@ class ApiController {
     return response;
   }
 
-  // ----------- Put Method without data -------------
+  // ----------- Put Method with data -------------
   Future<Response> putMethod({required String endPoint,required String token, required Map<String,dynamic> data}) async{
-    final response = await dio.put(endPoint,data: data,options: Options(
+    final response = await dio.put(endPoint, data: data,options: Options(
         headers: {
           "Authorization" : "Bearer $token",
         }

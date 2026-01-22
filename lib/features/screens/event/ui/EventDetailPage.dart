@@ -29,14 +29,6 @@ class _EventDetailPageState extends State<EventDetailPage> {
         backgroundColor: MyColor().whiteClr,
         appBar: AppBar(
           backgroundColor: MyColor().whiteClr,
-          // title: Text(
-          //   widget.title,
-          //   style: GoogleFonts.poppins(
-          //     fontWeight: FontWeight.w600,
-          //     fontSize: 18,
-          //     color: MyColor().blackClr,
-          //   ),
-          // ),
         ),
         body: EventDetailModel(identity: widget.identity, title: widget.title, whichScreen: widget.whichScreen, paymentLink: widget.paymentLink,),
       ),
