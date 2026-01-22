@@ -27,7 +27,7 @@ class PerksBloc extends Bloc<PerksEvent, PerksState> {
         print("PerksBlocPerksBlocPerksBlocPerksBlocPerksBlocPerksBlocPerksBloc$response");
         if(response.statusCode == 200){
           final responseBody = response.data;
-          if(responseBody['success'] == true){
+          if(responseBody['status'] == true){
             perksList.clear();
             perksList.addAll(responseBody['data']);
             emit(PerksSuccess(perksList: List.from(perksList)));

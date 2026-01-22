@@ -35,6 +35,7 @@ class _SignUpModelState extends State<SignUpModel> {
   // Global Key
   final formKey = GlobalKey<FormState>();
 
+
   // ------ dispose after using controller --------
   @override
   void dispose() {
@@ -58,7 +59,7 @@ class _SignUpModelState extends State<SignUpModel> {
             key: formKey,
             child: ListView(
               children: [
-                Container(
+                SizedBox(
                   height: 250,
                   child: Image.asset(ImagePath().authSignupImg),
                 ),

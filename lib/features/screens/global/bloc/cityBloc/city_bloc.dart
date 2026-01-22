@@ -12,21 +12,27 @@ part 'city_state.dart';
 
 class CityBloc extends Bloc<CityEvent, CityState> {
   final ApiController apiController;
+  List<dynamic> cityList = [];
   CityBloc({required this.apiController}) : super(CityInitial()) {
     on<FetchCity>((event, emit) async {
       emit(CityLoading());
       try {
-        final response = await apiController.getCities(endPoint: '/countries/state/cities/q?country=${event.countryCode}&state=${event.stateCode}'
-        );
+
+        // ----------- initial set base url -------------
+        await apiController.setBaseUrl();
+
+        final response = await apiController.getMethodWithoutBody(endPoint: 'location/states/${event.stateCode}/cities',token: "");
 
         if (response.statusCode == 200) {
-
-          final List data = response.data['data'];
-
-          if (data.isNotEmpty) {
-            emit(CitySuccess(cityList: data));
-          } else {
-            emit(CityFail(errorMessage: "No cities found for this state"));
+          final responseBody = response.data!;
+          if(responseBody['status'] == true){
+            cityList.clear();
+            cityList.addAll(responseBody['data']);
+            if (cityList.isNotEmpty) {
+              emit(CitySuccess(cityList: cityList));
+            } else {
+              emit(CityFail(errorMessage: "No cities found for this state"));
+            }
           }
         } else {
           emit(CityFail(errorMessage: "Server error: ${response.statusCode}"));

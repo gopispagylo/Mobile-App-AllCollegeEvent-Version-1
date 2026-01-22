@@ -10,18 +10,27 @@ part 'country_state.dart';
 
 class CountryBloc extends Bloc<CountryEvent, CountryState> {
   final ApiController apiController;
+  List<dynamic> countryList = [];
   CountryBloc({required this.apiController}) : super(CountryInitial()) {
     on<FetchCountry>((event, emit) async{
       emit(CountryLoading());
       try {
-        final response = await apiController.getCountries(endPoint: '/countries/iso');
+
+        // ----------- initial set base url -------------
+        await apiController.setBaseUrl();
+
+        final response = await apiController.getMethodWithoutBody(endPoint: "location/countries",token: "");
 
         if(response.statusCode == 200){
-          final data = response.data['data'];
-          if(data.isNotEmpty){
-            emit(CountrySuccess(countryList: data));
-          }else{
-            emit(CountryFail(errorMessage: "No cities found"));
+          final responseBody = response.data!;
+          if(responseBody['status'] == true){
+            countryList.clear();
+            countryList.addAll(responseBody['data']);
+            if(countryList.isNotEmpty){
+              emit(CountrySuccess(countryList: List.from(countryList)));
+            }else{
+              emit(CountryFail(errorMessage: "No cities found"));
+            }
           }
         }
       } on DioException catch(e){

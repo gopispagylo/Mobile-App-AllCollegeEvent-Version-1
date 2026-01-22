@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
@@ -51,6 +52,9 @@ class _PaymentModelState extends State<PaymentModel> {
   // ------- form global key -------
   final formKey = GlobalKey<FormState>();
 
+  // ------- find user assign the value ------
+  String? checkUser;
+
 
   // ------- backend send date&time format change --------
   String toIsoDate(String dateText) {
@@ -63,11 +67,23 @@ class _PaymentModelState extends State<PaymentModel> {
   @override
   void initState() {
     super.initState();
-    print("lalallalalalaalalalaalalalal${widget.orgDetailList}");
+    getUser();
   }
+
+  // ------- find a user --------
+  Future<void> getUser() async {
+    String? user = await DBHelper().getUser();
+    setState(() {
+      checkUser = user;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
+    if(checkUser == null){
+      return Center(child: CircularProgressIndicator(),);
+    }
     return Form(
       key: formKey,
       child: ListView(
@@ -355,7 +371,7 @@ class _PaymentModelState extends State<PaymentModel> {
                     listener: (context, eventCreateState) {
                       if (eventCreateState is EventCreateSuccess) {
                         FlutterToast().flutterToast("Event created successfully 🎉", ToastificationType.success, ToastificationStyle.flat);
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => BottomNavigationBarPage(pageIndex: 4,)));
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => BottomNavigationBarPage(pageIndex: 4, whichScreen: checkUser!,)));
                       }
                     },
                     builder: (context, eventCreateState) {

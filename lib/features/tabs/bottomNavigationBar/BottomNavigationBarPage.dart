@@ -16,8 +16,9 @@ import 'package:material_symbols_icons/symbols.dart';
 
 class BottomNavigationBarPage extends StatefulWidget {
   final int pageIndex;
+  final String whichScreen;
 
-  const BottomNavigationBarPage({super.key, required this.pageIndex});
+  const BottomNavigationBarPage({super.key, required this.pageIndex,required this.whichScreen});
 
   @override
   State<BottomNavigationBarPage> createState() => _BottomNavigationBarPageState();
@@ -31,8 +32,8 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
 
 
   // List of pages
-  List<Widget> pagesList = [
-    HomePage(),
+  late List<Widget> pagesList = [
+    HomePage(whichScreen: widget.whichScreen,),
     SearchPage(),
     CategoriesPage(),
     EventPage(),

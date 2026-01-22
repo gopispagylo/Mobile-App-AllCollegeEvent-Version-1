@@ -9,6 +9,7 @@ import 'package:all_college_event_app/features/auth/splashScreen/model/SplashScr
 import 'package:all_college_event_app/features/auth/splashScreen/ui/OnboardingScreen.dart';
 import 'package:all_college_event_app/features/auth/splashScreen/ui/SplashScreen.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
+import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
@@ -60,12 +61,33 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
 
+  // ------- find user assign the value ------
+  String? checkUser;
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  // ------- find a user --------
+  Future<void> getUser() async {
+    String? user = await DBHelper().getUser();
+    setState(() {
+      checkUser = user;
+    });
+
+    print("useruseruseruseruser$user");
+  }
+
   // ----- global unfocused the keyboard -----
   @override
   void dispose() {
     GlobalUnFocus.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +103,7 @@ class _MyAppState extends State<MyApp> {
             )
           ),
           home: widget.isSplash
-              ? widget.isLogin ? BottomNavigationBarPage(pageIndex: 0) : CheckUserPage()
+              ? widget.isLogin ? checkUser == null ? Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),) : BottomNavigationBarPage(pageIndex: 0, whichScreen: checkUser!,) : CheckUserPage()
               : OnboardingScreenModel()
           // home: BottomNavigationBarPage(pageIndex: 0),
         ),

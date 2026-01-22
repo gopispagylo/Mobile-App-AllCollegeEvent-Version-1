@@ -10,32 +10,36 @@ part 'choose_state_state.dart';
 
 class ChooseStateBloc extends Bloc<ChooseStateEvent, ChooseStateState> {
   final ApiController apiController;
+  List<dynamic> stateList = [];
   ChooseStateBloc({required this.apiController}) : super(ChooseStateInitial()) {
     on<FetchChooseState>((event, emit) async {
       emit(ChooseStateLoading());
 
       try {
-        final response = await apiController.getStates(
-          endPoint: '/countries/states',
-          data: {'country': 'India'}, // "India"
+
+        // ----------- initial set base url -------------
+        await apiController.setBaseUrl();
+
+
+        final response = await apiController.getMethodWithoutBody(
+          endPoint: 'location/countries/${event.countryCode}/states',
+          token: "", // "India"
         );
 
         if (response.statusCode == 200) {
-          final List countries = response.data['data'];
-
-          // Find selected country
-          final country = countries.firstWhere(
-                (c) => c['name'] == event.countryCode,
-            orElse: () => null,
-          );
-
-          if (country != null && country['states'] != null) {
-            emit(ChooseStateSuccess(
-              stateList: country['states']
-            ));
-          } else {
-            emit(ChooseStateFail(errorMessage: "No states found"));
+          final responseBody = response.data!;
+          if(responseBody['status'] == true){
+            stateList.clear();
+            stateList.addAll(responseBody['data']);
+            if (stateList.isNotEmpty) {
+              emit(ChooseStateSuccess(
+                  stateList: List.from(stateList)
+              ));
+            } else {
+              emit(ChooseStateFail(errorMessage: "No states found"));
+            }
           }
+
         }
       } on DioException catch (e) {
         final error = HandleErrorConfig().handleDioError(e);

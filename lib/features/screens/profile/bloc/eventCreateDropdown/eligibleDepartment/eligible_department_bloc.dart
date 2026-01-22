@@ -6,17 +6,16 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'certification_event.dart';
-part 'certification_state.dart';
+part 'eligible_department_event.dart';
+part 'eligible_department_state.dart';
 
-class CertificationBloc extends Bloc<CertificationEvent, CertificationState> {
+class EligibleDepartmentBloc extends Bloc<EligibleDepartmentEvent, EligibleDepartmentState> {
   final ApiController apiController;
-  final List<dynamic> certificationList = [];
+  final List<dynamic> eligibleDepartmentList = [];
+  EligibleDepartmentBloc({required this.apiController}) : super(EligibleDepartmentInitial()) {
+    on<FetchEligibleDepartment>((event, emit) async {
 
-  CertificationBloc({required this.apiController}) : super(CertificationInitial()) {
-    on<FetchCertification>((event, emit) async {
-
-      emit(CertificationLoading());
+      emit(EligibleDepartmentLoading());
 
       try {
 
@@ -27,34 +26,32 @@ class CertificationBloc extends Bloc<CertificationEvent, CertificationState> {
         final token = await DBHelper().getToken();
 
         final response = await apiController.getMethodWithoutBody(
-          endPoint: 'master/certifications',
+          endPoint: 'master/eligible-departments',
           token: token!,
         );
-        print(
-          "CertificationBlocCertificationBlocCertificationBlocCertificationBlocCertificationBlocCertificationBloc$response",
-        );
+        print("EligibleDepartmentBlocEligibleDepartmentBlocEligibleDepartmentBlocEligibleDepartmentBloc$response");
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-            certificationList.clear();
-            certificationList.addAll(responseBody['data']);
-            if(certificationList.isNotEmpty){
-              emit(CertificationSuccess(certificationList: List.from(certificationList)),);
+            eligibleDepartmentList.clear();
+            eligibleDepartmentList.addAll(responseBody['data']);
+            if(eligibleDepartmentList.isNotEmpty){
+              emit(EligibleDepartmentSuccess(eligibleDepartmentList: List.from(eligibleDepartmentList)),);
             }else{
-              emit(CertificationFail(errorMessage: "No date found"));
+              emit(EligibleDepartmentFail(errorMessage: "No date found"));
             }
           } else {
-            emit(CertificationFail(errorMessage: responseBody['message']));
+            emit(EligibleDepartmentFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch (e) {
+
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
-        emit(CertificationFail(errorMessage: error));
+        emit(EligibleDepartmentFail(errorMessage: error));
+
       } catch (e) {
-        emit(
-          CertificationFail(errorMessage: ConfigMessage().unexpectedErrorMsg),
-        );
+        emit(EligibleDepartmentFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

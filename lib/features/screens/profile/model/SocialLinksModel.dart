@@ -290,6 +290,7 @@ class _SocialLinksModelState extends State<SocialLinksModel> {
                 BlocConsumer<UserUpdateBloc, UserUpdateState>(
                   listener: (context, userUpdateState) {
                     if (userUpdateState is SocialLinkOrganizerSuccess) {
+
                       // ---- Success Dialog -----
                       MyModels().alertDialogContentCustom(
                         context: context,

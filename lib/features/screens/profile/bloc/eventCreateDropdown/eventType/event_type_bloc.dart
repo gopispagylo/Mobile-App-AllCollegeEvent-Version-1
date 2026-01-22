@@ -31,7 +31,7 @@ class EventTypeBloc extends Bloc<EventTypeEvent, EventTypeState> {
         );
         if (response.statusCode == 200) {
           final responseBody = response.data;
-          if (responseBody['success'] == true) {
+          if (responseBody['status'] == true) {
             eventTypeList.clear();
             eventTypeList.addAll(responseBody['data']);
             emit(

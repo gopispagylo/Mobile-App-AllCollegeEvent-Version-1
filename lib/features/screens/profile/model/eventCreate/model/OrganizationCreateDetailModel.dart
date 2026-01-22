@@ -1,6 +1,7 @@
 import 'package:all_college_event_app/data/controller/DynamicControllersModel/DynamicControllersModel.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/orgCategories/org_categories_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/EventCreateDetailPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
@@ -17,8 +18,7 @@ class OrganizationCreateDetailModel extends StatefulWidget {
       _OrganizationCreateDetailModelState();
 }
 
-class _OrganizationCreateDetailModelState
-    extends State<OrganizationCreateDetailModel> {
+class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetailModel> {
 
   List<Map<String, dynamic>> orgDepartment = [
 
@@ -71,8 +71,11 @@ class _OrganizationCreateDetailModelState
     eventHostItemList.add(EventHostItem());
   }
 
+
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<UserProfileBloc, UserProfileState>(
+  builder: (context, state) {
     return Form(
       key: formKey,
       child: ListView(
@@ -201,7 +204,7 @@ class _OrganizationCreateDetailModelState
               ],
             ),
           ),
-
+          
           ListView.builder(
             shrinkWrap: true,
             itemCount: eventHostItemList.length,
@@ -502,8 +505,11 @@ class _OrganizationCreateDetailModelState
           ),
 
           SizedBox(height: 30),
+          
         ],
       ),
     );
+  },
+);
   }
 }

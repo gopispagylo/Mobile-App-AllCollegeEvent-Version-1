@@ -1,9 +1,16 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/chooseStateBloc/choose_state_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/cityBloc/city_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/countryBloc/country_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/accommodation/accommodation_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/certification/certification_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/eligibleDepartment/eligible_department_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/eventType/event_type_bloc.dart';
+import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/perks/perks_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,133 +27,59 @@ class _FilterPageState extends State<FilterPage> {
 
   // ----------- Status --------
   List<Map<String, dynamic>> statusList = [
-    {'title': 'All', 'value': false},
-    {'title': 'Trending', 'value': false},
-    {'title': 'Ongoing', 'value': false},
-    {'title': 'Upcoming', 'value': false},
+    {'title': 'Trending', 'value': 'trending'},
+    {'title': 'Featured', 'value': 'featured'},
   ];
 
   // -------- Mode list ----------
   List<Map<String, dynamic>> modeList = [
-    {'title': 'Offline'},
-    {'title': 'Online'},
-    {'title': 'Hybrid'},
+    {'title': 'Offline',"value" : "OFFLINE"},
+    {'title': 'Online',"value" : "ONLINE"},
+    {'title': 'Hybrid',"value" : "HYBRID"},
   ];
 
+  // ---------- eligible department stored values ----------
+  List<String> eligibleDepartmentValues = [];
+  List<String> parksValues = [];
+  List<String> accommodationValues = [];
+  List<String> eventStatus = [];
+
+  // -------- dropdown values -------------
+  String? selectedCertification;
   String? selectedMode;
+  String? selectedEventType;
 
-  // ----------- Certification ----------
-  List<Map<String, dynamic>> certificationList = [
-    {'title': 'All Participants', 'value': false},
-    {'title': 'No Price', 'value': false},
-    {'title': 'Not Provided', 'value': false},
+  // -------- country, state and city dropdown value ----------
+  String? selectedCountry;
+  String? selectedState;
+  String? selectedCity;
+
+
+  // --------- title base expand the details ---------
+  int selectedIndex = 0;
+
+  List<String> titles = [
+    "Status",//0
+    "Mode",//1
+    "Certification",//2
+    "Perks",//3
+    "Events",//4
+    "Eligible Department",//5
+    "Location",//6
+    "Accommodation",//7
+    "Date",//8
   ];
 
-  // ------------- Perks ---------------
-  List<Map<String, dynamic>> perksList = [
-    {'title': 'Certificates', 'value': false},
-    {'title': 'Medal', 'value': false},
-    {'title': 'Awards', 'value': false},
-  ];
+  // -------- controller ---------
+  final dateTimeController = TextEditingController();
 
+  final Map<String,dynamic> finalValue = {};
 
-  // ---------- Types of Categories ----------
-  List<Map<String, dynamic>> categoryList = [
-    {'title': 'Entertainment', 'value': false},
-    {'title': 'Networking', 'value': false},
-    {'title': 'Education', 'value': false},
-    {'title': 'Sports', 'value': false},
-    {'title': 'Others', 'value': false},
-  ];
-
-  // -------- dropdown values -------
-  String? selectedTypeOfCategories;
-  String? selectedTypeOfCategoriesDropdownValue;
-  String? selectedDepartmentValue;
-  String? selectedCountryValue;
-  String? selectedStateValue;
-  String? selectedCityValue;
-
-
-  // ---------- EducationalEvents -----
-  List<Map<String, dynamic>> educational = [
-    {'title': 'Hackathon', 'value': false},
-    {'title': 'Guest Lectures', 'value': false},
-    {'title': 'Webinars', 'value': false},
-    {'title': 'Startup Events', 'value': false},
-    {'title': 'Bootcamps', 'value': false},
-    {'title': 'Seminars', 'value': false},
-    {'title': 'Technical Events', 'value': false},
-    {'title': 'Workshops', 'value': false},
-  ];
-
-
-  // --------- entertainmentEvents -----
-  List<Map<String, dynamic>> entertainment = [
-    {'title': 'Concerts', 'value': false},
-    {'title': 'Magic Shows', 'value': false},
-    {'title': 'Comedy Shows', 'value': false},
-    {'title': 'Fashion Show', 'value': false},
-    {'title': 'Dance Shows', 'value': false},
-    {'title': 'Stage Plays', 'value': false},
-    {'title': 'Culturals', 'value': false},
-    {'title': 'Music Festivals', 'value': false},
-    {'title': 'Food Festivals', 'value': false},
-    {'title': 'Civic Festivals', 'value': false},
-    {'title': 'Painting', 'value': false},
-  ];
-
-  // ----------- sportsEvents -------------
-  List<Map<String, dynamic>> sports = [
-    {'title': 'Athletics', 'value': false},
-    {'title': 'Tournaments', 'value': false},
-    {'title': 'Marathon', 'value': false},
-    {'title': 'Fitness Challenges', 'value': false},
-    {'title': 'Video Games', 'value': false},
-  ];
-
-  // ------------- networkingEvents ---------
-  List<Map<String, dynamic>> networking = [
-    {'title': 'Conferences', 'value': false},
-    {'title': 'Alumni Meets', 'value': false},
-    {'title': 'Meetups', 'value': false},
-    {'title': 'Job Fairs', 'value': false},
-    {'title': 'Book Expo & Tradeshows', 'value': false},
-    {'title': 'Symposiums', 'value': false},
-    {'title': 'Art Gallery', 'value': false},
-  ];
-
-  // --------------- otherEvents --------------
-  List<Map<String, dynamic>> other = [
-    {'title': 'Prayer Meetings', 'value': false},
-    {'title': 'Mental Wellness', 'value': false},
-    {'title': 'Blood Donation Camps', 'value': false},
-    {'title': 'Awareness Programs', 'value': false},
-  ];
-
-
-
-  // --------- dynamic dropdown for type of categories ---------
-  late final Map<String, List<Map<String, dynamic>>> categoryDynamic = {
-    'Entertainment': entertainment,
-    'Networking': networking,
-    'Sports': sports,
-    'Education': educational,
-    'Others': other,
-  };
-
-  // -------- common dropdown list --------------
-  List<DropdownMenuItem<String>> dropdownItems = [];
-
-  // ------- departments --------
-  List<String> departments = [
-    'Computer Science',
-    'Mechanical Engineering',
-    'Electrical Engineering',
-    'Civil Engineering',
-    'Information Technology',
-  ];
-
+  @override
+  void dispose() {
+    dateTimeController.dispose();
+    super.dispose();
+  }
 
 
   @override
@@ -156,485 +89,837 @@ class _FilterPageState extends State<FilterPage> {
       appBar: AppBar(
         backgroundColor: MyColor().whiteClr,
         centerTitle: true,
-        title: Text("Filter",style: GoogleFonts.poppins(
-          fontWeight: FontWeight.w600,
-          fontSize: 18,
-          color: MyColor().blackClr,
-        ),),
+        title: Text(
+          "Filter",
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 18,
+            color: MyColor().blackClr,
+          ),
+        ),
       ),
       body: MultiBlocProvider(
-  providers: [
-    BlocProvider(
-      create: (context) => CityBloc(apiController: ApiController()),
-    ),
-    BlocProvider(
-      create: (context) => CountryBloc(apiController: ApiController())..add(FetchCountry()),
-    ), BlocProvider(
-      create: (context) => ChooseStateBloc(apiController: ApiController()),
-    ),
-  ],
-  child: Container(
-        child: ListView(
+        providers: [
+          BlocProvider(
+            create: (context) => CityBloc(apiController: ApiController()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                CountryBloc(apiController: ApiController())
+                  ..add(FetchCountry()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                ChooseStateBloc(apiController: ApiController()),
+          ),BlocProvider(
+            create: (context) =>
+                CertificationBloc(apiController: ApiController())..add(FetchCertification()),
+          ),
+          BlocProvider(create: (context) => PerksBloc(apiController: ApiController())..add((FetchPerks()))),
+          BlocProvider(create: (context) => EventTypeBloc(apiController: ApiController())..add((ClickedEventType(identity: '')))),
+          BlocProvider(create: (context) => EligibleDepartmentBloc(apiController: ApiController())..add((FetchEligibleDepartment()))),
+          BlocProvider(create: (context) => AccommodationBloc(apiController: ApiController())..add((FetchAccommodation()))),
+        ],
+        child: Row(
           children: [
-
-            // --------- status ---------
             Container(
-                margin: EdgeInsets.only(left: 16,bottom: 5),
-                child: Text("Status",style: GoogleFonts.poppins(
-                  fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                ),)),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(statusList.length, (index){
-                  return Container(
-                    margin: EdgeInsets.only(left: index == 0 ? 16 : 0,right: index == statusList.length - 1 ? 16 : 0),
-                    child: Row(
-                      children: [
-                        Checkbox(
-                            visualDensity: VisualDensity(horizontal: -4,vertical: -4),
-                            value: statusList[index]['value'],
-                            onChanged: (onChanged) {
-                              setState(() {
-                                statusList[index]['value'] = onChanged;
-                              });
-                            }),
-                        Text(statusList[index]['title']),
-                        SizedBox(width: 20,)
-                      ],
-                    ),
-                  );
-                }),
+              width: 120,
+              decoration: BoxDecoration(
+                color: MyColor().borderClr.withOpacity(0.16),
               ),
-            ),
+              child: ListView.builder(
+                itemCount: titles.length,
+                itemBuilder: (context, index) {
+                  final title = titles[index];
 
-            SizedBox(height: 20,),
+                  // ----------- find a index is active -------------
+                  final findIndex = index == selectedIndex;
 
-            // ----- mode --------
-            Container(
-                margin: EdgeInsets.only(left: 16,bottom: 5),
-                child: Text("Mode",style: GoogleFonts.poppins(
-                    fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                ),)),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(modeList.length, (index){
-                  return Container(
-                    margin: EdgeInsets.only(left: index == 0 ? 16 : 0,right: index == modeList.length -1 ? 16 : 0),
-                    child: Row(
-                      children: [
-                        Radio(
-                          visualDensity: VisualDensity(horizontal: -4,vertical: -4),
-                          groupValue: selectedMode,value: modeList[index]['title'],onChanged: (onChanged){
-                          setState(() {
-                            selectedMode = onChanged;
-                          });
-                        },),
-                        Text(modeList[index]['title']),
-                        SizedBox(width: 20,)
-                      ],
-                    ),
+                  return InkWell(
+                    onTap: (){
+                      setState(() {
+                        selectedIndex = index;
+                      });
+                    },
+                    child: Container(
+                        padding: EdgeInsets.only(bottom: 15,top: 15,left: 10,right: 10),
+                        alignment: Alignment.center,
+                        color: findIndex ? MyColor().whiteClr : Colors.transparent,
+                        child: Text(textAlign: TextAlign.center,title,style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,fontSize: 14,color: MyColor().blackClr
+                        ),)),
                   );
-                }),
+                },
               ),
+                // selectedIndex == 0 ? statusUI() : selectedIndex == 1 ? modeUI() : selectedIndex == 2 ? certificationUI() : selectedIndex == 3 ? perksUI() : Container()
             ),
-
-
-            SizedBox(height: 20,),
-
-            // ------ Certification -------
-            Container(
-                margin: EdgeInsets.only(left: 16,bottom: 5),
-                child: Text("Certification",style: GoogleFonts.poppins(
-                    fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                ),)),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(certificationList.length, (index){
-                  return Container(
-                    margin: EdgeInsets.only(left: index == 0 ? 16 : 0,right: index == certificationList.length - 1 ? 16 : 0),
-                    child: Row(
-                      children: [
-                        Checkbox(
-                            visualDensity: VisualDensity(horizontal: -4,vertical: -4),
-                            value: certificationList[index]['value'],
-                            onChanged: (onChanged) {
-                              setState(() {
-                                certificationList[index]['value'] = onChanged;
-                              });
-                            }),
-                        Text(certificationList[index]['title']),
-                        SizedBox(width: 20,)
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ),
-
-
-            SizedBox(height: 20,),
-
-            // ------ Perks -------
-            Container(
-                margin: EdgeInsets.only(left: 16,bottom: 5),
-                child: Text("Perks",style: GoogleFonts.poppins(
-                    fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                ),)),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(perksList.length, (index){
-                  return Container(
-                    margin: EdgeInsets.only(left: index == 0 ? 16 : 0,right: index == perksList.length - 1 ? 16 : 0),
-                    child: Row(
-                      children: [
-                        Checkbox(
-                            visualDensity: VisualDensity(horizontal: -4,vertical: -4),
-                            value: perksList[index]['value'],
-                            onChanged: (onChanged) {
-                              setState(() {
-                                perksList[index]['value'] = onChanged;
-                              });
-                            }),
-                        Text(perksList[index]['title']),
-                        SizedBox(width: 20,)
-                      ],
-                    ),
-                  );
-                }),
-              ),
-            ),
-
-            SizedBox(height: 20,),
-
-            // ------ Types of Categories -------
-           Container(
-             margin: EdgeInsets.all(16),
-             padding: EdgeInsets.all(16),
-             decoration: BoxDecoration(
-               borderRadius: BorderRadius.circular(8),
-               border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
-             ),
-             child: Column(
-               crossAxisAlignment: CrossAxisAlignment.start,
-               children: [
-                 Container(
-                     margin: EdgeInsets.only(bottom: 16),
-                     child: Text("Types of Categories",style: GoogleFonts.poppins(
-                         fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                     ),)),
-                 Wrap(
-                   runSpacing: 16,
-                   spacing: - 20,
-                   alignment: WrapAlignment.start,
-                   children: List.generate(categoryList.length, (index){
-                     return Container(
-                       padding: EdgeInsets.all(6),
-                       decoration: BoxDecoration(
-                           color: MyColor().boxInnerClr,
-                           borderRadius: BorderRadius.circular(30),
-                           border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
-                       ),
-                       margin: EdgeInsets.only(left: 16,right: 16),
-                       child: Row(
-                         mainAxisSize: MainAxisSize.min,
-                         children: [
-                           Radio(
-                             visualDensity: VisualDensity(horizontal: -4,vertical: -4),
-                             groupValue: selectedTypeOfCategories,value: categoryList[index]['title'],onChanged: (onChanged){
-                             setState(() {
-                               selectedTypeOfCategories = onChanged;
-                               final list = categoryDynamic[onChanged] ?? [];
-                               dropdownItems = list
-                                   .map((e) => DropdownMenuItem<String>(
-                                 value: e['title'],
-                                 child: Text(e['title']),
-                               ))
-                                   .toList();
-                             });
-
-                           },),
-                           Text(categoryList[index]['title']),
-                           SizedBox(width: 5,)
-                         ],
-                       ),
-                     );
-                   }),
-                 ),
-               ],
-             ),
-           ),
-           if(dropdownItems.isNotEmpty) Center(
-             child: Container(
-                 margin: EdgeInsets.only(left: 16,right: 16),
-                 child: MyModels().customDropdown(label: "Types of Events", hint: "Select Types of Events", value: selectedTypeOfCategoriesDropdownValue, onChanged: (onChanged){}, items: dropdownItems, valid: Validators().validTypeOfEvents)),
-           ),
-
-
-            if(dropdownItems.isNotEmpty) SizedBox(height: 20,),
-
-            // --------- Department ---------
-            Center(
-              child: Container(
-                  margin: EdgeInsets.only(left: 16,right: 16),
-                  child: MyModels().customDropdown(label: "Departments", hint: "Select Departments", value: selectedDepartmentValue, onChanged: (onChanged){}, items: departments.map((e)=> DropdownMenuItem<String>(value: e,child: Text(e))).toList(), valid: Validators().validTypeOfEvents)),
-            ),
-
-            SizedBox(height: 20,),
-
-            // --------- Country ---------
-            Center(
-              child: Container(
-                  margin: EdgeInsets.only(left: 16,right: 16),
-                  child: MyModels().customDropdown(label: "Country", hint: "Select Your Country", value: selectedTypeOfCategoriesDropdownValue, onChanged: (onChanged){}, items: dropdownItems, valid: Validators().validTypeOfEvents)),
-            ),
-
-            // ------ Country dropdown --------
-            BlocBuilder<CountryBloc, CountryState>(
-              builder: (context, countryState) {
-                if(countryState is CountryLoading){
-                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                }
-                else if(countryState is CountrySuccess){
-                  return Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 12,top: 20),
-                          child: Text("Country",style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                          ),),
-                        ),
-                        SizedBox(
-                          width: 320,
-                          child: DropdownButtonFormField<String>(
-                            iconEnabledColor: MyColor().primaryClr,
-                            hint: Text("Select your country",style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: MyColor().hintTextClr
-                            ),),
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: MyColor().primaryClr,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            iconDisabledColor: MyColor().blackClr,
-                            value: selectedCountryValue,
-                            decoration: InputDecoration(
-                              suffixIcon: Padding(
-                                padding: const EdgeInsets.only(right: 12),
-                                child: Icon(Icons.arrow_drop_down,),
-                              ),
-                              // iconColor: MyColor().primaryClr,
-                              contentPadding: EdgeInsets.all(10),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                              ),
-                            ),
-                            onChanged: (onChanged){
-                              setState(() {
-                                selectedCountryValue = onChanged;
-                              });
-
-                              // ---- get a state ------
-                              context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountryValue!));
-                            },
-                            items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['name'],child: Text(e['name'].toString()))).toList(),
-                            validator: Validators().validCountry,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else if(countryState is CountryFail){
-                  return Text(countryState.errorMessage);
-                } return SizedBox.shrink();
-              },
-            ),
-
-            SizedBox(height: 20,),
-            // ------- state dropdown --------
-            BlocBuilder<ChooseStateBloc, ChooseStateState>(
-              builder: (context, chooseState) {
-                if(chooseState is ChooseStateLoading){
-                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                } else if(chooseState is ChooseStateSuccess){
-                  return Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 12),
-                          child: Text("State",style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                          ),),
-                        ),
-                        SizedBox(
-                          width: 320,
-                          child: DropdownButtonFormField<String>(
-                            iconEnabledColor: MyColor().primaryClr,
-                            hint: Text("Select your state",style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: MyColor().hintTextClr
-                            ),),
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: MyColor().primaryClr,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            iconDisabledColor: MyColor().blackClr,
-                            value: selectedStateValue,
-                            decoration: InputDecoration(
-                              suffixIcon: Padding(
-                                padding: const EdgeInsets.only(right: 12),
-                                child: Icon(Icons.arrow_drop_down,),
-                              ),
-                              // iconColor: MyColor().primaryClr,
-                              contentPadding: EdgeInsets.all(10),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                              ),
-                            ),
-                            onChanged: (onChanged){
-                              setState(() {
-                                selectedStateValue = onChanged;
-                              });
-
-                              // ----- get city -----
-                              context.read<CityBloc>().add(FetchCity(stateCode: selectedStateValue!, countryCode: selectedCountryValue!));
-                            },
-                            items: chooseState.stateList.map((e)=> DropdownMenuItem<String>(value: e['name'],child: Text(e['name'].toString()))).toList(),
-                            validator: Validators().validState,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else if(chooseState is ChooseStateFail){
-                  return Center(child: Text(chooseState.errorMessage),);
-                } return SizedBox.shrink();
-              },
-            ),
-
-            SizedBox(height: 20,),
-
-            // ------- city dropdown --------
-            BlocBuilder<CityBloc, CityState>(
-              builder: (context, cityState) {
-                if(cityState is CityLoading){
-                  return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                } else if(cityState is CitySuccess){
-                  return Center(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 12),
-                          child: Text("City",style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600
-                          ),),
-                        ),
-                        SizedBox(
-                          width: 320,
-                          child: DropdownButtonFormField<String>(
-                            iconEnabledColor: MyColor().primaryClr,
-                            hint: Text("Select your city",style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w400,
-                                fontSize: 12,
-                                color: MyColor().hintTextClr
-                            ),),
-                            style: GoogleFonts.poppins(
-                              fontSize: 14,
-                              color: MyColor().primaryClr,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            iconDisabledColor: MyColor().blackClr,
-                            value: selectedCityValue,
-                            decoration: InputDecoration(
-                              suffixIcon: Padding(
-                                padding: const EdgeInsets.only(right: 12),
-                                child: Icon(Icons.arrow_drop_down,),
-                              ),
-                              // iconColor: MyColor().primaryClr,
-                              contentPadding: EdgeInsets.all(10),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                              ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                              ),
-                            ),
-                            onChanged: (onChanged){
-                              selectedCityValue = onChanged;
-                            },
-                            items: cityState.cityList.map((e)=> DropdownMenuItem<String>(value: e,child: Text(e.toString()))).toList(),
-                            validator: Validators().validState,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                } else if(cityState is CityFail){
-                  return Center(child: Text(cityState.errorMessage),);
-                }return SizedBox();
-              },
-            ),
-
-            Container(
-              alignment: AlignmentGeometry.center,
-                margin: EdgeInsets.only(bottom: 30,top: 30),
-                child: MyModels().customButton(onPressed: (){}, title: "Show Results")),
-
-
+            Expanded(child:switchTheUI())
           ],
         ),
       ),
-),
+      bottomNavigationBar: SafeArea(child: Container(
+        height: 80,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 16),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: Size(150, 48),
+                  backgroundColor: MyColor().primaryClr,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                ),
+                onPressed: (){
+
+                  // --------- helper function of != null -----------
+                  void addIfNotNull(String key, dynamic value) {
+                    if (value != null) {
+                      finalValue[key] = value;
+                    }
+                  }
+
+                  // --------- helper function of isNotEmpty -----------
+                  void addIfListNotEmpty(String key, List? list) {
+                    if (list != null && list.isNotEmpty) {
+                      finalValue[key] = list;
+                    }
+                  }
+
+                  addIfListNotEmpty("eventTypes", eventStatus);
+                  if(eventStatus.contains('trending')) addIfNotNull("trendingThreshold", 50);
+                  if(selectedMode != null) addIfNotNull("modes", [selectedMode]);
+                  addIfListNotEmpty("eligibleDeptIdentities", eligibleDepartmentValues);
+
+                  addIfNotNull("certIdentity", selectedCertification);
+                  addIfNotNull("eventTypeIdentity", selectedEventType);
+
+                  addIfListNotEmpty("perkIdentities", parksValues);
+                  addIfListNotEmpty("accommodationIdentities", accommodationValues);
+
+                  addIfNotNull("country", selectedCountry);
+                  addIfNotNull("state", selectedState);
+                  addIfNotNull("city", selectedCity);
+
+                  // Date range
+                  if (dateTimeController.text.isNotEmpty) {
+                    finalValue["dateRange"] = {
+                      "startDate": dateTimeController.text,
+                    };
+                  }
+
+                  print("finalValuefinalValuefinalValuefinalValuefinalValuefinalValue$finalValue");
+// // Price range
+//                   if (minPrice != null && maxPrice != null) {
+//                     finalValue["priceRange"] = {
+//                       "min": minPrice,
+//                       "max": maxPrice,
+//                     };
+//                   }
+
+                  // ------ call back the values -------
+                Navigator.pop(context,finalValue);
+                },
+                child: Text(
+                  "Apply",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: MyColor().whiteClr,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      )),
     );
   }
+
+  // --------- switch case ----------
+  Widget switchTheUI(){
+    switch(selectedIndex){
+      case 0:
+        return statusUI();
+      case 1:
+        return modeUI();
+      case 2:
+        return certificationUI();
+      case 3:
+        return perksUI();
+      case 4:
+        return eventTypeUI();
+      case 5:
+        return eligibleDepartmentUI();
+      case 6:
+        return locationUI();
+      case 7:
+        return accommodationUI();
+      case 8:
+          return dateUi();
+      default:
+       return const SizedBox();
+    }
+  }
+
+  // ---------- status UI ----------
+  Widget statusUI() {
+    return ListView.builder(itemCount: statusList.length,itemBuilder: (context,index){
+      return CheckboxListTile(value: eventStatus.contains(statusList[index]['value']), onChanged: (onChanged){
+        setState(() {
+          if(onChanged == true){
+            eventStatus.add(statusList[index]['value']);
+          }else{
+            eventStatus.remove(statusList[index]['value']);
+          }
+          print('jhdfshjfdfsjhdsfjhdfshjkdfshjk$eventStatus');
+        });
+      },title: Text(statusList[index]['title'],style: GoogleFonts.poppins(fontWeight: FontWeight.w600,fontSize: 14,color: MyColor().blackClr)));
+    });
+  }
+
+  // ------------ mode UI ----------
+  Widget modeUI() {
+    return ListView.builder(itemCount: modeList.length,itemBuilder: (context,index){
+      return RadioListTile(
+        title: Text(modeList[index]['title'],style: GoogleFonts.poppins(fontWeight: FontWeight.w600,fontSize: 14,color: MyColor().blackClr)),
+        value: modeList[index]['value'],
+        groupValue: selectedMode,
+        onChanged: ( value) {
+          setState(() {
+            selectedMode = value;
+          });
+        },
+      );
+    });
+  }
+
+  // ------------ certification dropdown --------------
+  Widget certificationUI() {
+    return BlocBuilder<CertificationBloc, CertificationState>(
+      builder: (context, certificationState) {
+        if(certificationState is CertificationLoading){
+          return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+        }
+        else if (certificationState is CertificationSuccess) {
+          return ListView.builder(
+              itemCount: certificationState.certificationList.length,
+              itemBuilder: (context, index) {
+                final list = certificationState.certificationList[index];
+                print("listlistlistlistlistlistlistlistlist$list");
+                return RadioListTile(
+                  title: Text(list['certName'],
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: MyColor().blackClr)),
+                  value: list['identity'],
+                  groupValue: selectedCertification,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedCertification = value;
+                    });
+                  },
+                );
+              });
+        }
+        else if (certificationState is CertificationFail) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<CertificationBloc>().add((FetchCertification()));
+            },
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 100,
+                      child: Image.asset(ImagePath().errorMessageImg),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      certificationState.errorMessage,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return SizedBox();
+      },
+    );
+  }
+
+  // --------- perks -----------
+  Widget perksUI() {
+    return BlocBuilder<PerksBloc, PerksState>(
+      builder: (context, perkState) {
+        if(perkState is PerksLoading){
+          return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+        }
+        else if (perkState is PerksSuccess) {
+          return ListView.builder(
+              itemCount: perkState.perksList.length,
+              itemBuilder: (context, index) {
+                final list = perkState.perksList[index];
+                print("listlistlistlistlistlistlistlistlist$list");
+                return CheckboxListTile(
+                  title: Text(list['perkName'],
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: MyColor().blackClr)),
+                  value: parksValues.contains(list['identity']),
+                  onChanged: (value) {
+                    setState(() {
+                      if(value == true){
+                        parksValues.add(list['identity']);
+                      } else{
+                        parksValues.remove(list['identity']);
+                      }
+                    });
+                  },
+                );
+              });
+        }
+        else if (perkState is PerksFail) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<CertificationBloc>().add((FetchCertification()));
+            },
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 100,
+                      child: Image.asset(ImagePath().errorMessageImg),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      perkState.errorMessage,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return SizedBox();
+      },
+    );
+  }
+
+  // ---------- event type ----------
+  Widget eventTypeUI() {
+    return BlocBuilder<EventTypeBloc, EventTypeState>(
+      builder: (context, eventTypeState) {
+        if(eventTypeState is EventTypeLoading){
+          return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+        }
+        else if (eventTypeState is EventTypeSuccess) {
+          return ListView.builder(
+              itemCount: eventTypeState.eventTypeList.length,
+              itemBuilder: (context, index) {
+                final list = eventTypeState.eventTypeList[index];
+                print("listlistlistlistlistlistlistlistlist$list");
+                return RadioListTile(
+                  title: Text(list['name'],
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: MyColor().blackClr)),
+                  value: list['identity'],
+                  groupValue: selectedEventType,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedEventType = value;
+                    });
+                  },
+                );
+              });
+        }
+        else if (eventTypeState is EventTypeFail) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<CertificationBloc>().add((FetchCertification()));
+            },
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 100,
+                      child: Image.asset(ImagePath().errorMessageImg),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      eventTypeState.errorMessage,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return SizedBox();
+      },
+    );
+  }
+
+  // ---------- eligible department ----------
+  Widget eligibleDepartmentUI(){
+    return BlocBuilder<EligibleDepartmentBloc, EligibleDepartmentState>(
+      builder: (context, eligibleDepartmentState) {
+        if(eligibleDepartmentState is EligibleDepartmentLoading){
+          return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+        }
+        else if (eligibleDepartmentState is EligibleDepartmentSuccess) {
+          return ListView.builder(
+              itemCount: eligibleDepartmentState.eligibleDepartmentList.length,
+              itemBuilder: (context, index) {
+                final list = eligibleDepartmentState.eligibleDepartmentList[index];
+                return CheckboxListTile(
+                  value: eligibleDepartmentValues.contains(list['identity']),
+                  onChanged: (onChanged) {
+                    setState(() {
+                      if (onChanged == true) {
+                        // --------- when the check box is click then add the identity --------------
+                        eligibleDepartmentValues.add(list['identity']);
+                      } else {
+                        // --------- when the check box is click then remove the identity -----------
+                        eligibleDepartmentValues.remove(list['identity']);
+                      }
+                    });
+                  },
+                  title: Text(list['name'],
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: MyColor().blackClr)),
+                );
+              });
+        }
+        else if (eligibleDepartmentState is EligibleDepartmentFail) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<CertificationBloc>().add((FetchCertification()));
+            },
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 100,
+                      child: Image.asset(ImagePath().errorMessageImg),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      eligibleDepartmentState.errorMessage,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return SizedBox();
+      },
+    );
+  }
+
+  // -------------- country,state and city ----------
+  Widget locationUI(){
+    return Column(
+      children: [
+
+        // ------ Country dropdown --------
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16),
+          child: BlocBuilder<CountryBloc, CountryState>(
+            builder: (context, countryState) {
+              if(countryState is CountryLoading){
+                return Center(child: Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
+              }
+              else if(countryState is CountrySuccess){
+                return Center(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(bottom: 12,top: 20),
+                        child: Text("Country",style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600
+                        ),),
+                      ),
+                      SizedBox(
+                        child: DropdownButtonFormField<String>(
+                          isExpanded: true,
+                          iconEnabledColor: MyColor().primaryClr,
+                          hint: Text("Select your Country",style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12,
+                              color: MyColor().hintTextClr
+                          ),),
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: MyColor().primaryClr,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          iconDisabledColor: MyColor().blackClr,
+                          value: selectedCountry,
+                          decoration: InputDecoration(
+                            suffixIcon: Padding(
+                              padding: const EdgeInsets.only(right: 12),
+                              child: Icon(Icons.arrow_drop_down,),
+                            ),
+                            // iconColor: MyColor().primaryClr,
+                            contentPadding: EdgeInsets.all(10),
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: MyColor().borderClr, width: 0.5)
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: MyColor().primaryClr, width: 0.5)
+                            ),
+                            errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
+                            ),
+                          ),
+                          onChanged: (onChanged){
+                            setState(() {
+                              selectedCountry = onChanged;
+                            });
+
+                            // ---- get a state ------
+                            context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountry!));
+                          },
+                          items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['name'].toString(),overflow: TextOverflow.ellipsis,))).toList(),
+                          validator: Validators().validCountry,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if(countryState is CountryFail){
+                return Text(countryState.errorMessage);
+              } return SizedBox.shrink();
+            },
+          ),
+        ),
+
+        // ------- state dropdown --------
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16),
+          child: BlocBuilder<ChooseStateBloc, ChooseStateState>(
+            builder: (context, chooseState) {
+              if (chooseState is ChooseStateLoading) {
+                return Center(child: Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
+              } else if (chooseState is ChooseStateSuccess) {
+                return Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 12),
+                          child: Text("State", style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600
+                          ),),
+                        ),
+                        SizedBox(
+                          child: DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            iconEnabledColor: MyColor().primaryClr,
+                            hint: Text("Select your State",
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: MyColor().hintTextClr
+                              ),),
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: MyColor().primaryClr,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            iconDisabledColor: MyColor().blackClr,
+                            value: selectedState,
+                            decoration: InputDecoration(
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: Icon(Icons.arrow_drop_down,),
+                              ),
+                              // iconColor: MyColor().primaryClr,
+                              contentPadding: EdgeInsets.all(10),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().borderClr,
+                                      width: 0.5)
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().primaryClr,
+                                      width: 0.5)
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().redClr, width: 0.5)
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().redClr, width: 0.5)
+                              ),
+                            ),
+                            onChanged: (onChanged) {
+                              setState(() {
+                                selectedState = onChanged;
+                              });
+                              // ----- get city -----
+                              context.read<CityBloc>().add(FetchCity(stateCode: selectedState!));
+
+                            },
+                            items: chooseState.stateList.map((e) =>
+                                DropdownMenuItem<String>(value: e['identity'],
+                                    child: Text(e['name'].toString(),overflow: TextOverflow.ellipsis,)))
+                                .toList(),
+                            validator: Validators().validState,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else if (chooseState is ChooseStateFail) {
+                return Center(child: Text(chooseState.errorMessage),);
+              }
+              return SizedBox.shrink();
+            },
+          ),
+        ),
+
+        // ------- city dropdown --------
+        Container(
+          margin: EdgeInsets.only(left: 16,right: 16),
+          child: BlocBuilder<CityBloc, CityState>(
+            builder: (context, cityState) {
+              if (cityState is CityLoading) {
+                return Center(child: Container(
+                    margin: EdgeInsets.only(top: 30),
+                    child: CircularProgressIndicator(color: MyColor().primaryClr,)),);
+              } else if (cityState is CitySuccess) {
+                return Container(
+                  margin: EdgeInsets.only(top: 20),
+                  child: Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(bottom: 12),
+                          child: Text("City", style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600
+                          ),),
+                        ),
+                        SizedBox(
+                          child: DropdownButtonFormField<String>(
+                            isExpanded: true,
+                            iconEnabledColor: MyColor().primaryClr,
+                            hint: Text("Select your city",
+                              style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 12,
+                                  color: MyColor().hintTextClr
+                              ),),
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: MyColor().primaryClr,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            iconDisabledColor: MyColor().blackClr,
+                            value: selectedCity,
+                            decoration: InputDecoration(
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.only(right: 12),
+                                child: Icon(Icons.arrow_drop_down,),
+                              ),
+                              // iconColor: MyColor().primaryClr,
+                              contentPadding: EdgeInsets.all(10),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().borderClr,
+                                      width: 0.5)
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().primaryClr,
+                                      width: 0.5)
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().redClr, width: 0.5)
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide(
+                                      color: MyColor().redClr, width: 0.5)
+                              ),
+                            ),
+                            onChanged: (onChanged) {
+                              selectedCity = onChanged;
+                            },
+                            items: cityState.cityList.map((e) =>
+                                DropdownMenuItem<String>(
+                                    value: e['identity'], child: Text(e['name'],overflow: TextOverflow.ellipsis,)))
+                                .toList(),
+                            validator: Validators().validState,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } else if (cityState is CityFail) {
+                return Center(child: Text(cityState.errorMessage),);
+              }
+              return SizedBox();
+            },
+          ),
+        ),
+
+      ],
+    );
+  }
+
+  // ------- accommodation --------
+  Widget accommodationUI(){
+    return BlocBuilder<AccommodationBloc, AccommodationState>(
+      builder: (context, accommodationState) {
+        if(accommodationState is AccommodationLoading){
+          return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+        }
+        else if (accommodationState is AccommodationSuccess) {
+          return ListView.builder(
+              itemCount: accommodationState.accommodationList.length,
+              itemBuilder: (context, index) {
+                final list = accommodationState.accommodationList[index];
+                return CheckboxListTile(
+                  value: accommodationValues.contains(list['identity']),
+                  onChanged: (onChanged) {
+                    setState(() {
+                      if (onChanged == true) {
+                        // --------- when the check box is click then add the identity --------------
+                        accommodationValues.add(list['identity']);
+                      } else {
+                        // --------- when the check box is click then remove the identity -----------
+                        accommodationValues.remove(list['identity']);
+                      }
+                    });
+                  },
+                  title: Text(list['accommodationName'],
+                      style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                          color: MyColor().blackClr)),
+                );
+              });
+        }
+        else if (accommodationState is AccommodationFail) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<CertificationBloc>().add((FetchCertification()));
+            },
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 100,
+                      child: Image.asset(ImagePath().errorMessageImg),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      accommodationState.errorMessage,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return SizedBox();
+      },
+    );
+  }
+
+  // --------- date ----------
+  Widget dateUi(){
+    return Container(
+      margin: EdgeInsets.only(left: 16,right: 16),
+      child: MyModels().customDateAndTimeUi(controller: dateTimeController, onTap: () async{
+        final result = await DateAndTimeController().selectedDateAndTimePicker(context);
+        if(result != null){
+          dateTimeController.text = result;
+        }
+      }, label: 'Select Date & Time'),
+    );
+  }
+
 }

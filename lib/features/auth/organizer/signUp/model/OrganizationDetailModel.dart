@@ -214,7 +214,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                                   // ---- get a state ------
                                   context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountry!));
                                 },
-                                items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['name'],child: Text(e['name'].toString()))).toList(),
+                                items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['name'].toString()))).toList(),
                                 validator: Validators().validCountry,
                               ),
                             ),
@@ -301,12 +301,11 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                                     });
 
                                     // ----- get city -----
-                                    context.read<CityBloc>().add(FetchCity(
-                                        stateCode: selectedState!,
-                                        countryCode: selectedCountry!));
+                                    context.read<CityBloc>().add(FetchCity(stateCode: selectedState!));
+
                                   },
                                   items: chooseState.stateList.map((e) =>
-                                      DropdownMenuItem<String>(value: e['name'],
+                                      DropdownMenuItem<String>(value: e['identity'],
                                           child: Text(e['name'].toString())))
                                       .toList(),
                                   validator: Validators().validState,
@@ -322,7 +321,6 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                     return SizedBox.shrink();
                   },
                 ),
-
 
                 // ------- city dropdown --------
                 BlocBuilder<CityBloc, CityState>(
@@ -397,7 +395,7 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                                   },
                                   items: cityState.cityList.map((e) =>
                                       DropdownMenuItem<String>(
-                                          value: e, child: Text(e.toString())))
+                                          value: e['identity'], child: Text(e['name'])))
                                       .toList(),
                                   validator: Validators().validState,
                                 ),
@@ -439,10 +437,11 @@ class _OrganizationDetailModelState extends State<OrganizationDetailModel> {
                       ),
                     ),
                     onPressed: () {
-                      // if(formKey.currentState!.validate()){
-                      //   context.read<SignUpBloc>().add(ClickedSignUp(name: nameController.text, email: emailController.text, password: passwordController.text, type: widget.whichScreen));
-                      // }
-                      Navigator.push(context, MaterialPageRoute(builder: (_)=> AccountCreationPage(country: selectedCountry ?? "", city: selectedCity ?? "", state: selectedState ?? "", orgName: nameController.text, categories: widget.categories, type: widget.type,)));
+                      if(selectedCountry!.isNotEmpty){
+                        if(formKey.currentState!.validate()){
+                          Navigator.push(context, MaterialPageRoute(builder: (_)=> AccountCreationPage(country: selectedCountry ?? "", city: selectedCity ?? "", state: selectedState ?? "", orgName: nameController.text, categories: widget.categories, type: widget.type,)));
+                        }
+                      }
                     },
                     child: Text(
                       "Continue",

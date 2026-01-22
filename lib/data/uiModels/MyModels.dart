@@ -615,6 +615,7 @@ class MyModels{
           width: 320,
           child: TextField(
             controller: controller,
+            enableInteractiveSelection: false,
             readOnly: true,
             style: GoogleFonts.poppins(
                 fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().primaryClr

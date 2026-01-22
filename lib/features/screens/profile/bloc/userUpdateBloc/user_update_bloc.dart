@@ -93,7 +93,7 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
 
         if(response.statusCode == 200){
           final responseBody = response.data;
-          if(responseBody['success'] == true){
+          if(responseBody['status'] == true){
           emit(UserUpdateSuccess());
           }else{
             emit(UserUpdateFail(errorMessage: responseBody['message']));
@@ -154,7 +154,7 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
 
         if(response.statusCode == 200){
           final responseBody = response.data;
-          if(responseBody['success'] == true){
+          if(responseBody['status'] == true){
             emit(SocialLinkOrganizerSuccess());
           }else{
             emit(SocialLinkOrganizerFail(errorMessage: responseBody['message']));

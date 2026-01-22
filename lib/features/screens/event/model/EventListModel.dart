@@ -23,6 +23,8 @@ class _EventListModelState extends State<EventListModel> {
   // -------- controller --------
   final searchController = TextEditingController();
 
+  // -------- store filter values ----------
+  Map<String,dynamic> filterPageValues = {};
 
   @override
   void dispose() {
@@ -89,15 +91,24 @@ class _EventListModelState extends State<EventListModel> {
           child: Row(
             children: [
               GestureDetector(
-                onTap: (){
-                  Navigator.push(context, PageRouteBuilder(pageBuilder: (_,__,___)=> FilterPage(),
-                  transitionsBuilder: (_, animation, __, child){
-                    return SlideTransition(position: Tween(
-                      begin: Offset(-1, 0),
-                      end: Offset.zero
-                    ).animate(animation),child: child,);
-                  }
+                onTap: () async{
+                  final result = await Navigator.push(context, PageRouteBuilder(pageBuilder: (_,__,___)=> FilterPage(),
+                      transitionsBuilder: (_, animation, __, child){
+                        return SlideTransition(position: Tween(
+                            begin: Offset(-1, 0),
+                            end: Offset.zero
+                        ).animate(animation),child: child,);
+                      }
                   ));
+
+                  if(result != null){
+                    setState(() {
+                      filterPageValues = result;
+                    });
+                  }
+
+                  print("filterPageValuesfilterPageValuesfilterPageValuesfilterPageValues$filterPageValues");
+
                 },
                 child: Container(
                   padding: EdgeInsets.all(12),
@@ -152,7 +163,7 @@ class _EventListModelState extends State<EventListModel> {
           ),
         ),
 
-        Expanded(child: ListModel())
+        Expanded(child: ListModel(filtersValue: filterPageValues,))
 
       ],
     );

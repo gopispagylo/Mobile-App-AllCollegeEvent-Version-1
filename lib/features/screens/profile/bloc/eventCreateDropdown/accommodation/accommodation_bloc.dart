@@ -29,12 +29,9 @@ class AccommodationBloc extends Bloc<AccommodationEvent, AccommodationState> {
           endPoint: 'master/accommodations',
           token: token!,
         );
-        print(
-          "AccommodationBlocAccommodationBlocAccommodationBlocAccommodationBlocAccommodationBloc$response",
-        );
         if (response.statusCode == 200) {
           final responseBody = response.data;
-          if (responseBody['success'] == true) {
+          if (responseBody['status'] == true) {
             accommodationList.clear();
             accommodationList.addAll(responseBody['data']);
             emit(

@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
@@ -13,7 +14,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String whichScreen;
+
+  const HomePage({super.key, required this.whichScreen});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -82,7 +85,11 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: MyColor().primaryClr,
               shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(100)),
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                if(widget.whichScreen == "Organizer"){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                }else{
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage(whichScreen: 'Organizer',)));
+                }
               },
               icon:  Icon(Icons.add,color: MyColor().whiteClr,size: 25,),
               label: Text("Create Event",style: GoogleFonts.poppins(
@@ -93,7 +100,11 @@ class _HomePageState extends State<HomePage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.circular(100)),
               backgroundColor: MyColor().primaryClr,
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                if(widget.whichScreen == "Organizer"){
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
+                }else{
+                  Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage(whichScreen: 'Organizer',)));
+                }
               },
               child: Icon(Icons.add, size: 25,color: MyColor().whiteClr),
             ),

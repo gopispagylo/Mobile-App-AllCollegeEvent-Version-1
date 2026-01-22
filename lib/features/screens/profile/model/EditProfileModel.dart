@@ -116,7 +116,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
 
                 // -------------- after enter a profile page then fetch a state and city values --------------
                 context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountry!));
-                context.read<CityBloc>().add(FetchCity(countryCode: selectedCountry!, stateCode: selectedState!));
+                context.read<CityBloc>().add(FetchCity(stateCode: selectedState!));
 
             }
           },
@@ -398,7 +398,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                                 // ---- get a state ------
                                                 context.read<ChooseStateBloc>().add(FetchChooseState(countryCode: selectedCountry!));
                                               },
-                                              items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['name'],child: Text(e['name'].toString()))).toList(),
+                                              items: countryState.countryList.map((e)=> DropdownMenuItem<String>(value: e['identity'],child: Text(e['name'].toString()))).toList(),
                                               validator: Validators().validCountry,
                                             ),
                                           ),
@@ -486,12 +486,10 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                                   });
 
                                                   // ----- get city -----
-                                                  context.read<CityBloc>().add(FetchCity(
-                                                      stateCode: selectedState!,
-                                                      countryCode: selectedCountry!));
+                                                  context.read<CityBloc>().add(FetchCity(stateCode: selectedState!));
                                                 },
                                                 items: chooseState.stateList.map((e) =>
-                                                    DropdownMenuItem<String>(value: e['name'],
+                                                    DropdownMenuItem<String>(value: e['identity'],
                                                         child: Text(e['name'].toString())))
                                                     .toList(),
                                                 validator: Validators().validState,
@@ -676,9 +674,9 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                       // if (formKey.currentState!.validate()) {
                                       context.read<UserUpdateBloc>().add(
                                           ClickUserUpdate(
-                                              userState: selectedState!,
-                                              city: selectedCity!,
-                                              country: selectedCountry!,
+                                              userState: selectedState ?? '',
+                                              city: selectedCity ?? '',
+                                              country: selectedCountry ?? '',
                                               phone: phoneController.text,
                                               name: nameController.text,
                                               whichUser: widget.whichScreen ==

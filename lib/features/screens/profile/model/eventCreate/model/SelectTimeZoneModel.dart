@@ -602,7 +602,7 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                                       items: countryState.countryList
                                           .map(
                                             (e) => DropdownMenuItem<String>(
-                                              value: e['name'],
+                                              value: e['identity'],
                                               child: Text(e['name'].toString()),
                                             ),
                                           )
@@ -725,14 +725,13 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                                           context.read<CityBloc>().add(
                                             FetchCity(
                                               stateCode: selectedState!,
-                                              countryCode: selectedCountry!,
                                             ),
                                           );
                                         },
                                         items: chooseState.stateList
                                             .map(
                                               (e) => DropdownMenuItem<String>(
-                                                value: e['name'],
+                                                value: e['identity'],
                                                 child: Text(
                                                   e['name'].toString(),
                                                 ),

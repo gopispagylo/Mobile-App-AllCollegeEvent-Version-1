@@ -8,7 +8,7 @@ final class AccommodationInitial extends AccommodationState {}
 class AccommodationLoading extends AccommodationState{}
 
 class AccommodationSuccess extends AccommodationState{
-  final List<dynamic> accommodationList;
+    final List<dynamic> accommodationList;
 
   AccommodationSuccess({required this.accommodationList});
 }

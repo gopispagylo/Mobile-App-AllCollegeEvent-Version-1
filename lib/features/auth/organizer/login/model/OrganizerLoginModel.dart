@@ -140,7 +140,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                         context,
                         MaterialPageRoute(
                           builder: (_) =>
-                              BottomNavigationBarPage(pageIndex: 0),
+                              BottomNavigationBarPage(pageIndex: 0, whichScreen: widget.whichScreen,),
                         ),
                             (route) => false,
                       );

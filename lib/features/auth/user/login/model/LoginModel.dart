@@ -179,7 +179,7 @@ class _LoginModelState extends State<LoginModel> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BottomNavigationBarPage(pageIndex: 0),
+                            builder: (_) => BottomNavigationBarPage(pageIndex: 0, whichScreen: widget.whichScreen,),
                           ),
                           (route) => false,
                         );
@@ -271,7 +271,7 @@ class _LoginModelState extends State<LoginModel> {
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => BottomNavigationBarPage(pageIndex: 0),
+                            builder: (_) => BottomNavigationBarPage(pageIndex: 0, whichScreen: widget.whichScreen,),
                           ),
                           (route) => false,
                         );

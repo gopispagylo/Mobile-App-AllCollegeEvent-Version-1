@@ -12,13 +12,23 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 
 class ListModel extends StatefulWidget {
-  const ListModel({super.key});
+  final Map<String, dynamic> filtersValue;
+
+  const ListModel({super.key, required this.filtersValue});
 
   @override
   State<ListModel> createState() => _ListModelState();
 }
 
 class _ListModelState extends State<ListModel> {
+
+
+  @override
+  void initState() {
+    super.initState();
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EventListBloc, EventListState>(

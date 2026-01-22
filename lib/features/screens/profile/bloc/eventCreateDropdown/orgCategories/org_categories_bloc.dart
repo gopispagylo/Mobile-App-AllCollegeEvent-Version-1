@@ -22,13 +22,14 @@ class OrgCategoriesBloc extends Bloc<OrgCategoriesEvent, OrgCategoriesState> {
         // ----- access token data base -------
         final token = await DBHelper().getToken();
 
+
         final response = await apiController.getMethodWithoutBody(
           endPoint: 'master/org-categories',
           token: token!,
         );
         if (response.statusCode == 200) {
           final responseBody = response.data;
-          if (responseBody['success'] == true) {
+          if (responseBody['status'] == true) {
 
             orgCategoriesList.clear();
             orgCategoriesList.addAll(responseBody['data']);
