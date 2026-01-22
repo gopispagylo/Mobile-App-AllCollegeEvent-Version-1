@@ -19,7 +19,29 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EventListBloc(apiController: ApiController())..add(FetchEventList()),
+      create: (context) =>
+      EventListBloc(apiController: ApiController())
+        ..add(FetchEventList(eventTypes: [],
+            // trendingThreshold: null,
+            modes: [],
+            // searchText: '',
+            eligibleDeptIdentities: [],
+            certIdentity: '',
+            eventTypeIdentity: '',
+            perkIdentities: [],
+            accommodationIdentities: [],
+            country: '',
+            state: '',
+            city: '',
+            startDate: null,
+            // endDate: null,
+            // minPrice: null,
+            // maxPrice: null,
+            // page: null,
+            // limit: null,
+            // sortBy: ''
+
+        )),
       child: Scaffold(
         appBar: AppBar(
           title: Text("All Events",style: GoogleFonts.poppins(

@@ -33,12 +33,12 @@ class _OrganizationPageState extends State<OrganizationPage> {
         ),
       ),
       body: BlocProvider(
-        create: (context) => EventListBloc(apiController: ApiController())..add(FetchEventList()),
+        create: (context) => EventListBloc(apiController: ApiController()),
         child: Builder(
           builder: (context) {
             return RefreshIndicator(
               onRefresh: () async{
-                context.read<EventListBloc>().add(FetchEventList());
+                // context.read<EventListBloc>().add(FetchEventList());
               },
               child: ListView(
                 children: [

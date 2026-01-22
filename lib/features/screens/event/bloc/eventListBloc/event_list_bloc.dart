@@ -21,15 +21,90 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
-        final parameter = {
-          "" : ""
-        };
+        final Map<String, dynamic> params = {};
 
-        final response = await apiController.getMethod(endPoint: 'events', token: "token", data: parameter);
-        print("EventListBlocEventListBlocEventListBlocEventListBlocEventListBloc$response");
+        if (event.eventTypes != null && event.eventTypes!.isNotEmpty) {
+          params["eventTypes"] = event.eventTypes;
+        }
+
+       if(event.eventTypes == 'trending'){
+           params["trendingThreshold"] = 10;
+       }
+
+        if (event.modes != null && event.modes!.isNotEmpty) {
+          params["modes"] = event.modes;
+        }
+        //
+        // if (event.searchText != null && event.searchText!.trim().isNotEmpty) {
+        //   params["searchText"] = event.searchText!.trim();
+        // }
+
+        if (event.eligibleDeptIdentities != null && event.eligibleDeptIdentities!.isNotEmpty) {
+          params["eligibleDeptIdentities"] = event.eligibleDeptIdentities;
+        }
+
+        if (event.certIdentity != null && event.certIdentity!.isNotEmpty) {
+          params["certIdentity"] = event.certIdentity;
+        }
+
+        if (event.eventTypeIdentity != null && event.eventTypeIdentity!.isNotEmpty) {
+          params["eventTypeIdentity"] = event.eventTypeIdentity;
+        }
+
+        if (event.perkIdentities != null && event.perkIdentities!.isNotEmpty) {
+          params["perkIdentities"] = event.perkIdentities;
+        }
+
+        if (event.accommodationIdentities != null && event.accommodationIdentities!.isNotEmpty) {
+          params["accommodationIdentities"] = event.accommodationIdentities;
+        }
+
+        if (event.country != null && event.country!.isNotEmpty) {
+          params["country"] = event.country;
+        }
+
+        if (event.state != null && event.state!.isNotEmpty) {
+          params["state"] = event.state;
+        }
+
+        if (event.city != null && event.city!.isNotEmpty) {
+          params["city"] = event.city;
+        }
+
+        // if (event.startDate != null || event.endDate != null) {
+        //   params["dateRange"] = {
+        //     if (event.startDate != null)
+        //       "startDate": event.startDate!.toIso8601String().split('T').first,
+        //     if (event.endDate != null)
+        //       "endDate": event.endDate!.toIso8601String().split('T').first,
+        //   };
+        // }
+        //
+        // if (event.minPrice != null || event.maxPrice != null) {
+        //   params["priceRange"] = {
+        //     if (event.minPrice != null) "min": event.minPrice,
+        //     if (event.maxPrice != null) "max": event.maxPrice,
+        //   };
+        // }
+        //
+        // if (event.page != null) {
+        //   params["page"] = event.page;
+        // }
+        //
+        // if (event.limit != null) {
+        //   params["limit"] = event.limit;
+        // }
+        //
+        // if (event.sortBy != null && event.sortBy!.isNotEmpty) {
+        //   params["sortBy"] = event.sortBy;
+        // }
+
+        final response = await apiController.postMethod(endPoint: 'filter', data: params);
+        print('EventListBlocEventListBlocEventListBlocEventListBloc$response');
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
+            print('EventListBlocEventListBlocEventListBlocEventListBloc$response');
             eventList.clear();
             eventList.addAll(responseBody['data']);
             if(responseBody['data'].isNotEmpty){
@@ -43,10 +118,12 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
         }
 
       }on DioException catch(e){
+        print('EventListBlocEventListBlocEventListBlocEventListBloc$e');
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(EventFail(errorMessage: error));
       } catch(e){
+        print('EventListBlocEventListBlocEventListBlocEventListBloc$e');
         emit(EventFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

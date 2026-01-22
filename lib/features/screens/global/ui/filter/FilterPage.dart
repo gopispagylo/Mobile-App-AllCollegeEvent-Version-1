@@ -16,6 +16,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+
+class FilterItem {
+  final String type;        // API key type
+  final List<String> keys;  // API keys
+  final List<String> values; // Display names
+
+  FilterItem({required this.type, required this.keys, required this.values});
+}
+
+
 class FilterPage extends StatefulWidget {
   const FilterPage({super.key});
 
@@ -39,20 +49,30 @@ class _FilterPageState extends State<FilterPage> {
   ];
 
   // ---------- eligible department stored values ----------
-  List<String> eligibleDepartmentValues = [];
-  List<String> parksValues = [];
-  List<String> accommodationValues = [];
-  List<String> eventStatus = [];
+  Map<String,dynamic> eligibleDepartmentValues = {};
+  Map<String,dynamic> perksValues = {};
+  Map<String,dynamic> accommodationValues = {};
+  Map<String,dynamic> eventStatus = {};
 
   // -------- dropdown values -------------
   String? selectedCertification;
+  String? certificationName;
+
   String? selectedMode;
+  String? modeName;
+
   String? selectedEventType;
+  String? eventTypeName;
 
   // -------- country, state and city dropdown value ----------
   String? selectedCountry;
+  String? selectedCountryName;
+
   String? selectedState;
+  String? selectedStateName;
+
   String? selectedCity;
+  String? selectedCityName;
 
 
   // --------- title base expand the details ---------
@@ -73,7 +93,8 @@ class _FilterPageState extends State<FilterPage> {
   // -------- controller ---------
   final dateTimeController = TextEditingController();
 
-  final Map<String,dynamic> finalValue = {};
+  // -------- store a filter values ------
+  List<FilterItem> filterItems = [];
 
   @override
   void dispose() {
@@ -174,53 +195,105 @@ class _FilterPageState extends State<FilterPage> {
                 ),
                 onPressed: (){
 
-                  // --------- helper function of != null -----------
-                  void addIfNotNull(String key, dynamic value) {
-                    if (value != null) {
-                      finalValue[key] = value;
-                    }
+                  // --------- event status ------------
+                  if(eventStatus.isNotEmpty){
+                    filterItems.add(
+                      FilterItem(type: "eventTypes", keys: eventStatus.keys.toList(), values: eventStatus.values.map((e)=> e.toString()).toList())
+                    );
                   }
 
-                  // --------- helper function of isNotEmpty -----------
-                  void addIfListNotEmpty(String key, List? list) {
-                    if (list != null && list.isNotEmpty) {
-                      finalValue[key] = list;
-                    }
+                  // ------------ mode ----------
+                  if(selectedMode != null){
+                    filterItems.add(
+                      FilterItem(type: "modes", keys: [selectedMode!], values: [modeName!])
+                    );
                   }
 
-                  addIfListNotEmpty("eventTypes", eventStatus);
-                  if(eventStatus.contains('trending')) addIfNotNull("trendingThreshold", 50);
-                  if(selectedMode != null) addIfNotNull("modes", [selectedMode]);
-                  addIfListNotEmpty("eligibleDeptIdentities", eligibleDepartmentValues);
+                  // ------------ eligibleDeptIdentities ----------
+                  if(eligibleDepartmentValues.isNotEmpty){
+                    filterItems.add(
+                        FilterItem(type: "eligibleDeptIdentities",
+                            keys: eligibleDepartmentValues.keys.toList(),
+                            values: eligibleDepartmentValues.values.map((e) =>
+                                e.toString()).toList())
+                    );
+                  }
 
-                  addIfNotNull("certIdentity", selectedCertification);
-                  addIfNotNull("eventTypeIdentity", selectedEventType);
+                  // ----------- certification ----------
+                  if(selectedCertification != null){
+                    filterItems.add(
+                        FilterItem(type: "certIdentity", keys: [selectedCertification!], values: [certificationName!])
+                    );
+                  }
 
-                  addIfListNotEmpty("perkIdentities", parksValues);
-                  addIfListNotEmpty("accommodationIdentities", accommodationValues);
+                  // ------------ event type identity -------------
+                  if(selectedEventType != null){
+                    filterItems.add(
+                        FilterItem(type: "eventTypeIdentity", keys: [selectedEventType!], values: [eventTypeName!])
+                    );
+                  }
 
-                  addIfNotNull("country", selectedCountry);
-                  addIfNotNull("state", selectedState);
-                  addIfNotNull("city", selectedCity);
+                  // ------------- perks -----------
+                  if(perksValues.isNotEmpty){
+                    filterItems.add(
+                        FilterItem(type: "perkIdentities", keys: perksValues.keys.toList(), values: perksValues.values.map((e)=> e.toString()).toList())
+                    );
+                  }
 
-                  // Date range
+                  // -------------- Accommodation -------------
+                  if(accommodationValues.isNotEmpty){
+                    filterItems.add(
+                        FilterItem(type: "accommodationIdentities", keys: accommodationValues.keys.toList(), values: accommodationValues.values.map((e)=> e.toString()).toList())
+                    );
+                  }
+
+                  // --------- country -------
+                  if (selectedCountry != null) {
+                    filterItems.add(
+                      FilterItem(
+                        type: "country",
+                        keys: [selectedCountry!],       // API value
+                        values: [selectedCountryName!], // Display name
+                      ),
+                    );
+                  }
+
+                  // ---------- state ---------
+                  if (selectedState != null) {
+                    filterItems.add(
+                      FilterItem(
+                        type: "state",
+                        keys: [selectedState!],       // API value
+                        values: [selectedStateName!], // Display name
+                      ),
+                    );
+                  }
+
+                  // ---------- city --------
+                  if (selectedCity != null) {
+                    filterItems.add(
+                      FilterItem(
+                        type: "city",
+                        keys: [selectedCity!],       // API value
+                        values: [selectedCityName!], // Display name
+                      ),
+                    );
+                  }
+
+                  // --------- date --------
+
                   if (dateTimeController.text.isNotEmpty) {
-                    finalValue["dateRange"] = {
-                      "startDate": dateTimeController.text,
-                    };
+                    filterItems.add(
+                      FilterItem(
+                        type: "dateRange",
+                        keys: [dateTimeController.text],       // API value
+                        values: [dateTimeController.text],     // Display value
+                      ),
+                    );
                   }
-
-                  print("finalValuefinalValuefinalValuefinalValuefinalValuefinalValue$finalValue");
-// // Price range
-//                   if (minPrice != null && maxPrice != null) {
-//                     finalValue["priceRange"] = {
-//                       "min": minPrice,
-//                       "max": maxPrice,
-//                     };
-//                   }
 
                   // ------ call back the values -------
-                Navigator.pop(context,finalValue);
+                Navigator.pop(context,filterItems);
                 },
                 child: Text(
                   "Apply",
@@ -267,16 +340,18 @@ class _FilterPageState extends State<FilterPage> {
   // ---------- status UI ----------
   Widget statusUI() {
     return ListView.builder(itemCount: statusList.length,itemBuilder: (context,index){
-      return CheckboxListTile(value: eventStatus.contains(statusList[index]['value']), onChanged: (onChanged){
+      final id = statusList[index]['value'];
+      final name = statusList[index]['title'];
+      return CheckboxListTile(value: eventStatus.containsKey(id), onChanged: (onChanged){
         setState(() {
           if(onChanged == true){
-            eventStatus.add(statusList[index]['value']);
+            eventStatus[id] = name;
           }else{
-            eventStatus.remove(statusList[index]['value']);
+            eventStatus.remove(id);
           }
           print('jhdfshjfdfsjhdsfjhdfshjkdfshjk$eventStatus');
         });
-      },title: Text(statusList[index]['title'],style: GoogleFonts.poppins(fontWeight: FontWeight.w600,fontSize: 14,color: MyColor().blackClr)));
+      },title: Text(name,style: GoogleFonts.poppins(fontWeight: FontWeight.w600,fontSize: 14,color: MyColor().blackClr)));
     });
   }
 
@@ -290,6 +365,7 @@ class _FilterPageState extends State<FilterPage> {
         onChanged: ( value) {
           setState(() {
             selectedMode = value;
+            modeName = modeList[index]['title'];
           });
         },
       );
@@ -319,6 +395,7 @@ class _FilterPageState extends State<FilterPage> {
                   onChanged: (value) {
                     setState(() {
                       selectedCertification = value;
+                      certificationName = list['certName'];
                     });
                   },
                 );
@@ -372,19 +449,20 @@ class _FilterPageState extends State<FilterPage> {
               itemCount: perkState.perksList.length,
               itemBuilder: (context, index) {
                 final list = perkState.perksList[index];
-                print("listlistlistlistlistlistlistlistlist$list");
+                final id = list['identity'];
+                final name = list['perkName'];
                 return CheckboxListTile(
-                  title: Text(list['perkName'],
+                  title: Text(name,
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
                           fontSize: 14,
                           color: MyColor().blackClr)),
-                  value: parksValues.contains(list['identity']),
+                  value: perksValues.containsKey(id),
                   onChanged: (value) {
                     setState(() {
                       if(value == true){
-                        parksValues.add(list['identity']);
+                        perksValues[id] = name;
                       } else{
-                        parksValues.remove(list['identity']);
+                        perksValues.remove(id);
                       }
                     });
                   },
@@ -450,6 +528,7 @@ class _FilterPageState extends State<FilterPage> {
                   onChanged: (value) {
                     setState(() {
                       selectedEventType = value;
+                      eventTypeName = list['name'];
                     });
                   },
                 );
@@ -503,20 +582,24 @@ class _FilterPageState extends State<FilterPage> {
               itemCount: eligibleDepartmentState.eligibleDepartmentList.length,
               itemBuilder: (context, index) {
                 final list = eligibleDepartmentState.eligibleDepartmentList[index];
+                final id = list['identity'];
+                final name = list['name'];
                 return CheckboxListTile(
-                  value: eligibleDepartmentValues.contains(list['identity']),
+                  value: eligibleDepartmentValues.containsKey(id),
                   onChanged: (onChanged) {
                     setState(() {
                       if (onChanged == true) {
                         // --------- when the check box is click then add the identity --------------
-                        eligibleDepartmentValues.add(list['identity']);
+                        eligibleDepartmentValues[id] = name;
                       } else {
                         // --------- when the check box is click then remove the identity -----------
-                        eligibleDepartmentValues.remove(list['identity']);
+                        eligibleDepartmentValues.remove(id);
                       }
                     });
+
+                    print("eligibleDepartmentValueseligibleDepartmentValueseligibleDepartmentValues$eligibleDepartmentValues");
                   },
-                  title: Text(list['name'],
+                  title: Text(name,
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
                           fontSize: 14,
                           color: MyColor().blackClr)),
@@ -629,6 +712,7 @@ class _FilterPageState extends State<FilterPage> {
                           onChanged: (onChanged){
                             setState(() {
                               selectedCountry = onChanged;
+                              selectedCountryName = countryState.countryList.firstWhere((e)=> e['identity'] == selectedCountry)['name'].toString();
                             });
 
                             // ---- get a state ------
@@ -721,6 +805,7 @@ class _FilterPageState extends State<FilterPage> {
                             onChanged: (onChanged) {
                               setState(() {
                                 selectedState = onChanged;
+                                selectedStateName = chooseState.stateList.firstWhere((e)=> e['identity'] == selectedState)['name'].toString();
                               });
                               // ----- get city -----
                               context.read<CityBloc>().add(FetchCity(stateCode: selectedState!));
@@ -817,6 +902,7 @@ class _FilterPageState extends State<FilterPage> {
                             ),
                             onChanged: (onChanged) {
                               selectedCity = onChanged;
+                              selectedCityName = cityState.cityList.firstWhere((e)=> e['identity'] == selectedCity)['name'].toString();
                             },
                             items: cityState.cityList.map((e) =>
                                 DropdownMenuItem<String>(
@@ -853,20 +939,22 @@ class _FilterPageState extends State<FilterPage> {
               itemCount: accommodationState.accommodationList.length,
               itemBuilder: (context, index) {
                 final list = accommodationState.accommodationList[index];
+                final id = list['identity'];
+                final name = list['accommodationName'];
                 return CheckboxListTile(
-                  value: accommodationValues.contains(list['identity']),
+                  value: accommodationValues.containsKey(id),
                   onChanged: (onChanged) {
                     setState(() {
                       if (onChanged == true) {
                         // --------- when the check box is click then add the identity --------------
-                        accommodationValues.add(list['identity']);
+                        accommodationValues[id] = name;
                       } else {
                         // --------- when the check box is click then remove the identity -----------
-                        accommodationValues.remove(list['identity']);
+                        accommodationValues.remove(id);
                       }
                     });
                   },
-                  title: Text(list['accommodationName'],
+                  title: Text(name,
                       style: GoogleFonts.poppins(fontWeight: FontWeight.w600,
                           fontSize: 14,
                           color: MyColor().blackClr)),
