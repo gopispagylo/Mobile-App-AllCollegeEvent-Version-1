@@ -18,8 +18,16 @@ class RemoveSaveEventSuccess extends RemoveSaveEventState{
   RemoveSaveEventSuccess({required this.successMessage});
 }
 
+class AddSave extends RemoveSaveEventState{
+  final String eventId;
+  final bool checkSave;
+
+  AddSave({required this.eventId, required this.checkSave});
+}
+
 class RemoveSaveEventFail extends RemoveSaveEventState{
   final String errorMessage;
+  final String eventId;
 
-  RemoveSaveEventFail({required this.errorMessage});
+  RemoveSaveEventFail({required this.errorMessage, required this.eventId});
 }

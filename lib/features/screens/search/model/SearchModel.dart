@@ -230,7 +230,7 @@ class _SearchModelState extends State<SearchModel> {
                               if(!isRecent){
                                 Navigator.push(
                                     context,
-                                    PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,),
+                                    PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(slug: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,),
                                         transitionsBuilder: (_, animation, __, child){
                                           return SlideTransition( position: Tween(
                                             begin: const Offset(1, 0),

@@ -96,7 +96,7 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
                   });
                 },
                 enlargeCenterPage: true,
-                autoPlay: true,
+                autoPlay: false,
                 autoPlayInterval: const Duration(seconds: 5),
                 autoPlayAnimationDuration: const Duration(milliseconds: 1500),
                 autoPlayCurve: Curves.easeOutBack,

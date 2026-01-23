@@ -243,7 +243,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                 onTap: () {
                                   Navigator.push(
                                       context,
-                                      PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
+                                      PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(slug: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
                                           transitionsBuilder: (_, animation, __, child){
                                             return SlideTransition( position: Tween(
                                               begin: const Offset(1, 0),
@@ -373,7 +373,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                                     onTap: (){
                                                       Navigator.push(
                                                           context,
-                                                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(identity: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
+                                                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(slug: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
                                                               transitionsBuilder: (_, animation, __, child){
                                                                 return SlideTransition( position: Tween(
                                                                   begin: const Offset(1, 0),

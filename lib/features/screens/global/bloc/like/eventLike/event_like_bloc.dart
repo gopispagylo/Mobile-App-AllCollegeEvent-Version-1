@@ -12,6 +12,7 @@ part 'event_like_state.dart';
 
 class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
   final ApiController apiController;
+
   final Map<String, bool> favStatus = {};
   final Map<String, int> likeCount = {};
 
@@ -31,14 +32,17 @@ class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
 
         // -------- immediately change the act toggle ----
         final newFav = !(favStatus[eventId] ?? false);
+
+        // ----------- initial like value store ------------
         favStatus[eventId] = newFav;
+
+        // -------- initial like count store ----------
         final previousCount = likeCount[eventId] ?? 0;
-        emit(
-          EventLikeSuccess(
-            checkFav: newFav,
-            id: eventId,
-            count: previousCount.toString(),
-          ),
+
+
+        // ----------- initial store values of like and count ----------
+        emit(EventLikeSuccess(checkFav: newFav, id: eventId, count: previousCount.toString()),
+
         );
 
         final params = {"eventIdentity": event.eventId, "userIdentity": userId};
@@ -50,12 +54,16 @@ class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
         );
 
         print("responseresponseresponseresponseresponseresponse$response");
+
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-            final likeCountApi =
-                int.tryParse(responseBody['likeCount'].toString()) ?? 0;
+
+            // ------ api like count store -----------
+            final likeCountApi = int.tryParse(responseBody['likeCount'].toString()) ?? 0;
+
             likeCount[eventId] = likeCountApi;
+            print("previousCountpreviousCountpreviousCountpreviousCountpreviousCount$likeCount");
             emit(
               EventLikeSuccess(
                 checkFav: newFav,

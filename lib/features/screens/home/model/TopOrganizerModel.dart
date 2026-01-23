@@ -72,7 +72,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => OrganizationPage(title:topOrganizerState.topOrganizer[index]['organizationName'],)),
+                          MaterialPageRoute(builder: (_) => OrganizationPage(title:topOrganizerState.topOrganizer[index]['organizationName'], slug: topOrganizerState.topOrganizer[index]['slug'],)),
                         );
                       },
                       child: Container(

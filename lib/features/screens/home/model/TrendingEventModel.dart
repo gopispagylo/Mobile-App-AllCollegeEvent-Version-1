@@ -1,6 +1,7 @@
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -116,8 +117,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                         final paymentLink = list['paymentLink'];
 
                         // --------- categoryName ------
-                        final categoryName =
-                            list['categoryName'] ?? "No Categories";
+                        final categoryName = list['categoryName'] ?? "No Categories";
 
                         // --------- find a save bool value -------
                         bool isSaved = list['isSaved'] == true;
@@ -128,7 +128,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                               context,
                               MaterialPageRoute(
                                 builder: (_) => EventDetailPage(
-                                  identity: identity,
+                                  slug: identity,
                                   title: title,
                                   whichScreen: 'view',
                                   paymentLink: paymentLink,
@@ -204,35 +204,21 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: [
-                                              BlocConsumer<
-                                                EventLikeBloc,
-                                                EventLikeState
-                                              >(
+                                              BlocConsumer<EventLikeBloc, EventLikeState>(
                                                 listener: (context, eventState) {
-                                                  if (eventState
-                                                          is EventLikeFail &&
-                                                      eventState.id ==
-                                                          list['identity']) {
+                                                  if (eventState is EventLikeFail && eventState.id == list['identity']) {
                                                     FlutterToast().flutterToast(
                                                       eventState.errorMessage,
                                                       ToastificationType.error,
                                                       ToastificationStyle.flat,
                                                     );
-                                                  } else if (eventState
-                                                          is EventLikeSuccess &&
-                                                      eventState.id ==
-                                                          list['identity']) {
-                                                    list['isLiked'] =
-                                                        eventState.checkFav;
+                                                  } else if (eventState is EventLikeSuccess && eventState.id == list['identity']) {
+                                                    list['isLiked'] = eventState.checkFav;
                                                   }
                                                 },
                                                 builder: (context, eventState) {
-                                                  final bloc = context
-                                                      .watch<EventLikeBloc>();
-                                                  final checkFav =
-                                                      bloc.favStatus[list['identity']
-                                                          .toString()] ??
-                                                      list['isLiked'];
+                                                  final bloc = context.watch<EventLikeBloc>();
+                                                  final checkFav = bloc.favStatus[list['identity'].toString()] ?? list['isLiked'];
                                                   return InkWell(
                                                     onTap: () {
                                                       context
@@ -273,8 +259,22 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                                 },
                                               ),
                                               SizedBox(width: 5),
-                                              InkWell(
-                                                onTap: () {},
+                                              BlocConsumer<RemoveSaveEventBloc, RemoveSaveEventState>(
+  listener: (context, addSaveSate) {
+    if(addSaveSate is RemoveSaveEventFail && addSaveSate.eventId == list['identity']){
+      FlutterToast().flutterToast(addSaveSate.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+    } else if(addSaveSate is AddSave && addSaveSate.eventId == list['identity']){
+      list['isSaved'] = addSaveSate.checkSave;
+    }
+  },
+  builder: (context, addSaveSate) {
+    final bloc = context.watch<RemoveSaveEventBloc>();
+    final checkSave = bloc.checkSave[list['identity'].toString()] ?? list['isSaved'];
+
+    return InkWell(
+                                                onTap: () {
+                                                  context.read<RemoveSaveEventBloc>().add(ClickRemoveSaveEvent(eventId: list['identity']));
+                                                },
                                                 child: Container(
                                                   padding: EdgeInsets.all(10),
                                                   decoration: BoxDecoration(
@@ -286,12 +286,14 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                                     shape: BoxShape.circle,
                                                   ),
                                                   child: Icon(
-                                                    isSaved ? Icons.bookmark : Icons.bookmark_outline,
+                                                    checkSave ? Icons.bookmark : Icons.bookmark_outline,
                                                     size: 15,
-                                                    color: isSaved ? MyColor().primaryClr : null,
+                                                    color: checkSave ? MyColor().primaryClr : null,
                                                   ),
                                                 ),
-                                              ),
+                                              );
+  },
+),
                                             ],
                                           ),
                                         ],

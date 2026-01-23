@@ -6,16 +6,16 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'event_detail_event.dart';
-part 'event_detail_state.dart';
+part 'organizer_detail_event.dart';
+part 'organizer_detail_state.dart';
 
-class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
+class OrganizerDetailBloc extends Bloc<OrganizerDetailEvent, OrganizerDetailState> {
   final ApiController apiController;
-  final List<dynamic> eventDetailList = [];
-  EventDetailBloc({required this.apiController}) : super(EventDetailInitial()) {
-    on<ClickEventDetail>((event, emit) async{
+  final List<dynamic> organizerDetailList = [];
+  OrganizerDetailBloc({required this.apiController}) : super(OrganizerDetailInitial()) {
+    on<ClickOrgDetail>((event, emit) async{
 
-      emit(EventDetailLoading());
+      emit(OrganizerDetailLoading());
 
       try{
 
@@ -30,25 +30,27 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
           "" : ""
         };
 
-        final response = await apiController.getMethod(endPoint: 'events_protec/${event.slug}', token: token!, data: parameter);
+        final response = await apiController.getMethod(endPoint: 'organizations/${event.slug}/events', token: token!, data: parameter);
         print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
-            eventDetailList.clear();
-            eventDetailList.add(responseBody['data']);
-            emit(EventDetailSuccess(eventDetailList: List.from(eventDetailList)));
+            organizerDetailList.clear();
+
+            // --------- array of object comes list then must use for addAll ----------
+            organizerDetailList.addAll(responseBody['data']);
+            emit(OrganizerDetailSuccess(organizerDetailList: List.from(organizerDetailList)));
           }else{
-            emit(EventDetailFail(errorMessage: responseBody['message']));
+            emit(OrganizerDetailFail(errorMessage: responseBody['message']));
           }
         }
 
       }on DioException catch(e){
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
-        emit(EventDetailFail(errorMessage: error));
+        emit(OrganizerDetailFail(errorMessage: error));
       } catch(e){
-        emit(EventDetailFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+        emit(OrganizerDetailFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

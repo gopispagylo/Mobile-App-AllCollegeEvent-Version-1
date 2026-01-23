@@ -3,6 +3,7 @@ import 'package:all_college_event_app/features/auth/organizer/login/ui/Organizer
 import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/HomeModel.dart';
@@ -71,6 +72,7 @@ class _HomePageState extends State<HomePage> {
 
             BlocProvider(create: (context) => TopOrganizerBloc(apiController: ApiController())),
             BlocProvider(create: (context) => EventLikeBloc(apiController: ApiController())),
+            BlocProvider(create: (context) => RemoveSaveEventBloc(apiController: ApiController())),
 
           ],
           child: HomeModel(scrollController: scrollController),

@@ -1,19 +1,21 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/screens/event/bloc/eventCountUpdateBloc/event_count_update_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBloc/event_detail_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/model/EventDetailModel.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class EventDetailPage extends StatefulWidget {
-  final String identity;
+  final String slug;
   final String title;
   final String whichScreen;
   final String paymentLink;
 
   const EventDetailPage(
-      {super.key, required this.identity, required this.title, required this.whichScreen, required this.paymentLink});
+      {super.key, required this.slug, required this.title, required this.whichScreen, required this.paymentLink});
 
   @override
   State<EventDetailPage> createState() => _EventDetailPageState();
@@ -22,16 +24,25 @@ class EventDetailPage extends StatefulWidget {
 class _EventDetailPageState extends State<EventDetailPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return MultiBlocProvider(
+  providers: [
+    BlocProvider(
       create: (context) =>
-      EventDetailBloc(apiController: ApiController())..add(ClickEventDetail(identity: widget.identity)),
-      child: Scaffold(
+      EventDetailBloc(apiController: ApiController())..add(ClickEventDetail(slug: widget.slug)),
+),
+    BlocProvider(
+      create: (context) => EventLikeBloc(apiController: ApiController()),
+    ), BlocProvider(
+      create: (context) => EventCountUpdateBloc(apiController: ApiController())..add(ClickEventCountUpdate(slug: widget.slug)),
+    ),
+  ],
+  child: Scaffold(
         backgroundColor: MyColor().whiteClr,
         appBar: AppBar(
           backgroundColor: MyColor().whiteClr,
         ),
-        body: EventDetailModel(identity: widget.identity, title: widget.title, whichScreen: widget.whichScreen, paymentLink: widget.paymentLink,),
+        body: EventDetailModel(identity: widget.slug, title: widget.title, whichScreen: widget.whichScreen, paymentLink: widget.paymentLink,),
       ),
-    );
+);
   }
 }

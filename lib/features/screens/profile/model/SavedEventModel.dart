@@ -177,7 +177,7 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                     MaterialPageRoute(
                                       builder: (_) =>
                                           EventDetailPage(
-                                            identity: identity,
+                                            slug: identity,
                                             title: title,
                                             whichScreen: 'view',
                                             paymentLink: paymentLink,

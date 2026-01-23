@@ -11,6 +11,7 @@ part 'remove_save_event_state.dart';
 
 class RemoveSaveEventBloc extends Bloc<RemoveSaveEventEvent, RemoveSaveEventState> {
   final ApiController apiController;
+  final Map<String, bool> checkSave = {};
   RemoveSaveEventBloc({required this.apiController}) : super(RemoveSaveEventInitial()) {
     on<ClickRemoveSaveEvent>((event, emit) async{
 
@@ -31,6 +32,13 @@ class RemoveSaveEventBloc extends Bloc<RemoveSaveEventEvent, RemoveSaveEventStat
           "userIdentity": userId
         };
 
+        // --------- initial save toggle --------
+        final newSave = !(checkSave[event.eventId] ?? false);
+
+        checkSave[event.eventId] = newSave;
+
+        emit(AddSave(eventId: event.eventId, checkSave: newSave));
+
         final response = await apiController.postMethodWithHeader(endPoint: 'events/save', token: token!, data: params);
 
         if(response.statusCode == 200){
@@ -38,15 +46,15 @@ class RemoveSaveEventBloc extends Bloc<RemoveSaveEventEvent, RemoveSaveEventStat
           if(responseBody['status'] == true){
             emit(RemoveSaveEventSuccess(successMessage: responseBody['message']));
           } else{
-            emit(RemoveSaveEventFail(errorMessage: responseBody['message']));
+            emit(RemoveSaveEventFail(errorMessage: responseBody['message'], eventId: event.eventId));
           }
         }
       } on DioException catch (e) {
         final error = HandleErrorConfig().handleDioError(e);
-        emit(RemoveSaveEventFail(errorMessage: error));
+        emit(RemoveSaveEventFail(errorMessage: error, eventId: event.eventId));
       } catch (e) {
         emit(RemoveSaveEventFail(
-          errorMessage: ConfigMessage().unexpectedErrorMsg,
+          errorMessage: ConfigMessage().unexpectedErrorMsg, eventId: event.eventId,
         ));
       }
     });

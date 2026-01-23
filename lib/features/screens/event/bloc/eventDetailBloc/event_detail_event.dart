@@ -4,7 +4,7 @@ part of 'event_detail_bloc.dart';
 sealed class EventDetailEvent {}
 
 class ClickEventDetail extends EventDetailEvent{
-  final String identity;
+  final String slug;
 
-  ClickEventDetail({required this.identity});
+  ClickEventDetail({required this.slug});
 }
