@@ -5,7 +5,12 @@ sealed class RemoveSaveEventState {}
 
 final class RemoveSaveEventInitial extends RemoveSaveEventState {}
 
-class RemoveSaveEventLoading extends RemoveSaveEventState{}
+class RemoveSaveEventLoading extends RemoveSaveEventState{
+  final String eventId;
+
+  RemoveSaveEventLoading({required this.eventId});
+
+}
 
 class RemoveSaveEventSuccess extends RemoveSaveEventState{
   final String successMessage;

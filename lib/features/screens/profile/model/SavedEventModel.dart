@@ -276,11 +276,12 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                                       }
                                                     },
                                                     builder: (context, removeEventState) {
+                                                      final checkLoading = removeEventState is RemoveSaveEventLoading && removeEventState.eventId == eventId;
                                                       return InkWell(
                                                         onTap: () {
                                                           context.read<RemoveSaveEventBloc>().add(ClickRemoveSaveEvent(eventId: eventId));
                                                         },
-                                                        child: removeEventState is RemoveSaveEventLoading ? Center(child: SizedBox(
+                                                        child: checkLoading ? Center(child: SizedBox(
                                                             height: 20,
                                                             width: 20,
                                                             child: CircularProgressIndicator(color: MyColor().primaryClr,strokeWidth: 2,)),): circleIcon(

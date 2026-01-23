@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
@@ -21,14 +22,17 @@ class TrendingEventListBloc
       emit(TrendingEventListLoading());
       try {
 
-        print('jhsjhdshjkdsjhdsjhdsjhdsjhdsajhadsjhadsjhasdjhadssadjh');
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
+        // ------- token -------
+        final token = await DBHelper().getToken();
+
         final response = await apiController.getMethodWithoutBody(
-          endPoint: 'events',
-          token: "token",
+          endPoint: 'events_protec',
+          token: token!,
         );
+
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {

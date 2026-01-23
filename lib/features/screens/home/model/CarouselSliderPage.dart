@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class CarouselSliderPage extends StatefulWidget {
   const CarouselSliderPage({super.key});
@@ -24,99 +28,106 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
     ImagePath().banner_7,
   ];
 
-  final PageController _pageController = PageController(viewportFraction: 0.50);
-  int _currentPage = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Auto-scroll logic
-    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
-      if (_currentPage < photoList.length - 1) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    _pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      width: double.infinity,
-      child: PageView.builder(
-        controller: _pageController,
-        itemCount: photoList.length,
-        onPageChanged: (index) => setState(() => _currentPage = index),
-        itemBuilder: (context, index) {
-          return AnimatedBuilder(
-            animation: _pageController,
-            builder: (context, child) {
-              double value = 1;
-              if (_pageController.position.haveDimensions) {
-                value = index.toDouble() - (_pageController.page ?? 0);
-              } else {
-                // Initial value before scroll starts
-                value = index.toDouble() - _currentPage.toDouble();
-              }
+    return Stack(
+      fit: StackFit.loose,
+      alignment: Alignment.center,
+      children: [
+        Column(
+          children: [
 
-              // Apply rotations and scaling based on distance from center
-              double scale = (1 - (value.abs() * 0.25)).clamp(0.78, 1.0);
-              double rotation = value * 0.15;
-              double translateX = value * 0;
-              double opacity = (1 - (value.abs() * 0.5)).clamp(0.0, 1.0);
+            CarouselSlider.builder(
+              itemCount: photoList.length,
+              itemBuilder: (BuildContext context, index, realIndex) {
+                final sliderList = photoList[index];
+                double opacity = 1.0;
 
-              return Transform.translate(
-                offset: Offset(translateX, 0),
-                child: Transform.rotate(
-                  angle: rotation,
-                  child: Opacity(
-                    opacity: opacity,
-                    child: Transform.scale(
-                      scale: scale,
-                      child: _card(photoList[index], index == _currentPage),
+                if(index == currentPage){
+                  opacity = 1.0;
+                }else if((index - currentPage).abs() == 1){
+                  opacity = 0.5;
+                }else{
+                  opacity = 0.3;
+                }
+
+                return AnimatedOpacity(
+                  duration: const Duration(microseconds: 1500),
+                  opacity: opacity,
+                  child: GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        left: 0,
+                        right: 0,
+                        bottom: 16,
+                      ),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: MyColor().whiteClr,
+                        ),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.asset(sliderList,fit: BoxFit.cover,)),
+                      // child: CachedNetworkImage(
+                      //   imageUrl: sliderList,
+                      //   fit: BoxFit.cover,
+                      //   placeholder: (context, url) => Center(
+                      //     child: CircularProgressIndicator(
+                      //       color: MyColor().primaryClr,
+                      //     ),
+                      //   ),
+                      //   errorWidget: (context, url, error) =>
+                      //   const Icon(Icons.image_not_supported),
+                      // ),
                     ),
                   ),
+                );
+              },
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    currentPage = index;
+                  });
+                },
+                enlargeCenterPage: true,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 5),
+                autoPlayAnimationDuration: const Duration(milliseconds: 1500),
+                autoPlayCurve: Curves.easeOutBack,
+                scrollPhysics: const BouncingScrollPhysics(),
+                enableInfiniteScroll: true,
+                viewportFraction: 0.55,
+                aspectRatio: 1.2,
+                pageSnapping: true,
+                padEnds: true,
+                animateToClosest: true,
+              ),
+            ),
+            Container(
+              // margin: EdgeInsets.only(bottom: 00),
+              child: Center(
+                child: AnimatedSmoothIndicator(
+                  activeIndex: currentPage,
+                  count: photoList.length,
+                  effect: WormEffect(
+                    dotHeight: 10,
+                    dotWidth: 10,
+                    activeDotColor: MyColor().primaryClr,
+                    dotColor: MyColor().sliderDotClr,
+                    spacing: 8,
+                  ),
                 ),
-              );
-            },
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _card(String imagePath, bool isCenter) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 20, horizontal: 4),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10,
-            offset: Offset(0, 5),
-          )
-        ],
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Image.asset(imagePath, fit: BoxFit.cover),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 

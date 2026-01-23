@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBloc/event_detail_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/ui/hideBottomNavigationBarWidget/HideBottomNavigationBar.dart';
 import 'package:all_college_event_app/features/screens/report/ui/ReportPage.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -33,9 +34,10 @@ class EventDetailModel extends StatefulWidget {
   State<EventDetailModel> createState() => _EventDetailModelState();
 }
 
-class _EventDetailModelState extends State<EventDetailModel> {
-  // Smooth Indicator controller
-  final scrollController = CarouselSliderController();
+class _EventDetailModelState extends State<EventDetailModel> with WidgetsBindingObserver{
+
+  // ------- hide bottom navigation bar --------
+  late ScrollController scrollController;
 
   // ------- Controller ----------
   final commentController = TextEditingController();
@@ -56,9 +58,29 @@ class _EventDetailModelState extends State<EventDetailModel> {
   final formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    scrollController = ScrollController();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
   void dispose() {
     commentController.dispose();
+    scrollController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (mounted) {
+        setState(() {
+          checkPaymentLink = false;
+        });
+      }
+    }
   }
 
   @override
@@ -88,6 +110,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
 
 
             return ListView(
+              controller: scrollController,
               children: [
                 // --------- Carousel Slider ------
                 if (list['bannerImages'] != null &&
@@ -136,7 +159,7 @@ class _EventDetailModelState extends State<EventDetailModel> {
                         });
                       },
                       enlargeCenterPage: true,
-                      autoPlay: true,
+                      autoPlay: false,
                       autoPlayCurve: Curves.fastOutSlowIn,
                       enableInfiniteScroll: true,
                       autoPlayAnimationDuration: Duration(milliseconds: 800),
@@ -1770,6 +1793,9 @@ class _EventDetailModelState extends State<EventDetailModel> {
                 Expanded(
                   child: GestureDetector(
                     onTap: () async {
+
+                      if(checkPaymentLink) return;
+
                       final paymentUrl = Uri.parse(widget.paymentLink);
 
                       setState(() {
@@ -1782,7 +1808,9 @@ class _EventDetailModelState extends State<EventDetailModel> {
                         setState(() {
                           checkPaymentLink = false;
                         });
+                        return;
                       }
+
                       await launchUrl(
                         paymentUrl,
                         mode: LaunchMode.externalApplication,
@@ -1952,6 +1980,9 @@ class _EventDetailModelState extends State<EventDetailModel> {
     );
   }
 }
+
+
+
 
 // --------- Fav & Add to cart Icon ---------
 Widget circleIcon(IconData icon) {

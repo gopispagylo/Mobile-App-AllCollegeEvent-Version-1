@@ -25,13 +25,13 @@ class ImagePath{
   final errorMessageImg = "assets/image/error_img.png";
 
   // ----------- banner images ---------
-  final banner_1 = "assets/image/banner_image_1.png";
-  final banner_2 = "assets/image/banner_image_2.png";
-  final banner_3 = "assets/image/banner_image_3.png";
-  final banner_4 = "assets/image/banner_image_4.png";
-  final banner_5 = "assets/image/banner_image_5.png";
-  final banner_6 = "assets/image/banner_image_6.png";
-  final banner_7 = "assets/image/banner_image_7.png";
+  final banner_1 = "assets/image/banner_1.jpeg";
+  final banner_2 = "assets/image/banner_2.jpeg";
+  final banner_3 = "assets/image/banner_3.jpeg";
+  final banner_4 = "assets/image/banner_4.jpeg";
+  final banner_5 = "assets/image/banner_5.jpeg";
+  final banner_6 = "assets/image/banner_6.jpeg";
+  final banner_7 = "assets/image/banner_7.jpeg";
 
   // ------------ social media icons -------
   final facebook = "assets/image/facebook.png";
@@ -59,5 +59,8 @@ class ImagePath{
   final pinThird = "assets/image/pin_3.png";
   final lineVictor = "assets/image/arc_4.png";
   final ourJourney = "assets/image/our journey bg.png";
+
+  // --------- home page background image --------
+  final homeBackground = "assets/image/background_homepage.png";
 
 }

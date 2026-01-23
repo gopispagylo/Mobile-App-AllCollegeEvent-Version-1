@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/CarouselSliderPage.dart';
@@ -41,31 +42,33 @@ class _HomeModelState extends State<HomeModel> {
         context.read<EventTypeAllBloc>().add(EventTypeAll());
         context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
       },
-      child: SingleChildScrollView(
-        controller: widget.scrollController,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-
-            // Welcome UI
-            WelcomeModel(),
-
-            // CarouselSlider UI
-            CarouselSliderPage(),
-
-            // Categories UI
-            HomeCategoriesModel(),
-
-            // Trending Event UI
-            TrendingEventModel(),
-
-            // Top Organizer UI
-            TopOrganizerModel(),
-
-            // Countries & Cities UI
-            CountriesAndCitiesModel(),
-
-          ],
+      child: SafeArea(
+        child: SingleChildScrollView(
+          controller: widget.scrollController,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+        
+              // Welcome UI
+              WelcomeModel(),
+        
+              // CarouselSlider UI
+              CarouselSliderPage(),
+        
+              // Categories UI
+              HomeCategoriesModel(),
+        
+              // Trending Event UI
+              TrendingEventModel(),
+        
+              // Top Organizer UI
+              TopOrganizerModel(),
+        
+              // Countries & Cities UI
+              CountriesAndCitiesModel(),
+        
+            ],
+          ),
         ),
       ),
     );

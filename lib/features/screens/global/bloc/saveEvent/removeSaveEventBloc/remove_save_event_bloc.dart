@@ -14,7 +14,7 @@ class RemoveSaveEventBloc extends Bloc<RemoveSaveEventEvent, RemoveSaveEventStat
   RemoveSaveEventBloc({required this.apiController}) : super(RemoveSaveEventInitial()) {
     on<ClickRemoveSaveEvent>((event, emit) async{
 
-      emit(RemoveSaveEventLoading());
+      emit(RemoveSaveEventLoading(eventId: event.eventId));
 
       try {
 

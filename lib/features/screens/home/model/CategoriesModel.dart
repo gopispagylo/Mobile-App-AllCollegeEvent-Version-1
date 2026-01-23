@@ -75,18 +75,18 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                         width: 104,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
-                            color: Color(int.tryParse(splitBGColor)!.toInt()),
+                            color: Color(int.tryParse(splitBGColor)!.toInt()).withOpacity(0.60),
                           border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                           // boxShadow: [
                           //   BoxShadow(color: MyColor().blackClr.withOpacity(0.10),offset: Offset(5, 5),blurRadius: 2)
                           // ]
                         ),
                         child: Container(
-                          margin: EdgeInsets.all(10),
+                          margin: EdgeInsets.only(bottom: 5),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CachedNetworkImage(imageUrl: list['imageUrl'] ?? '',height: 45,placeholder: (context, url) {
+                              CachedNetworkImage(imageUrl: list['imageUrl'] ?? '',height: 60,placeholder: (context, url) {
                                 return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
                               },),
                               Text(list['name'],

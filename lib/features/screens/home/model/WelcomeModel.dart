@@ -15,21 +15,22 @@ class _WelcomeModelState extends State<WelcomeModel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            MyColor().primaryBackgroundClr,
-            MyColor().whiteClr
-          ],
-            begin: AlignmentGeometry.topCenter,
-            end: AlignmentGeometry.bottomCenter,
-
-          )
-      ),
+      // decoration: BoxDecoration(
+      //     gradient: LinearGradient(colors: [
+      //       MyColor().primaryBackgroundClr,
+      //       MyColor().whiteClr
+      //     ],
+      //       begin: AlignmentGeometry.topCenter,
+      //       end: AlignmentGeometry.bottomCenter,
+      //
+      //     )
+      // ),
       child: Container(
-        margin: EdgeInsets.only(top: 35,left: 16),
+        margin: EdgeInsets.only(top: 00,left: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -46,7 +47,7 @@ class _WelcomeModelState extends State<WelcomeModel> {
                           ),
                         ),
                         Text(
-                          "Krish!",
+                          "Gopinath!",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: MyColor().primaryClr,
