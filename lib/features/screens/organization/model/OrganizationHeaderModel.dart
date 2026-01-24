@@ -1,6 +1,10 @@
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventListBloc/event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/organization/bloc/organizerDetailBloc/organizer_detail_bloc.dart';
+import 'package:all_college_event_app/features/screens/organization/bloc/organizerEventListBloc/organizer_event_list_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +16,7 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrganizationHeaderModel extends StatefulWidget {
@@ -53,7 +58,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
 
       return Container(
         margin: EdgeInsets.all(16),
-        child: Column(
+        child: ListView(
           children: [
 
             // -------- Carousel Slider ------
@@ -68,15 +73,25 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                         // print("sliderListsliderListsliderListsliderListsliderList${sliderList['id']}");
                       },
                       child: Container(
-                        margin: EdgeInsets.only(left: 16,right: 16,bottom: 16),
+                        margin: EdgeInsets.only(bottom: 16),
                         width: double.infinity,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
                         ),
                         clipBehavior: Clip.antiAlias,
-                        child: Image.network(sliderList,
-                          fit: BoxFit.cover,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: CachedNetworkImage(
+                            imageUrl: sliderList,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) {
+                              return Icon(Iconsax.image);
+                            },
+                            placeholder: (context, url) {
+                              return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,));
+                            },
+                          ),
                         ),
                       ),
                     );
@@ -245,95 +260,476 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
             ),
 
             // --------- Upcoming & Past event ui
-            selectedIndex == 0 ? Column(
-              children: [
-                Container(
 
-                )
-              ],
-            ) :
-            Column(
-              children: [
-                SizedBox(height: 20,),
-                GridView.builder(
-                    shrinkWrap: true,
+            BlocBuilder<OrganizerEventListBloc, OrganizerEventListState>(
+              builder: (context, organizerEventState) {
+                if (organizerEventState is OrganizerEventLoading) {
+                  return ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: 4,
-                    itemBuilder: (context,index){
-                      return Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
-                            borderRadius: BorderRadius.circular(12)
-                        ),
-                        child: Stack(
-                          children: [
+                    shrinkWrap: true,
+                    itemCount: 10,
+                    itemBuilder: (context, index) {
+                      return eventCardShimmer();
+                    },
+                  );
+                } else if (organizerEventState is OrganizerEventSuccess) {
+                  return Container(
+                    child: selectedIndex == 0 ? Column(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(left: 0, right: 0, top: 16,),
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: organizerEventState.organizerEventList.length,
+                            itemBuilder: (context, index) {
 
-                            // -------- image -------
-                            Positioned.fill(
-                                child: Image.asset(ImagePath().authForgetImg, fit: BoxFit.cover,)),
+                              final list = organizerEventState.organizerEventList[index];
 
-                            // First gradient
-                            Positioned.fill(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.6),
-                                    ],
+
+                              // -------- field name ------------
+                              final title = list['title'] ?? "No title";
+
+                              final featuredImagePath = (list['bannerImages'] != null &&
+                                  list['bannerImages'].isNotEmpty)
+                                  ? list['bannerImages'][0]
+                                  : '';
+
+                              // ------ date format -------
+                              final rawDate = list['eventDate']?.toString() ?? "";
+
+                              // 2. Safe Date Parsing
+                              String dateFormat = "Date TBD";
+
+                              if (rawDate.isNotEmpty) {
+                                try {
+                                  // Use MM for months!
+                                  final parsedDate = DateFormat('dd/MM/yyyy').parse(rawDate);
+                                  dateFormat = DateFormat('dd MMM yyyy').format(parsedDate);
+                                } catch (e) {
+                                  debugPrint("Date parsing error: $e");
+                                  dateFormat = rawDate; // Fallback to raw string if parsing fails
+                                }
+                              }
+
+                              // ---- venue ---
+                              final venue = list['venue'] ?? "no venue";
+
+                              // -------- identity ---------
+                              final identity = list['slug'];
+
+                              // final identity = list['slug'];
+
+                              final paymentLink = list['paymentLink'];
+
+                              // ------- Tween Animation -----------
+                              return TweenAnimationBuilder(
+                                tween: Tween(begin: 50.0, end: 0.0),
+                                duration: Duration(milliseconds: 600),
+                                builder: (context, value, child) {
+                                  return Transform.translate(offset: Offset(0, value),
+                                      child: Opacity(
+                                        opacity: 1 - (value / 50),
+                                        child: child,)
+                                  );
+                                },
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (_)=> EventDetailPage(slug: identity, title: title, whichScreen: 'view', paymentLink: paymentLink,))
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 0, bottom: 16),
+                                    padding: EdgeInsets.only(left: 10,right: 5,bottom: 5,top: 5),
+                                    decoration: BoxDecoration(
+                                      color: MyColor().whiteClr,
+                                      border: Border.all(
+                                        color: MyColor().borderClr.withOpacity(0.15),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Hero(
+                                              tag: 'event_image_$identity',
+                                              child: CachedNetworkImage(
+                                                imageUrl: featuredImagePath,
+                                                fit: BoxFit.cover,
+                                                height: 110,
+                                                placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
+                                                errorWidget: (context, url, error) =>
+                                                const Icon(Icons.image_not_supported),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Container(
+                                            padding: EdgeInsets.all(5),
+                                            margin: EdgeInsets.only(left: 10),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        title,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 5),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                      children: [
+                                                        BlocConsumer<EventLikeBloc, EventLikeState>(
+                                                          listener: (context, eventState) {
+                                                            if (eventState is EventLikeFail && eventState.id == list['identity']) {
+                                                              FlutterToast().flutterToast(
+                                                                eventState.errorMessage,
+                                                                ToastificationType.error,
+                                                                ToastificationStyle.flat,
+                                                              );
+                                                            } else if (eventState is EventLikeSuccess && eventState.id == list['identity']) {
+                                                              list['isLiked'] = eventState.checkFav;
+                                                            }
+                                                          },
+                                                          builder: (context, eventState) {
+                                                            final bloc = context.watch<EventLikeBloc>();
+                                                            // final checkFav = bloc.favStatus[list['identity'].toString()] ?? list['isLiked'];
+                                                            final checkFav = false;
+                                                            return InkWell(
+                                                              onTap: () {
+                                                                context
+                                                                    .read<EventLikeBloc>()
+                                                                    .add(
+                                                                  ClickEventLike(
+                                                                    eventId:
+                                                                    list['identity'],
+                                                                  ),
+                                                                );
+                                                              },
+                                                              child: Container(
+                                                                padding: EdgeInsets.all(
+                                                                  10,
+                                                                ),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                    color: MyColor()
+                                                                        .borderClr
+                                                                        .withOpacity(
+                                                                      0.15,
+                                                                    ),
+                                                                  ),
+                                                                  color: MyColor().boxInnerClr,
+                                                                  shape: BoxShape.circle,
+                                                                ),
+                                                                child: Icon(
+                                                                  checkFav
+                                                                      ? Icons.favorite
+                                                                      : Icons.favorite_border,
+                                                                  size: 15,
+                                                                  color: checkFav
+                                                                      ? MyColor().redClr
+                                                                      : null,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                        SizedBox(width: 5),
+                                                        BlocConsumer<RemoveSaveEventBloc, RemoveSaveEventState>(
+                                                          listener: (context, addSaveSate) {
+                                                            if(addSaveSate is RemoveSaveEventFail && addSaveSate.eventId == list['identity']){
+                                                              FlutterToast().flutterToast(addSaveSate.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+                                                            } else if(addSaveSate is AddSave && addSaveSate.eventId == list['identity']){
+                                                              list['isSaved'] = addSaveSate.checkSave;
+                                                            }
+                                                          },
+                                                          builder: (context, addSaveSate) {
+                                                            final bloc = context.watch<RemoveSaveEventBloc>();
+                                                            // final checkSave = bloc.checkSave[list['identity'].toString()] ?? list['isSaved'];
+                                                            final checkSave = false;
+
+                                                            return InkWell(
+                                                              onTap: () {
+                                                                context.read<RemoveSaveEventBloc>().add(ClickRemoveSaveEvent(eventId: list['identity']));
+                                                              },
+                                                              child: Container(
+                                                                padding: EdgeInsets.all(10),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                    color: MyColor().borderClr
+                                                                        .withOpacity(0.15),
+                                                                  ),
+                                                                  color: MyColor().boxInnerClr,
+                                                                  shape: BoxShape.circle,
+                                                                ),
+                                                                child: Icon(
+                                                                  checkSave ? Icons.bookmark : Icons.bookmark_outline,
+                                                                  size: 15,
+                                                                  color: checkSave ? MyColor().primaryClr : null,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 5),
+                                                Row(
+                                                  children: [
+                                                    chip(
+                                                      "Paid",
+                                                      MyColor().primaryBackgroundClr
+                                                          .withOpacity(0.35),
+                                                    ),
+                                                    chip(
+                                                      "Entertainment",
+                                                      MyColor().blueBackgroundClr.withOpacity(
+                                                        0.35,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.calendar_month, size: 14),
+                                                    SizedBox(width: 5),
+                                                    Expanded(
+                                                      child: Text(
+                                                        dateFormat,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 5),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.location_on_outlined, size: 14),
+                                                    SizedBox(width: 5),
+                                                    Expanded(
+                                                      child: Text(
+                                                        venue,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding: EdgeInsets.symmetric(
+                                                        vertical: 3,
+                                                        horizontal: 8,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: MyColor().primaryBackgroundClr
+                                                            .withOpacity(0.35),
+                                                        borderRadius: BorderRadius.circular(8),
+                                                      ),
+                                                      child: Text(
+                                                        "Ongoing",
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 12,
+                                                          fontWeight: FontWeight.w400,
+                                                          color: MyColor().blackClr,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ) :
+                    Column(
+                      children: [
+                        SizedBox(height: 20,),
+                        GridView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: organizerEventState.organizerEventList.length,
+                            itemBuilder: (context, index) {
+                              final gridList = orgState.organizerDetailList[index];
+                              final featuredImagePath = (gridList['bannerImages'] != null &&
+                                  gridList['bannerImages'].isNotEmpty)
+                                  ? gridList['bannerImages'][0]
+                                  : '';
 
-                            // Second stronger gradient
-                            Positioned.fill(
-                              child: Container(
+                              final title = gridList['title'] ?? "No title";
+                              final view = gridList['viewCount'] ?? 0;
+
+
+                              return Container(
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  gradient: LinearGradient(
-                                    begin: Alignment.center,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.95),
-                                    ],
-                                  ),
+                                    border: Border.all(
+                                        color: MyColor().borderClr.withOpacity(
+                                            0.15)),
+                                    borderRadius: BorderRadius.circular(12)
                                 ),
-                              ),
-                            ),
-
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 12,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 10,right: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                child: Stack(
                                   children: [
-                                    Text("Inter college Cricket Tournament",style:GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w600,color: MyColor().whiteClr,fontSize: 12
-                                    ),),
-                                    SizedBox(height: 5,),
-                                    Text("700K views",style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w500,color: MyColor().whiteClr,fontSize: 12
-                                    ),),
+
+                                    // -------- image -------
+                                    Positioned.fill(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(12),
+                                          child: CachedNetworkImage(imageUrl: featuredImagePath ?? '',
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) {
+                                            return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+                                          },
+                                          errorWidget: (context, url, error) {
+                                              return Icon(Iconsax.image);
+                                            },
+                                          ),
+                                        )),
+
+                                    // First gradient
+                                    Positioned.fill(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              10),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Colors.transparent,
+                                              Colors.black.withOpacity(0.5),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    // Second stronger gradient
+                                    Positioned.fill(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                              10),
+                                          gradient: LinearGradient(
+                                            begin: Alignment.center,
+                                            end: Alignment.bottomCenter,
+                                            colors: [
+                                              Colors.transparent,
+                                              Colors.black.withOpacity(0.95),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    Positioned(
+                                      left: 0,
+                                      right: 0,
+                                      bottom: 12,
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment
+                                              .start,
+                                          children: [
+                                            Text(
+                                              title,
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: MyColor().whiteClr,
+                                                  fontSize: 12
+                                              ),),
+                                            SizedBox(height: 5,),
+                                            Text("$view views",
+                                              style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w500,
+                                                  color: MyColor().whiteClr,
+                                                  fontSize: 12
+                                              ),),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+
                                   ],
                                 ),
-                              ),
-                            )
-
-                          ],
+                              );
+                            },
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                mainAxisSpacing: 16,
+                                crossAxisSpacing: 16,
+                                childAspectRatio: 0.6))
+                      ],
+                    ),
+                  );
+                } else if (organizerEventState is OrganizerEventFail) {
+                  return Center(
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        Center(
+                          child: SizedBox(
+                            height: 250,
+                            child: Image.asset(ImagePath().errorMessageImg),
+                          ),
                         ),
-                      );
-                    },
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2,mainAxisSpacing: 16,crossAxisSpacing: 16,childAspectRatio: 0.6))
-              ],
+                        Center(
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            organizerEventState.errorMessage,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                              color: MyColor().blackClr,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return SizedBox();
+              },
             ),
+            
 
             // ------- social media -------
             Container(
@@ -476,7 +872,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                   ],
                 ),
               ),
-            )
+            ),
+
           ],
         ),
       );

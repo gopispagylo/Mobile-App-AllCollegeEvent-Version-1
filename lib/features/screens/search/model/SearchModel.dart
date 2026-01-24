@@ -1,4 +1,7 @@
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/search/bloc/searchEventListBloc/search_event_list_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
@@ -10,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:toastification/toastification.dart';
 
 class SearchModel extends StatefulWidget {
   const SearchModel({super.key});
@@ -298,10 +302,99 @@ class _SearchModelState extends State<SearchModel> {
                                               ),
                                               SizedBox(width: 5),
                                               Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment.end,
                                                 children: [
-                                                  circleIcon(Icons.favorite_border),
+                                                  BlocConsumer<EventLikeBloc, EventLikeState>(
+                                                    listener: (context, eventState) {
+                                                      if (eventState is EventLikeFail && eventState.id == list['identity']) {
+                                                        FlutterToast().flutterToast(
+                                                          eventState.errorMessage,
+                                                          ToastificationType.error,
+                                                          ToastificationStyle.flat,
+                                                        );
+                                                      } else if (eventState is EventLikeSuccess && eventState.id == list['identity']) {
+                                                        list['isLiked'] = eventState.checkFav;
+                                                      }
+                                                    },
+                                                    builder: (context, eventState) {
+                                                      final bloc = context.watch<EventLikeBloc>();
+                                                      final checkFav = bloc.favStatus[list['identity'].toString()] ?? list['isLiked'];
+                                                      return InkWell(
+                                                        onTap: () {
+                                                          context
+                                                              .read<EventLikeBloc>()
+                                                              .add(
+                                                            ClickEventLike(
+                                                              eventId:
+                                                              list['identity'],
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          padding: EdgeInsets.all(
+                                                            10,
+                                                          ),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                              color: MyColor()
+                                                                  .borderClr
+                                                                  .withOpacity(
+                                                                0.15,
+                                                              ),
+                                                            ),
+                                                            color: MyColor().boxInnerClr,
+                                                            shape: BoxShape.circle,
+                                                          ),
+                                                          child: Icon(
+                                                            checkFav
+                                                                ? Icons.favorite
+                                                                : Icons.favorite_border,
+                                                            size: 15,
+                                                            color: checkFav
+                                                                ? MyColor().redClr
+                                                                : null,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
                                                   SizedBox(width: 5),
-                                                  circleIcon(Icons.bookmark_outline),
+                                                  BlocConsumer<RemoveSaveEventBloc, RemoveSaveEventState>(
+                                                    listener: (context, addSaveSate) {
+                                                      if(addSaveSate is RemoveSaveEventFail && addSaveSate.eventId == list['identity']){
+                                                        FlutterToast().flutterToast(addSaveSate.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+                                                      } else if(addSaveSate is AddSave && addSaveSate.eventId == list['identity']){
+                                                        list['isSaved'] = addSaveSate.checkSave;
+                                                      }
+                                                    },
+                                                    builder: (context, addSaveSate) {
+                                                      final bloc = context.watch<RemoveSaveEventBloc>();
+                                                      final checkSave = bloc.checkSave[list['identity'].toString()] ?? list['isSaved'];
+
+                                                      return InkWell(
+                                                        onTap: () {
+                                                          context.read<RemoveSaveEventBloc>().add(ClickRemoveSaveEvent(eventId: list['identity']));
+                                                        },
+                                                        child: Container(
+                                                          padding: EdgeInsets.all(10),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                              color: MyColor().borderClr
+                                                                  .withOpacity(0.15),
+                                                            ),
+                                                            color: MyColor().boxInnerClr,
+                                                            shape: BoxShape.circle,
+                                                          ),
+                                                          child: Icon(
+                                                            checkSave ? Icons.bookmark : Icons.bookmark_outline,
+                                                            size: 15,
+                                                            color: checkSave ? MyColor().primaryClr : null,
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
                                                 ],
                                               ),
                                             ],

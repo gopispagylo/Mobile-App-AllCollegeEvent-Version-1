@@ -24,7 +24,6 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
           return categoryShimmer();
         } else if (topOrganizerState is TopOrganizerSuccess) {
           return Column(
-            // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 margin: EdgeInsets.only(top: 30, left: 16, right: 6),
@@ -44,7 +43,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => TopOrganizerSeeAllModel(),
+                            builder: (_) => TopOrganizerSeeAllModel(topOrganizerList: topOrganizerState.topOrganizer,),
                           ),
                         );
                       },
@@ -72,7 +71,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => OrganizationPage(title:topOrganizerState.topOrganizer[index]['organizationName'], slug: topOrganizerState.topOrganizer[index]['slug'],)),
+                          MaterialPageRoute(builder: (_) => OrganizationPage(title: topOrganizerState.topOrganizer[index]['organizationName'], slug: topOrganizerState.topOrganizer[index]['slug'], identity: topOrganizerState.topOrganizer[index]['identity'],)),
                         );
                       },
                       child: Container(
@@ -89,33 +88,34 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                             color: MyColor().borderClr.withOpacity(0.15),
                           ),
                         ),
-                        clipBehavior: Clip.antiAlias,
-                        child: CachedNetworkImage(
-                          imageUrl:
-                              topOrganizerState
-                                  .topOrganizer[index]['profileImage'] ??
-                              '',
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: MyColor().primaryClr,
-                              ),
-                            );
-                          },
-                          errorWidget: (context, url, error) {
-                            return Center(
-                              child: Text(
+                        child: ClipOval(
+                          child: CachedNetworkImage(
+                            imageUrl:
                                 topOrganizerState
-                                    .topOrganizer[index]['organizationName'][0],
-                                style: GoogleFonts.poppins(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().blackClr,
+                                    .topOrganizer[index]['profileImage'] ??
+                                '',
+                            fit: BoxFit.cover,
+                            placeholder: (context, url) {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                            errorWidget: (context, url, error) {
+                              return Center(
+                                child: Text(
+                                  topOrganizerState
+                                      .topOrganizer[index]['organizationName'][0],
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w500,
+                                    color: MyColor().blackClr,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     );

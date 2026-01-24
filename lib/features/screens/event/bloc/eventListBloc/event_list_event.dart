@@ -6,7 +6,6 @@ sealed class EventListEvent {}
 class FetchEventList extends EventListEvent {
   final List<String>? eventTypes;
   final List<dynamic>? modes;
-  // final String? searchText;
   final List<String>? eligibleDeptIdentities;
   final String? certIdentity;
   final String? eventTypeIdentity;
@@ -26,7 +25,6 @@ class FetchEventList extends EventListEvent {
   FetchEventList({
     required this.eventTypes,
     required this.modes,
-    // required this.searchText,
     required this.eligibleDeptIdentities,
     required this.certIdentity,
     required this.eventTypeIdentity,
@@ -43,4 +41,10 @@ class FetchEventList extends EventListEvent {
     // required this.limit,
     // required this.sortBy,
   });
+}
+
+class SearchEventList extends EventListEvent{
+  final String? searchText;
+
+  SearchEventList({required this.searchText});
 }

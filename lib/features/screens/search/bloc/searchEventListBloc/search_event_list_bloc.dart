@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:bloc/bloc.dart';
@@ -20,8 +21,10 @@ class SearchEventListBloc extends Bloc<SearchEventListEvent, SearchEventListStat
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
-        final response = await apiController.getMethodWithoutBody(endPoint: 'events', token: "token",);
-        print("responseresponseresponseresponseresponse$response");
+        // ------- token -------
+        final token = await DBHelper().getToken();
+
+        final response = await apiController.getMethodWithoutBody(endPoint: 'events_protec', token: token!,);
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){

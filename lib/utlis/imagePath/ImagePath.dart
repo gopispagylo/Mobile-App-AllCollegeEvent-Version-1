@@ -63,4 +63,9 @@ class ImagePath{
   // --------- home page background image --------
   final homeBackground = "assets/image/background_homepage.png";
 
+  // ------- top organizer leader board --------
+  final rank_1 = 'assets/image/rank_1.png';
+  final rank_2 = 'assets/image/rank_2.png';
+  final rank_3 = 'assets/image/rank_3.png';
+
 }

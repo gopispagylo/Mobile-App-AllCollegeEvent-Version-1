@@ -365,18 +365,35 @@ class _EventListModelState extends State<EventListModel> {
               color: MyColor().primaryClr,
               onRefresh: () async{
                 context.read<EventListBloc>().add(
-                  FetchEventList(
-                    eventTypes: filterPageValues['api']['eventTypes'],
-                    modes: filterPageValues['api']['modes'],
-                    eligibleDeptIdentities: filterPageValues['api']['eligibleDeptIdentities'],
-                    certIdentity: filterPageValues['api']['certIdentity'],
-                    eventTypeIdentity: filterPageValues['api']['eventTypeIdentity'],
-                    perkIdentities: filterPageValues['api']['perkIdentities'],
-                    accommodationIdentities: filterPageValues['api']['accommodationIdentities'],
-                    country: filterPageValues['api']['country'],
-                    state: filterPageValues['api']['state'],
-                    city: filterPageValues['api']['city'],
-                    startDate: filterPageValues['api']['dateRange'],
+                  filterPageValues != null && filterPageValues.isNotEmpty ? FetchEventList(  eventTypes: filterPageValues['api']['eventTypes'] ?? "",
+                    modes: filterPageValues['api']['modes'] ?? '',
+                    eligibleDeptIdentities: filterPageValues['api']['eligibleDeptIdentities'] ?? '',
+                    certIdentity: filterPageValues['api']['certIdentity'] ?? '',
+                    eventTypeIdentity: filterPageValues['api']['eventTypeIdentity'] ?? '',
+                    perkIdentities: filterPageValues['api']['perkIdentities'] ?? '',
+                    accommodationIdentities: filterPageValues['api']['accommodationIdentities'] ?? "",
+                    country: filterPageValues['api']['country'] ?? '',
+                    state: filterPageValues['api']['state'] ?? '',
+                    city: filterPageValues['api']['city'] ?? "",
+                    startDate: filterPageValues['api']['dateRange'] ?? '',
+                  ) : FetchEventList(eventTypes: [],
+                    modes: [],
+                    // searchText: '',
+                    eligibleDeptIdentities: [],
+                    certIdentity: '',
+                    eventTypeIdentity: '',
+                    perkIdentities: [],
+                    accommodationIdentities: [],
+                    country: '',
+                    state: '',
+                    city: '',
+                    startDate: null,
+                    // endDate: null,
+                    // minPrice: null,
+                    // maxPrice: null,
+                    // page: null,
+                    // limit: null,
+                    // sortBy: ''
                   ),
                 );
               },
@@ -507,14 +524,15 @@ class _EventListModelState extends State<EventListModel> {
                                                       ToastificationType.error,
                                                       ToastificationStyle.flat,
                                                     );
-                                                  } else if (eventState is EventLikeSuccess && eventState.id == list['identity']) {
+                                                  }
+                                                  else if (eventState is EventLikeSuccess && eventState.id == list['identity']) {
                                                     list['isLiked'] = eventState.checkFav;
                                                   }
                                                 },
                                                 builder: (context, eventState) {
                                                   final bloc = context.watch<EventLikeBloc>();
                                                   final checkFav = bloc.favStatus[list['identity'].toString()] ?? list['isLiked'];
-                                                  return InkWell(
+                                                  return GestureDetector(
                                                     onTap: () {
                                                       context
                                                           .read<EventLikeBloc>()
@@ -544,7 +562,7 @@ class _EventListModelState extends State<EventListModel> {
                                                         checkFav
                                                             ? Icons.favorite
                                                             : Icons.favorite_border,
-                                                        size: 15,
+                                                        size: 20,
                                                         color: checkFav
                                                             ? MyColor().redClr
                                                             : null,
@@ -566,7 +584,7 @@ class _EventListModelState extends State<EventListModel> {
                                                   final bloc = context.watch<RemoveSaveEventBloc>();
                                                   final checkSave = bloc.checkSave[list['identity'].toString()] ?? list['isSaved'];
 
-                                                  return InkWell(
+                                                  return GestureDetector(
                                                     onTap: () {
                                                       context.read<RemoveSaveEventBloc>().add(ClickRemoveSaveEvent(eventId: list['identity']));
                                                     },
@@ -582,7 +600,7 @@ class _EventListModelState extends State<EventListModel> {
                                                       ),
                                                       child: Icon(
                                                         checkSave ? Icons.bookmark : Icons.bookmark_outline,
-                                                        size: 15,
+                                                        size: 20,
                                                         color: checkSave ? MyColor().primaryClr : null,
                                                       ),
                                                     ),
@@ -681,7 +699,6 @@ class _EventListModelState extends State<EventListModel> {
               onRefresh: () async{
                 context.read<EventListBloc>().add(FetchEventList(eventTypes: [],
                     modes: [],
-                    // searchText: '',
                     eligibleDeptIdentities: [],
                     certIdentity: '',
                     eventTypeIdentity: '',

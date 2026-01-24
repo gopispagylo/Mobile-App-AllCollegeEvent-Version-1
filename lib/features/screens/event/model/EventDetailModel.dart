@@ -334,7 +334,7 @@ class _EventDetailModelState extends State<EventDetailModel> with WidgetsBinding
                                 checkFav
                                     ? Icons.favorite
                                     : Icons.favorite_border,
-                                size: 15,
+                                size: 20,
                                 color: checkFav
                                     ? MyColor().redClr
                                     : null,
@@ -2061,7 +2061,7 @@ Widget circleIcon(IconData icon) {
       color: MyColor().boxInnerClr,
       shape: BoxShape.circle,
     ),
-    child: Icon(icon, size: 15),
+    child: Icon(icon, size: 20),
   );
 }
 

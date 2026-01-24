@@ -19,7 +19,6 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
 
       try{
 
-        print("gfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfgfg${event.whichUser}");
 
         // --------- set a base url -------
         await apiController.setBaseUrl();

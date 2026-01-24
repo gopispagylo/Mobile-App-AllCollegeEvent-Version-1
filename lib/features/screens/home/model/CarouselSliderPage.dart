@@ -37,7 +37,6 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
       children: [
         Column(
           children: [
-
             CarouselSlider.builder(
               itemCount: photoList.length,
               itemBuilder: (BuildContext context, index, realIndex) {
@@ -110,7 +109,6 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
               ),
             ),
             Container(
-              // margin: EdgeInsets.only(bottom: 00),
               child: Center(
                 child: AnimatedSmoothIndicator(
                   activeIndex: currentPage,
