@@ -30,6 +30,7 @@ class OrganizerDetailBloc extends Bloc<OrganizerDetailEvent, OrganizerDetailStat
           "" : ""
         };
 
+        print("organizations/${event.slug}/events");
         final response = await apiController.getMethod(endPoint: 'organizations/${event.slug}/events', token: token!, data: parameter);
         print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
         if(response.statusCode == 200){

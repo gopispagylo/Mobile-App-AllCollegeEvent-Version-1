@@ -384,59 +384,159 @@ class _PaymentModelState extends State<PaymentModel> {
                           ),
                         ),
                         onPressed: ticketList.isNotEmpty ?  () {
-                          MyModels().alertDialogCustomizeEdit(context, 'Event Submitted Successfully', Text(textAlign: TextAlign.center,ConfigMessage().confirmMessageForEventCreate,style: GoogleFonts.poppins(
-                            fontSize: 14,color: MyColor().blackClr,fontWeight: FontWeight.w500,
-                          ),), (){
-                            Navigator.pop(context);
-                          }, (){ if(formKey.currentState!.validate()){
-
-                            final orgDetail = widget.orgDetailList;
-
-                            context.read<EventCreateBloc>().add(ClickEventCreate(
-                                title: orgDetail['title'],
-                                description: orgDetail['description'],
-                                mode: orgDetail['mode'],
-                                categoryIdentity: orgDetail['categoryIdentity'],
-                                eventTypeIdentity: orgDetail['eventTypeIdentity'],
-                                perkIdentities: orgDetail['perkIdentities'],
-                                accommodationIdentities: orgDetail['accommodationIdentities'],
-                                certIdentity: orgDetail['certIdentity'],
-                                eligibleDeptIdentities: orgDetail['eligibleDeptIdentities'],
-                                tags: orgDetail['tags'],
-                                collaborators: List<Map<String, dynamic>>.from(
-                                  orgDetail['orgDetailList'].map((item) => {
-                                    'hostIdentity': item['hostIdentity'],
-                                    'organizationName': item['organizationName'],
-                                    'organizerNumber': item['organizerNumber'],
-                                    'orgDept': item['orgDept'],
-                                    'organizerName': item['organizerName'],
-                                    'location': item['location'],
-                                  }),
+                          final parentContext = context;
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (dialogContext) {
+                              return BlocProvider.value(
+                                value: parentContext.read<EventCreateBloc>(),
+  child: BlocConsumer<EventCreateBloc, EventCreateState>(
+                                listener: (context, state) {
+                                },
+                                builder: (context, eventCreateState) {
+                                  return Dialog(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
                                 ),
-                                calendars: orgDetail['calendars'],
-                                tickets: ticketList.map((ticket){
-                                  return {
-                                    ...ticket,
-                                    'sellingFrom': toIsoDate(ticket['sellingFrom']),
-                                    'sellingTo': toIsoDate(ticket['sellingTo']),
-                                  };
-                                }).toList(),
-                                paymentLink: paymentController.text,
-                                socialLinks: {},
-                                bannerImages: orgDetail['bannerImages'], eventLink: orgDetail['eventLink'] ?? '', location: orgDetail['location'] != null && orgDetail['location'].isNotEmpty ? {
-                              "country": orgDetail['location']['country'],
-                              "state": orgDetail['location']['state'],
-                              "city": orgDetail['location']['city'],
-                              "mapLink": orgDetail['location']['mapLink'],
-                              "venue": orgDetail['location']['venue'],
-                            } : {}
-                            ));
-                          }}, "Cancel", "Confirm");
+                                child: Container(
+                                  width: MediaQuery.of(context).size.width, // Full width
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Event Submitted Successfully",
+                                          style: TextStyle(
+                                              fontFamily: "blMelody",
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 24,
+                                              color: MyColor().blackClr
+                                          )
+                                      ),
+                                      const SizedBox(height: 10),
+                                      Text(textAlign: TextAlign.center,ConfigMessage().confirmMessageForEventCreate,style: GoogleFonts.poppins(
+                                        fontSize: 14,color: MyColor().blackClr,fontWeight: FontWeight.w500,
+                                      ),),
+                                      const SizedBox(height: 20),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: (){
+                                               Navigator.pop(context);
+                                              },
+                                              child:  Container(
+                                                alignment: Alignment.center,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  border: Border.all(color: MyColor().borderClr, width: 1),
+                                                  color: Colors.white,
+                                                ),
+                                                child: Text(
+                                                  "Cancel",
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: MyColor().borderClr
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Expanded(
+                                            child: InkWell(
+                                              onTap: (){
+                                                if(formKey.currentState!.validate()){
+
+                                                  final orgDetail = widget.orgDetailList;
+
+                                                  parentContext.read<EventCreateBloc>().add(ClickEventCreate(
+                                                      title: orgDetail['title'],
+                                                      description: orgDetail['description'],
+                                                      mode: orgDetail['mode'],
+                                                      categoryIdentity: orgDetail['categoryIdentity'],
+                                                      eventTypeIdentity: orgDetail['eventTypeIdentity'],
+                                                      perkIdentities: orgDetail['perkIdentities'],
+                                                      accommodationIdentities: orgDetail['accommodationIdentities'],
+                                                      certIdentity: orgDetail['certIdentity'],
+                                                      eligibleDeptIdentities: orgDetail['eligibleDeptIdentities'],
+                                                      tags: orgDetail['tags'],
+                                                      collaborators: List<Map<String, dynamic>>.from(
+                                                        orgDetail['orgDetailList'].map((item) => {
+                                                          'hostIdentity': item['hostIdentity'],
+                                                          'organizationName': item['organizationName'],
+                                                          'organizerNumber': item['organizerNumber'],
+                                                          'orgDept': item['orgDept'],
+                                                          'organizerName': item['organizerName'],
+                                                          'location': item['location'],
+                                                        }),
+                                                      ),
+                                                      calendars: orgDetail['calendars'],
+                                                      tickets: ticketList.map((ticket){
+                                                        return {
+                                                          ...ticket,
+                                                          'sellingFrom': toIsoDate(ticket['sellingFrom']),
+                                                          'sellingTo': toIsoDate(ticket['sellingTo']),
+                                                        };
+                                                      }).toList(),
+                                                      paymentLink: paymentController.text,
+                                                      socialLinks: {},
+                                                      bannerImages: orgDetail['bannerImages'],
+                                                      eventLink: orgDetail['eventLink'] ?? '',
+                                                      location: orgDetail['location'] != null &&
+                                                          orgDetail['location'].isNotEmpty ? {
+                                                        "country": orgDetail['location']['country'],
+                                                        "state": orgDetail['location']['state'],
+                                                        "city": orgDetail['location']['city'],
+                                                        "mapLink": orgDetail['location']['mapLink'],
+                                                        "venue": orgDetail['location']['venue'],
+                                                      } : {}
+                                                  ));
+                                                }
+                                              },
+                                              child:  Container(
+                                                alignment: Alignment.center,
+                                                height: 40,
+                                                decoration: BoxDecoration(
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  color: MyColor().primaryClr,
+                                                ),
+                                                child: eventCreateState is EventCreateLoading
+                                                    ? SizedBox(
+                                                  height: 30,
+                                                      width: 30,
+                                                      child: Center(
+                                                                                                        child: CircularProgressIndicator(color: MyColor().whiteClr,),),
+                                                    ) :  Text(
+                                                  "Confirm",
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: MyColor().whiteClr
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+  },
+),
+);
+                            },
+                          );
                         } : null,
-                        child: eventCreateState is EventCreateLoading
-                            ? Center(
-                          child: CircularProgressIndicator(color: MyColor().whiteClr,),)
-                            : Text(
+                        child: Text(
                           "Submit",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
@@ -557,7 +657,6 @@ class _PaymentModelState extends State<PaymentModel> {
         }
       });
 
-      print("bdhsdjhdhjdfjhdf$ticketList");
     // clear form
     ticketNameController.clear();
     descriptionController.clear();

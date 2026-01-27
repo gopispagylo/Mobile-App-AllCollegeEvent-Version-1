@@ -58,6 +58,7 @@ class _SearchModelState extends State<SearchModel> {
                   isRecent = true;
                 });
               },
+              autofocus: true,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10),
                 enabledBorder: OutlineInputBorder(

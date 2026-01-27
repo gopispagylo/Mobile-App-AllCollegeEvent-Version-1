@@ -277,10 +277,12 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                         controller: bloc.startController,
                         onTap: () async {
 
-                          final result = await DateAndTimeController().selectedDateAndTimePicker(context);
+                          final result = await DateAndTimeController().selectedDateAndTimePickerFormate(context);
+
 
                           if (result != null) {
                             bloc.startController.text = result;
+                            print("startControllerstartControllerstartControllerstartControllerstartController${bloc.startController.text}");
                             final splitResultStart = result.split(',');
                             bloc.startDateController.text = splitResultStart[0];
                             bloc.startTimeController.text = splitResultStart[1];
@@ -297,7 +299,7 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                         controller: bloc.endController,
                         onTap: () async {
                           final result = await DateAndTimeController()
-                              .selectedDateAndTimePicker(context);
+                              .selectedDateAndTimePickerFormate(context);
 
                           if (result != null) {
                             bloc.endController.text = result;
@@ -668,6 +670,7 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                                           color: MyColor().primaryClr,
                                           fontWeight: FontWeight.w600,
                                         ),
+                                        isExpanded: true,
                                         iconDisabledColor: MyColor().blackClr,
                                         value: selectedState,
                                         decoration: InputDecoration(
@@ -856,8 +859,8 @@ class _SelectTimeZoneModelState extends State<SelectTimeZoneModel> {
                                         items: cityState.cityList
                                             .map(
                                               (e) => DropdownMenuItem<String>(
-                                                value: e,
-                                                child: Text(e.toString()),
+                                                value: e['identity'],
+                                                child: Text(e['name'].toString()),
                                               ),
                                             )
                                             .toList(),

@@ -19,6 +19,8 @@ class MediaAndTicketsPage extends StatefulWidget {
 }
 
 class _MediaAndTicketsPageState extends State<MediaAndTicketsPage> {
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

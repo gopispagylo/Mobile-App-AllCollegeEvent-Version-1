@@ -119,7 +119,6 @@ class _EventDetailModelState extends State<EventDetailModel> with WidgetsBinding
 
         String startAndEndEvent = "${dateFormat.format(DateTime.parse(list['calendars'][0]['startDate']))} to ${dateFormat.format(DateTime.parse(list['calendars'][0]['endDate']))}";
 
-
         return ListView(
           controller: scrollController,
           children: [

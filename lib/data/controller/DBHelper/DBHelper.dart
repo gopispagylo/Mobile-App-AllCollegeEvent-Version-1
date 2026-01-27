@@ -20,7 +20,7 @@ class DBHelper {
 
   return await openDatabase(
     path,
-    version: 3,
+    version: 4,
     onCreate: onCreate
   );
 }
@@ -50,7 +50,18 @@ class DBHelper {
     await db.execute('''
       CREATE TABLE UserSave (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT
+        name TEXT,
+        userName TEXT
+      )
+    ''');
+
+
+    // ------- user details ------------
+    await db.execute('''
+      CREATE TABLE UserDetails (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userName TEXT,
+        email TEXT
       )
     ''');
 
@@ -115,9 +126,9 @@ class DBHelper {
   // ------------------------------------------------------------------
 
   // -------- save user ----------
-  Future<int> insertUser(String user) async{
+  Future<void> insertUser(String user) async{
       final dbClient = await db;
-      return await dbClient.insert('UserSave', {
+      await dbClient.insert('UserSave', {
         'name' : user,
       });
   }
@@ -190,4 +201,28 @@ class DBHelper {
     final dbClient = await db;
     return await dbClient.delete('SaveUserId');
   }
+
+
+  // -----------------------------------------------------------
+
+  // ------------- insert a user details --------
+  Future<void> insertUserDetails(String userName, String email) async{
+    final dbClient = await db;
+    await dbClient.insert("UserDetails", {
+      'userName' : userName,
+      'email' : email
+    });
+  }
+
+  // ---------------- get a user details -------------
+  Future<String?> getUserDetails() async{
+    final dbClient = await db;
+    final result = await dbClient.query("UserDetails");
+    if(result.isNotEmpty){
+      return result.first['userName']?.toString();
+    }
+    return null;
+  }
+
+
 }

@@ -1,5 +1,4 @@
 import 'package:all_college_event_app/data/toast/AceToast.dart';
-import 'package:all_college_event_app/features/screens/event/bloc/eventListBloc/event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
@@ -37,24 +36,20 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
     return BlocBuilder<OrganizerDetailBloc, OrganizerDetailState>(
   builder: (context, orgState) {
     if(orgState is OrganizerDetailLoading){
-      return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
+      return eventDetailShimmer();
     }
     if(orgState is OrganizerDetailSuccess){
-      final list = orgState.organizerDetailList[0];
 
+      final list = orgState.organizerDetailList[0];
       // title
       final title = list['org']['organizationName'];
-
       // profile photo
       final profilePhoto = (list['org']['profileImage'] != null &&
           list['org']['profileImage'].isNotEmpty)
           ? list['org']['profileImage']
           : '';
-
-
       // event count
       final eventCount = list['org']['eventCount'];
-
 
       return Container(
         margin: EdgeInsets.all(16),
@@ -260,7 +255,6 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
             ),
 
             // --------- Upcoming & Past event ui
-
             BlocBuilder<OrganizerEventListBloc, OrganizerEventListState>(
               builder: (context, organizerEventState) {
                 if (organizerEventState is OrganizerEventLoading) {
@@ -729,7 +723,6 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                 return SizedBox();
               },
             ),
-            
 
             // ------- social media -------
             Container(
@@ -1118,4 +1111,163 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
     );
   }
 
+  // -------- skeleton loader ---------
+  Widget eventDetailShimmer() {
+    Widget box({double h = 12, double w = double.infinity, double r = 8}) {
+      return Container(
+        height: h,
+        width: w,
+        decoration: BoxDecoration(
+          color: MyColor().sliderDotClr,
+          borderRadius: BorderRadius.circular(r),
+        ),
+      );
+    }
+
+    Widget circle(double size) {
+      return Container(
+        height: size,
+        width: size,
+        decoration: BoxDecoration(
+          color: MyColor().sliderDotClr,
+          shape: BoxShape.circle,
+        ),
+      );
+    }
+
+    return ListView(
+      children: [
+
+        // ---------- Carousel ----------
+        Shimmer(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: box(h: 200, r: 12),
+          ),
+        ),
+
+        // ---------- Indicator ----------
+        Shimmer(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(5, (_) => Padding(
+              padding: const EdgeInsets.all(4),
+              child: circle(10),
+            )),
+          ),
+        ),
+
+        // ---------- Organizer Row ----------
+        Shimmer(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                circle(70),
+                const SizedBox(width: 10),
+                Expanded(child: box(h: 18)),
+                const SizedBox(width: 10),
+                box(h: 36, w: 80, r: 30),
+              ],
+            ),
+          ),
+        ),
+
+        // ---------- Rank Cards ----------
+        Shimmer(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(3, (_) => box(h: 70, w: 90, r: 10)),
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // ---------- Tabs ----------
+        Shimmer(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: box(h: 50, r: 30),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        // ---------- Event Cards ----------
+        Shimmer(
+          child: Column(
+            children: List.generate(3, (_) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: MyColor().sliderDotClr.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  children: [
+                    box(h: 90, w: 90, r: 10),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          box(h: 14),
+                          const SizedBox(height: 6),
+                          box(h: 12, w: 150),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              box(h: 18, w: 60, r: 20),
+                              const SizedBox(width: 8),
+                              box(h: 18, w: 80, r: 20),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          box(h: 12, w: 120),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            )),
+          ),
+        ),
+
+        const SizedBox(height: 20),
+
+        // ---------- Social Media ----------
+        Shimmer(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(3, (_) => Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: circle(40),
+                  )),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(child: box(h: 48, r: 30)),
+                    const SizedBox(width: 16),
+                    Expanded(child: box(h: 48, r: 30)),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+
+        const SizedBox(height: 30),
+      ],
+    );
+  }
 }

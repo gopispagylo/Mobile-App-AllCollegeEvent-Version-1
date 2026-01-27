@@ -1,3 +1,4 @@
+import 'package:all_college_event_app/features/screens/home/model/LocationModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -164,20 +165,25 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel> with 
                           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3),
                         ),
-                        Center(
-                          child: Container(
-                            height: 48,
-                              width: 130,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: MyColor().boxInnerClr,
-                                borderRadius: BorderRadius.circular(60)
-                              ),
-                              child: Text("View All",style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: MyColor().blackClr
-                              ),)),
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (_)=> LocationModel()));
+                          },
+                          child: Center(
+                            child: Container(
+                              height: 48,
+                                width: 130,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: MyColor().boxInnerClr,
+                                  borderRadius: BorderRadius.circular(60)
+                                ),
+                                child: Text("View All",style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 14,
+                                  color: MyColor().blackClr
+                                ),)),
+                          ),
                         ),
                       ],
                     ),

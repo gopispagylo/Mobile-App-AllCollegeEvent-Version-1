@@ -35,8 +35,6 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
           final responseBody = response.data;
           if(responseBody['status'] == true){
 
-            emit(OrgSuccess());
-
             // --------- insert the bool value on the sqLite data base ------------
             await db.insertIsLogin("isLogin", true);
             await db.insertingIsSplash('isSplash', true);
@@ -47,6 +45,10 @@ class OrgLoginBloc extends Bloc<OrgLoginEvent, OrgLoginState> {
             // -------- set a user id --------
             await db.insertUserId(responseBody['data']['identity']);
 
+            // ------- set org name -----
+            await db.insertUserDetails(responseBody['data']['organizationName'],responseBody['data']['domainEmail']);
+
+            emit(OrgSuccess());
           }else {
             emit(OrgFail(errorMessage: responseBody['message']));
           }

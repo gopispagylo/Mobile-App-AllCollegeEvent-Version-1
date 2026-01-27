@@ -20,8 +20,8 @@ class EventCreateBloc extends Bloc<EventCreateEvent, EventCreateState> {
     on<ClickEventCreate>(_onCreateEvent);
   }
 
-  Future<void> _onCreateEvent(
-      ClickEventCreate event, Emitter<EventCreateState> emit) async {
+  Future<void> _onCreateEvent(ClickEventCreate event, Emitter<EventCreateState> emit) async {
+
     emit(EventCreateLoading());
 
     try {
@@ -92,20 +92,18 @@ class EventCreateBloc extends Bloc<EventCreateEvent, EventCreateState> {
         data: formData,
       );
 
-      if (response.statusCode == 200 && response.data['success'] == true) {
+
+      if (response.statusCode == 200 && response.data['status'] == true) {
         emit(EventCreateSuccess());
       } else {
-        emit(EventCreateFail(
-          errorMessage: response.data['message'] ??
+        emit(EventCreateFail(errorMessage: response.data['message'] ??
               ConfigMessage().unexpectedErrorMsg,
         ));
       }
     } on DioException catch (e) {
-      print("DioExceptionDioExceptionDioException$e");
       final error = HandleErrorConfig().handleDioError(e);
       emit(EventCreateFail(errorMessage: error));
     } catch (e) {
-      print("DioExceptionDioExceptionDioException$e");
       emit(EventCreateFail(
         errorMessage: ConfigMessage().unexpectedErrorMsg,
       ));

@@ -1,4 +1,5 @@
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
+import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,7 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                     ),),
                     GestureDetector(
                       onTap: (){
-                        // Navigator.push(context, MaterialPageRoute(builder: (_)=> ));
+                        Navigator.push(context, MaterialPageRoute(builder: (_)=> BottomNavigationBarPage(pageIndex: 2, whichScreen: '',)));
                       },
                       child: Container(
                         padding: EdgeInsets.all(10),

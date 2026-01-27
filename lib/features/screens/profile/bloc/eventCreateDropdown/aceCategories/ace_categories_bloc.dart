@@ -31,7 +31,7 @@ class AceCategoriesBloc extends Bloc<AceCategoriesEvent, AceCategoriesState> {
         );
         if (response.statusCode == 200) {
           final responseBody = response.data;
-          if (responseBody['success'] == true) {
+          if (responseBody['status'] == true) {
             aceCategoriesList.clear();
             aceCategoriesList.addAll(responseBody['data']);
             emit(

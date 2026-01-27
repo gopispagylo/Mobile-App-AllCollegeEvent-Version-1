@@ -70,8 +70,6 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       checkUser = user;
     });
-
-    print("useruseruseruseruser$user");
   }
 
   // ----- global unfocused the keyboard -----

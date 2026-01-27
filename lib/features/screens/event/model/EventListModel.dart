@@ -96,6 +96,26 @@ class _EventListModelState extends State<EventListModel> {
                 onTapOutside: (onChanged){
                   GlobalUnFocus.unFocus();
                 },
+                onChanged: (onChanged){
+                  if(searchController.text.isNotEmpty){
+                    context.read<EventListBloc>().add(SearchEventList(searchText: searchController.text));
+                  } else{
+                    context.read<EventListBloc>().add(FetchEventList(eventTypes: [],
+                      modes: [],
+                      // searchText: '',
+                      eligibleDeptIdentities: [],
+                      certIdentity: '',
+                      eventTypeIdentity: '',
+                      perkIdentities: [],
+                      accommodationIdentities: [],
+                      country: '',
+                      state: '',
+                      city: '',
+                      startDate: null,
+                    ),);
+                  }
+                  print("searchControllersearchControllersearchControllersearchController${searchController.text}");
+                },
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(10),
                   enabledBorder: OutlineInputBorder(
@@ -376,7 +396,8 @@ class _EventListModelState extends State<EventListModel> {
                     state: filterPageValues['api']['state'] ?? '',
                     city: filterPageValues['api']['city'] ?? "",
                     startDate: filterPageValues['api']['dateRange'] ?? '',
-                  ) : FetchEventList(eventTypes: [],
+                  ) :
+                  FetchEventList(eventTypes: [],
                     modes: [],
                     // searchText: '',
                     eligibleDeptIdentities: [],

@@ -1,6 +1,6 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
-import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
@@ -17,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   final String whichScreen;
+
 
   const HomePage({super.key, required this.whichScreen});
 
@@ -75,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             BlocProvider(create: (context) => RemoveSaveEventBloc(apiController: ApiController())),
 
           ],
-          child: HomeModel(scrollController: scrollController),
+          child: HomeModel(scrollController: scrollController,),
         ),
       ),
       

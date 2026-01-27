@@ -145,7 +145,7 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
         final token = await DBHelper().getToken();
 
         final response = await apiController.postMethodWithHeader(endPoint: 'filter_protec', data: params, token: token!);
-        print('EventListBlocEventListBlocEventListBlocEventListBloc$response');
+        print('SearchEventListSearchEventListSearchEventListSearchEventListSearchEventList$response');
         if(response.statusCode == 200){
           final responseBody = response.data;
           if(responseBody['status'] == true){
