@@ -15,6 +15,8 @@ class HomeCategoriesModel extends StatefulWidget {
 }
 
 class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
+  int itemPerIndex = 3;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EventTypeAllBloc, EventTypeAllState>(
@@ -63,79 +65,83 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                   ],
                 ),
               ),
-              TweenAnimationBuilder(
-                tween: Tween(begin: 50.0, end: 0.0),
-                duration: const Duration(milliseconds: 500),
-                builder: (context, value, child) {
-                  return Transform.translate(
-                    offset: Offset(value, 0),
-                    child: Opacity(opacity: 1 - (value / 50), child: child),
-                  );
-                },
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: List.generate(eventTypeAll.eventTypeList.length, (
-                      index,
-                    ) {
-                      final list = eventTypeAll.eventTypeList[index];
-                      final bgColor = list['color'];
-                      print('bgColorbgColorbgColorbgColor$bgColor');
-                      final splitBGColor = bgColor.replaceFirst("#", "0xff");
-
-                      return Container(
-                        margin: EdgeInsets.only(
-                          left: 16,
-                          right: index == eventTypeAll.eventTypeList.length - 1
-                              ? 16
-                              : 0,
-                          top: 15,
-                        ),
-                        height: 104,
-                        width: 104,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Color(
-                            int.tryParse(splitBGColor)!.toInt(),
-                          ).withOpacity(0.60),
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
-                          // boxShadow: [
-                          //   BoxShadow(color: MyColor().blackClr.withOpacity(0.10),offset: Offset(5, 5),blurRadius: 2)
-                          // ]
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: 5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              CachedNetworkImage(
-                                imageUrl: list['imageUrl'] ?? '',
-                                height: 60,
-                                placeholder: (context, url) {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      color: MyColor().primaryClr,
+              SizedBox(
+                height: 150,
+                child: PageView.builder(
+                  physics: BouncingScrollPhysics(),
+                  controller: PageController(viewportFraction: 1),
+                  itemCount: (eventTypeAll.eventTypeList.length / itemPerIndex)
+                      .ceil(),
+                  itemBuilder: (context, pageIndex) {
+                    final startIndex = pageIndex * itemPerIndex;
+                    final endIndex = (startIndex + itemPerIndex).clamp(
+                      0,
+                      eventTypeAll.eventTypeList.length,
+                    );
+                    final pageItems = eventTypeAll.eventTypeList.sublist(
+                      startIndex,
+                      endIndex,
+                    );
+                    return Container(
+                      margin: EdgeInsets.only(left: 16, right: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(pageItems.length, (index) {
+                          final list = pageItems[index];
+                          final bgColor = list['color'];
+                          final splitBGColor = bgColor.replaceFirst(
+                            "#",
+                            "0xff",
+                          );
+                          return Container(
+                            height: 104,
+                            width: 104,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Color(
+                                int.tryParse(splitBGColor)!.toInt(),
+                              ).withOpacity(0.60),
+                              border: Border.all(
+                                color: MyColor().borderClr.withOpacity(0.15),
+                              ),
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: 5,
+                                left: 5,
+                                right: 5,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CachedNetworkImage(
+                                    imageUrl: list['imageUrl'] ?? '',
+                                    height: 60,
+                                    placeholder: (context, url) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: MyColor().primaryClr,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  Text(
+                                    list['name'],
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
                                     ),
-                                  );
-                                },
+                                  ),
+                                ],
                               ),
-                              Text(
-                                list['name'],
-                                maxLines: 2,
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
+                            ),
+                          );
+                        }),
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

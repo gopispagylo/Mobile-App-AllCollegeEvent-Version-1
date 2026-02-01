@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
@@ -10,6 +12,7 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -27,12 +30,17 @@ class LoginModel extends StatefulWidget {
 }
 
 class _LoginModelState extends State<LoginModel> {
+  // google sign in loading
+  bool isGoogleLoading = false;
+
   // Text Input controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-
   final googleSignIn = GoogleSignIn(
-    serverClientId: dotenv.env['CLIENT_ID'],
+    clientId: Platform.isIOS
+        ? "323006712255-tj4h2uj0fqi1elp8gebobe4205kps1m4.apps.googleusercontent.com"
+        : null,
+    serverClientId: Platform.isAndroid ? dotenv.env['CLIENT_ID'] : null,
     scopes: ['email', 'profile'],
   );
 
@@ -44,9 +52,17 @@ class _LoginModelState extends State<LoginModel> {
 
   // Google Sign In Function
   void googleSignInFunction() async {
+    setState(() {
+      isGoogleLoading = true;
+    });
     try {
       final user = await googleSignIn.signIn();
+
       if (user == null) {
+        setState(() {
+          isGoogleLoading = false;
+        });
+
         FlutterToast().flutterToast(
           "Google Sign In error",
           ToastificationType.error,
@@ -54,6 +70,10 @@ class _LoginModelState extends State<LoginModel> {
         );
         return;
       }
+
+      setState(() {
+        isGoogleLoading = true;
+      });
 
       final googleAuth = await user.authentication;
       final idToken = googleAuth.idToken;
@@ -63,9 +83,14 @@ class _LoginModelState extends State<LoginModel> {
         ClickGoogleSignIn(googleToken: idToken!),
       );
 
-      // Get Google Token
-      await googleSignIn.disconnect();
+      if (Platform.isAndroid) {
+        // Get Google Token
+        await googleSignIn.disconnect();
+      }
     } catch (e) {
+      setState(() {
+        isGoogleLoading = false;
+      });
       debugPrint("Google Sign In error $e");
     }
   }
@@ -268,6 +293,9 @@ class _LoginModelState extends State<LoginModel> {
                   BlocConsumer<GoogleSignInBloc, GoogleSignInState>(
                     listener: (context, googleSignInState) {
                       if (googleSignInState is GoogleSignInSuccess) {
+                        setState(() {
+                          isGoogleLoading = false;
+                        });
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
@@ -279,6 +307,9 @@ class _LoginModelState extends State<LoginModel> {
                           (route) => false,
                         );
                       } else if (googleSignInState is GoogleSignInFail) {
+                        setState(() {
+                          isGoogleLoading = false;
+                        });
                         FlutterToast().flutterToast(
                           googleSignInState.errorMessage,
                           ToastificationType.error,
@@ -287,7 +318,8 @@ class _LoginModelState extends State<LoginModel> {
                       }
                     },
                     builder: (context, googleSignInState) {
-                      return googleSignInState is GoogleSignInLoading
+                      return googleSignInState is GoogleSignInLoading &&
+                              isGoogleLoading
                           ? Center(
                               child: CircularProgressIndicator(
                                 color: MyColor().primaryClr,
@@ -336,6 +368,7 @@ class _LoginModelState extends State<LoginModel> {
                             );
                     },
                   ),
+
                   SizedBox(height: 25),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -374,6 +407,18 @@ class _LoginModelState extends State<LoginModel> {
               ),
             ),
           ),
+
+          if (isGoogleLoading)
+            Positioned.fill(
+              child: Container(
+                color: MyColor().blackClr.withValues(alpha: 0.50),
+                child: Center(
+                  child: Platform.isAndroid
+                      ? CircularProgressIndicator(color: MyColor().whiteClr)
+                      : CupertinoActivityIndicator(color: MyColor().whiteClr),
+                ),
+              ),
+            ),
         ],
       ),
     );

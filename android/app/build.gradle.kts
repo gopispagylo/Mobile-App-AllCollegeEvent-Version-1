@@ -37,7 +37,7 @@ android {
     }
 
     // Play Store signing config
-    signingConfigs {
+     signingConfigs {
         create("release") {
             keyAlias = keystoreProperties["keyAlias"].toString()
             keyPassword = keystoreProperties["keyPassword"].toString()

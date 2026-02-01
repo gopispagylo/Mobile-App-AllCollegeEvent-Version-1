@@ -7,7 +7,6 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'google_sign_in_event.dart';
-
 part 'google_sign_in_state.dart';
 
 class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
@@ -16,8 +15,9 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
   GoogleSignInBloc({required this.apiController})
     : super(GoogleSignInInitial()) {
     on<ClickGoogleSignIn>((event, emit) async {
-      try {
+      emit(GoogleSignInLoading());
 
+      try {
         DBHelper db = DBHelper();
 
         await apiController.setBaseUrl();
@@ -31,10 +31,8 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
 
         if (response.statusCode == 200) {
           final responseBody = response.data;
+
           if (responseBody['status'] == true) {
-
-            emit(GoogleSignInSuccess());
-
             // --------- insert the bool value on the sqLite data base ------------
             await db.insertIsLogin("isLogin", true);
 
@@ -50,17 +48,27 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
             // -------- set a user id --------
             await db.insertUserId(responseBody['data']['identity']);
 
+            print(
+              "kjdjkhdfsjkdsfjkdsfjkdfskjdfskdfskldfskljdfskjldsfjkdjkldfsjkl",
+            );
+            emit(GoogleSignInSuccess());
           } else {
+            print("errorerrorerrorerrorerrorerrorerrorerrorerror");
             emit(GoogleSignInFail(errorMessage: responseBody['message']));
           }
         } else {
+          print("errorerrorerrorerrorerrorerrorerrorerrorerror");
           emit(GoogleSignInFail(errorMessage: ConfigMessage().serverError));
         }
       } on DioException catch (e) {
+        print("errorerrorerrorerrorerrorerrorerrorerrorerror$e");
         final error = HandleErrorConfig().handleDioError(e);
         emit(GoogleSignInFail(errorMessage: error));
       } catch (e) {
-        emit(GoogleSignInFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+        print("errorerrorerrorerrorerrorerrorerrorerrorerror$e");
+        emit(
+          GoogleSignInFail(errorMessage: ConfigMessage().unexpectedErrorMsg),
+        );
       }
     });
   }

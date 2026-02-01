@@ -10,6 +10,7 @@ import 'package:all_college_event_app/features/screens/home/model/CountriesAndCi
 import 'package:all_college_event_app/features/screens/home/model/LocationModel.dart';
 import 'package:all_college_event_app/features/screens/home/model/TopOrganizerModel.dart';
 import 'package:all_college_event_app/features/screens/home/model/TrendingEventModel.dart';
+import 'package:all_college_event_app/features/screens/notification/ui/NotificationPage.dart';
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
@@ -134,20 +135,49 @@ class _HomeModelState extends State<HomeModel> {
                         ),
                       ],
                     ),
-                    Container(
-                      margin: EdgeInsets.only(right: 16),
-                      decoration: BoxDecoration(
-                        color: MyColor().locationClr,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: MyColor().borderClr.withOpacity(0.15),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    NotificationPage(),
+                            transitionsBuilder:
+                                (
+                                  context,
+                                  animation,
+                                  secondaryAnimation,
+                                  child,
+                                ) {
+                                  var tween = Tween(
+                                    begin: Offset(1, 0),
+                                    end: Offset.zero,
+                                  ).chain(CurveTween(curve: Curves.easeInOut));
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: child,
+                                  );
+                                },
+                            transitionDuration: Duration(milliseconds: 400),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(right: 16),
+                        decoration: BoxDecoration(
+                          color: MyColor().locationClr,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: MyColor().borderClr.withOpacity(0.15),
+                          ),
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15),
-                        child: Badge.count(
-                          count: 10,
-                          child: Icon(Icons.notifications, size: 18),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15),
+                          child: Badge.count(
+                            count: 10,
+                            child: Icon(Icons.notifications, size: 18),
+                          ),
                         ),
                       ),
                     ),
