@@ -33,86 +33,68 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
         Column(
           children: [
             Container(
-              margin: EdgeInsets.only(top: 16),
-              child: CarouselSlider.builder(
-                itemCount: photoList.length,
-                itemBuilder: (BuildContext context, index, realIndex) {
-                  final sliderList = photoList[index];
-                  double opacity = 1.0;
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              child: Column(
+                children: [
+                  CarouselSlider.builder(
+                    itemCount: photoList.length,
+                    itemBuilder: (context, index, realIndex) {
+                      final image = photoList[index];
+                      final bool isActive = index == currentPage;
 
-                  if (index == currentPage) {
-                    opacity = 1.0;
-                  } else if ((index - currentPage).abs() == 1) {
-                    opacity = 0.5;
-                  } else {
-                    opacity = 0.3;
-                  }
-
-                  return AnimatedOpacity(
-                    duration: const Duration(microseconds: 1500),
-                    opacity: opacity,
-                    child: GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        margin: EdgeInsets.only(left: 0, right: 0, bottom: 16),
-                        width: double.infinity,
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 350),
+                        curve: Curves.easeOut,
+                        margin: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: isActive ? 6 : 16,
+                        ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: MyColor().whiteClr),
+                          border: Border.all(
+                            color: MyColor().borderClr.withValues(alpha: 0.1),
+                          ),
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        clipBehavior: Clip.antiAlias,
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(sliderList, fit: BoxFit.cover),
+                          borderRadius: BorderRadius.circular(14),
+                          child: Image.asset(
+                            image,
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
                         ),
-                        // child: CachedNetworkImage(
-                        //   imageUrl: sliderList,
-                        //   fit: BoxFit.cover,
-                        //   placeholder: (context, url) => Center(
-                        //     child: CircularProgressIndicator(
-                        //       color: MyColor().primaryClr,
-                        //     ),
-                        //   ),
-                        //   errorWidget: (context, url, error) =>
-                        //   const Icon(Icons.image_not_supported),
-                        // ),
+                      );
+                    },
+                    options: CarouselOptions(
+                      height: 180,
+                      viewportFraction: 0.75,
+                      enlargeCenterPage: true,
+                      enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                      autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 4),
+                      autoPlayAnimationDuration: const Duration(
+                        milliseconds: 800,
                       ),
+                      autoPlayCurve: Curves.easeInOut,
+                      enableInfiniteScroll: true,
+                      onPageChanged: (index, reason) {
+                        setState(() => currentPage = index);
+                      },
                     ),
-                  );
-                },
-                options: CarouselOptions(
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      currentPage = index;
-                    });
-                  },
-                  enlargeCenterPage: true,
-                  autoPlay: false,
-                  autoPlayInterval: const Duration(seconds: 5),
-                  autoPlayAnimationDuration: const Duration(milliseconds: 1500),
-                  autoPlayCurve: Curves.easeOutBack,
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  enableInfiniteScroll: true,
-                  viewportFraction: 0.55,
-                  aspectRatio: 1.2,
-                  pageSnapping: true,
-                  padEnds: true,
-                  animateToClosest: true,
-                ),
+                  ),
+                ],
               ),
             ),
-            Container(
-              child: Center(
-                child: AnimatedSmoothIndicator(
-                  activeIndex: currentPage,
-                  count: photoList.length,
-                  effect: WormEffect(
-                    dotHeight: 10,
-                    dotWidth: 10,
-                    activeDotColor: MyColor().primaryClr,
-                    dotColor: MyColor().sliderDotClr,
-                    spacing: 8,
-                  ),
+            Center(
+              child: AnimatedSmoothIndicator(
+                activeIndex: currentPage,
+                count: photoList.length,
+                effect: WormEffect(
+                  dotHeight: 10,
+                  dotWidth: 10,
+                  activeDotColor: MyColor().primaryClr,
+                  dotColor: MyColor().sliderDotClr,
+                  spacing: 8,
                 ),
               ),
             ),

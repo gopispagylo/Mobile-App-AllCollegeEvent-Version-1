@@ -48,9 +48,12 @@ class GoogleSignInBloc extends Bloc<GoogleSignInEvent, GoogleSignInState> {
             // -------- set a user id --------
             await db.insertUserId(responseBody['data']['identity']);
 
-            print(
-              "kjdjkhdfsjkdsfjkdsfjkdfskjdfskdfskldfskljdfskjldsfjkdjkldfsjkl",
+            // ------- set user name -----
+            await db.insertUserDetails(
+              responseBody['data']['name'],
+              responseBody['data']['email'],
             );
+
             emit(GoogleSignInSuccess());
           } else {
             print("errorerrorerrorerrorerrorerrorerrorerrorerror");

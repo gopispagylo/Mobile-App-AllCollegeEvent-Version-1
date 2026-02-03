@@ -7,90 +7,112 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'event_like_event.dart';
-
 part 'event_like_state.dart';
 
 class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
   final ApiController apiController;
 
+  /// local cache
   final Map<String, bool> favStatus = {};
   final Map<String, int> likeCount = {};
 
   EventLikeBloc({required this.apiController}) : super(EventLikeInitial()) {
-    on<ClickEventLike>((event, emit) async {
-      try {
-        await apiController.setBaseUrl();
+    on<ClickEventLike>(_onClickEventLike);
+  }
 
-        // ------- token --------
-        final token = await DBHelper().getToken();
+  Future<void> _onClickEventLike(
+    ClickEventLike event,
+    Emitter<EventLikeState> emit,
+  ) async {
+    final eventId = event.eventId;
 
-        // ------- user or org id --------
-        final userId = await DBHelper().getUserId();
+    /// ---- initialize from UI if not exists ----
+    final currentFav = favStatus[eventId] ?? event.initialFav;
+    final currentCount = likeCount[eventId] ?? event.initialCount;
 
-        // ------ id for event id ------
-        final eventId = event.eventId.toString();
+    /// ---- optimistic update ----
+    final newFav = !currentFav;
+    final newCount = newFav ? currentCount + 1 : currentCount - 1;
 
-        // -------- immediately change the act toggle ----
-        final newFav = !(favStatus[eventId] ?? false);
+    favStatus[eventId] = newFav;
+    likeCount[eventId] = newCount;
 
-        // ----------- initial like value store ------------
-        favStatus[eventId] = newFav;
+    emit(
+      EventLikeSuccess(
+        id: eventId,
+        checkFav: newFav,
+        count: newCount.toString(),
+      ),
+    );
 
-        // -------- initial like count store ----------
-        final previousCount = likeCount[eventId] ?? 0;
+    try {
+      await apiController.setBaseUrl();
 
+      final token = await DBHelper().getToken();
+      final userId = await DBHelper().getUserId();
 
-        // ----------- initial store values of like and count ----------
-        emit(EventLikeSuccess(checkFav: newFav, id: eventId, count: previousCount.toString()),
+      final params = {"eventIdentity": eventId, "userIdentity": userId};
 
-        );
+      final response = await apiController.postMethodWithHeader(
+        endPoint: "events/like",
+        token: token!,
+        data: params,
+      );
 
-        final params = {"eventIdentity": event.eventId, "userIdentity": userId};
+      if (response.statusCode == 200 && response.data['status'] == true) {
+        final apiCount =
+            int.tryParse(response.data['likeCount'].toString()) ?? newCount;
 
-        final response = await apiController.postMethodWithHeader(
-          endPoint: "events/like",
-          token: token!,
-          data: params,
-        );
+        likeCount[eventId] = apiCount;
 
-        print("responseresponseresponseresponseresponseresponse$response");
-
-        if (response.statusCode == 200) {
-          final responseBody = response.data;
-          if (responseBody['status'] == true) {
-
-            // ------ api like count store -----------
-            final likeCountApi = int.tryParse(responseBody['likeCount'].toString()) ?? 0;
-
-            likeCount[eventId] = likeCountApi;
-            print("previousCountpreviousCountpreviousCountpreviousCountpreviousCount$likeCount");
-            emit(
-              EventLikeSuccess(
-                checkFav: newFav,
-                id: eventId,
-                count: likeCountApi.toString(),
-              ),
-            );
-          } else {
-            emit(
-              EventLikeFail(
-                errorMessage: responseBody['message'],
-                id: event.eventId,
-              ),
-            );
-          }
-        }
-      } on DioException catch (e) {
-        final error = HandleErrorConfig().handleDioError(e);
-        emit(EventLikeFail(errorMessage: error, id: event.eventId));
-      } catch (e) {
         emit(
-          EventLikeFail(
-            errorMessage: ConfigMessage().unexpectedErrorMsg,
-            id: event.eventId,
+          EventLikeSuccess(
+            id: eventId,
+            checkFav: newFav,
+            count: apiCount.toString(),
           ),
         );
+      } else {
+        _rollback(
+          eventId,
+          currentFav,
+          currentCount,
+          emit,
+          response.data['message'],
+        );
       }
-    });
+    } on DioException catch (e) {
+      final error = HandleErrorConfig().handleDioError(e);
+      _rollback(eventId, currentFav, currentCount, emit, error);
+    } catch (_) {
+      _rollback(
+        eventId,
+        currentFav,
+        currentCount,
+        emit,
+        ConfigMessage().unexpectedErrorMsg,
+      );
+    }
+  }
+
+  void _rollback(
+    String eventId,
+    bool oldFav,
+    int oldCount,
+    Emitter<EventLikeState> emit,
+    String error,
+  ) {
+    favStatus[eventId] = oldFav;
+    likeCount[eventId] = oldCount;
+
+    emit(
+      EventLikeSuccess(
+        id: eventId,
+        checkFav: oldFav,
+        count: oldCount.toString(),
+      ),
+    );
+
+    emit(EventLikeFail(id: eventId, errorMessage: error));
   }
 }

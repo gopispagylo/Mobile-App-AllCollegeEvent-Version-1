@@ -38,7 +38,7 @@ class _LoginModelState extends State<LoginModel> {
   final passwordController = TextEditingController();
   final googleSignIn = GoogleSignIn(
     clientId: Platform.isIOS
-        ? "323006712255-tj4h2uj0fqi1elp8gebobe4205kps1m4.apps.googleusercontent.com"
+        ? "323006712255-95esoe9o2otr83msg3ijh2isd1v1ks8i.apps.googleusercontent.com"
         : null,
     serverClientId: Platform.isAndroid ? dotenv.env['CLIENT_ID'] : null,
     scopes: ['email', 'profile'],

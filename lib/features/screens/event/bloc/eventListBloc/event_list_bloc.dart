@@ -13,12 +13,10 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
   final ApiController apiController;
   final List<dynamic> eventList = [];
   EventListBloc({required this.apiController}) : super(EventListInitial()) {
-    on<FetchEventList>((event, emit) async{
-
+    on<FetchEventList>((event, emit) async {
       emit(EventListLoading());
 
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -28,9 +26,9 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
           params["eventTypes"] = event.eventTypes;
         }
 
-       if(event.eventTypes == 'trending'){
-           params["trendingThreshold"] = 10;
-       }
+        if (event.eventTypes == 'trending') {
+          params["trendingThreshold"] = 10;
+        }
 
         if (event.modes != null && event.modes!.isNotEmpty) {
           params["modes"] = event.modes;
@@ -40,7 +38,8 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
         //   params["searchText"] = event.searchText!.trim();
         // }
 
-        if (event.eligibleDeptIdentities != null && event.eligibleDeptIdentities!.isNotEmpty) {
+        if (event.eligibleDeptIdentities != null &&
+            event.eligibleDeptIdentities!.isNotEmpty) {
           params["eligibleDeptIdentities"] = event.eligibleDeptIdentities;
         }
 
@@ -48,7 +47,8 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
           params["certIdentity"] = event.certIdentity;
         }
 
-        if (event.eventTypeIdentity != null && event.eventTypeIdentity!.isNotEmpty) {
+        if (event.eventTypeIdentity != null &&
+            event.eventTypeIdentity!.isNotEmpty) {
           params["eventTypeIdentity"] = event.eventTypeIdentity;
         }
 
@@ -56,7 +56,8 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
           params["perkIdentities"] = event.perkIdentities;
         }
 
-        if (event.accommodationIdentities != null && event.accommodationIdentities!.isNotEmpty) {
+        if (event.accommodationIdentities != null &&
+            event.accommodationIdentities!.isNotEmpty) {
           params["accommodationIdentities"] = event.accommodationIdentities;
         }
 
@@ -102,40 +103,44 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
 
         final token = await DBHelper().getToken();
 
-        final response = await apiController.postMethodWithHeader(endPoint: 'filter_protec', data: params, token: token!);
+        final response = await apiController.postMethodWithHeader(
+          endPoint: 'filter_protec',
+          data: params,
+          token: token!,
+        );
         print('EventListBlocEventListBlocEventListBlocEventListBloc$response');
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
-            print('EventListBlocEventListBlocEventListBlocEventListBloc$response');
+          if (responseBody['status'] == true) {
+            print(
+              'EventListBlocEventListBlocEventListBlocEventListBloc$response',
+            );
             eventList.clear();
             eventList.addAll(responseBody['data']);
-            if(responseBody['data'].isNotEmpty){
+            if (responseBody['data'].isNotEmpty) {
               emit(EventSuccess(eventList: List.from(eventList)));
-            }else{
+            } else {
               emit(EventFail(errorMessage: "No data found"));
             }
-          }else{
+          } else {
             emit(EventFail(errorMessage: responseBody['message']));
           }
         }
-
-      }on DioException catch(e){
+      } on DioException catch (e) {
         print('EventListBlocEventListBlocEventListBlocEventListBloc$e');
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(EventFail(errorMessage: error));
-      } catch(e){
+      } catch (e) {
         print('EventListBlocEventListBlocEventListBlocEventListBloc$e');
         emit(EventFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
-    on<SearchEventList>((event, emit) async{
 
+    on<SearchEventList>((event, emit) async {
       emit(EventListLoading());
 
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -144,34 +149,40 @@ class EventListBloc extends Bloc<EventListEvent, EventListState> {
 
         final token = await DBHelper().getToken();
 
-        final response = await apiController.postMethodWithHeader(endPoint: 'filter_protec', data: params, token: token!);
-        print('SearchEventListSearchEventListSearchEventListSearchEventListSearchEventList$response');
-        if(response.statusCode == 200){
+        final response = await apiController.postMethodWithHeader(
+          endPoint: 'filter_protec',
+          data: params,
+          token: token!,
+        );
+        print(
+          'SearchEventListSearchEventListSearchEventListSearchEventListSearchEventList$response',
+        );
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
-            print('EventListBlocEventListBlocEventListBlocEventListBloc$response');
+          if (responseBody['status'] == true) {
+            print(
+              'EventListBlocEventListBlocEventListBlocEventListBloc$response',
+            );
             eventList.clear();
             eventList.addAll(responseBody['data']);
-            if(responseBody['data'].isNotEmpty){
+            if (responseBody['data'].isNotEmpty) {
               emit(EventSuccess(eventList: List.from(eventList)));
-            }else{
+            } else {
               emit(EventFail(errorMessage: "No data found"));
             }
-          }else{
+          } else {
             emit(EventFail(errorMessage: responseBody['message']));
           }
         }
-
-      }on DioException catch(e){
+      } on DioException catch (e) {
         print('EventListBlocEventListBlocEventListBlocEventListBloc$e');
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(EventFail(errorMessage: error));
-      } catch(e){
+      } catch (e) {
         print('EventListBlocEventListBlocEventListBlocEventListBloc$e');
         emit(EventFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
-
   }
 }

@@ -104,7 +104,6 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel>
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -115,27 +114,28 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if(initialIndex != eventList.length - 1) GestureDetector(
-                onTap: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (_) => CheckUserPage()),
-                    (route) => false,
-                  );
-                },
-                child: Container(
-                  margin: EdgeInsets.only(right: 16),
-                  alignment: AlignmentGeometry.topRight,
-                  child: Text(
-                    "Skip",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: MyColor().secondaryClr,
-                      fontWeight: FontWeight.w500,
+              if (initialIndex != eventList.length - 1)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (_) => CheckUserPage()),
+                      (route) => false,
+                    );
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: 16),
+                    alignment: AlignmentGeometry.topRight,
+                    child: Text(
+                      "Skip",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        color: MyColor().secondaryClr,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
-              ),
               Expanded(
                 child: PageView.builder(
                   controller: pageController,

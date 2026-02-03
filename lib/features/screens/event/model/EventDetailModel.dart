@@ -328,7 +328,14 @@ class _EventDetailModelState extends State<EventDetailModel>
                                     onTap: () {
                                       context.read<EventLikeBloc>().add(
                                         ClickEventLike(
-                                          eventId: list['identity'],
+                                          eventId: list['identity'].toString(),
+                                          initialFav: list['isLiked'] ?? false,
+                                          initialCount:
+                                              int.tryParse(
+                                                list['likeCount']?.toString() ??
+                                                    '0',
+                                              ) ??
+                                              0,
                                         ),
                                       );
                                     },

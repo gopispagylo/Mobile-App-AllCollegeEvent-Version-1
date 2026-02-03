@@ -15,11 +15,10 @@ class CheckUserModel extends StatefulWidget {
 }
 
 class _CheckUserModelState extends State<CheckUserModel> {
-
-
   // Which user list
-  final List<Map<String,dynamic>> whichUser = [
-    {"role" : "User"},{"role" : "Organizer"}
+  final List<Map<String, dynamic>> whichUser = [
+    {"role": "User"},
+    {"role": "Organizer"},
   ];
 
   // Selected user assign value
@@ -32,8 +31,12 @@ class _CheckUserModelState extends State<CheckUserModel> {
       body: Container(
         child: Stack(
           children: [
-            Positioned.fill(child: Image.asset(
-              ImagePath().backgroundImg, fit: BoxFit.contain,)),
+            Positioned.fill(
+              child: Image.asset(
+                ImagePath().backgroundImg,
+                fit: BoxFit.contain,
+              ),
+            ),
             Container(
               margin: EdgeInsets.only(left: 16, right: 16),
               child: ListView(
@@ -44,18 +47,23 @@ class _CheckUserModelState extends State<CheckUserModel> {
                   ),
                   Text(
                     textAlign: TextAlign.center,
-                    ConfigMessage().checkUserHeadMsg, style: TextStyle(
+                    ConfigMessage().checkUserHeadMsg,
+                    style: TextStyle(
                       fontFamily: "blMelody",
                       fontSize: 24,
-                      fontWeight: FontWeight.w700
-                  ),),
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                   Text(
                     textAlign: TextAlign.center,
-                    ConfigMessage().checkUserSubHeadMsg, style: GoogleFonts.poppins(
+                    ConfigMessage().checkUserSubHeadMsg,
+                    style: GoogleFonts.poppins(
                       fontSize: 14,
-                      fontWeight: FontWeight.w500,color: MyColor().borderClr
-                  ),),
-                  SizedBox(height: 30,),
+                      fontWeight: FontWeight.w500,
+                      color: MyColor().borderClr,
+                    ),
+                  ),
+                  SizedBox(height: 30),
                   Center(
                     child: Container(
                       width: 320,
@@ -66,65 +74,99 @@ class _CheckUserModelState extends State<CheckUserModel> {
                           final role = whichUser[index]['role'];
                           return Expanded(
                             child: GestureDetector(
-                              onTap: (){
+                              onTap: () async {
+                                await DBHelper().insertingIsSplash(
+                                  'isSplash',
+                                  true,
+                                );
+
                                 setState(() {
                                   selectUser = role;
                                 });
                               },
                               child: Container(
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.only(right: index == 0 ? 10 : 10),
-                                  padding: EdgeInsets.all(30),
-                                  decoration: BoxDecoration(
-                                      color: selectUser == role ? MyColor().primaryClr : MyColor().boxInnerClr,
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(color: selectUser == role ? MyColor().primaryClr : MyColor().borderClr)
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.only(
+                                  right: index == 0 ? 10 : 10,
+                                ),
+                                padding: EdgeInsets.all(30),
+                                decoration: BoxDecoration(
+                                  color: selectUser == role
+                                      ? MyColor().primaryClr
+                                      : MyColor().boxInnerClr,
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: selectUser == role
+                                        ? MyColor().primaryClr
+                                        : MyColor().borderClr,
                                   ),
-                                  child: Text(role,
-                                    style: GoogleFonts.poppins(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: selectUser == role ? MyColor().whiteClr : MyColor().blackClr
-                                    ),)),
+                                ),
+                                child: Text(
+                                  role,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: selectUser == role
+                                        ? MyColor().whiteClr
+                                        : MyColor().blackClr,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         }),
                       ),
                     ),
                   ),
-                  SizedBox(height: 30,),
+                  SizedBox(height: 30),
                   Center(
                     child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            fixedSize: Size(320, 48),
-                            elevation: 0,
-                            backgroundColor: MyColor().primaryClr,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadiusGeometry.circular(50)
-                            )
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(320, 48),
+                        elevation: 0,
+                        backgroundColor: MyColor().primaryClr,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadiusGeometry.circular(50),
                         ),
-                        onPressed: selectUser != null ? ()async{
+                      ),
+                      onPressed: selectUser != null
+                          ? () async {
+                              // ------- initial delete ---------
+                              await DBHelper().deleteUser();
 
-                          // ------- initial delete ---------
-                          await DBHelper().deleteUser();
+                              // ------ insert user -------------
+                              await DBHelper().insertUser(selectUser!);
 
-                          // ------ insert user -------------
-                          await DBHelper().insertUser(selectUser!);
-
-                          if(selectUser == 'User'){
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> LoginPage(whichScreen: 'user',)));
-                          }else{
-                            Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizerLoginPage(whichScreen: 'org',)));
-                          }
-
-
-                        } : null, child: Text("Continue",style: GoogleFonts.poppins(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: MyColor().whiteClr
-                    ),)),
+                              if (selectUser == 'User') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        LoginPage(whichScreen: 'user'),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        OrganizerLoginPage(whichScreen: 'org'),
+                                  ),
+                                );
+                              }
+                            }
+                          : null,
+                      child: Text(
+                        "Continue",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: MyColor().whiteClr,
+                        ),
+                      ),
+                    ),
                   ),
-                  SizedBox(height: 50,),
+                  SizedBox(height: 50),
                 ],
               ),
             ),
