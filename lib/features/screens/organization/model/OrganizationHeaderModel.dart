@@ -81,6 +81,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
+                                  memCacheHeight: 300,
+                                  fadeInDuration: Duration.zero,
                                   imageUrl: sliderList,
                                   fit: BoxFit.cover,
                                   errorWidget: (context, url, error) {
@@ -138,6 +140,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                   children: [
                     ClipOval(
                       child: CachedNetworkImage(
+                        memCacheHeight: 300,
+                        fadeInDuration: Duration.zero,
                         imageUrl: profilePhoto ?? '',
                         width: 70,
                         height: 70,
@@ -467,6 +471,9 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                                         tag:
                                                             'event_image_$identity',
                                                         child: CachedNetworkImage(
+                                                          memCacheHeight: 300,
+                                                          fadeInDuration:
+                                                              Duration.zero,
                                                           imageUrl:
                                                               featuredImagePath,
                                                           fit: BoxFit.cover,
@@ -866,6 +873,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                                 child: CachedNetworkImage(
+                                                  memCacheHeight: 300,
+                                                  fadeInDuration: Duration.zero,
                                                   imageUrl:
                                                       featuredImagePath ?? '',
                                                   fit: BoxFit.cover,

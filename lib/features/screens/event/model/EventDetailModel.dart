@@ -162,6 +162,8 @@ class _EventDetailModelState extends State<EventDetailModel>
                               child: Hero(
                                 tag: 'event_image_${widget.identity}',
                                 child: CachedNetworkImage(
+                                  memCacheHeight: 300,
+                                  fadeInDuration: Duration.zero,
                                   imageUrl: sliderList,
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) => Center(

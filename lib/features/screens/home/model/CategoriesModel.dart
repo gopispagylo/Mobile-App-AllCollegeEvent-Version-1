@@ -15,8 +15,6 @@ class HomeCategoriesModel extends StatefulWidget {
 }
 
 class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
-  int itemPerIndex = 3;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EventTypeAllBloc, EventTypeAllState>(
@@ -24,6 +22,16 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
         if (eventTypeAll is EventTypeAllLoading) {
           return categoryShimmer();
         } else if (eventTypeAll is EventTypeSuccessAll) {
+          final List<dynamic> filterList = [];
+
+          // for in loop explore more only show the data
+          for (final item in eventTypeAll.eventTypeList) {
+            if (item['name'] == "Expo & Tradeshows") {
+              break;
+            }
+            filterList.add(item);
+          }
+
           return Column(
             children: [
               Container(
@@ -66,79 +74,76 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                 ),
               ),
               SizedBox(
-                height: 150,
-                child: PageView.builder(
-                  physics: BouncingScrollPhysics(),
-                  controller: PageController(viewportFraction: 1),
-                  itemCount: (eventTypeAll.eventTypeList.length / itemPerIndex)
-                      .ceil(),
-                  itemBuilder: (context, pageIndex) {
-                    final startIndex = pageIndex * itemPerIndex;
-                    final endIndex = (startIndex + itemPerIndex).clamp(
-                      0,
-                      eventTypeAll.eventTypeList.length,
-                    );
-                    final pageItems = eventTypeAll.eventTypeList.sublist(
-                      startIndex,
-                      endIndex,
-                    );
-                    return Container(
-                      margin: EdgeInsets.only(left: 16, right: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(pageItems.length, (index) {
-                          final list = pageItems[index];
-                          final bgColor = list['color'];
-                          final splitBGColor = bgColor.replaceFirst(
-                            "#",
-                            "0xff",
-                          );
-                          return Container(
-                            height: 104,
-                            width: 104,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Color(
-                                int.tryParse(splitBGColor)!.toInt(),
-                              ).withOpacity(0.60),
-                              border: Border.all(
-                                color: MyColor().borderClr.withOpacity(0.15),
-                              ),
-                            ),
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                bottom: 5,
-                                left: 5,
-                                right: 5,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CachedNetworkImage(
-                                    imageUrl: list['imageUrl'] ?? '',
-                                    height: 60,
-                                    placeholder: (context, url) {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          color: MyColor().primaryClr,
-                                        ),
-                                      );
-                                    },
+                height: 105,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: filterList.length,
+                  itemBuilder: (context, index) {
+                    final list = filterList[index];
+                    final bgColor = list['color'];
+                    final splitBGColor = bgColor.replaceFirst("#", "0xff");
+                    final exploreButton = list['name'] == "Explore More";
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(12),
+                      onTap: exploreButton
+                          ? () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BottomNavigationBarPage(
+                                    pageIndex: 2,
+                                    whichScreen: '',
                                   ),
-                                  Text(
-                                    list['name'],
-                                    maxLines: 2,
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
+                                ),
+                              );
+                            }
+                          : null,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          left: 16,
+                          right: index == filterList.length - 1 ? 16 : 0,
+                        ),
+                        height: 104,
+                        width: 104,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Color(
+                            int.tryParse(splitBGColor)!.toInt(),
+                          ).withOpacity(0.60),
+                          border: Border.all(
+                            color: MyColor().borderClr.withOpacity(0.15),
+                          ),
+                        ),
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 5),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CachedNetworkImage(
+                                memCacheHeight: 300,
+                                fadeInDuration: Duration.zero,
+                                imageUrl: list['imageUrl'] ?? '',
+                                height: 60,
+                                placeholder: (context, url) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: MyColor().primaryClr,
                                     ),
-                                  ),
-                                ],
+                                  );
+                                },
                               ),
-                            ),
-                          );
-                        }),
+                              Text(
+                                list['name'],
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     );
                   },

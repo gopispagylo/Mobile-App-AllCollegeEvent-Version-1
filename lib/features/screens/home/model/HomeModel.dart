@@ -37,8 +37,8 @@ class _HomeModelState extends State<HomeModel> {
     getUserName();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 400));
-      context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
       context.read<EventTypeAllBloc>().add(EventTypeAll());
+      context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
       context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
     });
   }
@@ -136,6 +136,7 @@ class _HomeModelState extends State<HomeModel> {
                       ],
                     ),
                     InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(100)),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -164,7 +165,7 @@ class _HomeModelState extends State<HomeModel> {
                         );
                       },
                       child: Container(
-                        margin: EdgeInsets.only(right: 16),
+                        margin: EdgeInsets.only(right: 0),
                         decoration: BoxDecoration(
                           color: MyColor().locationClr,
                           shape: BoxShape.circle,
@@ -196,7 +197,7 @@ class _HomeModelState extends State<HomeModel> {
                 preferredSize: Size.fromHeight(18),
                 child: ClipRRect(
                   child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                    filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                     child: Container(
                       decoration: BoxDecoration(
                         color: MyColor().whiteClr.withOpacity(0.07),

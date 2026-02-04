@@ -40,8 +40,8 @@ class _SavedEventModelState extends State<SavedEventModel> {
         providers: [
           BlocProvider(
             create: (context) =>
-            SavedEventBloc(apiController: ApiController())
-              ..add(FetchSavedEvent()),
+                SavedEventBloc(apiController: ApiController())
+                  ..add(FetchSavedEvent()),
           ),
           BlocProvider(
             create: (context) =>
@@ -119,8 +119,8 @@ class _SavedEventModelState extends State<SavedEventModel> {
                             final title = list['title'] ?? "No title";
 
                             final featuredImagePath =
-                            (list['bannerImages'] != null &&
-                                list['bannerImages'].isNotEmpty)
+                                (list['bannerImages'] != null &&
+                                    list['bannerImages'].isNotEmpty)
                                 ? list['bannerImages'][0]
                                 : '';
 
@@ -175,13 +175,12 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (_) =>
-                                          EventDetailPage(
-                                            slug: identity,
-                                            title: title,
-                                            whichScreen: 'view',
-                                            paymentLink: paymentLink,
-                                          ),
+                                      builder: (_) => EventDetailPage(
+                                        slug: identity,
+                                        title: title,
+                                        whichScreen: 'view',
+                                        paymentLink: paymentLink,
+                                      ),
                                     ),
                                   );
                                 },
@@ -204,7 +203,7 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                   ),
                                   child: Row(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Expanded(
                                         flex: 2,
@@ -218,24 +217,27 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                           child: Hero(
                                             tag: 'event_image_$identity',
                                             child: CachedNetworkImage(
+                                              memCacheHeight: 300,
+                                              fadeInDuration: Duration.zero,
                                               imageUrl: featuredImagePath,
                                               fit: BoxFit.cover,
                                               height: 110,
                                               placeholder: (context, url) =>
                                                   Center(
                                                     child:
-                                                    CircularProgressIndicator(
-                                                      color: MyColor()
-                                                          .primaryClr,
-                                                    ),
+                                                        CircularProgressIndicator(
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                        ),
                                                   ),
                                               errorWidget:
-                                                  (context,
-                                                  url,
-                                                  error,) =>
-                                              const Icon(
-                                                Icons.image_not_supported,
-                                              ),
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => const Icon(
+                                                    Icons.image_not_supported,
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -249,44 +251,93 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                             children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   Expanded(
                                                     child: Text(
                                                       title,
                                                       overflow:
-                                                      TextOverflow.ellipsis,
+                                                          TextOverflow.ellipsis,
                                                       style:
-                                                      GoogleFonts.poppins(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                        FontWeight.w600,
-                                                      ),
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
                                                     ),
                                                   ),
                                                   SizedBox(width: 5),
-                                                  BlocConsumer<RemoveSaveEventBloc, RemoveSaveEventState>(
+                                                  BlocConsumer<
+                                                    RemoveSaveEventBloc,
+                                                    RemoveSaveEventState
+                                                  >(
                                                     listener: (context, removeEventState) {
-                                                      if(removeEventState is RemoveSaveEventSuccess){
-                                                        context.read<SavedEventBloc>().add(FetchSavedEvent());
-                                                        FlutterToast().flutterToast("${removeEventState.successMessage} 🎉", ToastificationType.success, ToastificationStyle.flat);
-                                                      } else if(removeEventState is RemoveSaveEventFail){
-                                                        FlutterToast().flutterToast(removeEventState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+                                                      if (removeEventState
+                                                          is RemoveSaveEventSuccess) {
+                                                        context
+                                                            .read<
+                                                              SavedEventBloc
+                                                            >()
+                                                            .add(
+                                                              FetchSavedEvent(),
+                                                            );
+                                                        FlutterToast().flutterToast(
+                                                          "${removeEventState.successMessage} 🎉",
+                                                          ToastificationType
+                                                              .success,
+                                                          ToastificationStyle
+                                                              .flat,
+                                                        );
+                                                      } else if (removeEventState
+                                                          is RemoveSaveEventFail) {
+                                                        FlutterToast()
+                                                            .flutterToast(
+                                                              removeEventState
+                                                                  .errorMessage,
+                                                              ToastificationType
+                                                                  .error,
+                                                              ToastificationStyle
+                                                                  .flat,
+                                                            );
                                                       }
                                                     },
                                                     builder: (context, removeEventState) {
-                                                      final checkLoading = removeEventState is RemoveSaveEventLoading && removeEventState.eventId == eventId;
+                                                      final checkLoading =
+                                                          removeEventState
+                                                              is RemoveSaveEventLoading &&
+                                                          removeEventState
+                                                                  .eventId ==
+                                                              eventId;
                                                       return InkWell(
                                                         onTap: () {
-                                                          context.read<RemoveSaveEventBloc>().add(ClickRemoveSaveEvent(eventId: eventId));
+                                                          context
+                                                              .read<
+                                                                RemoveSaveEventBloc
+                                                              >()
+                                                              .add(
+                                                                ClickRemoveSaveEvent(
+                                                                  eventId:
+                                                                      eventId,
+                                                                ),
+                                                              );
                                                         },
-                                                        child: checkLoading ? Center(child: SizedBox(
-                                                            height: 20,
-                                                            width: 20,
-                                                            child: CircularProgressIndicator(color: MyColor().primaryClr,strokeWidth: 2,)),): circleIcon(
-                                                          Icons.bookmark,
-                                                        ),
+                                                        child: checkLoading
+                                                            ? Center(
+                                                                child: SizedBox(
+                                                                  height: 20,
+                                                                  width: 20,
+                                                                  child: CircularProgressIndicator(
+                                                                    color: MyColor()
+                                                                        .primaryClr,
+                                                                    strokeWidth:
+                                                                        2,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : circleIcon(
+                                                                Icons.bookmark,
+                                                              ),
                                                       );
                                                     },
                                                   ),
@@ -320,13 +371,13 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                                     child: Text(
                                                       dateFormat,
                                                       overflow:
-                                                      TextOverflow.ellipsis,
+                                                          TextOverflow.ellipsis,
                                                       style:
-                                                      GoogleFonts.poppins(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                        FontWeight.w400,
-                                                      ),
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -343,40 +394,40 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                                     child: Text(
                                                       venue,
                                                       overflow:
-                                                      TextOverflow.ellipsis,
+                                                          TextOverflow.ellipsis,
                                                       style:
-                                                      GoogleFonts.poppins(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                        FontWeight.w400,
-                                                      ),
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
                                                     ),
                                                   ),
                                                   Container(
                                                     padding:
-                                                    EdgeInsets.symmetric(
-                                                      vertical: 3,
-                                                      horizontal: 8,
-                                                    ),
+                                                        EdgeInsets.symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 8,
+                                                        ),
                                                     decoration: BoxDecoration(
                                                       color: MyColor()
                                                           .primaryBackgroundClr
                                                           .withOpacity(0.35),
                                                       borderRadius:
-                                                      BorderRadius.circular(
-                                                        8,
-                                                      ),
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
                                                     ),
                                                     child: Text(
                                                       "Ongoing",
                                                       style:
-                                                      GoogleFonts.poppins(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                        FontWeight.w400,
-                                                        color: MyColor()
-                                                            .blackClr,
-                                                      ),
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],

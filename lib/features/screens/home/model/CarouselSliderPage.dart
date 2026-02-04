@@ -67,10 +67,9 @@ class _CarouselSliderPageState extends State<CarouselSliderPage> {
                     },
                     options: CarouselOptions(
                       height: 180,
-                      viewportFraction: 0.75,
-                      enlargeCenterPage: true,
+                      // enlargeCenterPage: true,
                       enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                      autoPlay: true,
+                      autoPlay: false,
                       autoPlayInterval: const Duration(seconds: 4),
                       autoPlayAnimationDuration: const Duration(
                         milliseconds: 800,

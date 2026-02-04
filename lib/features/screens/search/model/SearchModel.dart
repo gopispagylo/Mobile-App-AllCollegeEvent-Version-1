@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
@@ -14,6 +16,7 @@ import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -54,10 +57,21 @@ class _SearchModelState extends State<SearchModel> {
 
   String? selectEventStatus;
   String? selectEventMode;
-
   String? selectEventType;
   String? perksValue;
   String? selectAccommodation;
+  String? selectCertification;
+
+  // country, state and city
+  String? selectCountry;
+  String? selectState;
+  String? selectCity;
+
+  // pagination
+  int page = 1;
+  final limit = 10;
+  bool isLoadingMore = false;
+  final scrollController = ScrollController();
 
   // perks list
   List<String> perksList = [];
@@ -73,8 +87,97 @@ class _SearchModelState extends State<SearchModel> {
   final endDateController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+              scrollController.position.maxScrollExtent - 200 &&
+          !isLoadingMore) {
+        fetchEvents(loadMore: true);
+      }
+    });
+    fetchEvents();
+  }
+
+  // initial fetch a data
+  void fetchEvents({bool loadMore = false}) {
+    if (loadMore && isLoadingMore) return;
+
+    if (!loadMore) {
+      page = 1;
+    }
+    isLoadingMore = loadMore;
+
+    final DateTime? startDate = startDateController.text.isNotEmpty
+        ? DateTime.parse(startDateController.text)
+        : null;
+
+    final DateTime? endDate = endDateController.text.isNotEmpty
+        ? DateTime.parse(endDateController.text)
+        : null;
+
+    context.read<SearchEventListBloc>().add(
+      FetchSearchEventList(
+        isLoadMore: loadMore,
+        page: page,
+        limit: limit,
+
+        eventTypes: selectEventStatus != null && selectEventStatus!.isNotEmpty
+            ? [selectEventStatus!]
+            : null,
+
+        modes: selectEventMode != null && selectEventMode!.isNotEmpty
+            ? [selectEventMode!]
+            : null,
+
+        eventTypeIdentity:
+            selectEventType != null && selectEventType!.isNotEmpty
+            ? selectEventType
+            : null,
+
+        certIdentity:
+            selectAccommodation != null && selectAccommodation!.isNotEmpty
+            ? selectAccommodation
+            : null,
+
+        perkIdentities: perksValue != null && perksValue!.isNotEmpty
+            ? [perksValue!]
+            : null,
+
+        accommodationIdentities:
+            selectAccommodation != null && selectAccommodation!.isNotEmpty
+            ? [selectAccommodation!]
+            : null,
+
+        eligibleDeptIdentities: null,
+
+        startDate: startDate,
+        endDate: endDate,
+
+        minPrice: minPrice.toInt(),
+        maxPrice: maxPrice.toInt(),
+
+        country: selectCountry != null && selectCountry!.isNotEmpty
+            ? selectCountry
+            : null,
+
+        state: selectState != null && selectState!.isNotEmpty
+            ? selectState
+            : null,
+
+        city: selectCity != null && selectCity!.isNotEmpty ? selectCity : null,
+
+        searchText: searchController.text.isNotEmpty
+            ? searchController.text
+            : null,
+      ),
+    );
+  }
+
+  @override
   void dispose() {
     searchController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -90,17 +193,21 @@ class _SearchModelState extends State<SearchModel> {
             child: TextFormField(
               focusNode: GlobalUnFocus.focusNode,
               controller: searchController,
-              onTapOutside: (onChanged) {
+              onChanged: (onChanged) {
+                fetchEvents();
+              },
+              onTapOutside: (onOutSideClick) {
                 GlobalUnFocus.unFocus();
-                setState(() {
-                  isRecent = false;
-                });
+
+                // setState(() {
+                //   isRecent = false;
+                // });
               },
-              onTap: () {
-                setState(() {
-                  isRecent = true;
-                });
-              },
+              // onTap: () {
+              //   setState(() {
+              //     isRecent = true;
+              //   });
+              // },
               autofocus: false,
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.all(10),
@@ -389,7 +496,7 @@ class _SearchModelState extends State<SearchModel> {
                                                   onTap: () async {
                                                     final result =
                                                         await DateAndTimeController()
-                                                            .selectedDateAndTimePicker(
+                                                            .selectedDate(
                                                               context,
                                                             );
                                                     if (result != null) {
@@ -482,7 +589,7 @@ class _SearchModelState extends State<SearchModel> {
                                                   onTap: () async {
                                                     final result =
                                                         await DateAndTimeController()
-                                                            .selectedDateAndTimePicker(
+                                                            .selectedDate(
                                                               context,
                                                             );
                                                     if (result != null) {
@@ -576,101 +683,41 @@ class _SearchModelState extends State<SearchModel> {
                                           ),
 
                                           // event type
-                                          Center(
-                                            child: Container(
-                                              margin: EdgeInsets.only(top: 20),
-                                              child: BlocBuilder<EventTypeBloc, EventTypeState>(
-                                                builder: (context, eventTypeState) {
-                                                  if (eventTypeState
-                                                      is EventTypeLoading) {
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                            color: MyColor()
-                                                                .primaryClr,
-                                                          ),
-                                                    );
-                                                  } else if (eventTypeState
-                                                      is EventTypeSuccess) {
-                                                    return SizedBox(
-                                                      width: 320,
-                                                      child: MyModels().customDropdown(
-                                                        label: "Event Type",
-                                                        hint:
-                                                            "Select Type of Event",
-                                                        value: selectEventType,
-                                                        onChanged: (eventType) {
-                                                          setState(() {
-                                                            selectEventType = eventType;
-                                                          });
-
-                                                          print('selectEventTypeselectEventTypeselectEventTypeselectEventType$selectEventType');
-                                                        },
-                                                        items: eventTypeState
-                                                            .eventTypeList
-                                                            .map(
-                                                              (e) =>
-                                                                  DropdownMenuItem<
-                                                                    String
-                                                                  >(
-                                                                    value:
-                                                                        e['identity'],
-                                                                    child: Text(
-                                                                      e['name'],
-                                                                    ),
-                                                                  ),
-                                                            )
-                                                            .toList(),
-                                                        valid: Validators()
-                                                            .validOrgCategories,
-                                                      ),
-                                                    );
-                                                  } else if (eventTypeState
-                                                      is EventTypeFail) {
-                                                    return Center(
-                                                      child: Text(
-                                                        eventTypeState
-                                                            .errorMessage,
-                                                      ),
-                                                    );
-                                                  }
-                                                  return SizedBox.shrink();
-                                                },
-                                              ),
-                                            ),
-                                          ),
-
-                                          // perks
-                                          Center(
-                                            child: Container(
-                                              margin: EdgeInsets.only(top: 20),
-                                              child: BlocBuilder<PerksBloc, PerksState>(
-                                                builder: (context, perksState) {
-                                                  if (perksState
-                                                      is PerksLoading) {
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                            color: MyColor()
-                                                                .primaryClr,
-                                                          ),
-                                                    );
-                                                  } else if (perksState
-                                                      is PerksSuccess) {
-                                                    return MyModels().customDropdown(
-                                                      label: "Perks *",
-                                                      hint: "Select Perks Type",
-                                                      value: perksValue,
-                                                      onChanged: (onChanged) {
+                                          Container(
+                                            alignment: Alignment.topLeft,
+                                            margin: EdgeInsets.only(top: 20),
+                                            child: BlocBuilder<EventTypeBloc, EventTypeState>(
+                                              builder: (context, eventTypeState) {
+                                                if (eventTypeState
+                                                    is EventTypeLoading) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                        ),
+                                                  );
+                                                } else if (eventTypeState
+                                                    is EventTypeSuccess) {
+                                                  return SizedBox(
+                                                    width: 320,
+                                                    child: MyModels().customDropdown(
+                                                      label: "Event Type",
+                                                      hint:
+                                                          "Select Type of Event",
+                                                      value: selectEventType,
+                                                      onChanged: (eventType) {
                                                         setState(() {
-                                                          perksList.add(
-                                                            onChanged,
-                                                          );
-                                                          // perksValue = onChanged;
+                                                          selectEventType =
+                                                              eventType;
                                                         });
+
+                                                        print(
+                                                          'selectEventTypeselectEventTypeselectEventTypeselectEventType$selectEventType',
+                                                        );
                                                       },
-                                                      items: perksState
-                                                          .perksList
+                                                      items: eventTypeState
+                                                          .eventTypeList
                                                           .map(
                                                             (e) =>
                                                                 DropdownMenuItem<
@@ -679,23 +726,83 @@ class _SearchModelState extends State<SearchModel> {
                                                                   value:
                                                                       e['identity'],
                                                                   child: Text(
-                                                                    e['perkName'],
+                                                                    e['name'],
                                                                   ),
                                                                 ),
                                                           )
                                                           .toList(),
                                                       valid: Validators()
-                                                          .validPerks,
-                                                    );
-                                                  } else if (perksState
-                                                      is PerksFail) {
-                                                    return Text(
-                                                      perksState.errorMessage,
-                                                    );
-                                                  }
-                                                  return SizedBox.shrink();
-                                                },
-                                              ),
+                                                          .validOrgCategories,
+                                                    ),
+                                                  );
+                                                } else if (eventTypeState
+                                                    is EventTypeFail) {
+                                                  return Center(
+                                                    child: Text(
+                                                      eventTypeState
+                                                          .errorMessage,
+                                                    ),
+                                                  );
+                                                }
+                                                return SizedBox.shrink();
+                                              },
+                                            ),
+                                          ),
+
+                                          // perks
+                                          Container(
+                                            alignment: Alignment.topLeft,
+                                            margin: EdgeInsets.only(top: 20),
+                                            child: BlocBuilder<PerksBloc, PerksState>(
+                                              builder: (context, perksState) {
+                                                if (perksState
+                                                    is PerksLoading) {
+                                                  return Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                        ),
+                                                  );
+                                                } else if (perksState
+                                                    is PerksSuccess) {
+                                                  return MyModels().customDropdown(
+                                                    label: "Perks *",
+                                                    hint: "Select Perks Type",
+                                                    value: perksValue,
+                                                    onChanged: (onChanged) {
+                                                      setState(() {
+                                                        perksList.add(
+                                                          onChanged,
+                                                        );
+                                                        // perksValue = onChanged;
+                                                      });
+                                                    },
+                                                    items: perksState.perksList
+                                                        .map(
+                                                          (e) =>
+                                                              DropdownMenuItem<
+                                                                String
+                                                              >(
+                                                                value:
+                                                                    e['identity'],
+                                                                child: Text(
+                                                                  e['perkName'],
+                                                                ),
+                                                              ),
+                                                        )
+                                                        .toList(),
+                                                    valid:
+                                                        Validators().validPerks,
+                                                  );
+                                                } else if (perksState
+                                                    is PerksFail) {
+                                                  return Text(
+                                                    perksState.errorMessage,
+                                                  );
+                                                }
+                                                return SizedBox.shrink();
+                                              },
                                             ),
                                           ),
 
@@ -737,13 +844,13 @@ class _SearchModelState extends State<SearchModel> {
                                                     item,
                                                   ) {
                                                     final bool isSelected =
-                                                        selectAccommodation ==
+                                                        selectCertification ==
                                                         item['identity'];
 
                                                     return InkWell(
                                                       onTap: () {
                                                         setState(() {
-                                                          selectAccommodation =
+                                                          selectCertification =
                                                               item['identity'];
                                                         });
                                                       },
@@ -852,76 +959,78 @@ class _SearchModelState extends State<SearchModel> {
                                           ),
 
                                           // accommodation
-                                          Center(
-                                            child: Container(
-                                              margin: EdgeInsets.only(
-                                                top: 20,
-                                                bottom: 20,
-                                              ),
-                                              child:
-                                                  BlocBuilder<
-                                                    AccommodationBloc,
-                                                    AccommodationState
-                                                  >(
-                                                    builder: (context, accommodationState) {
-                                                      if (accommodationState
-                                                          is AccommodationLoading) {
-                                                        return Center(
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                              ),
-                                                        );
-                                                      } else if (accommodationState
-                                                          is AccommodationSuccess) {
-                                                        return MyModels().customDropdown(
-                                                          label:
-                                                              "Accommodation *",
-                                                          hint:
-                                                              "Select Accommodation Type",
-                                                          value:
-                                                              selectAccommodation,
-                                                          onChanged: (onChanged) {
-                                                            setState(() {
-                                                              accommodationValues
-                                                                  .addAll(
-                                                                    onChanged,
-                                                                  );
-                                                              // accommodationValue = onChanged;
-                                                            });
-                                                            print(
-                                                              "accommodationListaccommodationListaccommodationListaccommodationList$accommodationValues",
-                                                            );
-                                                          },
-                                                          items: accommodationState
-                                                              .accommodationList
-                                                              .map(
-                                                                (
-                                                                  e,
-                                                                ) => DropdownMenuItem<String>(
-                                                                  value:
-                                                                      e['identity'],
-                                                                  child: Text(
-                                                                    e['accommodationName'],
-                                                                  ),
-                                                                ),
-                                                              )
-                                                              .toList(),
-                                                          valid: Validators()
-                                                              .validPerks,
-                                                        );
-                                                      } else if (accommodationState
-                                                          is AccommodationFail) {
-                                                        return Text(
-                                                          accommodationState
-                                                              .errorMessage,
-                                                        );
-                                                      }
-                                                      return SizedBox.shrink();
-                                                    },
-                                                  ),
+                                          Container(
+                                            alignment: Alignment.topLeft,
+                                            margin: EdgeInsets.only(
+                                              top: 20,
+                                              bottom: 20,
                                             ),
+                                            child:
+                                                BlocBuilder<
+                                                  AccommodationBloc,
+                                                  AccommodationState
+                                                >(
+                                                  builder: (context, accommodationState) {
+                                                    if (accommodationState
+                                                        is AccommodationLoading) {
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                      );
+                                                    } else if (accommodationState
+                                                        is AccommodationSuccess) {
+                                                      return MyModels().customDropdown(
+                                                        label:
+                                                            "Accommodation *",
+                                                        hint:
+                                                            "Select Accommodation Type",
+                                                        value:
+                                                            selectAccommodation,
+                                                        onChanged: (onChanged) {
+                                                          setState(() {
+                                                            // accommodationValues
+                                                            //     .addAll(
+                                                            //       onChanged,
+                                                            selectAccommodation =
+                                                                onChanged;
+                                                            // );
+                                                            // accommodationValue = onChanged;
+                                                          });
+                                                          print(
+                                                            "accommodationListaccommodationListaccommodationListaccommodationList$accommodationValues",
+                                                          );
+                                                        },
+                                                        items: accommodationState
+                                                            .accommodationList
+                                                            .map(
+                                                              (e) =>
+                                                                  DropdownMenuItem<
+                                                                    String
+                                                                  >(
+                                                                    value:
+                                                                        e['identity'],
+                                                                    child: Text(
+                                                                      e['accommodationName'],
+                                                                    ),
+                                                                  ),
+                                                            )
+                                                            .toList(),
+                                                        valid: Validators()
+                                                            .validPerks,
+                                                      );
+                                                    } else if (accommodationState
+                                                        is AccommodationFail) {
+                                                      return Text(
+                                                        accommodationState
+                                                            .errorMessage,
+                                                      );
+                                                    }
+                                                    return SizedBox.shrink();
+                                                  },
+                                                ),
                                           ),
                                         ],
                                       ),
@@ -1103,32 +1212,43 @@ class _SearchModelState extends State<SearchModel> {
                   },
                 );
               } else if (searchEventListState is SearchEventListSuccess) {
+                if (isLoadingMore) {
+                  isLoadingMore = false;
+
+                  if (searchEventListState.hasMore) {
+                    page++;
+                  }
+                }
                 return RefreshIndicator(
                   color: MyColor().primaryClr,
                   onRefresh: () async {
-                    context.read<SearchEventListBloc>().add(
-                      FetchSearchEventList(
-                        eventTypes: [],
-                        modes: [],
-                        // searchText: '',
-                        eligibleDeptIdentities: [],
-                        certIdentity: '',
-                        eventTypeIdentity: '',
-                        perkIdentities: [],
-                        accommodationIdentities: [],
-                        country: '',
-                        state: '',
-                        city: '',
-                        startDate: null,
-                      ),
-                    );
+                    fetchEvents();
                   },
                   child: Container(
-                    margin: EdgeInsets.only(left: 16, right: 16, top: 20),
+                    margin: EdgeInsets.only(left: 16, right: 16, top: 0),
                     child: ListView.builder(
+                      controller: scrollController,
                       shrinkWrap: true,
-                      itemCount: searchEventListState.searchEventList.length,
+                      itemCount:
+                          searchEventListState.searchEventList.length +
+                          (searchEventListState.hasMore ? 1 : 0),
                       itemBuilder: (context, index) {
+                        if (index ==
+                            searchEventListState.searchEventList.length) {
+                          return Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Center(
+                              child: Platform.isAndroid
+                                  ? CircularProgressIndicator(
+                                      color: MyColor().primaryClr,
+                                    )
+                                  : CupertinoActivityIndicator(
+                                      color: MyColor().primaryClr,
+                                    ),
+                            ),
+                          );
+                        }
+
                         final list =
                             searchEventListState.searchEventList[index];
 
@@ -1142,29 +1262,30 @@ class _SearchModelState extends State<SearchModel> {
                             : '';
 
                         // ------ date format -------
-                        final rawDate = list['eventDate']?.toString() ?? "";
+                        String formatEventDate({required dynamic calendars}) {
+                          if (calendars == null || calendars.isEmpty) {
+                            return "No date";
+                          }
+                          final rawDate = calendars[0]['startDate'];
 
-                        // 2. Safe Date Parsing
-                        String dateFormat = "Date TBD";
-
-                        if (rawDate.isNotEmpty) {
+                          if (rawDate == null || rawDate.isEmpty) {
+                            return "No date";
+                          }
                           try {
-                            // Use MM for months!
-                            final parsedDate = DateFormat(
-                              'dd/MM/yyyy',
-                            ).parse(rawDate);
-                            dateFormat = DateFormat(
-                              'dd MMM yyyy',
-                            ).format(parsedDate);
+                            final dateTime = DateTime.parse(rawDate);
+                            return DateFormat('dd MMM yy').format(dateTime);
                           } catch (e) {
-                            debugPrint("Date parsing error: $e");
-                            dateFormat =
-                                rawDate; // Fallback to raw string if parsing fails
+                            return "No date";
                           }
                         }
 
-                        // ---- venue ---
-                        final venue = list['venue'] ?? "no venue";
+                        String venue;
+                        // venue format
+                        if (list['mode'] == "ONLINE") {
+                          venue = 'Online';
+                        } else {
+                          venue = list['location']['venue'];
+                        }
 
                         // -------- identity ---------
                         final identity = list['slug'];
@@ -1239,6 +1360,8 @@ class _SearchModelState extends State<SearchModel> {
                                       ),
                                       clipBehavior: Clip.antiAlias,
                                       child: CachedNetworkImage(
+                                        memCacheHeight: 300,
+                                        fadeInDuration: Duration.zero,
                                         imageUrl: featuredImagePath,
                                         fit: BoxFit.cover,
                                         placeholder: (context, url) => Center(
@@ -1477,7 +1600,10 @@ class _SearchModelState extends State<SearchModel> {
                                               SizedBox(width: 5),
                                               Expanded(
                                                 child: Text(
-                                                  dateFormat,
+                                                  formatEventDate(
+                                                    calendars:
+                                                        list['calendars'],
+                                                  ),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: GoogleFonts.poppins(
@@ -1546,22 +1672,7 @@ class _SearchModelState extends State<SearchModel> {
               } else if (searchEventListState is SearchEventListFail) {
                 return RefreshIndicator(
                   onRefresh: () async {
-                    context.read<SearchEventListBloc>().add(
-                      FetchSearchEventList(
-                        eventTypes: [],
-                        modes: [],
-                        // searchText: '',
-                        eligibleDeptIdentities: [],
-                        certIdentity: '',
-                        eventTypeIdentity: '',
-                        perkIdentities: [],
-                        accommodationIdentities: [],
-                        country: '',
-                        state: '',
-                        city: '',
-                        startDate: null,
-                      ),
-                    );
+                    fetchEvents();
                   },
                   child: Center(
                     child: ListView(
@@ -1639,67 +1750,13 @@ class _SearchModelState extends State<SearchModel> {
       selectAccommodation = null;
       accommodationValues.clear();
     });
-    context.read<SearchEventListBloc>().add(
-      FetchSearchEventList(
-        eventTypes: [],
-        modes: [],
-        // searchText: '',
-        eligibleDeptIdentities: [],
-        certIdentity: '',
-        eventTypeIdentity: '',
-        perkIdentities: [],
-        accommodationIdentities: [],
-        country: '',
-        state: '',
-        city: '',
-        startDate: null,
-      ),
-    );
+    fetchEvents();
     Navigator.pop(context);
   }
 
   // apply the filter
   void applyFilter() {
-    final List<String> eventTypes = selectEventType != null
-        ? <String>[selectEventType!.toString()]
-        : <String>[];
-
-    final List<String> modes = selectEventMode != null
-        ? <String>[selectEventMode!.toString()]
-        : <String>[];
-
-    final List<String> perkIdentities = perksList
-        .map((e) => e.toString())
-        .toList();
-
-    final List<String> accommodationIdentities = accommodationValues.keys
-        .map((e) => e.toString())
-        .toList();
-
-    final dynamic startDate = startDateController.text.isNotEmpty
-        ? startDateController.text
-        : null;
-
-    print('eventTypeseventTypeseventTypeseventTypes$eventTypes');
-
-    context.read<SearchEventListBloc>().add(
-      FetchSearchEventList(
-        eventTypes: eventTypes,
-        modes: modes,
-        eligibleDeptIdentities: <String>[],
-        certIdentity: selectAccommodation?.toString() ?? '',
-        eventTypeIdentity: selectEventType?.toString() ?? '',
-        perkIdentities: perkIdentities,
-        accommodationIdentities: accommodationIdentities,
-        country: '',
-        state: '',
-        city: '',
-        startDate: startDate,
-        // minPrice: minPrice.toInt(),
-        // maxPrice: maxPrice.toInt(),
-      ),
-    );
-
+    fetchEvents();
     Navigator.pop(context);
   }
 

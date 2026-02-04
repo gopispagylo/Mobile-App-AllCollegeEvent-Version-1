@@ -16,15 +16,22 @@ class SearchEventListBloc
   SearchEventListBloc({required this.apiController})
     : super(SearchEventListInitial()) {
     on<FetchSearchEventList>((event, emit) async {
-      emit(SearchEventListLoading());
-
+      // show loader only for first page
+      if (!event.isLoadMore) {
+        emit(SearchEventListLoading());
+      }
       try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
         // ------- token -------
         final token = await DBHelper().getToken();
-        final Map<String, dynamic> params = {};
+        final Map<String, dynamic> params = {
+          "page": event.page,
+          "limit": event.limit,
+        };
+
+        print("limitlimitlimitlimitlimitlimitlimit${event.limit}");
 
         if (event.eventTypes != null && event.eventTypes!.isNotEmpty) {
           params["eventTypes"] = event.eventTypes;
@@ -37,10 +44,6 @@ class SearchEventListBloc
         if (event.modes != null && event.modes!.isNotEmpty) {
           params["modes"] = event.modes;
         }
-        //
-        // if (event.searchText != null && event.searchText!.trim().isNotEmpty) {
-        //   params["searchText"] = event.searchText!.trim();
-        // }
 
         if (event.eligibleDeptIdentities != null &&
             event.eligibleDeptIdentities!.isNotEmpty) {
@@ -77,29 +80,26 @@ class SearchEventListBloc
           params["city"] = event.city;
         }
 
-        // if (event.startDate != null || event.endDate != null) {
-        //   params["dateRange"] = {
-        //     if (event.startDate != null)
-        //       "startDate": event.startDate!.toIso8601String().split('T').first,
-        //     if (event.endDate != null)
-        //       "endDate": event.endDate!.toIso8601String().split('T').first,
-        //   };
-        // }
-        //
-        // if (event.minPrice != null || event.maxPrice != null) {
-        //   params["priceRange"] = {
-        //     if (event.minPrice != null) "min": event.minPrice,
-        //     if (event.maxPrice != null) "max": event.maxPrice,
-        //   };
-        // }
-        //
-        // if (event.page != null) {
-        //   params["page"] = event.page;
-        // }
-        //
-        // if (event.limit != null) {
-        //   params["limit"] = event.limit;
-        // }
+        if (event.startDate != null || event.endDate != null) {
+          params["dateRange"] = {
+            if (event.startDate != null)
+              "startDate": event.startDate!.toIso8601String().split('T').first,
+            if (event.endDate != null)
+              "endDate": event.endDate!.toIso8601String().split('T').first,
+          };
+        }
+
+        if (event.minPrice != null || event.maxPrice != null) {
+          params["priceRange"] = {
+            if (event.minPrice != null) "min": event.minPrice,
+            if (event.maxPrice != null) "max": event.maxPrice,
+          };
+        }
+
+        if (event.searchText != null && event.searchText!.trim().isNotEmpty) {
+          params["searchText"] = event.searchText!.trim();
+        }
+
         //
         // if (event.sortBy != null && event.sortBy!.isNotEmpty) {
         //   params["sortBy"] = event.sortBy;
@@ -107,64 +107,27 @@ class SearchEventListBloc
 
         print("paramsparamsparamsparamsparams${params.keys}${params.values}");
 
-        final response = await apiController.getMethodWithoutBody(
-          endPoint: 'events_protec',
-          token: token!,
-        );
-        if (response.statusCode == 200) {
-          final responseBody = response.data;
-          if (responseBody['status'] == true) {
-            searchEventList.clear();
-            searchEventList.addAll(responseBody['data']);
-            if (responseBody['data'].isNotEmpty) {
-              emit(
-                SearchEventListSuccess(
-                  searchEventList: List.from(searchEventList),
-                ),
-              );
-            } else {
-              emit(SearchEventListFail(errorMessage: "No data found"));
-            }
-          } else {
-            emit(SearchEventListFail(errorMessage: responseBody['message']));
-          }
-        }
-      } on DioException catch (e) {
-        // ------ error handle config --------
-        final error = HandleErrorConfig().handleDioError(e);
-        emit(SearchEventListFail(errorMessage: error));
-      } catch (e) {
-        emit(
-          SearchEventListFail(errorMessage: ConfigMessage().unexpectedErrorMsg),
-        );
-      }
-    });
-
-    on<SearchEvent>((event, emit) async {
-      emit(SearchEventListLoading());
-
-      try {
-        // --------- set a base url -------
-        await apiController.setBaseUrl();
-
-        final Map<String, dynamic> params = {};
-        params['searchText'] = event.searchText;
-
-        final token = await DBHelper().getToken();
-
         final response = await apiController.postMethodWithHeader(
-          endPoint: 'filter_protec',
           data: params,
+          endPoint: 'filter_protec',
           token: token!,
+        );
+
+        print(
+          "SearchEventListBlocSearchEventListBlocSearchEventListBlocSearchEventListBloc$response",
         );
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-            searchEventList.clear();
+            // reset only on first page
+            if (!event.isLoadMore) {
+              searchEventList.clear();
+            }
             searchEventList.addAll(responseBody['data']);
             if (responseBody['data'].isNotEmpty) {
               emit(
                 SearchEventListSuccess(
+                  hasMore: responseBody['data'].length == event.limit,
                   searchEventList: List.from(searchEventList),
                 ),
               );

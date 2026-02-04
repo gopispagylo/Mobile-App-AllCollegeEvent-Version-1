@@ -15,11 +15,13 @@ class FetchSearchEventList extends SearchEventListEvent {
   final String? state;
   final String? city;
   final DateTime? startDate;
-  // final DateTime? endDate;
-  // final int? minPrice;
-  // final int? maxPrice;
-  // final int? page;
-  // final int? limit;
+  final DateTime? endDate;
+  final int? minPrice;
+  final int? maxPrice;
+  final int? page;
+  final int? limit;
+  final String? searchText;
+  final bool isLoadMore;
   // final String? sortBy;
 
   FetchSearchEventList({
@@ -34,17 +36,13 @@ class FetchSearchEventList extends SearchEventListEvent {
     required this.state,
     required this.city,
     required this.startDate,
-    // required this.endDate,
-    // required this.minPrice,
-    // required this.maxPrice,
-    // required this.page,
-    // required this.limit,
+    required this.endDate,
+    required this.minPrice,
+    required this.maxPrice,
+    required this.page,
+    required this.limit,
+    required this.searchText,
+    this.isLoadMore = false,
     // required this.sortBy,
   });
-}
-
-class SearchEvent extends SearchEventListEvent {
-  final String? searchText;
-
-  SearchEvent({required this.searchText});
 }

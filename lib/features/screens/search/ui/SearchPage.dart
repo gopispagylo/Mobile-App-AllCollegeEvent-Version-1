@@ -39,22 +39,7 @@ class _SearchPageState extends State<SearchPage> {
         providers: [
           BlocProvider(
             create: (context) =>
-                SearchEventListBloc(apiController: ApiController())..add(
-                  FetchSearchEventList(
-                    eventTypes: [],
-                    modes: [],
-                    // searchText: '',
-                    eligibleDeptIdentities: [],
-                    certIdentity: '',
-                    eventTypeIdentity: '',
-                    perkIdentities: [],
-                    accommodationIdentities: [],
-                    country: '',
-                    state: '',
-                    city: '',
-                    startDate: null,
-                  ),
-                ),
+                SearchEventListBloc(apiController: ApiController()),
           ),
           BlocProvider(
             create: (context) =>

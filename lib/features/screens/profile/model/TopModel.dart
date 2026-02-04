@@ -1,4 +1,3 @@
-import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:toastification/toastification.dart';
 
 class TopModel extends StatefulWidget {
   final String whichScreen;
@@ -22,15 +20,14 @@ class TopModel extends StatefulWidget {
 class _ProfileModelState extends State<TopModel> {
   @override
   Widget build(BuildContext context) {
-
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
     return BlocBuilder<UserProfileBloc, UserProfileState>(
       builder: (context, userProfileState) {
-        if(userProfileState is UserProfileLoading){
+        if (userProfileState is UserProfileLoading) {
           return profileHeaderShimmer();
-        } else if(userProfileState is UserProfileSuccess){
+        } else if (userProfileState is UserProfileSuccess) {
           final list = userProfileState.userProfileList[0];
           return Container(
             margin: EdgeInsets.all(16),
@@ -42,15 +39,18 @@ class _ProfileModelState extends State<TopModel> {
                     width: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                      border: Border.all(
+                        color: MyColor().borderClr.withOpacity(0.15),
+                      ),
                     ),
                     child: ClipOval(
                       child: CachedNetworkImage(
+                        memCacheHeight: 300,
+                        fadeInDuration: Duration.zero,
                         imageUrl: list['profileImage'] ?? '',
                         fit: BoxFit.cover,
-                        placeholder: (context, url) => Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                        placeholder: (context, url) =>
+                            Center(child: CircularProgressIndicator()),
                         errorWidget: (context, url, error) => Icon(
                           Iconsax.profile_circle,
                           color: MyColor().borderClr,
@@ -84,7 +84,6 @@ class _ProfileModelState extends State<TopModel> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
                     // ---------- only show for organizer ----------
                     if (!checkUser)
                       Expanded(
@@ -216,7 +215,7 @@ class _ProfileModelState extends State<TopModel> {
               ],
             ),
           );
-        } else if(userProfileState is UserProfileFail){
+        } else if (userProfileState is UserProfileFail) {
           return Center(
             child: ListView(
               physics: NeverScrollableScrollPhysics(),
@@ -241,38 +240,56 @@ class _ProfileModelState extends State<TopModel> {
               ],
             ),
           );
-        } return SizedBox.shrink();
+        }
+        return SizedBox.shrink();
       },
     );
   }
 }
 
-  // ---------- Skeleton loading ui model -------
-  Widget profileHeaderShimmer() {
+// ---------- Skeleton loading ui model -------
+Widget profileHeaderShimmer() {
   return Column(
     children: [
       // Profile Image
-      Shimmer(child: Container(
-        height: 100,
-        width: 100,
-        decoration: BoxDecoration(
-          color: MyColor().sliderDotClr,
-          shape: BoxShape.circle),),),
+      Shimmer(
+        child: Container(
+          height: 100,
+          width: 100,
+          decoration: BoxDecoration(
+            color: MyColor().sliderDotClr,
+            shape: BoxShape.circle,
+          ),
+        ),
+      ),
 
       const SizedBox(height: 8),
 
       // Name
-      Shimmer(child: Container(width: 160,
-        height: 22,
-        decoration: BoxDecoration(color: MyColor().sliderDotClr,borderRadius: BorderRadius.circular(4),),),),
+      Shimmer(
+        child: Container(
+          width: 160,
+          height: 22,
+          decoration: BoxDecoration(
+            color: MyColor().sliderDotClr,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      ),
 
       const SizedBox(height: 6),
 
       // Role (User / Organizer)
-      Shimmer(child: Container(
-        height: 18,
-        width: 90,
-        decoration: BoxDecoration(color: MyColor().sliderDotClr,borderRadius: BorderRadius.circular(4),),),),
+      Shimmer(
+        child: Container(
+          height: 18,
+          width: 90,
+          decoration: BoxDecoration(
+            color: MyColor().sliderDotClr,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      ),
 
       const SizedBox(height: 20),
     ],

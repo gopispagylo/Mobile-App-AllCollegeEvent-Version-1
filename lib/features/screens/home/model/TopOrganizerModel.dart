@@ -1,6 +1,7 @@
+import 'dart:ui';
+
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/TopOrganizerSeeAllModel.dart';
-import 'package:all_college_event_app/features/screens/organization/ui/OrganizationPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -63,74 +64,141 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                   ],
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: List.generate(topOrganizerState.topOrganizer.length, (
-                    index,
-                  ) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => OrganizationPage(
-                              title: topOrganizerState
-                                  .topOrganizer[index]['organizationName'],
-                              slug:
-                                  topOrganizerState.topOrganizer[index]['slug'],
-                              identity: topOrganizerState
-                                  .topOrganizer[index]['identity'],
+              Container(
+                padding: EdgeInsets.only(bottom: 10, top: 0),
+                height: 220,
+                child: ListView.builder(
+                  itemCount: topOrganizerState.topOrganizer.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return ClipRRect(
+                      borderRadius: BorderRadiusGeometry.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        child: SizedBox(
+                          width: 180,
+                          child: Card(
+                            margin: EdgeInsets.only(
+                              left: index == 0 ? 16 : 5,
+                              right:
+                                  index ==
+                                      topOrganizerState.topOrganizer.length - 1
+                                  ? 16
+                                  : 5,
                             ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          left: index == 0 ? 16 : 0,
-                          right: 16,
-                        ),
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                          color: MyColor().whiteClr,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
-                        ),
-                        child: ClipOval(
-                          child: CachedNetworkImage(
-                            imageUrl:
-                                topOrganizerState
-                                    .topOrganizer[index]['profileImage'] ??
-                                '',
-                            fit: BoxFit.cover,
-                            placeholder: (context, url) {
-                              return Center(
-                                child: CircularProgressIndicator(
-                                  color: MyColor().primaryClr,
-                                ),
-                              );
-                            },
-                            errorWidget: (context, url, error) {
-                              return Center(
-                                child: Text(
-                                  topOrganizerState
-                                      .topOrganizer[index]['organizationName'][0],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.w500,
-                                    color: MyColor().blackClr,
+                            color: MyColor().whiteClr.withOpacity(0.4),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadiusGeometry.circular(20),
+                              side: BorderSide(
+                                color: MyColor().borderClr.withOpacity(0.15),
+                              ),
+                            ),
+                            elevation: 0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ClipOval(
+                                    child: CachedNetworkImage(
+                                      height: 60,
+                                      width: 60,
+                                      memCacheHeight: 300,
+                                      fadeInDuration: Duration.zero,
+                                      imageUrl:
+                                          topOrganizerState
+                                              .topOrganizer[index]['profileImage'] ??
+                                          "",
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: MyColor().primaryClr,
+                                          ),
+                                        );
+                                      },
+                                      errorWidget: (context, url, error) {
+                                        return Container(
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: MyColor().whiteClr,
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: MyColor().borderClr
+                                                  .withOpacity(0.15),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            topOrganizerState
+                                                .topOrganizer[index]['organizationName'][0],
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.w500,
+                                              color: MyColor().blackClr,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                  SizedBox(height: 10),
+                                  // org name and event count
+                                  Column(
+                                    children: [
+                                      Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.center,
+                                        topOrganizerState
+                                            .topOrganizer[index]['organizationName'],
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
+                                        ),
+                                      ),
+                                      Text(
+                                        "${topOrganizerState.topOrganizer[index]['eventCount']} Events",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 12,
+                                          color: MyColor().secondaryClr,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  SizedBox(
+                                    height: 40,
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: MyColor().primaryClr,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadiusGeometry.circular(10),
+                                        ),
+                                      ),
+                                      onPressed: () {},
+                                      child: Text(
+                                        "Follow",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: MyColor().whiteClr,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     );
-                  }),
+                  },
                 ),
               ),
             ],

@@ -547,6 +547,8 @@ class _EventListModelState extends State<EventListModel> {
                                       child: Hero(
                                         tag: 'event_image_$identity',
                                         child: CachedNetworkImage(
+                                          memCacheHeight: 300,
+                                          fadeInDuration: Duration.zero,
                                           imageUrl: featuredImagePath,
                                           fit: BoxFit.cover,
                                           height: 110,

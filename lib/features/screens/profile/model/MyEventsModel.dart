@@ -18,10 +18,8 @@ class MyEventsModel extends StatefulWidget {
 }
 
 class _MyEventsModelState extends State<MyEventsModel> {
-
   // ------ Switch Value --------
   bool checkStatus = false;
-
 
   // -------- Filter list ------
   final List<String> filterList = [
@@ -29,14 +27,14 @@ class _MyEventsModelState extends State<MyEventsModel> {
     "Published events",
     "Draft events",
     "Pending Events",
-    "Rejected events"
+    "Rejected events",
   ];
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-      MyEventBloc(apiController: ApiController())..add(FetchMyEvent()),
+          MyEventBloc(apiController: ApiController())..add(FetchMyEvent()),
       child: Scaffold(
         backgroundColor: MyColor().whiteClr,
         appBar: AppBar(
@@ -52,7 +50,6 @@ class _MyEventsModelState extends State<MyEventsModel> {
         ),
         body: Column(
           children: [
-
             // ---------- search bar for event ---------
             Center(
               child: Container(
@@ -93,47 +90,51 @@ class _MyEventsModelState extends State<MyEventsModel> {
 
             // ---- filter ------
             Container(
-              margin: EdgeInsets.only(left: 16,top: 16,bottom: 16),
+              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: (){},
+                    onTap: () {},
                     child: Container(
                       padding: EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
-                          border: Border.all(color: MyColor().borderClr.withOpacity(0.15)),
-                          borderRadius: BorderRadius.circular(100)
+                        color: MyColor().boxInnerClr,
+                        border: Border.all(
+                          color: MyColor().borderClr.withOpacity(0.15),
+                        ),
+                        borderRadius: BorderRadius.circular(100),
                       ),
-                      child: Icon(
-                        Icons.tune,
-                      ),
+                      child: Icon(Icons.tune),
                     ),
                   ),
-                  SizedBox(width: 10,),
+                  SizedBox(width: 10),
                   Expanded(
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
-                        children: List.generate(filterList.length, (index){
+                        children: List.generate(filterList.length, (index) {
                           return Container(
                             height: 48,
                             alignment: Alignment.center,
-                            padding: EdgeInsets.only(left: 20,right: 20),
+                            padding: EdgeInsets.only(left: 20, right: 20),
                             margin: EdgeInsets.only(right: 5),
                             decoration: BoxDecoration(
-                                color: MyColor().boxInnerClr,
-                                borderRadius: BorderRadius.circular(30),
-                                border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                              color: MyColor().boxInnerClr,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                color: MyColor().borderClr.withOpacity(0.15),
+                              ),
                             ),
                             child: Row(
                               children: [
-                                Text(filterList[index],style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: MyColor().blackClr,
-
-                                ),),
+                                Text(
+                                  filterList[index],
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: MyColor().blackClr,
+                                  ),
+                                ),
                               ],
                             ),
                           );
@@ -149,15 +150,19 @@ class _MyEventsModelState extends State<MyEventsModel> {
             Expanded(
               child: BlocBuilder<MyEventBloc, MyEventState>(
                 builder: (context, myEventState) {
-                  if(myEventState is MyEventLoading){
-                    return Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),);
-                  } else if(myEventState is MyEventSuccess){
+                  if (myEventState is MyEventLoading) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        color: MyColor().primaryClr,
+                      ),
+                    );
+                  } else if (myEventState is MyEventSuccess) {
                     return RefreshIndicator(
-                      onRefresh: () async{
+                      onRefresh: () async {
                         context.read<MyEventBloc>().add(FetchMyEvent());
                       },
                       child: Container(
-                        margin: EdgeInsets.only(left: 16, right: 16, top: 20,),
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 20),
                         child: ListView.builder(
                           itemCount: myEventState.myEvent.length,
                           itemBuilder: (context, index) {
@@ -167,24 +172,23 @@ class _MyEventsModelState extends State<MyEventsModel> {
                             final title = list['title'] ?? "No title";
 
                             final featuredImagePath =
-                            (list['bannerImages'] != null &&
-                                list['bannerImages'].isNotEmpty)
+                                (list['bannerImages'] != null &&
+                                    list['bannerImages'].isNotEmpty)
                                 ? list['bannerImages'][0]
                                 : '';
 
                             // ------ date format -------
                             final rawDate = list['calendars'][0]['startDate'];
 
-
                             String parsedDate;
 
                             try {
-                              parsedDate = DateFormat('dd MMM yy').format(
-                                  DateTime.parse(rawDate));
+                              parsedDate = DateFormat(
+                                'dd MMM yy',
+                              ).format(DateTime.parse(rawDate));
                             } catch (e) {
                               parsedDate = rawDate;
                             }
-
 
                             // -------- event mode ------
                             final mode = list['mode'];
@@ -195,34 +199,37 @@ class _MyEventsModelState extends State<MyEventsModel> {
                             String? finalStatus;
                             Color? statusColor;
 
-                            if(status == "DRAFT"){
+                            if (status == "DRAFT") {
                               finalStatus = "Draft";
-                            }else if(status == 'PENDING'){
+                            } else if (status == 'PENDING') {
                               finalStatus = "Pending";
-                            }else if(status == 'APPROVED'){
+                            } else if (status == 'APPROVED') {
                               finalStatus = "Approved";
-                            }else if(status == 'REJECTED'){
+                            } else if (status == 'REJECTED') {
                               finalStatus = "Rejected";
-                            }else if(status == 'PRIVATE'){
+                            } else if (status == 'PRIVATE') {
                               finalStatus = "Private";
                             }
 
-                            if(status == "DRAFT"){
+                            if (status == "DRAFT") {
                               statusColor = MyColor().blueClr.withOpacity(0.20);
-                            }else if(status == 'PENDING'){
-                              statusColor = MyColor().yellowClr.withOpacity(0.20);
-                            }else if(status == 'APPROVED'){
+                            } else if (status == 'PENDING') {
+                              statusColor = MyColor().yellowClr.withOpacity(
+                                0.20,
+                              );
+                            } else if (status == 'APPROVED') {
                               statusColor = MyColor().blueClr.withOpacity(0.20);
-                            }else if(status == 'REJECTED'){
+                            } else if (status == 'REJECTED') {
                               statusColor = MyColor().redClr.withOpacity(0.20);
-                            }else if(status == 'PRIVATE'){
-                              statusColor = MyColor().greenClr.withOpacity(0.20);
+                            } else if (status == 'PRIVATE') {
+                              statusColor = MyColor().greenClr.withOpacity(
+                                0.20,
+                              );
                             }
 
-
-                            final location = mode == 'ONLINE' ? 'Online' : list['location']['city'] ?? "no city";
-
-
+                            final location = mode == 'ONLINE'
+                                ? 'Online'
+                                : list['location']['city'] ?? "no city";
 
                             // -------- identity ---------
                             final identity = list['slug'];
@@ -233,25 +240,37 @@ class _MyEventsModelState extends State<MyEventsModel> {
                               tween: Tween(begin: 50.0, end: 0.0),
                               duration: Duration(milliseconds: 600),
                               builder: (context, value, child) {
-                                return Transform.translate(offset: Offset(0, value),
-                                    child: Opacity(
-                                      opacity: 1 - (value / 50),
-                                      child: child,)
+                                return Transform.translate(
+                                  offset: Offset(0, value),
+                                  child: Opacity(
+                                    opacity: 1 - (value / 50),
+                                    child: child,
+                                  ),
                                 );
                               },
                               child: GestureDetector(
                                 onTap: () {
                                   Navigator.push(
-                                      context,
-                                      PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(slug: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
-                                          transitionsBuilder: (_, animation, __, child){
-                                            return SlideTransition( position: Tween(
-                                              begin: const Offset(1, 0),
-                                              end: Offset.zero,
-                                            ).animate(animation),
-                                              child: child,);
-                                          }
-                                      )
+                                    context,
+                                    PageRouteBuilder(
+                                      pageBuilder: (_, __, ___) =>
+                                          EventDetailPage(
+                                            slug: identity,
+                                            title: title,
+                                            whichScreen: 'edit',
+                                            paymentLink: paymentLink,
+                                          ),
+                                      transitionsBuilder:
+                                          (_, animation, __, child) {
+                                            return SlideTransition(
+                                              position: Tween(
+                                                begin: const Offset(1, 0),
+                                                end: Offset.zero,
+                                              ).animate(animation),
+                                              child: child,
+                                            );
+                                          },
+                                    ),
                                   );
                                 },
                                 child: Container(
@@ -260,28 +279,49 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                   decoration: BoxDecoration(
                                     color: MyColor().whiteClr,
                                     border: Border.all(
-                                      color: MyColor().borderClr.withOpacity(0.15),
+                                      color: MyColor().borderClr.withOpacity(
+                                        0.15,
+                                      ),
                                     ),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Expanded(
                                         flex: 2,
                                         child: Container(
                                           height: 100,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10),
-                                            border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            border: Border.all(
+                                              color: MyColor().borderClr
+                                                  .withOpacity(0.15),
+                                            ),
                                           ),
                                           child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(9),
+                                            borderRadius: BorderRadius.circular(
+                                              9,
+                                            ),
                                             child: CachedNetworkImage(
+                                              memCacheHeight: 300,
+                                              fadeInDuration: Duration.zero,
                                               imageUrl: featuredImagePath,
                                               fit: BoxFit.cover,
-                                              placeholder: (context, url) => Center(child: CircularProgressIndicator(color: MyColor().primaryClr,),),
-                                              errorWidget: (context, url, error) => Icon(Iconsax.gallery),
+                                              placeholder: (context, url) =>
+                                                  Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                        ),
+                                                  ),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Iconsax.gallery),
                                             ),
                                           ),
                                         ),
@@ -292,11 +332,18 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                         child: Container(
                                           margin: EdgeInsets.only(left: 10),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
-                                              Text(title,overflow: TextOverflow.ellipsis,style: GoogleFonts.poppins(
-                                                fontSize: 14,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                                              )),
+                                              Text(
+                                                title,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: MyColor().blackClr,
+                                                ),
+                                              ),
                                               SizedBox(height: 5),
 
                                               // -------- calendar --------
@@ -305,37 +352,51 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                                   Expanded(
                                                     child: Row(
                                                       children: [
-                                                        Icon(Icons.calendar_month, size: 14),
+                                                        Icon(
+                                                          Icons.calendar_month,
+                                                          size: 14,
+                                                        ),
                                                         SizedBox(width: 5),
                                                         Text(
                                                           parsedDate,
-                                                          overflow: TextOverflow.ellipsis,
-                                                          style: GoogleFonts.poppins(
-                                                            fontSize: 12,
-                                                            fontWeight: FontWeight.w400,
-                                                          ),
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
                                                         ),
                                                       ],
                                                     ),
                                                   ),
                                                   Container(
-                                                    padding: EdgeInsets.symmetric(
-                                                      vertical: 3,
-                                                      horizontal: 8,
-                                                    ),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 8,
+                                                        ),
                                                     decoration: BoxDecoration(
                                                       color: statusColor,
-                                                      borderRadius: BorderRadius.circular(8),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
                                                     ),
                                                     child: Text(
                                                       finalStatus!,
-                                                      style: GoogleFonts.poppins(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                        color: MyColor().blackClr,
-                                                      ),
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               ),
 
@@ -344,22 +405,35 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                               // -------- online ---------
                                               Row(
                                                 children: [
-                                                 mode == 'OFFLINE' ? Icon(Icons.location_on_outlined, size: 14) : Container(
-                                                   height: 8,
-                                                   width: 8,
-                                                   decoration: BoxDecoration(
-                                                   color: MyColor().greenClr,
-                                                   shape: BoxShape.circle
-                                                 ),),
+                                                  mode == 'OFFLINE'
+                                                      ? Icon(
+                                                          Icons
+                                                              .location_on_outlined,
+                                                          size: 14,
+                                                        )
+                                                      : Container(
+                                                          height: 8,
+                                                          width: 8,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                                color: MyColor()
+                                                                    .greenClr,
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                        ),
                                                   SizedBox(width: 5),
                                                   Expanded(
                                                     child: Text(
                                                       location,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: GoogleFonts.poppins(
-                                                        fontSize: 12,
-                                                        fontWeight: FontWeight.w400,
-                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
                                                     ),
                                                   ),
                                                 ],
@@ -367,44 +441,96 @@ class _MyEventsModelState extends State<MyEventsModel> {
 
                                               // -------- edit -------
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
                                                   GestureDetector(
-                                                    onTap: (){
+                                                    onTap: () {
                                                       Navigator.push(
-                                                          context,
-                                                          PageRouteBuilder(pageBuilder: (_,__,___)=> EventDetailPage(slug: identity, title: title, whichScreen: 'edit', paymentLink: paymentLink,),
-                                                              transitionsBuilder: (_, animation, __, child){
-                                                                return SlideTransition( position: Tween(
-                                                                  begin: const Offset(1, 0),
-                                                                  end: Offset.zero,
-                                                                ).animate(animation),
-                                                                  child: child,);
-                                                              }
-                                                          )
+                                                        context,
+                                                        PageRouteBuilder(
+                                                          pageBuilder:
+                                                              (
+                                                                _,
+                                                                __,
+                                                                ___,
+                                                              ) => EventDetailPage(
+                                                                slug: identity,
+                                                                title: title,
+                                                                whichScreen:
+                                                                    'edit',
+                                                                paymentLink:
+                                                                    paymentLink,
+                                                              ),
+                                                          transitionsBuilder:
+                                                              (
+                                                                _,
+                                                                animation,
+                                                                __,
+                                                                child,
+                                                              ) {
+                                                                return SlideTransition(
+                                                                  position: Tween(
+                                                                    begin:
+                                                                        const Offset(
+                                                                          1,
+                                                                          0,
+                                                                        ),
+                                                                    end: Offset
+                                                                        .zero,
+                                                                  ).animate(animation),
+                                                                  child: child,
+                                                                );
+                                                              },
+                                                        ),
                                                       );
                                                     },
                                                     child: Container(
-                                                      padding: EdgeInsets.only(bottom: 5,top: 5,left: 15,right: 15),
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(30),
-                                                        border: Border.all(color: MyColor().primaryClr)
+                                                      padding: EdgeInsets.only(
+                                                        bottom: 5,
+                                                        top: 5,
+                                                        left: 15,
+                                                        right: 15,
                                                       ),
-                                                      child: Text("Edit",style: GoogleFonts.poppins(
-                                                        fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().primaryClr
-                                                      ),),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              30,
+                                                            ),
+                                                        border: Border.all(
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                        ),
+                                                      ),
+                                                      child: Text(
+                                                        "Edit",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                      ),
                                                     ),
                                                   ),
                                                   Transform.scale(
                                                     scale: 0.6,
-                                                    child: Switch(value: checkStatus, onChanged: (onChanged){
-                                                      setState(() {
-                                                        checkStatus = onChanged;
-                                                      });
-                                                    }),
-                                                  )
+                                                    child: Switch(
+                                                      value: checkStatus,
+                                                      onChanged: (onChanged) {
+                                                        setState(() {
+                                                          checkStatus =
+                                                              onChanged;
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
                                                 ],
-                                              )
+                                              ),
                                             ],
                                           ),
                                         ),
@@ -418,36 +544,37 @@ class _MyEventsModelState extends State<MyEventsModel> {
                         ),
                       ),
                     );
-                  } else if(myEventState is MyEventFail){
+                  } else if (myEventState is MyEventFail) {
                     return RefreshIndicator(
-                      onRefresh: () async{
+                      onRefresh: () async {
                         context.read<MyEventBloc>().add(FetchMyEvent());
                       },
                       child: Center(
                         child: ListView(
-              shrinkWrap: true,
-              children: [
-                Center(
-                  child: SizedBox(
-                    height: 250,
-                    child: Image.asset(ImagePath().errorMessageImg),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    "No Results Found",
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: MyColor().blackClr,
-                    ),
-                  ),
-                ),
-              ],
+                          shrinkWrap: true,
+                          children: [
+                            Center(
+                              child: SizedBox(
+                                height: 250,
+                                child: Image.asset(ImagePath().errorMessageImg),
+                              ),
+                            ),
+                            Center(
+                              child: Text(
+                                "No Results Found",
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                  color: MyColor().blackClr,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     );
-                  } return SizedBox.shrink();
+                  }
+                  return SizedBox.shrink();
                 },
               ),
             ),
