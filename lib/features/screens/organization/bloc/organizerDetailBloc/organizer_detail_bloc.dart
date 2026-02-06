@@ -9,49 +9,55 @@ import 'package:meta/meta.dart';
 part 'organizer_detail_event.dart';
 part 'organizer_detail_state.dart';
 
-class OrganizerDetailBloc extends Bloc<OrganizerDetailEvent, OrganizerDetailState> {
+class OrganizerDetailBloc
+    extends Bloc<OrganizerDetailEvent, OrganizerDetailState> {
   final ApiController apiController;
   final List<dynamic> organizerDetailList = [];
-  OrganizerDetailBloc({required this.apiController}) : super(OrganizerDetailInitial()) {
-    on<ClickOrgDetail>((event, emit) async{
-
+  OrganizerDetailBloc({required this.apiController})
+    : super(OrganizerDetailInitial()) {
+    on<ClickOrgDetail>((event, emit) async {
       emit(OrganizerDetailLoading());
 
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
         // ----- access token data base -------
         final token = await DBHelper().getToken();
 
-
-        final parameter = {
-          "" : ""
-        };
+        final parameter = {"": ""};
 
         print("organizations/${event.slug}/events");
-        final response = await apiController.getMethod(endPoint: 'organizations/${event.slug}/events', token: token!, data: parameter);
-        print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
-        if(response.statusCode == 200){
+        final response = await apiController.getMethod(
+          endPoint: 'organizations/${event.slug}/events',
+          token: token!,
+          data: parameter,
+        );
+        // print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             organizerDetailList.clear();
 
             // --------- array of object comes list then must use for addAll ----------
             organizerDetailList.addAll(responseBody['data']);
-            emit(OrganizerDetailSuccess(organizerDetailList: List.from(organizerDetailList)));
-          }else{
+            emit(
+              OrganizerDetailSuccess(
+                organizerDetailList: List.from(organizerDetailList),
+              ),
+            );
+          } else {
             emit(OrganizerDetailFail(errorMessage: responseBody['message']));
           }
         }
-
-      }on DioException catch(e){
+      } on DioException catch (e) {
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(OrganizerDetailFail(errorMessage: error));
-      } catch(e){
-        emit(OrganizerDetailFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+      } catch (e) {
+        emit(
+          OrganizerDetailFail(errorMessage: ConfigMessage().unexpectedErrorMsg),
+        );
       }
     });
   }

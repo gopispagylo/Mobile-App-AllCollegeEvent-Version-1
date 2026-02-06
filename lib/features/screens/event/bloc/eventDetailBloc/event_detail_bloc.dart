@@ -13,41 +13,41 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
   final ApiController apiController;
   final List<dynamic> eventDetailList = [];
   EventDetailBloc({required this.apiController}) : super(EventDetailInitial()) {
-    on<ClickEventDetail>((event, emit) async{
-
+    on<ClickEventDetail>((event, emit) async {
       emit(EventDetailLoading());
 
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
         // ----- access token data base -------
         final token = await DBHelper().getToken();
 
+        final parameter = {"": ""};
 
-        final parameter = {
-          "" : ""
-        };
-
-        final response = await apiController.getMethod(endPoint: 'events_protec/${event.slug}', token: token!, data: parameter);
+        final response = await apiController.getMethod(
+          endPoint: 'events_protec/${event.slug}',
+          token: token!,
+          data: parameter,
+        );
         print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             eventDetailList.clear();
             eventDetailList.add(responseBody['data']);
-            emit(EventDetailSuccess(eventDetailList: List.from(eventDetailList)));
-          }else{
+            emit(
+              EventDetailSuccess(eventDetailList: List.from(eventDetailList)),
+            );
+          } else {
             emit(EventDetailFail(errorMessage: responseBody['message']));
           }
         }
-
-      }on DioException catch(e){
+      } on DioException catch (e) {
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(EventDetailFail(errorMessage: error));
-      } catch(e){
+      } catch (e) {
         emit(EventDetailFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

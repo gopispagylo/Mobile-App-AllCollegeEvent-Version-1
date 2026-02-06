@@ -910,6 +910,9 @@ class _SearchModelState extends State<SearchModel> {
                                               } else if (certificationState
                                                   is CertificationFail) {
                                                 return RefreshIndicator(
+                                                  backgroundColor:
+                                                      MyColor().whiteClr,
+                                                  color: MyColor().primaryClr,
                                                   onRefresh: () async {
                                                     context
                                                         .read<
@@ -1220,6 +1223,7 @@ class _SearchModelState extends State<SearchModel> {
                   }
                 }
                 return RefreshIndicator(
+                  backgroundColor: MyColor().whiteClr,
                   color: MyColor().primaryClr,
                   onRefresh: () async {
                     fetchEvents();
@@ -1289,7 +1293,11 @@ class _SearchModelState extends State<SearchModel> {
 
                         // -------- identity ---------
                         final identity = list['slug'];
-                        final paymentLink = list['paymentLink'];
+                        final paymentLink = list['paymentLink'] ?? "";
+
+                        print(
+                          "paymentLinkpaymentLinkpaymentLinkpaymentLink$paymentLink",
+                        );
                         // event identity
                         final eventId = list['identity'].toString();
 
@@ -1317,7 +1325,7 @@ class _SearchModelState extends State<SearchModel> {
                                           slug: identity,
                                           title: title,
                                           whichScreen: 'view',
-                                          paymentLink: paymentLink,
+                                          paymentLink: paymentLink ?? "",
                                         ),
                                     transitionsBuilder:
                                         (_, animation, __, child) {
@@ -1359,20 +1367,23 @@ class _SearchModelState extends State<SearchModel> {
                                         borderRadius: BorderRadius.circular(10),
                                       ),
                                       clipBehavior: Clip.antiAlias,
-                                      child: CachedNetworkImage(
-                                        memCacheHeight: 300,
-                                        fadeInDuration: Duration.zero,
-                                        imageUrl: featuredImagePath,
-                                        fit: BoxFit.cover,
-                                        placeholder: (context, url) => Center(
-                                          child: CircularProgressIndicator(
-                                            color: MyColor().primaryClr,
-                                          ),
-                                        ),
-                                        errorWidget: (context, url, error) =>
-                                            const Icon(
-                                              Icons.image_not_supported,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: CachedNetworkImage(
+                                          // memCacheHeight: 300,
+                                          fadeInDuration: Duration.zero,
+                                          imageUrl: featuredImagePath,
+                                          fit: BoxFit.cover,
+                                          placeholder: (context, url) => Center(
+                                            child: CircularProgressIndicator(
+                                              color: MyColor().primaryClr,
                                             ),
+                                          ),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(
+                                                Icons.image_not_supported,
+                                              ),
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1458,30 +1469,33 @@ class _SearchModelState extends State<SearchModel> {
                                                           children: [
                                                             Icon(
                                                               isLiked
-                                                                  ? Icons
-                                                                        .favorite
-                                                                  : Icons
-                                                                        .favorite_border,
+                                                                  ? Iconsax
+                                                                        .heart
+                                                                  : Iconsax
+                                                                        .heart_copy,
                                                               color: isLiked
                                                                   ? MyColor()
                                                                         .redClr
                                                                   : null,
                                                               size: 25,
                                                             ),
-                                                            const SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Text(
-                                                              count.toString(),
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 12,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: MyColor()
-                                                                    .secondaryClr,
+                                                            if (count != 0)
+                                                              const SizedBox(
+                                                                width: 5,
                                                               ),
-                                                            ),
+                                                            if (count != 0)
+                                                              Text(
+                                                                count
+                                                                    .toString(),
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: MyColor()
+                                                                      .secondaryClr,
+                                                                ),
+                                                              ),
                                                           ],
                                                         ),
                                                       );
@@ -1540,9 +1554,7 @@ class _SearchModelState extends State<SearchModel> {
                                                         },
                                                         child: Container(
                                                           padding:
-                                                              EdgeInsets.all(
-                                                                10,
-                                                              ),
+                                                              EdgeInsets.all(7),
                                                           decoration: BoxDecoration(
                                                             border: Border.all(
                                                               color: MyColor()
@@ -1561,7 +1573,7 @@ class _SearchModelState extends State<SearchModel> {
                                                                 ? Icons.bookmark
                                                                 : Icons
                                                                       .bookmark_outline,
-                                                            size: 15,
+                                                            size: 20,
                                                             color: checkSave
                                                                 ? MyColor()
                                                                       .primaryClr
@@ -1671,6 +1683,8 @@ class _SearchModelState extends State<SearchModel> {
                 );
               } else if (searchEventListState is SearchEventListFail) {
                 return RefreshIndicator(
+                  backgroundColor: MyColor().whiteClr,
+                  color: MyColor().primaryClr,
                   onRefresh: () async {
                     fetchEvents();
                   },

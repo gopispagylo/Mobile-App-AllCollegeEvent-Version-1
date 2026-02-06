@@ -54,6 +54,9 @@ class _HomeModelState extends State<HomeModel> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      edgeOffset: 20,
+      backgroundColor: MyColor().whiteClr,
+      color: MyColor().primaryClr,
       onRefresh: () async {
         context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
         context.read<EventTypeAllBloc>().add(EventTypeAll());

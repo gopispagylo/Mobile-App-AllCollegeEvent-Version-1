@@ -94,6 +94,9 @@ class _GridViewModelState extends State<GridViewModel> {
                   );
                 } else if (eventTypeAll is EventTypeSuccessAll) {
                   return RefreshIndicator(
+                    edgeOffset: 20,
+                    backgroundColor: MyColor().whiteClr,
+                    color: MyColor().primaryClr,
                     onRefresh: () async {
                       context.read<EventTypeAllBloc>().add(EventTypeAll());
                     },
@@ -118,18 +121,21 @@ class _GridViewModelState extends State<GridViewModel> {
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CachedNetworkImage(
-                                  memCacheHeight: 300,
-                                  fadeInDuration: Duration.zero,
-                                  imageUrl: list['imageUrl'] ?? '',
-                                  height: 45,
-                                  placeholder: (context, url) {
-                                    return Center(
-                                      child: CircularProgressIndicator(
-                                        color: MyColor().primaryClr,
-                                      ),
-                                    );
-                                  },
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: CachedNetworkImage(
+                                    // memCacheHeight: 300,
+                                    fadeInDuration: Duration.zero,
+                                    imageUrl: list['imageUrl'] ?? '',
+                                    height: 45,
+                                    placeholder: (context, url) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: MyColor().primaryClr,
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                                 Text(
                                   list['name'],
@@ -155,6 +161,9 @@ class _GridViewModelState extends State<GridViewModel> {
                   );
                 } else if (eventTypeAll is EventTypeFailAll) {
                   return RefreshIndicator(
+                    edgeOffset: 20,
+                    backgroundColor: MyColor().whiteClr,
+                    color: MyColor().primaryClr,
                     onRefresh: () async {
                       context.read<CategoriesBloc>().add(FetchCategories());
                     },

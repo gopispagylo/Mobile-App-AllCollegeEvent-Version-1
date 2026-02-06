@@ -59,7 +59,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           backgroundColor: Colors.transparent,
           flexibleSpace: ClipRRect(
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaY: 12, sigmaX: 12),
+              filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
               child: Container(
                 decoration: BoxDecoration(
                   color: MyColor().whiteClr.withOpacity(0.05),

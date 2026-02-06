@@ -94,7 +94,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
         bottomNavigationBar: AnimatedContainer(
           duration: Duration(milliseconds: 500),
           curve: Curves.easeInOut,
-          height: isBottomVisible ? kBottomNavigationBarHeight + 20 : 0,
+          height: kBottomNavigationBarHeight + 20,
           child: Wrap(
             children: [
               CurvedNavigationBar(

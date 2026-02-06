@@ -158,6 +158,9 @@ class _MyEventsModelState extends State<MyEventsModel> {
                     );
                   } else if (myEventState is MyEventSuccess) {
                     return RefreshIndicator(
+                      edgeOffset: 20,
+                      backgroundColor: MyColor().whiteClr,
+                      color: MyColor().primaryClr,
                       onRefresh: () async {
                         context.read<MyEventBloc>().add(FetchMyEvent());
                       },
@@ -307,7 +310,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                               9,
                                             ),
                                             child: CachedNetworkImage(
-                                              memCacheHeight: 300,
+                                              // memCacheHeight: 300,
                                               fadeInDuration: Duration.zero,
                                               imageUrl: featuredImagePath,
                                               fit: BoxFit.cover,
@@ -546,6 +549,9 @@ class _MyEventsModelState extends State<MyEventsModel> {
                     );
                   } else if (myEventState is MyEventFail) {
                     return RefreshIndicator(
+                      edgeOffset: 20,
+                      backgroundColor: MyColor().whiteClr,
+                      color: MyColor().primaryClr,
                       onRefresh: () async {
                         context.read<MyEventBloc>().add(FetchMyEvent());
                       },

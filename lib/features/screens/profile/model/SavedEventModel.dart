@@ -99,6 +99,9 @@ class _SavedEventModelState extends State<SavedEventModel> {
                     );
                   } else if (savedEventState is SavedEventSuccess) {
                     return RefreshIndicator(
+                      edgeOffset: 20,
+                      backgroundColor: MyColor().whiteClr,
+                      color: MyColor().primaryClr,
                       onRefresh: () async {
                         context.read<SavedEventBloc>().add(FetchSavedEvent());
                       },
@@ -216,28 +219,32 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                           clipBehavior: Clip.antiAlias,
                                           child: Hero(
                                             tag: 'event_image_$identity',
-                                            child: CachedNetworkImage(
-                                              memCacheHeight: 300,
-                                              fadeInDuration: Duration.zero,
-                                              imageUrl: featuredImagePath,
-                                              fit: BoxFit.cover,
-                                              height: 110,
-                                              placeholder: (context, url) =>
-                                                  Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          color: MyColor()
-                                                              .primaryClr,
-                                                        ),
-                                                  ),
-                                              errorWidget:
-                                                  (
-                                                    context,
-                                                    url,
-                                                    error,
-                                                  ) => const Icon(
-                                                    Icons.image_not_supported,
-                                                  ),
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: CachedNetworkImage(
+                                                // memCacheHeight: 300,
+                                                fadeInDuration: Duration.zero,
+                                                imageUrl: featuredImagePath,
+                                                fit: BoxFit.cover,
+                                                height: 110,
+                                                placeholder: (context, url) =>
+                                                    Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                            color: MyColor()
+                                                                .primaryClr,
+                                                          ),
+                                                    ),
+                                                errorWidget:
+                                                    (
+                                                      context,
+                                                      url,
+                                                      error,
+                                                    ) => const Icon(
+                                                      Icons.image_not_supported,
+                                                    ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -447,6 +454,9 @@ class _SavedEventModelState extends State<SavedEventModel> {
                     );
                   } else if (savedEventState is SavedEventFail) {
                     return RefreshIndicator(
+                      edgeOffset: 20,
+                      backgroundColor: MyColor().whiteClr,
+                      color: MyColor().primaryClr,
                       onRefresh: () async {
                         context.read<SavedEventBloc>().add(FetchSavedEvent());
                       },

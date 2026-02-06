@@ -16,7 +16,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-
   // ------- find user assign the value ------
   String? checkUser;
 
@@ -48,7 +47,9 @@ class _ProfilePageState extends State<ProfilePage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => UserProfileBloc(apiController: ApiController())..add(ClickedUserProfile(whichUser: checkUser!)),
+          create: (context) =>
+              UserProfileBloc(apiController: ApiController())
+                ..add(ClickedUserProfile(whichUser: checkUser!)),
         ),
       ],
       child: Builder(
@@ -56,25 +57,29 @@ class _ProfilePageState extends State<ProfilePage> {
           return Scaffold(
             backgroundColor: MyColor().whiteClr,
             body: RefreshIndicator(
-              onRefresh: () async{
-                context.read<UserProfileBloc>().add(ClickedUserProfile(whichUser: checkUser!));
+              edgeOffset: 20,
+              backgroundColor: MyColor().whiteClr,
+              color: MyColor().primaryClr,
+              onRefresh: () async {
+                context.read<UserProfileBloc>().add(
+                  ClickedUserProfile(whichUser: checkUser!),
+                );
               },
               child: ListView(
                 children: [
-
                   // ------- Profile Header -------
                   TopModel(whichScreen: checkUser!),
 
                   // ---------- Profile model ----------
-                  ProfileModel(whichScreen: checkUser!,),
+                  ProfileModel(whichScreen: checkUser!),
 
                   // ----------- My Space --------
-                  MySpaceModel(whichScreen: checkUser!,),
+                  MySpaceModel(whichScreen: checkUser!),
                 ],
               ),
             ),
           );
-        }
+        },
       ),
     );
   }

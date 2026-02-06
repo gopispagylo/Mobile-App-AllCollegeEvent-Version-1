@@ -394,6 +394,8 @@ class _EventListModelState extends State<EventListModel> {
                 );
               } else if (eventListState is EventSuccess) {
                 return RefreshIndicator(
+                  edgeOffset: 20,
+                  backgroundColor: MyColor().whiteClr,
                   color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<EventListBloc>().add(
@@ -546,21 +548,30 @@ class _EventListModelState extends State<EventListModel> {
                                       clipBehavior: Clip.antiAlias,
                                       child: Hero(
                                         tag: 'event_image_$identity',
-                                        child: CachedNetworkImage(
-                                          memCacheHeight: 300,
-                                          fadeInDuration: Duration.zero,
-                                          imageUrl: featuredImagePath,
-                                          fit: BoxFit.cover,
-                                          height: 110,
-                                          placeholder: (context, url) => Center(
-                                            child: CircularProgressIndicator(
-                                              color: MyColor().primaryClr,
-                                            ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
                                           ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(
-                                                Icons.image_not_supported,
-                                              ),
+                                          child: CachedNetworkImage(
+                                            // memCacheHeight: 300,
+                                            fadeInDuration: Duration.zero,
+                                            imageUrl: featuredImagePath,
+                                            fit: BoxFit.cover,
+                                            height: 110,
+                                            placeholder: (context, url) =>
+                                                Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        color: MyColor()
+                                                            .primaryClr,
+                                                      ),
+                                                ),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(
+                                                      Icons.image_not_supported,
+                                                    ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -861,6 +872,9 @@ class _EventListModelState extends State<EventListModel> {
                 );
               } else if (eventListState is EventFail) {
                 return RefreshIndicator(
+                  edgeOffset: 20,
+                  backgroundColor: MyColor().whiteClr,
+                  color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<EventListBloc>().add(
                       FetchEventList(

@@ -34,7 +34,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
           return Column(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 30, left: 16, right: 6),
+                margin: EdgeInsets.only(top: 20, left: 16, right: 6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -60,7 +60,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                 ),
               ),
               SizedBox(
-                height: 280,
+                height: 260,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: min(
@@ -151,7 +151,6 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                         margin: EdgeInsets.only(
                           right: 16,
                           left: index == 0 ? 16 : 0,
-                          top: 15,
                         ),
                         width: 250,
                         decoration: BoxDecoration(
@@ -170,7 +169,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                               alignment: Alignment.topRight,
                               children: [
                                 Container(
-                                  height: 130,
+                                  height: 147,
                                   width: 250,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.only(
@@ -181,18 +180,56 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                   clipBehavior: Clip.antiAlias,
                                   child: Hero(
                                     tag: 'event_image_$identity',
-                                    child: CachedNetworkImage(
-                                      memCacheHeight: 300,
-                                      fadeInDuration: Duration.zero,
-                                      imageUrl: featuredImage ?? '',
-                                      fit: BoxFit.cover,
-                                      placeholder: (context, url) => Center(
-                                        child: CircularProgressIndicator(
-                                          color: MyColor().primaryClr,
-                                        ),
+                                    // child: Stack(
+                                    //   fit: StackFit.expand,
+                                    //   children: [
+                                    //     ImageFiltered(
+                                    //       imageFilter: ImageFilter.blur(
+                                    //         sigmaX: 12,
+                                    //         sigmaY: 12,
+                                    //       ),
+                                    //       child: CachedNetworkImage(
+                                    //         imageUrl: featuredImage ?? '',
+                                    //         fit: BoxFit.cover,
+                                    //       ),
+                                    //     ),
+                                    //
+                                    //     Center(
+                                    //       child: CachedNetworkImage(
+                                    //         fadeInDuration: Duration.zero,
+                                    //         imageUrl: featuredImage ?? '',
+                                    //         fit: BoxFit.contain,
+                                    //         placeholder: (context, url) =>
+                                    //             CircularProgressIndicator(
+                                    //               color: MyColor().primaryClr,
+                                    //             ),
+                                    //         errorWidget:
+                                    //             (context, url, error) =>
+                                    //                 const Icon(
+                                    //                   Iconsax.image,
+                                    //                   size: 50,
+                                    //                 ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10),
                                       ),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(Iconsax.image, size: 50),
+                                      child: CachedNetworkImage(
+                                        fadeInDuration: Duration.zero,
+                                        imageUrl: featuredImage ?? '',
+                                        fit: BoxFit.cover,
+                                        placeholder: (context, url) => Center(
+                                          child: CircularProgressIndicator(
+                                            color: MyColor().primaryClr,
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) =>
+                                            const Icon(Iconsax.image, size: 50),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -280,7 +317,11 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                             // ------ icon --------
                             Container(
-                              margin: EdgeInsets.all(10),
+                              margin: EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                              ),
                               child: Column(
                                 children: [
                                   Row(
@@ -343,23 +384,26 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                               children: [
                                                 Icon(
                                                   isLiked
-                                                      ? Icons.favorite
-                                                      : Icons.favorite_border,
+                                                      ? Iconsax.heart
+                                                      : Iconsax.heart_copy,
                                                   color: isLiked
                                                       ? MyColor().redClr
                                                       : null,
                                                   size: 25,
                                                 ),
-                                                const SizedBox(width: 5),
-                                                Text(
-                                                  count.toString(),
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w600,
-                                                    color:
-                                                        MyColor().secondaryClr,
+                                                if (count != 0)
+                                                  const SizedBox(width: 5),
+                                                if (count != 0)
+                                                  Text(
+                                                    count.toString(),
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: MyColor()
+                                                          .secondaryClr,
+                                                    ),
                                                   ),
-                                                ),
                                               ],
                                             ),
                                           );
@@ -367,7 +411,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 10),
+                                  // SizedBox(height: 0),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -401,7 +445,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                       ),
                                     ],
                                   ),
-                                  SizedBox(height: 5),
+                                  SizedBox(height: 3),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -451,10 +495,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                   ],
                                 ),
                                 Container(
-                                  margin: EdgeInsets.only(
-                                    bottom: 10,
-                                    right: 10,
-                                  ),
+                                  margin: EdgeInsets.only(bottom: 0, right: 10),
                                   padding: EdgeInsets.only(
                                     left: 10,
                                     right: 10,

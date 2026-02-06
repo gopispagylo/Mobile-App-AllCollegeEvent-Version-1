@@ -1,4 +1,4 @@
-class ImagePath{
+class ImagePath {
   final backgroundImg = "assets/image/background_img.png";
   final authLoginImg = "assets/image/auth-login.png";
   final authSignupImg = "assets/image/auth-signup.png";
@@ -44,7 +44,6 @@ class ImagePath{
   final video = "assets/image/video.png";
   final website = "assets/image/world-wide-web.png";
 
-
   // ------- splash screen images --------
   final splashScreenFirst = "assets/image/Frame 2147226298.png";
   final splashScreenTSecond = "assets/image/Frame 2147226299.png";
@@ -64,8 +63,7 @@ class ImagePath{
   final homeBackground = "assets/image/background_homepage.png";
 
   // ------- top organizer leader board --------
-  final rank_1 = 'assets/image/rank_1.png';
-  final rank_2 = 'assets/image/rank_2.png';
-  final rank_3 = 'assets/image/rank_3.png';
-
+  final rank_1 = 'assets/image/FirstOr.png';
+  final rank_2 = 'assets/image/SecondOr.png';
+  final rank_3 = 'assets/image/ThreedOr.png';
 }

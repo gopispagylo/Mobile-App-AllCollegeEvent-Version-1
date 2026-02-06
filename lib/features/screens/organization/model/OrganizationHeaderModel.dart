@@ -31,6 +31,12 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
   int selectedIndex = 0;
   int currentPage = 0;
 
+  // ------ pagination setup -----
+  final scrollController = ScrollController();
+  int page = 1;
+  int limit = 10;
+  bool isLoadMore = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OrganizerDetailBloc, OrganizerDetailState>(
@@ -81,7 +87,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
-                                  memCacheHeight: 300,
+                                  // memCacheHeight: 300,
                                   fadeInDuration: Duration.zero,
                                   imageUrl: sliderList,
                                   fit: BoxFit.cover,
@@ -106,6 +112,9 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                               currentPage = index;
                             });
                           },
+                          scrollPhysics: currentPage == 0
+                              ? NeverScrollableScrollPhysics()
+                              : AlwaysScrollableScrollPhysics(),
                           enlargeCenterPage: true,
                           autoPlay: false,
                           autoPlayCurve: Curves.fastOutSlowIn,
@@ -140,7 +149,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                   children: [
                     ClipOval(
                       child: CachedNetworkImage(
-                        memCacheHeight: 300,
+                        // memCacheHeight: 300,
                         fadeInDuration: Duration.zero,
                         imageUrl: profilePhoto ?? '',
                         width: 70,
@@ -364,33 +373,39 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                             : '';
 
                                         // ------ date format -------
-                                        final rawDate =
-                                            list['eventDate']?.toString() ?? "";
+                                        String formatEventDate({
+                                          required dynamic calendars,
+                                        }) {
+                                          if (calendars == null ||
+                                              calendars.isEmpty) {
+                                            return "No date";
+                                          }
+                                          final rawDate =
+                                              calendars[0]['startDate'];
 
-                                        // 2. Safe Date Parsing
-                                        String dateFormat = "Date TBD";
-
-                                        if (rawDate.isNotEmpty) {
+                                          if (rawDate == null ||
+                                              rawDate.isEmpty) {
+                                            return "No date";
+                                          }
                                           try {
-                                            // Use MM for months!
-                                            final parsedDate = DateFormat(
-                                              'dd/MM/yyyy',
-                                            ).parse(rawDate);
-                                            dateFormat = DateFormat(
-                                              'dd MMM yyyy',
-                                            ).format(parsedDate);
-                                          } catch (e) {
-                                            debugPrint(
-                                              "Date parsing error: $e",
+                                            final dateTime = DateTime.parse(
+                                              rawDate,
                                             );
-                                            dateFormat =
-                                                rawDate; // Fallback to raw string if parsing fails
+                                            return DateFormat(
+                                              'dd MMM yy',
+                                            ).format(dateTime);
+                                          } catch (e) {
+                                            return "No date";
                                           }
                                         }
 
-                                        // ---- venue ---
-                                        final venue =
-                                            list['venue'] ?? "no venue";
+                                        String venue;
+                                        // venue format
+                                        if (list['mode'] == "ONLINE") {
+                                          venue = 'Online';
+                                        } else {
+                                          venue = list['location']['venue'];
+                                        }
 
                                         // -------- identity ---------
                                         final identity = list['slug'];
@@ -470,33 +485,39 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                                       child: Hero(
                                                         tag:
                                                             'event_image_$identity',
-                                                        child: CachedNetworkImage(
-                                                          memCacheHeight: 300,
-                                                          fadeInDuration:
-                                                              Duration.zero,
-                                                          imageUrl:
-                                                              featuredImagePath,
-                                                          fit: BoxFit.cover,
-                                                          height: 110,
-                                                          placeholder:
-                                                              (
-                                                                context,
-                                                                url,
-                                                              ) => Center(
-                                                                child: CircularProgressIndicator(
-                                                                  color: MyColor()
-                                                                      .primaryClr,
+                                                        child: ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                10,
+                                                              ),
+                                                          child: CachedNetworkImage(
+                                                            // memCacheHeight: 300,
+                                                            fadeInDuration:
+                                                                Duration.zero,
+                                                            imageUrl:
+                                                                featuredImagePath,
+                                                            fit: BoxFit.cover,
+                                                            height: 110,
+                                                            placeholder:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                ) => Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    color: MyColor()
+                                                                        .primaryClr,
+                                                                  ),
                                                                 ),
-                                                              ),
-                                                          errorWidget:
-                                                              (
-                                                                context,
-                                                                url,
-                                                                error,
-                                                              ) => const Icon(
-                                                                Icons
-                                                                    .image_not_supported,
-                                                              ),
+                                                            errorWidget:
+                                                                (
+                                                                  context,
+                                                                  url,
+                                                                  error,
+                                                                ) => const Icon(
+                                                                  Icons
+                                                                      .image_not_supported,
+                                                                ),
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
@@ -572,7 +593,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
 
                                                                           final isLiked =
                                                                               bloc.favStatus[eventId] ??
-                                                                              list['isLiked'];
+                                                                              list['isLiked'] ??
+                                                                              false;
 
                                                                           final count =
                                                                               bloc.likeCount[eventId] ??
@@ -743,7 +765,10 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                                               ),
                                                               Expanded(
                                                                 child: Text(
-                                                                  dateFormat,
+                                                                  formatEventDate(
+                                                                    calendars:
+                                                                        list['calendars'],
+                                                                  ),
                                                                   overflow:
                                                                       TextOverflow
                                                                           .ellipsis,
@@ -842,8 +867,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                         .organizerEventList
                                         .length,
                                     itemBuilder: (context, index) {
-                                      final gridList =
-                                          orgState.organizerDetailList[index];
+                                      final gridList = organizerEventState
+                                          .organizerEventList[index];
                                       final featuredImagePath =
                                           (gridList['bannerImages'] != null &&
                                               gridList['bannerImages']
@@ -873,7 +898,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                                 borderRadius:
                                                     BorderRadius.circular(12),
                                                 child: CachedNetworkImage(
-                                                  memCacheHeight: 300,
+                                                  // memCacheHeight: 300,
                                                   fadeInDuration: Duration.zero,
                                                   imageUrl:
                                                       featuredImagePath ?? '',
@@ -937,6 +962,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                               ),
                                             ),
 
+                                            // card content
                                             Positioned(
                                               left: 0,
                                               right: 0,
@@ -1038,11 +1064,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                     child: Column(
                       children: [
                         if (list['socialLinks']['linkedin'] != null ||
-                            list['socialLinks']['linkedin'].isNotEmpty ||
                             list['socialLinks']['instagram'] != null ||
-                            list['socialLinks']['instagram'].isNotEmpty ||
-                            list['socialLinks']['whatsapp'] != null ||
-                            list['socialLinks']['whatsapp'].isNotEmpty)
+                            list['socialLinks']['whatsapp'] != null)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -1158,6 +1181,9 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
           );
         } else if (orgState is OrganizerDetailFail) {
           return RefreshIndicator(
+            edgeOffset: 20,
+            backgroundColor: MyColor().whiteClr,
+            color: MyColor().primaryClr,
             onRefresh: () async {
               // context.read<EventListBloc>().add(FetchEventList());
             },

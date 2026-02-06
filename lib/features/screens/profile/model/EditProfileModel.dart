@@ -126,6 +126,9 @@ class _EditProfileModelState extends State<EditProfileModel> {
                 return profileFormShimmer();
               } else if (userProfileState is UserProfileSuccess) {
                 return RefreshIndicator(
+                  edgeOffset: 20,
+                  backgroundColor: MyColor().whiteClr,
+                  color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<UserProfileBloc>().add(
                       ClickedUserProfile(whichUser: widget.whichScreen),
@@ -187,7 +190,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                                                             .isNotEmpty)
                                                   ? ClipOval(
                                                       child: CachedNetworkImage(
-                                                        memCacheHeight: 300,
+                                                        // memCacheHeight: 300,
                                                         fadeInDuration:
                                                             Duration.zero,
                                                         imageUrl: profileImage!,
@@ -1020,6 +1023,9 @@ class _EditProfileModelState extends State<EditProfileModel> {
                 );
               } else if (userProfileState is UserProfileFail) {
                 return RefreshIndicator(
+                  edgeOffset: 20,
+                  backgroundColor: MyColor().whiteClr,
+                  color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<UserProfileBloc>().add(
                       ClickedUserProfile(whichUser: widget.whichScreen),

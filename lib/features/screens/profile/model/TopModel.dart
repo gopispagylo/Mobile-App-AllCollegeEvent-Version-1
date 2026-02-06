@@ -45,7 +45,7 @@ class _ProfileModelState extends State<TopModel> {
                     ),
                     child: ClipOval(
                       child: CachedNetworkImage(
-                        memCacheHeight: 300,
+                        // memCacheHeight: 300,
                         fadeInDuration: Duration.zero,
                         imageUrl: list['profileImage'] ?? '',
                         fit: BoxFit.cover,

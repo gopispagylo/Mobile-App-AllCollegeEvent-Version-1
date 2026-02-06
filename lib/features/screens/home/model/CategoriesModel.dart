@@ -35,7 +35,7 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
           return Column(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 30, left: 16, right: 6),
+                margin: EdgeInsets.only(top: 20, left: 16, right: 6),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -119,18 +119,21 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              CachedNetworkImage(
-                                memCacheHeight: 300,
-                                fadeInDuration: Duration.zero,
-                                imageUrl: list['imageUrl'] ?? '',
-                                height: 60,
-                                placeholder: (context, url) {
-                                  return Center(
-                                    child: CircularProgressIndicator(
-                                      color: MyColor().primaryClr,
-                                    ),
-                                  );
-                                },
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: CachedNetworkImage(
+                                  // memCacheHeight: 300,
+                                  fadeInDuration: Duration.zero,
+                                  imageUrl: list['imageUrl'] ?? '',
+                                  height: 60,
+                                  placeholder: (context, url) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: MyColor().primaryClr,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                               Text(
                                 list['name'],
