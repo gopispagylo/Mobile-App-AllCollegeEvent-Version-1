@@ -28,8 +28,11 @@ Future<void> main() async {
 
   var loginData = await DBHelper().getIsLogin();
 
+  var isFree = await DBHelper().getIsFreeLogin();
+
   bool isSplash = data.isNotEmpty;
   bool isLogin = loginData.isNotEmpty;
+  bool isFreeLogin = isFree.isNotEmpty;
 
   // --------- initial deeplink ------
   DeepLinkService().initial;
@@ -38,15 +41,23 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
     _,
   ) {
-    runApp(MyApp(isSplash: isSplash, isLogin: isLogin));
+    runApp(
+      MyApp(isSplash: isSplash, isLogin: isLogin, isFreeLogin: isFreeLogin),
+    );
   });
 }
 
 class MyApp extends StatefulWidget {
   final bool isSplash;
   final bool isLogin;
+  final bool isFreeLogin;
 
-  const MyApp({super.key, required this.isSplash, required this.isLogin});
+  const MyApp({
+    super.key,
+    required this.isSplash,
+    required this.isLogin,
+    required this.isFreeLogin,
+  });
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -99,7 +110,14 @@ class _MyAppState extends State<MyApp> {
                           : BottomNavigationBarPage(
                               pageIndex: 0,
                               whichScreen: checkUser!,
+                              isLogin: true,
                             )
+                    : widget.isFreeLogin
+                    ? BottomNavigationBarPage(
+                        pageIndex: 0,
+                        whichScreen: checkUser ?? "",
+                        isLogin: false,
+                      )
                     : CheckUserPage()
               : OnboardingScreenModel(),
           // home: BottomNavigationBarPage(pageIndex: 0),

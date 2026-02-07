@@ -17,6 +17,9 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
       emit(EventDetailLoading());
 
       try {
+        print(
+          "ClickEventDetailClickEventDetailClickEventDetail$ClickEventDetail",
+        );
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -25,11 +28,19 @@ class EventDetailBloc extends Bloc<EventDetailEvent, EventDetailState> {
 
         final parameter = {"": ""};
 
-        final response = await apiController.getMethod(
-          endPoint: 'events_protec/${event.slug}',
-          token: token!,
-          data: parameter,
+        print(
+          "ClickEventDetailClickEventDetailClickEventDetailevents/${event.slug}",
         );
+
+        final response = event.isLogin
+            ? await apiController.getMethod(
+                endPoint: 'events_protec/${event.slug}',
+                token: token!,
+                data: parameter,
+              )
+            : await apiController.getMethodWithoutBodyAndHeader(
+                endPoint: 'events/${event.slug}',
+              );
         print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
         if (response.statusCode == 200) {
           final responseBody = response.data;

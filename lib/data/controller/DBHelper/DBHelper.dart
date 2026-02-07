@@ -2,9 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DBHelper {
-
   static Database? _db;
-
 
   Future<Database> get db async {
     if (_db != null) return _db!;
@@ -13,21 +11,15 @@ class DBHelper {
   }
 
   // -------- Open data base --------
-  Future<Database> initDB() async{
+  Future<Database> initDB() async {
+    // -------- set path ----------
+    String path = join(await getDatabasesPath(), 'ace.db');
 
-  // -------- set path ----------
-  String path = join(await getDatabasesPath(), 'ace.db');
-
-  return await openDatabase(
-    path,
-    version: 4,
-    onCreate: onCreate
-  );
-}
+    return await openDatabase(path, version: 4, onCreate: onCreate);
+  }
 
   // ---------------- Create Tables (Fresh Install) ----------------
   Future<void> onCreate(Database db, int version) async {
-
     // -------- Login Screen isLogin --------
     await db.execute('''
       CREATE TABLE IsLogin (
@@ -55,7 +47,6 @@ class DBHelper {
       )
     ''');
 
-
     // ------- user details ------------
     await db.execute('''
       CREATE TABLE UserDetails (
@@ -64,7 +55,6 @@ class DBHelper {
         email TEXT
       )
     ''');
-
 
     // -------- Set a token -----------
     await db.execute('''
@@ -81,20 +71,27 @@ class DBHelper {
         userId TEXT
       )
     ''');
+
+    // -------- Set a isLogin --------
+    await db.execute('''
+      CREATE TABLE IsFreeLogin (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        isLogin INTEGER
+      )
+    ''');
   }
 
-
   // --------- IsLogin bool Insert Data ----------
-  Future<int> insertIsLogin(String name, bool isActive) async{
+  Future<int> insertIsLogin(String name, bool isActive) async {
     final dbClient = await db;
     return await dbClient.insert('IsLogin', {
-      'name' : name,
-      'isActive' : isActive ? 1 : 0
+      'name': name,
+      'isActive': isActive ? 1 : 0,
     });
   }
 
   // -------- IsLogin bool Get Data ---------
-  Future<List<Map<String,dynamic>>> getIsLogin() async{
+  Future<List<Map<String, dynamic>>> getIsLogin() async {
     final dbClient = await db;
     return await dbClient.query('IsLogin');
   }
@@ -108,70 +105,78 @@ class DBHelper {
   // -----------------------------------------------------------------
 
   // ------- Inserting data -----------
-  Future<int> insertingIsSplash(String name, bool isSplash) async{
+  Future<int> insertingIsSplash(String name, bool isSplash) async {
     final dbClient = await db;
     return await dbClient.insert('IsSplash', {
-      'name' : name,
-      'isActive' : isSplash ? 1 : 0
+      'name': name,
+      'isActive': isSplash ? 1 : 0,
     });
   }
 
   // ---------- Get data --------
-  Future<List<Map<String,dynamic>>> getIsSplash() async{
+  Future<List<Map<String, dynamic>>> getIsSplash() async {
     final dbClient = await db;
     return await dbClient.query('IsSplash');
   }
 
+  // ----------------------------------------------------------------
+
+  Future<int> insertIsFreeLogin(bool isFreeLogin) async {
+    final dbClient = await db;
+    return await dbClient.insert("IsFreeLogin", {
+      'isLogin': isFreeLogin ? 1 : 0,
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> getIsFreeLogin() async {
+    final dbClient = await db;
+    return await dbClient.query("IsFreeLogin");
+  }
 
   // ------------------------------------------------------------------
 
   // -------- save user ----------
-  Future<void> insertUser(String user) async{
-      final dbClient = await db;
-      await dbClient.insert('UserSave', {
-        'name' : user,
-      });
+  Future<void> insertUser(String user) async {
+    final dbClient = await db;
+    await dbClient.insert('UserSave', {'name': user});
   }
 
   // ----------- get user -----------
-  Future<String?> getUser() async{
+  Future<String?> getUser() async {
     final dbClient = await db;
     final result = await dbClient.query('UserSave');
-    if(result.isNotEmpty){
+    if (result.isNotEmpty) {
       return result.first['name'] as String;
     }
     return null;
   }
 
   // -------- delete user ----------
-  Future<int> deleteUser() async{
+  Future<int> deleteUser() async {
     final dbClient = await db;
     return await dbClient.delete('UserSave');
   }
 
-
   // ---------------------------------------------
 
   // ----------- set a token --------------------
-  Future<int> insertToken(String token) async{
+  Future<int> insertToken(String token) async {
     final dbClient = await db;
-    return await dbClient.insert('SaveToken',{
-      'token' : token
-    });
+    return await dbClient.insert('SaveToken', {'token': token});
   }
 
   // ----------- get a token --------
-  Future<String?> getToken() async{
+  Future<String?> getToken() async {
     final dbClient = await db;
     final result = await dbClient.query('SaveToken');
-    if(result.isNotEmpty){
+    if (result.isNotEmpty) {
       return result.first['token'] as String;
     }
     return null;
   }
 
   // ------------- delete token -----------
-  Future<int> deleteToken() async{
+  Future<int> deleteToken() async {
     final dbClient = await db;
     return await dbClient.delete('SaveToken');
   }
@@ -179,50 +184,45 @@ class DBHelper {
   // --------------------------------------------------
 
   // ------------ save a userId --------
-  Future<int> insertUserId(String userId) async{
+  Future<int> insertUserId(String userId) async {
     final dbClient = await db;
-    return await dbClient.insert('SaveUserId', {
-      'userId' : userId
-    });
+    return await dbClient.insert('SaveUserId', {'userId': userId});
   }
 
   // ----------- get user id ---------
-  Future<String?> getUserId() async{
+  Future<String?> getUserId() async {
     final dbClient = await db;
     final result = await dbClient.query('SaveUserId');
-    if(result.isNotEmpty){
+    if (result.isNotEmpty) {
       return result.first['userId'] as String;
     }
     return null;
   }
 
   // ----------- delete the user id -----------
-  Future<int> deleteUserId() async{
+  Future<int> deleteUserId() async {
     final dbClient = await db;
     return await dbClient.delete('SaveUserId');
   }
 
-
   // -----------------------------------------------------------
 
   // ------------- insert a user details --------
-  Future<void> insertUserDetails(String userName, String email) async{
+  Future<void> insertUserDetails(String userName, String email) async {
     final dbClient = await db;
     await dbClient.insert("UserDetails", {
-      'userName' : userName,
-      'email' : email
+      'userName': userName,
+      'email': email,
     });
   }
 
   // ---------------- get a user details -------------
-  Future<String?> getUserDetails() async{
+  Future<String?> getUserDetails() async {
     final dbClient = await db;
     final result = await dbClient.query("UserDetails");
-    if(result.isNotEmpty){
+    if (result.isNotEmpty) {
       return result.first['userName']?.toString();
     }
     return null;
   }
-
-
 }

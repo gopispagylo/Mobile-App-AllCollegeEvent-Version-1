@@ -14,7 +14,9 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toastification/toastification.dart';
 
 class SavedEventModel extends StatefulWidget {
-  const SavedEventModel({super.key});
+  final bool isLogin;
+
+  const SavedEventModel({super.key, required this.isLogin});
 
   @override
   State<SavedEventModel> createState() => _SavedEventModelState();
@@ -183,6 +185,7 @@ class _SavedEventModelState extends State<SavedEventModel> {
                                         title: title,
                                         whichScreen: 'view',
                                         paymentLink: paymentLink,
+                                        isLogin: widget.isLogin,
                                       ),
                                     ),
                                   );

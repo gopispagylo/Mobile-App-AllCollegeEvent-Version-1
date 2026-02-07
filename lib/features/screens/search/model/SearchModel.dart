@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
-import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
@@ -14,7 +15,6 @@ import 'package:all_college_event_app/features/screens/search/bloc/searchEventLi
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/globalUnFocus/GlobalUnFocus.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
-import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,9 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toastification/toastification.dart';
 
 class SearchModel extends StatefulWidget {
-  const SearchModel({super.key});
+  final bool isLogin;
+
+  const SearchModel({super.key, required this.isLogin});
 
   @override
   State<SearchModel> createState() => _SearchModelState();
@@ -34,6 +36,21 @@ class SearchModel extends StatefulWidget {
 
 class _SearchModelState extends State<SearchModel> {
   Map<String, dynamic> accommodationValues = {};
+
+  // event type multiple select
+  List<Map<String, dynamic>> selectEventTypeList = [];
+  List<Map<String, dynamic>> filterEventTypeList = [];
+  List<Map<String, dynamic>> eventTypeList = [];
+
+  // perks type multiple select
+  List<Map<String, dynamic>> selectPerksList = [];
+  List<Map<String, dynamic>> filterPerksList = [];
+  List<Map<String, dynamic>> perksList = [];
+
+  // accommodation type multiple select
+  List<Map<String, dynamic>> selectAccommodationList = [];
+  List<Map<String, dynamic>> filterAccommodationList = [];
+  List<Map<String, dynamic>> accommodationList = [];
 
   // ----------- Status --------
   List<Map<String, dynamic>> statusList = [
@@ -72,9 +89,6 @@ class _SearchModelState extends State<SearchModel> {
   final limit = 10;
   bool isLoadingMore = false;
   final scrollController = ScrollController();
-
-  // perks list
-  List<String> perksList = [];
 
   // -------- controller --------
   final searchController = TextEditingController();
@@ -130,9 +144,8 @@ class _SearchModelState extends State<SearchModel> {
             ? [selectEventMode!]
             : null,
 
-        eventTypeIdentity:
-            selectEventType != null && selectEventType!.isNotEmpty
-            ? selectEventType
+        eventTypeIdentity: selectEventTypeList.isNotEmpty
+            ? selectEventTypeList.map((e) => e['identity'].toString()).toList()
             : null,
 
         certIdentity:
@@ -170,6 +183,7 @@ class _SearchModelState extends State<SearchModel> {
         searchText: searchController.text.isNotEmpty
             ? searchController.text
             : null,
+        isLogin: widget.isLogin,
       ),
     );
   }
@@ -699,41 +713,119 @@ class _SearchModelState extends State<SearchModel> {
                                                   );
                                                 } else if (eventTypeState
                                                     is EventTypeSuccess) {
-                                                  return SizedBox(
-                                                    width: 320,
-                                                    child: MyModels().customDropdown(
-                                                      label: "Event Type",
-                                                      hint:
-                                                          "Select Type of Event",
-                                                      value: selectEventType,
-                                                      onChanged: (eventType) {
-                                                        setState(() {
-                                                          selectEventType =
-                                                              eventType;
-                                                        });
+                                                  eventTypeList =
+                                                      List<
+                                                        Map<String, dynamic>
+                                                      >.from(
+                                                        eventTypeState
+                                                            .eventTypeList,
+                                                      );
+                                                  filterEventTypeList =
+                                                      eventTypeList;
 
-                                                        print(
-                                                          'selectEventTypeselectEventTypeselectEventTypeselectEventType$selectEventType',
-                                                        );
-                                                      },
-                                                      items: eventTypeState
-                                                          .eventTypeList
-                                                          .map(
-                                                            (e) =>
-                                                                DropdownMenuItem<
-                                                                  String
-                                                                >(
-                                                                  value:
-                                                                      e['identity'],
-                                                                  child: Text(
-                                                                    e['name'],
-                                                                  ),
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                          top: 16,
+                                                          bottom: 10,
+                                                        ),
+                                                        child: Text(
+                                                          "Event Type",
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: MyColor()
+                                                                    .blackClr,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () async {
+                                                          final result =
+                                                              await openEventTypeMultiSelect();
+
+                                                          if (result != null) {
+                                                            setState(() {
+                                                              selectEventTypeList =
+                                                                  result;
+                                                            });
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 14,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                              color: MyColor()
+                                                                  .borderClr,
+                                                              width: 0.5,
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
                                                                 ),
-                                                          )
-                                                          .toList(),
-                                                      valid: Validators()
-                                                          .validOrgCategories,
-                                                    ),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                child: Text(
+                                                                  selectEventTypeList
+                                                                          .isEmpty
+                                                                      ? "Select event type"
+                                                                      : selectEventTypeList
+                                                                            .map(
+                                                                              (
+                                                                                e,
+                                                                              ) => e['name'],
+                                                                            )
+                                                                            .join(
+                                                                              ", ",
+                                                                            ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ),
+                                                              Icon(
+                                                                Icons
+                                                                    .arrow_drop_down,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Wrap(
+                                                        spacing: 8,
+                                                        children: selectEventTypeList
+                                                            .map((e) {
+                                                              return Chip(
+                                                                label: Text(
+                                                                  e['name'],
+                                                                ),
+                                                                onDeleted: () {
+                                                                  setState(() {
+                                                                    selectEventTypeList
+                                                                        .remove(
+                                                                          e,
+                                                                        );
+                                                                  });
+                                                                },
+                                                              );
+                                                            })
+                                                            .toList(),
+                                                      ),
+                                                    ],
                                                   );
                                                 } else if (eventTypeState
                                                     is EventTypeFail) {
@@ -752,7 +844,7 @@ class _SearchModelState extends State<SearchModel> {
                                           // perks
                                           Container(
                                             alignment: Alignment.topLeft,
-                                            margin: EdgeInsets.only(top: 20),
+                                            margin: EdgeInsets.only(top: 0),
                                             child: BlocBuilder<PerksBloc, PerksState>(
                                               builder: (context, perksState) {
                                                 if (perksState
@@ -766,34 +858,116 @@ class _SearchModelState extends State<SearchModel> {
                                                   );
                                                 } else if (perksState
                                                     is PerksSuccess) {
-                                                  return MyModels().customDropdown(
-                                                    label: "Perks *",
-                                                    hint: "Select Perks Type",
-                                                    value: perksValue,
-                                                    onChanged: (onChanged) {
-                                                      setState(() {
-                                                        perksList.add(
-                                                          onChanged,
-                                                        );
-                                                        // perksValue = onChanged;
-                                                      });
-                                                    },
-                                                    items: perksState.perksList
-                                                        .map(
-                                                          (e) =>
-                                                              DropdownMenuItem<
-                                                                String
-                                                              >(
-                                                                value:
-                                                                    e['identity'],
+                                                  perksList =
+                                                      List<
+                                                        Map<String, dynamic>
+                                                      >.from(
+                                                        perksState.perksList,
+                                                      );
+                                                  filterPerksList = perksList;
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                          top: 16,
+                                                          bottom: 10,
+                                                        ),
+                                                        child: Text(
+                                                          "Perks",
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: MyColor()
+                                                                    .blackClr,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      GestureDetector(
+                                                        onTap: () async {
+                                                          final result =
+                                                              await openPerksMultiSelect();
+
+                                                          if (result != null) {
+                                                            setState(() {
+                                                              selectPerksList =
+                                                                  result;
+                                                            });
+                                                          }
+                                                        },
+                                                        child: Container(
+                                                          padding:
+                                                              EdgeInsets.symmetric(
+                                                                horizontal: 12,
+                                                                vertical: 14,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            border: Border.all(
+                                                              color: MyColor()
+                                                                  .borderClr,
+                                                              width: 0.5,
+                                                            ),
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                          ),
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
                                                                 child: Text(
-                                                                  e['perkName'],
+                                                                  selectEventTypeList
+                                                                          .isEmpty
+                                                                      ? "Select perks"
+                                                                      : selectEventTypeList
+                                                                            .map(
+                                                                              (
+                                                                                e,
+                                                                              ) => e['name'],
+                                                                            )
+                                                                            .join(
+                                                                              ", ",
+                                                                            ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
                                                                 ),
                                                               ),
-                                                        )
-                                                        .toList(),
-                                                    valid:
-                                                        Validators().validPerks,
+                                                              Icon(
+                                                                Icons
+                                                                    .arrow_drop_down,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(height: 10),
+                                                      Wrap(
+                                                        spacing: 8,
+                                                        children: selectPerksList
+                                                            .map((e) {
+                                                              return Chip(
+                                                                label: Text(
+                                                                  e['perkName'],
+                                                                ),
+                                                                onDeleted: () {
+                                                                  setState(() {
+                                                                    selectPerksList
+                                                                        .remove(
+                                                                          e,
+                                                                        );
+                                                                  });
+                                                                },
+                                                              );
+                                                            })
+                                                            .toList(),
+                                                      ),
+                                                    ],
                                                   );
                                                 } else if (perksState
                                                     is PerksFail) {
@@ -985,44 +1159,119 @@ class _SearchModelState extends State<SearchModel> {
                                                       );
                                                     } else if (accommodationState
                                                         is AccommodationSuccess) {
-                                                      return MyModels().customDropdown(
-                                                        label:
-                                                            "Accommodation *",
-                                                        hint:
-                                                            "Select Accommodation Type",
-                                                        value:
-                                                            selectAccommodation,
-                                                        onChanged: (onChanged) {
-                                                          setState(() {
-                                                            // accommodationValues
-                                                            //     .addAll(
-                                                            //       onChanged,
-                                                            selectAccommodation =
-                                                                onChanged;
-                                                            // );
-                                                            // accommodationValue = onChanged;
-                                                          });
-                                                          print(
-                                                            "accommodationListaccommodationListaccommodationListaccommodationList$accommodationValues",
+                                                      accommodationList =
+                                                          List<
+                                                            Map<String, dynamic>
+                                                          >.from(
+                                                            accommodationState
+                                                                .accommodationList,
                                                           );
-                                                        },
-                                                        items: accommodationState
-                                                            .accommodationList
-                                                            .map(
-                                                              (e) =>
-                                                                  DropdownMenuItem<
-                                                                    String
-                                                                  >(
-                                                                    value:
-                                                                        e['identity'],
+                                                      filterPerksList =
+                                                          perksList;
+                                                      return Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Container(
+                                                            margin:
+                                                                EdgeInsets.only(
+                                                                  top: 16,
+                                                                  bottom: 10,
+                                                                ),
+                                                            child: Text(
+                                                              "Accommodation",
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: MyColor()
+                                                                    .blackClr,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () async {
+                                                              final result =
+                                                                  await openAccommodationMultiSelect();
+
+                                                              if (result !=
+                                                                  null) {
+                                                                setState(() {
+                                                                  selectAccommodationList =
+                                                                      result;
+                                                                });
+                                                              }
+                                                            },
+                                                            child: Container(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical:
+                                                                        14,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                  color: MyColor()
+                                                                      .borderClr,
+                                                                  width: 0.5,
+                                                                ),
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      12,
+                                                                    ),
+                                                              ),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
                                                                     child: Text(
-                                                                      e['accommodationName'],
+                                                                      selectAccommodationList
+                                                                              .isEmpty
+                                                                          ? "Select accommodation"
+                                                                          : selectAccommodationList
+                                                                                .map(
+                                                                                  (
+                                                                                    e,
+                                                                                  ) => e['accommodationName'],
+                                                                                )
+                                                                                .join(", "),
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
                                                                     ),
                                                                   ),
-                                                            )
-                                                            .toList(),
-                                                        valid: Validators()
-                                                            .validPerks,
+                                                                  Icon(
+                                                                    Icons
+                                                                        .arrow_drop_down,
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(height: 10),
+                                                          Wrap(
+                                                            spacing: 8,
+                                                            children: selectAccommodationList.map((
+                                                              e,
+                                                            ) {
+                                                              return Chip(
+                                                                label: Text(
+                                                                  e['accommodationName'],
+                                                                ),
+                                                                onDeleted: () {
+                                                                  setState(() {
+                                                                    selectAccommodationList
+                                                                        .remove(
+                                                                          e,
+                                                                        );
+                                                                  });
+                                                                },
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ],
                                                       );
                                                     } else if (accommodationState
                                                         is AccommodationFail) {
@@ -1326,6 +1575,7 @@ class _SearchModelState extends State<SearchModel> {
                                           title: title,
                                           whichScreen: 'view',
                                           paymentLink: paymentLink ?? "",
+                                          isLogin: widget.isLogin,
                                         ),
                                     transitionsBuilder:
                                         (_, animation, __, child) {
@@ -1440,7 +1690,8 @@ class _SearchModelState extends State<SearchModel> {
 
                                                       final isLiked =
                                                           bloc.favStatus[eventId] ??
-                                                          list['isLiked'];
+                                                          list['isLiked'] ??
+                                                          false;
 
                                                       final count =
                                                           bloc.likeCount[eventId] ??
@@ -1452,19 +1703,37 @@ class _SearchModelState extends State<SearchModel> {
                                                       return InkWell(
                                                         customBorder:
                                                             const CircleBorder(),
-                                                        onTap: () {
-                                                          context.read<EventLikeBloc>().add(
-                                                            ClickEventLike(
-                                                              eventId: eventId,
-                                                              initialFav:
-                                                                  list['isLiked'],
-                                                              initialCount: int.parse(
-                                                                list['likeCount']
-                                                                    .toString(),
-                                                              ),
-                                                            ),
-                                                          );
-                                                        },
+                                                        onTap: widget.isLogin
+                                                            ? () {
+                                                                context.read<EventLikeBloc>().add(
+                                                                  ClickEventLike(
+                                                                    eventId:
+                                                                        eventId,
+                                                                    initialFav:
+                                                                        list['isLiked'],
+                                                                    initialCount:
+                                                                        int.parse(
+                                                                          list['likeCount']
+                                                                              .toString(),
+                                                                        ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            : () async {
+                                                                final getUserClick =
+                                                                    await DBHelper()
+                                                                        .getUser();
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        LoginPage(
+                                                                          whichScreen:
+                                                                              getUserClick!,
+                                                                        ),
+                                                                  ),
+                                                                );
+                                                              },
                                                         child: Row(
                                                           children: [
                                                             Icon(
@@ -1537,21 +1806,38 @@ class _SearchModelState extends State<SearchModel> {
                                                       final checkSave =
                                                           bloc.checkSave[list['identity']
                                                               .toString()] ??
-                                                          list['isSaved'];
+                                                          list['isSaved'] ??
+                                                          false;
 
                                                       return InkWell(
-                                                        onTap: () {
-                                                          context
-                                                              .read<
-                                                                RemoveSaveEventBloc
-                                                              >()
-                                                              .add(
-                                                                ClickRemoveSaveEvent(
-                                                                  eventId:
-                                                                      list['identity'],
-                                                                ),
-                                                              );
-                                                        },
+                                                        onTap: widget.isLogin
+                                                            ? () {
+                                                                context
+                                                                    .read<
+                                                                      RemoveSaveEventBloc
+                                                                    >()
+                                                                    .add(
+                                                                      ClickRemoveSaveEvent(
+                                                                        eventId:
+                                                                            list['identity'],
+                                                                      ),
+                                                                    );
+                                                              }
+                                                            : () async {
+                                                                final getUserClick =
+                                                                    await DBHelper()
+                                                                        .getUser();
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        LoginPage(
+                                                                          whichScreen:
+                                                                              getUserClick!,
+                                                                        ),
+                                                                  ),
+                                                                );
+                                                              },
                                                         child: Container(
                                                           padding:
                                                               EdgeInsets.all(7),
@@ -1954,6 +2240,423 @@ class _SearchModelState extends State<SearchModel> {
         "₹${value.toInt()}",
         style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600),
       ),
+    );
+  }
+
+  // multiple dropdown event type
+  Future<List<Map<String, dynamic>>?> openEventTypeMultiSelect() async {
+    filterEventTypeList = List.from(eventTypeList);
+
+    return await showModalBottomSheet<List<Map<String, dynamic>>>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        List<Map<String, dynamic>> tempSelected = List.from(
+          selectEventTypeList,
+        );
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                top: 50,
+                left: 16,
+                right: 16,
+                bottom: 16,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Search text field
+                  TextFormField(
+                    onChanged: (value) {
+                      setModalState(() {
+                        filterEventTypeList = eventTypeList
+                            .where(
+                              (e) => e['name'].toLowerCase().contains(
+                                value.toLowerCase(),
+                              ),
+                            )
+                            .toList();
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Search event type",
+                      contentPadding: EdgeInsets.all(10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().borderClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().primaryClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().redClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().redClr,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  // List
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: filterEventTypeList.length,
+                      itemBuilder: (_, index) {
+                        final item = filterEventTypeList[index];
+                        final isSelected = tempSelected.any(
+                          (e) => e['identity'] == item['identity'],
+                        );
+
+                        return CheckboxListTile(
+                          value: isSelected,
+                          title: Text(item['name']),
+                          onChanged: (value) {
+                            setModalState(() {
+                              if (value == true) {
+                                if (!tempSelected.any(
+                                  (e) => e['identity'] == item['identity'],
+                                )) {
+                                  tempSelected.add(item);
+                                }
+                              } else {
+                                tempSelected.removeWhere(
+                                  (e) => e['identity'] == item['identity'],
+                                );
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, tempSelected);
+                    },
+                    child: Text("Done"),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // multiple dropdown perks
+  Future<List<Map<String, dynamic>>?> openPerksMultiSelect() async {
+    filterPerksList = List.from(perksList);
+
+    return await showModalBottomSheet<List<Map<String, dynamic>>>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        List<Map<String, dynamic>> tempSelected = List.from(selectPerksList);
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                top: 50,
+                left: 16,
+                right: 16,
+                bottom: 16,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Search text field
+                  TextFormField(
+                    onChanged: (value) {
+                      setModalState(() {
+                        filterEventTypeList = perksList
+                            .where(
+                              (e) => e['perkName'].toLowerCase().contains(
+                                value.toLowerCase(),
+                              ),
+                            )
+                            .toList();
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Search perks",
+                      contentPadding: EdgeInsets.all(10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().borderClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().primaryClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().redClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().redClr,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  // List perks
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: filterPerksList.length,
+                      itemBuilder: (_, index) {
+                        final item = filterPerksList[index];
+                        final isSelected = tempSelected.any(
+                          (e) => e['identity'] == item['identity'],
+                        );
+
+                        return CheckboxListTile(
+                          value: isSelected,
+                          title: Text(item['perkName']),
+                          onChanged: (value) {
+                            setModalState(() {
+                              if (value == true) {
+                                if (!tempSelected.any(
+                                  (e) => e['identity'] == item['identity'],
+                                )) {
+                                  tempSelected.add(item);
+                                }
+                              } else {
+                                tempSelected.removeWhere(
+                                  (e) => e['identity'] == item['identity'],
+                                );
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context, tempSelected);
+                    },
+                    child: Text("Done"),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  // multiple dropdown accommodation
+  Future<List<Map<String, dynamic>>?> openAccommodationMultiSelect() async {
+    filterAccommodationList = List.from(accommodationList);
+
+    return await showModalBottomSheet<List<Map<String, dynamic>>>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        List<Map<String, dynamic>> tempSelected = List.from(
+          selectAccommodationList,
+        );
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: const EdgeInsets.only(
+                top: 50,
+                left: 16,
+                right: 16,
+                bottom: 16,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Search text field
+                  TextFormField(
+                    onChanged: (value) {
+                      setModalState(() {
+                        filterAccommodationList = accommodationList
+                            .where(
+                              (e) => e['accommodationName']
+                                  .toLowerCase()
+                                  .contains(value.toLowerCase()),
+                            )
+                            .toList();
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Search perks",
+                      contentPadding: EdgeInsets.all(10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().borderClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().primaryClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().redClr,
+                          width: 0.5,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: MyColor().redClr,
+                          width: 0.5,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  // List perks
+                  Flexible(
+                    child: ListView.builder(
+                      itemCount: filterAccommodationList.length,
+                      itemBuilder: (_, index) {
+                        final item = filterAccommodationList[index];
+                        final isSelected = tempSelected.any(
+                          (e) => e['identity'] == item['identity'],
+                        );
+
+                        return CheckboxListTile(
+                          value: isSelected,
+                          title: Text(item['accommodationName']),
+                          onChanged: (value) {
+                            setModalState(() {
+                              if (value == true) {
+                                if (!tempSelected.any(
+                                  (e) => e['identity'] == item['identity'],
+                                )) {
+                                  tempSelected.add(item);
+                                }
+                              } else {
+                                tempSelected.removeWhere(
+                                  (e) => e['identity'] == item['identity'],
+                                );
+                              }
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+
+                  // apply & cancel button
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(0, 40),
+                              backgroundColor: MyColor().whiteClr,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                                side: BorderSide(color: MyColor().primaryClr),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().primaryClr,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          flex: 1,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              fixedSize: Size(0, 40),
+                              backgroundColor: MyColor().primaryClr,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context, tempSelected);
+                            },
+                            child: Text(
+                              "Apply",
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().whiteClr,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

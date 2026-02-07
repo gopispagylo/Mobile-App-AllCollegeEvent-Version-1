@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/forgotPassword/forgotPassword/ui/ForgotPasswordPage.dart';
@@ -50,6 +51,8 @@ class _LoginModelState extends State<LoginModel> {
   // Password show & hide
   bool obscureTex = true;
 
+  bool? isFreeLogin;
+
   // Google Sign In Function
   void googleSignInFunction() async {
     setState(() {
@@ -95,6 +98,26 @@ class _LoginModelState extends State<LoginModel> {
     }
   }
 
+  @override
+  void initState() {
+    super.initState();
+    getFreeLogin();
+  }
+
+  // get a is free login
+  Future<void> getFreeLogin() async {
+    final result = await DBHelper().getIsFreeLogin();
+    if (result.isNotEmpty) {
+      setState(() {
+        isFreeLogin = result.first['isLogin'] == 1;
+      });
+    } else {
+      setState(() {
+        isFreeLogin = false; // default
+      });
+    }
+  }
+
   // ------- dispose ------
   @override
   void dispose() {
@@ -105,6 +128,14 @@ class _LoginModelState extends State<LoginModel> {
 
   @override
   Widget build(BuildContext context) {
+    // still loading DB
+    if (isFreeLogin == null) {
+      return Center(
+        child: Platform.isAndroid
+            ? CircularProgressIndicator()
+            : CupertinoActivityIndicator(),
+      );
+    }
     return Scaffold(
       backgroundColor: MyColor().whiteClr,
       body: Stack(
@@ -118,6 +149,34 @@ class _LoginModelState extends State<LoginModel> {
               key: formKey,
               child: ListView(
                 children: [
+                  if (!isFreeLogin!)
+                    InkWell(
+                      onTap: () async {
+                        await DBHelper().insertIsFreeLogin(true);
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BottomNavigationBarPage(
+                              pageIndex: 0,
+                              whichScreen: widget.whichScreen,
+                              isLogin: false,
+                            ),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                      child: Container(
+                        alignment: AlignmentGeometry.topRight,
+                        child: Text(
+                          "Skip",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: MyColor().secondaryClr,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
                   SizedBox(
                     height: 250,
                     child: Image.asset(ImagePath().authLoginImg),
@@ -220,45 +279,50 @@ class _LoginModelState extends State<LoginModel> {
                     },
                     builder: (context, loginState) {
                       return Center(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(320, 48),
-                            elevation: 0,
-                            backgroundColor: MyColor().primaryClr,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(50),
-                            ),
-                          ),
-
-                          onPressed:
-                              emailController.text.isNotEmpty &&
-                                  passwordController.text.isNotEmpty
-                              ? () {
-                                  if (formKey.currentState!.validate()) {
-                                    context.read<LoginBloc>().add(
-                                      ClickedLogin(
-                                        email: emailController.text,
-                                        password: passwordController.text,
-                                        type: widget.whichScreen,
-                                      ),
-                                    );
-                                  }
-                                }
-                              : null,
-                          child: loginState is LoginLoading
-                              ? Center(
-                                  child: CircularProgressIndicator(
-                                    color: MyColor().whiteClr,
-                                  ),
-                                )
-                              : Text(
-                                  "Sign in",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: MyColor().whiteClr,
+                        child: ValueListenableBuilder(
+                          valueListenable: passwordController,
+                          builder: (context, value, child) {
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                fixedSize: Size(320, 48),
+                                elevation: 0,
+                                backgroundColor: MyColor().primaryClr,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    50,
                                   ),
                                 ),
+                              ),
+
+                              onPressed: value.text.isNotEmpty
+                                  ? () {
+                                      if (formKey.currentState!.validate()) {
+                                        context.read<LoginBloc>().add(
+                                          ClickedLogin(
+                                            email: emailController.text,
+                                            password: passwordController.text,
+                                            type: widget.whichScreen,
+                                          ),
+                                        );
+                                      }
+                                    }
+                                  : null,
+                              child: loginState is LoginLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: MyColor().whiteClr,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Sign in",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: MyColor().whiteClr,
+                                      ),
+                                    ),
+                            );
+                          },
                         ),
                       );
                     },
@@ -287,87 +351,92 @@ class _LoginModelState extends State<LoginModel> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 15),
+                  if (Platform.isAndroid) SizedBox(height: 15),
 
                   // Google SignIn
-                  BlocConsumer<GoogleSignInBloc, GoogleSignInState>(
-                    listener: (context, googleSignInState) {
-                      if (googleSignInState is GoogleSignInSuccess) {
-                        setState(() {
-                          isGoogleLoading = false;
-                        });
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => BottomNavigationBarPage(
-                              pageIndex: 0,
-                              whichScreen: widget.whichScreen,
-                            ),
-                          ),
-                          (route) => false,
-                        );
-                      } else if (googleSignInState is GoogleSignInFail) {
-                        setState(() {
-                          isGoogleLoading = false;
-                        });
-                        FlutterToast().flutterToast(
-                          googleSignInState.errorMessage,
-                          ToastificationType.error,
-                          ToastificationStyle.flat,
-                        );
-                      }
-                    },
-                    builder: (context, googleSignInState) {
-                      return googleSignInState is GoogleSignInLoading &&
-                              isGoogleLoading
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                color: MyColor().primaryClr,
+                  if (Platform.isAndroid)
+                    BlocConsumer<GoogleSignInBloc, GoogleSignInState>(
+                      listener: (context, googleSignInState) {
+                        if (googleSignInState is GoogleSignInSuccess) {
+                          setState(() {
+                            isGoogleLoading = false;
+                          });
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BottomNavigationBarPage(
+                                pageIndex: 0,
+                                whichScreen: widget.whichScreen,
+                                isLogin: true,
                               ),
-                            )
-                          : Center(
-                              child: GestureDetector(
-                                onTap: googleSignInFunction,
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  height: 48,
-                                  width: 320,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(50),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.grey.shade400,
-                                      width: 0.5,
+                            ),
+                            (route) => false,
+                          );
+                        } else if (googleSignInState is GoogleSignInFail) {
+                          setState(() {
+                            isGoogleLoading = false;
+                          });
+                          FlutterToast().flutterToast(
+                            googleSignInState.errorMessage,
+                            ToastificationType.error,
+                            ToastificationStyle.flat,
+                          );
+                        }
+                      },
+                      builder: (context, googleSignInState) {
+                        return googleSignInState is GoogleSignInLoading &&
+                                isGoogleLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
+                                ),
+                              )
+                            : Center(
+                                child: GestureDetector(
+                                  onTap: googleSignInFunction,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    height: 48,
+                                    width: 320,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: Colors.grey.shade400,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          ImagePath().googleImg,
+                                          height: 30,
+                                        ),
+                                        const SizedBox(width: 10),
+                                        googleSignInState is GoogleSignInLoading
+                                            ? Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color:
+                                                          MyColor().primaryClr,
+                                                    ),
+                                              )
+                                            : Text(
+                                                "Continue with Google",
+                                                style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                      ],
                                     ),
                                   ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        ImagePath().googleImg,
-                                        height: 30,
-                                      ),
-                                      const SizedBox(width: 10),
-                                      googleSignInState is GoogleSignInLoading
-                                          ? Center(
-                                              child: CircularProgressIndicator(
-                                                color: MyColor().primaryClr,
-                                              ),
-                                            )
-                                          : Text(
-                                              "Continue with Google",
-                                              style: GoogleFonts.poppins(
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                    ],
-                                  ),
                                 ),
-                              ),
-                            );
-                    },
-                  ),
+                              );
+                      },
+                    ),
 
                   SizedBox(height: 25),
                   Row(

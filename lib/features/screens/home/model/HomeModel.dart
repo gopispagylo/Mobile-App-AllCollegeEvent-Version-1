@@ -20,8 +20,13 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class HomeModel extends StatefulWidget {
   final ScrollController scrollController;
+  final bool isLogin;
 
-  const HomeModel({super.key, required this.scrollController});
+  const HomeModel({
+    super.key,
+    required this.scrollController,
+    required this.isLogin,
+  });
 
   @override
   State<HomeModel> createState() => _HomeModelState();
@@ -38,7 +43,9 @@ class _HomeModelState extends State<HomeModel> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 400));
       context.read<EventTypeAllBloc>().add(EventTypeAll());
-      context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
+      context.read<TrendingEventListBloc>().add(
+        FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 2),
+      );
       context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
     });
   }
@@ -58,7 +65,9 @@ class _HomeModelState extends State<HomeModel> {
       backgroundColor: MyColor().whiteClr,
       color: MyColor().primaryClr,
       onRefresh: () async {
-        context.read<TrendingEventListBloc>().add(FetchTrendingEventList());
+        context.read<TrendingEventListBloc>().add(
+          FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 2),
+        );
         context.read<EventTypeAllBloc>().add(EventTypeAll());
         context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
       },
@@ -82,30 +91,32 @@ class _HomeModelState extends State<HomeModel> {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              "Welcome ",
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
+                            if (widget.isLogin)
+                              Text(
+                                "Welcome ",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
-                            ),
-                            userName == null
-                                ? Center(
-                                    child: CircularProgressIndicator(
-                                      color: MyColor().primaryClr,
+                            if (widget.isLogin)
+                              userName == null
+                                  ? Center(
+                                      child: CircularProgressIndicator(
+                                        color: MyColor().primaryClr,
+                                      ),
+                                    )
+                                  : Text(
+                                      "$userName!",
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 14,
+                                        color: MyColor().primaryClr,
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
-                                  )
-                                : Text(
-                                    "$userName!",
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      color: MyColor().primaryClr,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
                           ],
                         ),
-                        SizedBox(height: 8),
+                        if (widget.isLogin) SizedBox(height: 8),
                         // Location
                         Row(
                           children: [
@@ -138,53 +149,57 @@ class _HomeModelState extends State<HomeModel> {
                         ),
                       ],
                     ),
-                    InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    NotificationPage(),
-                            transitionsBuilder:
-                                (
-                                  context,
-                                  animation,
-                                  secondaryAnimation,
-                                  child,
-                                ) {
-                                  var tween = Tween(
-                                    begin: Offset(1, 0),
-                                    end: Offset.zero,
-                                  ).chain(CurveTween(curve: Curves.easeInOut));
-                                  return SlideTransition(
-                                    position: animation.drive(tween),
-                                    child: child,
-                                  );
-                                },
-                            transitionDuration: Duration(milliseconds: 400),
+                    if (widget.isLogin)
+                      InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(100)),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) =>
+                                      NotificationPage(),
+                              transitionsBuilder:
+                                  (
+                                    context,
+                                    animation,
+                                    secondaryAnimation,
+                                    child,
+                                  ) {
+                                    var tween =
+                                        Tween(
+                                          begin: Offset(1, 0),
+                                          end: Offset.zero,
+                                        ).chain(
+                                          CurveTween(curve: Curves.easeInOut),
+                                        );
+                                    return SlideTransition(
+                                      position: animation.drive(tween),
+                                      child: child,
+                                    );
+                                  },
+                              transitionDuration: Duration(milliseconds: 400),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(right: 0),
+                          decoration: BoxDecoration(
+                            color: MyColor().locationClr,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: MyColor().borderClr.withOpacity(0.15),
+                            ),
                           ),
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(right: 0),
-                        decoration: BoxDecoration(
-                          color: MyColor().locationClr,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Badge.count(
-                            count: 10,
-                            child: Icon(Icons.notifications, size: 18),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Badge.count(
+                              count: 10,
+                              child: Icon(Icons.notifications, size: 18),
+                            ),
                           ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -222,6 +237,7 @@ class _HomeModelState extends State<HomeModel> {
                                   builder: (_) => BottomNavigationBarPage(
                                     pageIndex: 1,
                                     whichScreen: '',
+                                    isLogin: true,
                                   ),
                                 ),
                               );
@@ -269,8 +285,12 @@ class _HomeModelState extends State<HomeModel> {
             // Normal widgets as slivers
             SliverToBoxAdapter(child: CarouselSliderPage()),
             SliverToBoxAdapter(child: HomeCategoriesModel()),
-            SliverToBoxAdapter(child: TrendingEventModel()),
-            SliverToBoxAdapter(child: TopOrganizerModel()),
+            SliverToBoxAdapter(
+              child: TrendingEventModel(isLogin: widget.isLogin),
+            ),
+            SliverToBoxAdapter(
+              child: TopOrganizerModel(isLogin: widget.isLogin),
+            ),
             SliverToBoxAdapter(child: CountriesAndCitiesModel()),
           ],
         ),

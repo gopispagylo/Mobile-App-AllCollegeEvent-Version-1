@@ -11,7 +11,9 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
 
 class MyEventsModel extends StatefulWidget {
-  const MyEventsModel({super.key});
+  final bool isLogin;
+
+  const MyEventsModel({super.key, required this.isLogin});
 
   @override
   State<MyEventsModel> createState() => _MyEventsModelState();
@@ -262,6 +264,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                             title: title,
                                             whichScreen: 'edit',
                                             paymentLink: paymentLink,
+                                            isLogin: widget.isLogin,
                                           ),
                                       transitionsBuilder:
                                           (_, animation, __, child) {
@@ -465,6 +468,8 @@ class _MyEventsModelState extends State<MyEventsModel> {
                                                                     'edit',
                                                                 paymentLink:
                                                                     paymentLink,
+                                                                isLogin: widget
+                                                                    .isLogin,
                                                               ),
                                                           transitionsBuilder:
                                                               (

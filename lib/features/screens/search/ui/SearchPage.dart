@@ -13,7 +13,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final bool isLogin;
+
+  const SearchPage({super.key, required this.isLogin});
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -68,7 +70,7 @@ class _SearchPageState extends State<SearchPage> {
                   ..add(FetchCertification()),
           ),
         ],
-        child: SearchModel(),
+        child: SearchModel(isLogin: widget.isLogin),
       ),
     );
   }

@@ -17,11 +17,13 @@ import 'package:google_fonts/google_fonts.dart';
 class HomePage extends StatefulWidget {
   final String whichScreen;
   final ScrollController scrollController;
+  final bool isLogin;
 
   const HomePage({
     super.key,
     required this.whichScreen,
     required this.scrollController,
+    required this.isLogin,
   });
 
   @override
@@ -86,7 +88,10 @@ class _HomePageState extends State<HomePage> {
                   RemoveSaveEventBloc(apiController: ApiController()),
             ),
           ],
-          child: HomeModel(scrollController: widget.scrollController),
+          child: HomeModel(
+            scrollController: widget.scrollController,
+            isLogin: widget.isLogin,
+          ),
         ),
         floatingActionButton: AnimatedSwitcher(
           duration: const Duration(milliseconds: 250),

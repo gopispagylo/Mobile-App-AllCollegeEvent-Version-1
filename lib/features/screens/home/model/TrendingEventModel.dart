@@ -1,11 +1,14 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
+import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/features/screens/event/ui/EventDetailPage.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
+import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -17,13 +20,20 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toastification/toastification.dart';
 
 class TrendingEventModel extends StatefulWidget {
-  const TrendingEventModel({super.key});
+  final bool isLogin;
+
+  const TrendingEventModel({super.key, required this.isLogin});
 
   @override
   State<TrendingEventModel> createState() => _TrendingEventModelState();
 }
 
 class _TrendingEventModelState extends State<TrendingEventModel> {
+  // horizontal pagination
+  int page = 1;
+  int limit = 2;
+  bool isLoadingMore = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TrendingEventListBloc, TrendingEventListState>(
@@ -46,13 +56,27 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                         fontFamily: "blMelody",
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        "See all",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => BottomNavigationBarPage(
+                              pageIndex: 1,
+                              whichScreen: '',
+                              isLogin: widget.isLogin,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          "See all",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -124,9 +148,6 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                     final categoryName =
                         list['categoryName'] ?? "No Categories";
 
-                    // --------- find a save bool value -------
-                    bool isSaved = list['isSaved'] == true;
-
                     // ---------- view count -----
                     final viewCount = list['viewCount'];
 
@@ -143,6 +164,7 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                               title: title,
                               whichScreen: 'view',
                               paymentLink: paymentLink,
+                              isLogin: widget.isLogin,
                             ),
                           ),
                         );
@@ -263,19 +285,39 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                                           final checkSave =
                                               bloc.checkSave[list['identity']
                                                   .toString()] ??
-                                              list['isSaved'];
+                                              list['isSaved'] ??
+                                              false;
 
                                           return InkWell(
                                             customBorder: const CircleBorder(),
-                                            onTap: () {
-                                              context
-                                                  .read<RemoveSaveEventBloc>()
-                                                  .add(
-                                                    ClickRemoveSaveEvent(
-                                                      eventId: list['identity'],
-                                                    ),
-                                                  );
-                                            },
+                                            onTap: widget.isLogin
+                                                ? () {
+                                                    context
+                                                        .read<
+                                                          RemoveSaveEventBloc
+                                                        >()
+                                                        .add(
+                                                          ClickRemoveSaveEvent(
+                                                            eventId:
+                                                                list['identity'],
+                                                          ),
+                                                        );
+                                                  }
+                                                : () async {
+                                                    final getUserClick =
+                                                        await DBHelper()
+                                                            .getUser();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            LoginPage(
+                                                              whichScreen:
+                                                                  getUserClick!,
+                                                            ),
+                                                      ),
+                                                    );
+                                                  },
                                             child: ClipOval(
                                               child: BackdropFilter(
                                                 filter: ImageFilter.blur(
@@ -358,28 +400,53 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
 
                                           final isLiked =
                                               bloc.favStatus[eventId] ??
-                                              list['isLiked'];
+                                              list['isLiked'] ??
+                                              false;
 
                                           final count =
                                               bloc.likeCount[eventId] ??
-                                              int.parse(
-                                                list['likeCount'].toString(),
-                                              );
+                                              (list['likeCount'] is int
+                                                  ? list['likeCount']
+                                                  : int.tryParse(
+                                                          list['likeCount']
+                                                                  ?.toString() ??
+                                                              '0',
+                                                        ) ??
+                                                        0);
 
                                           return InkWell(
                                             customBorder: const CircleBorder(),
-                                            onTap: () {
-                                              context.read<EventLikeBloc>().add(
-                                                ClickEventLike(
-                                                  eventId: eventId,
-                                                  initialFav: list['isLiked'],
-                                                  initialCount: int.parse(
-                                                    list['likeCount']
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              );
-                                            },
+                                            onTap: widget.isLogin
+                                                ? () {
+                                                    context
+                                                        .read<EventLikeBloc>()
+                                                        .add(
+                                                          ClickEventLike(
+                                                            eventId: eventId,
+                                                            initialFav:
+                                                                list['isLiked'],
+                                                            initialCount: int.parse(
+                                                              list['likeCount']
+                                                                  .toString(),
+                                                            ),
+                                                          ),
+                                                        );
+                                                  }
+                                                : () async {
+                                                    final getUserClick =
+                                                        await DBHelper()
+                                                            .getUser();
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            LoginPage(
+                                                              whichScreen:
+                                                                  getUserClick!,
+                                                            ),
+                                                      ),
+                                                    );
+                                                  },
                                             child: Row(
                                               children: [
                                                 Icon(

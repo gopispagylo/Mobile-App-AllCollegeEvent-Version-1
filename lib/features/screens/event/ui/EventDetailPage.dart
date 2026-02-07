@@ -15,6 +15,7 @@ class EventDetailPage extends StatefulWidget {
   final String title;
   final String whichScreen;
   final String paymentLink;
+  final bool isLogin;
 
   const EventDetailPage({
     super.key,
@@ -22,6 +23,7 @@ class EventDetailPage extends StatefulWidget {
     required this.title,
     required this.whichScreen,
     required this.paymentLink,
+    required this.isLogin,
   });
 
   @override
@@ -34,9 +36,8 @@ class _EventDetailPageState extends State<EventDetailPage> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              EventDetailBloc(apiController: ApiController())
-                ..add(ClickEventDetail(slug: widget.slug)),
+          create: (context) => EventDetailBloc(apiController: ApiController())
+            ..add(ClickEventDetail(slug: widget.slug, isLogin: widget.isLogin)),
         ),
         BlocProvider(
           create: (context) => EventLikeBloc(apiController: ApiController()),
@@ -73,6 +74,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
           title: widget.title,
           whichScreen: widget.whichScreen,
           paymentLink: widget.paymentLink,
+          isLogin: widget.isLogin,
         ),
       ),
     );

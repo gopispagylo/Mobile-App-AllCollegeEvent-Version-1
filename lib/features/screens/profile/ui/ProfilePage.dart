@@ -1,5 +1,7 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
+import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MySpaceModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/ProfileModel.dart';
@@ -7,9 +9,17 @@ import 'package:all_college_event_app/features/screens/profile/model/TopModel.da
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final bool isLogin;
+  final String whichScreen;
+
+  const ProfilePage({
+    super.key,
+    required this.isLogin,
+    required this.whichScreen,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -31,8 +41,6 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       checkUser = user;
     });
-
-    print("useruseruseruseruser$user");
   }
 
   @override
@@ -56,28 +64,66 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context) {
           return Scaffold(
             backgroundColor: MyColor().whiteClr,
-            body: RefreshIndicator(
-              edgeOffset: 20,
-              backgroundColor: MyColor().whiteClr,
-              color: MyColor().primaryClr,
-              onRefresh: () async {
-                context.read<UserProfileBloc>().add(
-                  ClickedUserProfile(whichUser: checkUser!),
-                );
-              },
-              child: ListView(
-                children: [
-                  // ------- Profile Header -------
-                  TopModel(whichScreen: checkUser!),
+            body: widget.isLogin
+                ? RefreshIndicator(
+                    edgeOffset: 20,
+                    backgroundColor: MyColor().whiteClr,
+                    color: MyColor().primaryClr,
+                    onRefresh: () async {
+                      context.read<UserProfileBloc>().add(
+                        ClickedUserProfile(whichUser: checkUser!),
+                      );
+                    },
+                    child: ListView(
+                      children: [
+                        // ------- Profile Header -------
+                        TopModel(whichScreen: checkUser!),
 
-                  // ---------- Profile model ----------
-                  ProfileModel(whichScreen: checkUser!),
+                        // ---------- Profile model ----------
+                        ProfileModel(
+                          whichScreen: checkUser!,
+                          isLogin: widget.isLogin,
+                        ),
 
-                  // ----------- My Space --------
-                  MySpaceModel(whichScreen: checkUser!),
-                ],
-              ),
-            ),
+                        // ----------- My Space --------
+                        MySpaceModel(
+                          whichScreen: checkUser!,
+                          isLogin: widget.isLogin,
+                        ),
+                      ],
+                    ),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: Text(
+                          "Login",
+                          style: GoogleFonts.poppins(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: MyColor().blackClr,
+                          ),
+                        ),
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.only(top: 20),
+                        child: MyModels().customButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    LoginPage(whichScreen: widget.whichScreen),
+                              ),
+                            );
+                          },
+                          title: "Login",
+                        ),
+                      ),
+                    ],
+                  ),
           );
         },
       ),

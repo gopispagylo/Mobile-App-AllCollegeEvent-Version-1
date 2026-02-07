@@ -43,6 +43,15 @@ class ApiController {
     return response;
   }
 
+  // ---------- post with out header
+  Future<Response> postMethodWithOutHeader({
+    required String endPoint,
+    required Map<String, dynamic> data,
+  }) async {
+    final response = await dio.post(endPoint, data: data);
+    return response;
+  }
+
   // ---------- post a form data ----------
   Future<Response> postMethodWithFormData({
     required String endPoint,
@@ -85,6 +94,13 @@ class ApiController {
       endPoint,
       options: Options(headers: {"Authorization": "Bearer $token"}),
     );
+    return response;
+  }
+
+  Future<Response> getMethodWithoutBodyAndHeader({
+    required String endPoint,
+  }) async {
+    final response = await dio.get(endPoint);
     return response;
   }
 

@@ -14,11 +14,13 @@ import 'package:material_symbols_icons/symbols.dart';
 class BottomNavigationBarPage extends StatefulWidget {
   final int pageIndex;
   final String whichScreen;
+  final bool isLogin;
 
   const BottomNavigationBarPage({
     super.key,
     required this.pageIndex,
     required this.whichScreen,
+    required this.isLogin,
   });
 
   @override
@@ -39,11 +41,12 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
     HomePage(
       whichScreen: widget.whichScreen,
       scrollController: scrollController,
+      isLogin: widget.isLogin,
     ),
-    SearchPage(),
+    SearchPage(isLogin: widget.isLogin),
     CategoriesPage(),
-    EventPage(),
-    ProfilePage(),
+    EventPage(isLogin: widget.isLogin),
+    ProfilePage(isLogin: widget.isLogin, whichScreen: widget.whichScreen),
   ];
 
   @override

@@ -19,7 +19,9 @@ import 'package:toastification/toastification.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class OrganizationHeaderModel extends StatefulWidget {
-  const OrganizationHeaderModel({super.key});
+  final bool isLogin;
+
+  const OrganizationHeaderModel({super.key, required this.isLogin});
 
   @override
   State<OrganizationHeaderModel> createState() =>
@@ -443,6 +445,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                                         whichScreen: 'view',
                                                         paymentLink:
                                                             paymentLink,
+                                                        isLogin: widget.isLogin,
                                                       ),
                                                 ),
                                               );

@@ -27,12 +27,15 @@ class OrganizerDetailBloc
 
         final parameter = {"": ""};
 
-        print("organizations/${event.slug}/events");
-        final response = await apiController.getMethod(
-          endPoint: 'organizations/${event.slug}/events',
-          token: token!,
-          data: parameter,
-        );
+        final response = event.isLogin
+            ? await apiController.getMethod(
+                endPoint: 'organizations/${event.slug}/events',
+                token: token!,
+                data: parameter,
+              )
+            : await apiController.getMethodWithoutBodyAndHeader(
+                endPoint: 'organizations/${event.slug}/events',
+              );
         // print('werwertertytrytyuyutuyiuyiuiytyuytrytrtre$response');
         if (response.statusCode == 200) {
           final responseBody = response.data;

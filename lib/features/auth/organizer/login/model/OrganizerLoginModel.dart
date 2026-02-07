@@ -33,7 +33,6 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
   // Global Key
   final formKey = GlobalKey<FormState>();
 
-
   // ------ dispose after using controller --------
   @override
   void dispose() {
@@ -59,7 +58,7 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                   height: 250,
                   child: Image.asset(ImagePath().orgLoginImg),
                 ),
-                SizedBox(height: 20,),
+                SizedBox(height: 20),
                 Text(
                   textAlign: TextAlign.center,
                   ConfigMessage().loginOrgHeadMsg,
@@ -73,7 +72,8 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                   textAlign: TextAlign.center,
                   ConfigMessage().loginOrgSubHeadMsg,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,color: MyColor().borderClr,
+                    fontSize: 14,
+                    color: MyColor().borderClr,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -82,7 +82,10 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                   label: "Domain Mail ID",
                   controller: emailController,
                   hintText: "Enter your domain mail id",
-                  validator: Validators().validDomainMail, textCapitalization: TextCapitalization.none, textInputType: TextInputType.emailAddress, readOnly: false,
+                  validator: Validators().validDomainMail,
+                  textCapitalization: TextCapitalization.none,
+                  textInputType: TextInputType.emailAddress,
+                  readOnly: false,
                 ),
                 SizedBox(height: 20),
                 MyModels().customTextFieldPassword(
@@ -110,9 +113,8 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ForgotPasswordPage(
-                            whichScreen: 'organizerLogin',
-                          ),
+                          builder: (_) =>
+                              ForgotPasswordPage(whichScreen: 'organizerLogin'),
                         ),
                       );
                     },
@@ -139,13 +141,20 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(
-                          builder: (_) =>
-                              BottomNavigationBarPage(pageIndex: 0, whichScreen: widget.whichScreen,),
+                          builder: (_) => BottomNavigationBarPage(
+                            pageIndex: 0,
+                            whichScreen: widget.whichScreen,
+                            isLogin: true,
+                          ),
                         ),
-                            (route) => false,
+                        (route) => false,
                       );
                     } else if (orgLoginState is OrgFail) {
-                      FlutterToast().flutterToast(orgLoginState.errorMessage, ToastificationType.error, ToastificationStyle.flat);
+                      FlutterToast().flutterToast(
+                        orgLoginState.errorMessage,
+                        ToastificationType.error,
+                        ToastificationStyle.flat,
+                      );
                     }
                   },
                   builder: (context, orgLoginState) {
@@ -170,14 +179,20 @@ class _OrganizerLoginModelState extends State<OrganizerLoginModel> {
                             );
                           }
                         },
-                        child: orgLoginState is OrgLoading ? Center(child: CircularProgressIndicator(color: MyColor().whiteClr,),) : Text(
-                          "Sign in",
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: MyColor().whiteClr,
-                          ),
-                        ),
+                        child: orgLoginState is OrgLoading
+                            ? Center(
+                                child: CircularProgressIndicator(
+                                  color: MyColor().whiteClr,
+                                ),
+                              )
+                            : Text(
+                                "Sign in",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: MyColor().whiteClr,
+                                ),
+                              ),
                       ),
                     );
                   },

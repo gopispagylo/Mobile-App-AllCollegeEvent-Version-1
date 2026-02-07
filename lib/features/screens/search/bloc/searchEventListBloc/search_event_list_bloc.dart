@@ -107,11 +107,16 @@ class SearchEventListBloc
 
         print("paramsparamsparamsparamsparams${params.keys}${params.values}");
 
-        final response = await apiController.postMethodWithHeader(
-          data: params,
-          endPoint: 'filter_protec',
-          token: token!,
-        );
+        final response = event.isLogin
+            ? await apiController.postMethodWithHeader(
+                data: params,
+                endPoint: 'filter_protec',
+                token: token!,
+              )
+            : await apiController.postMethodWithOutHeader(
+                data: params,
+                endPoint: 'filter',
+              );
 
         print(
           "SearchEventListBlocSearchEventListBlocSearchEventListBlocSearchEventListBloc$response",
@@ -139,10 +144,12 @@ class SearchEventListBloc
           }
         }
       } on DioException catch (e) {
+        print("kfkfkfkfkfkfkfk$e");
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(SearchEventListFail(errorMessage: error));
       } catch (e) {
+        print("kfkfkfkfkfkfkfk$e");
         emit(
           SearchEventListFail(errorMessage: ConfigMessage().unexpectedErrorMsg),
         );

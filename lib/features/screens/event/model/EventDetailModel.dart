@@ -1,5 +1,7 @@
+import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventCountUpdateBloc/event_count_update_bloc.dart';
 import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBloc/event_detail_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
@@ -11,6 +13,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:intl/intl.dart';
@@ -24,6 +27,7 @@ class EventDetailModel extends StatefulWidget {
   final String title;
   final String whichScreen;
   final String paymentLink;
+  final bool isLogin;
 
   const EventDetailModel({
     super.key,
@@ -31,6 +35,7 @@ class EventDetailModel extends StatefulWidget {
     required this.title,
     required this.whichScreen,
     required this.paymentLink,
+    required this.isLogin,
   });
 
   @override
@@ -141,7 +146,10 @@ class _EventDetailModelState extends State<EventDetailModel>
                   color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<EventDetailBloc>().add(
-                      ClickEventDetail(slug: widget.identity),
+                      ClickEventDetail(
+                        slug: widget.identity,
+                        isLogin: widget.isLogin,
+                      ),
                     );
                   },
                   child: ListView(
@@ -355,26 +363,40 @@ class _EventDetailModelState extends State<EventDetailModel>
                                     final checkFav =
                                         bloc.favStatus[widget.identity
                                             .toString()] ??
-                                        list['isLiked'];
+                                        list['isLiked'] ??
+                                        false;
                                     // final checkFav = false;
                                     return InkWell(
-                                      onTap: () {
-                                        context.read<EventLikeBloc>().add(
-                                          ClickEventLike(
-                                            eventId: list['identity']
-                                                .toString(),
-                                            initialFav:
-                                                list['isLiked'] ?? false,
-                                            initialCount:
-                                                int.tryParse(
-                                                  list['likeCount']
-                                                          ?.toString() ??
-                                                      '0',
-                                                ) ??
-                                                0,
-                                          ),
-                                        );
-                                      },
+                                      onTap: widget.isLogin
+                                          ? () {
+                                              context.read<EventLikeBloc>().add(
+                                                ClickEventLike(
+                                                  eventId: list['identity']
+                                                      .toString(),
+                                                  initialFav:
+                                                      list['isLiked'] ?? false,
+                                                  initialCount:
+                                                      int.tryParse(
+                                                        list['likeCount']
+                                                                ?.toString() ??
+                                                            '0',
+                                                      ) ??
+                                                      0,
+                                                ),
+                                              );
+                                            }
+                                          : () async {
+                                              final getUserClick =
+                                                  await DBHelper().getUser();
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) => LoginPage(
+                                                    whichScreen: getUserClick!,
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                       child: Container(
                                         padding: EdgeInsets.all(10),
                                         decoration: BoxDecoration(
@@ -790,15 +812,41 @@ class _EventDetailModelState extends State<EventDetailModel>
                                   ),
                                   child: Column(
                                     children: [
-                                      Text(
-                                        textAlign: TextAlign.justify,
-                                        list['description'],
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500,
-                                          color: MyColor().blackClr,
-                                        ),
-                                        maxLines: readMore ? null : 2,
+                                      LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          return ClipRect(
+                                            child: AnimatedSize(
+                                              duration: const Duration(
+                                                milliseconds: 300,
+                                              ),
+                                              curve: Curves.easeInOut,
+                                              child: ConstrainedBox(
+                                                constraints: readMore
+                                                    ? const BoxConstraints()
+                                                    : BoxConstraints(
+                                                        maxHeight: 14 * 2 * 1.5,
+                                                      ),
+                                                child: HtmlWidget(
+                                                  list['description'].replaceAll(
+                                                    RegExp(
+                                                      r'background-color\s*:\s*[^;"]+;?',
+                                                    ),
+                                                    '',
+                                                  ),
+                                                  textStyle:
+                                                      GoogleFonts.poppins(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color:
+                                                            MyColor().blackClr,
+                                                        height: 1.5,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
                                       Align(
                                         alignment: AlignmentGeometry.topRight,
@@ -2052,7 +2100,10 @@ class _EventDetailModelState extends State<EventDetailModel>
                   color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<EventDetailBloc>().add(
-                      ClickEventDetail(slug: widget.identity),
+                      ClickEventDetail(
+                        slug: widget.identity,
+                        isLogin: widget.isLogin,
+                      ),
                     );
                   },
                   child: Center(
@@ -2116,29 +2167,39 @@ class _EventDetailModelState extends State<EventDetailModel>
                 // if (widget.paymentLink != null && widget.paymentLink.isNotEmpty)
                 Expanded(
                   child: GestureDetector(
-                    onTap: () async {
-                      if (checkPaymentLink) return;
+                    onTap: widget.isLogin
+                        ? () async {
+                            if (checkPaymentLink) return;
 
-                      final paymentUrl = Uri.parse(widget.paymentLink);
+                            final paymentUrl = Uri.parse(widget.paymentLink);
 
-                      setState(() {
-                        checkPaymentLink = true;
-                      });
+                            setState(() {
+                              checkPaymentLink = true;
+                            });
 
-                      final canLaunch = await canLaunchUrl(paymentUrl);
+                            final canLaunch = await canLaunchUrl(paymentUrl);
 
-                      if (!canLaunch) {
-                        setState(() {
-                          checkPaymentLink = false;
-                        });
-                        return;
-                      }
-
-                      await launchUrl(
-                        paymentUrl,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    },
+                            if (!canLaunch) {
+                              setState(() {
+                                checkPaymentLink = false;
+                              });
+                              return;
+                            }
+                            await launchUrl(
+                              paymentUrl,
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        : () async {
+                            final getUserClick = await DBHelper().getUser();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) =>
+                                    LoginPage(whichScreen: getUserClick!),
+                              ),
+                            );
+                          },
                     child: Container(
                       margin: EdgeInsets.only(left: 16),
                       alignment: Alignment.center,

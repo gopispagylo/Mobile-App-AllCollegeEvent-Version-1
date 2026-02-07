@@ -1,5 +1,6 @@
 import 'package:all_college_event_app/features/screens/global/bloc/categories/categories_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
+import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -20,59 +21,59 @@ class _GridViewModelState extends State<GridViewModel> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Search Bar
-        Center(
-          child: Container(
-            margin: EdgeInsets.only(top: 10, bottom: 16, left: 16, right: 16),
-            width: 380,
-            child: TextFormField(
-              onTapOutside: (onChanged) {
-                WidgetsBinding.instance.focusManager.primaryFocus!.unfocus();
-              },
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(10),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                    color: MyColor().borderClr,
-                    width: 0.5,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                    color: MyColor().primaryClr,
-                    width: 0.5,
-                  ),
-                ),
-                prefixIcon: Icon(Icons.search, size: 24),
-                // suffixIcon: GestureDetector(
-                //   onTap: (){
-                //
-                //   },
-                //   child: Padding(
-                //     padding: const EdgeInsets.all(5),
-                //     child: Container(
-                //       decoration: BoxDecoration(
-                //           color: MyColor().locationClr,
-                //           borderRadius: BorderRadius.circular(100)
-                //       ),
-                //       child: Icon(
-                //         Icons.tune,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                hintText: "Search Events",
-                hintStyle: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: MyColor().hintTextClr,
-                ),
-              ),
-            ),
-          ),
-        ),
+        // // Search Bar
+        // Center(
+        //   child: Container(
+        //     margin: EdgeInsets.only(top: 10, bottom: 16, left: 16, right: 16),
+        //     width: 380,
+        //     child: TextFormField(
+        //       onTapOutside: (onChanged) {
+        //         WidgetsBinding.instance.focusManager.primaryFocus!.unfocus();
+        //       },
+        //       decoration: InputDecoration(
+        //         contentPadding: EdgeInsets.all(10),
+        //         enabledBorder: OutlineInputBorder(
+        //           borderRadius: BorderRadius.circular(100),
+        //           borderSide: BorderSide(
+        //             color: MyColor().borderClr,
+        //             width: 0.5,
+        //           ),
+        //         ),
+        //         focusedBorder: OutlineInputBorder(
+        //           borderRadius: BorderRadius.circular(100),
+        //           borderSide: BorderSide(
+        //             color: MyColor().primaryClr,
+        //             width: 0.5,
+        //           ),
+        //         ),
+        //         prefixIcon: Icon(Icons.search, size: 24),
+        //         // suffixIcon: GestureDetector(
+        //         //   onTap: (){
+        //         //
+        //         //   },
+        //         //   child: Padding(
+        //         //     padding: const EdgeInsets.all(5),
+        //         //     child: Container(
+        //         //       decoration: BoxDecoration(
+        //         //           color: MyColor().locationClr,
+        //         //           borderRadius: BorderRadius.circular(100)
+        //         //       ),
+        //         //       child: Icon(
+        //         //         Icons.tune,
+        //         //       ),
+        //         //     ),
+        //         //   ),
+        //         // ),
+        //         hintText: "Search Events",
+        //         hintStyle: GoogleFonts.poppins(
+        //           fontWeight: FontWeight.w400,
+        //           fontSize: 12,
+        //           color: MyColor().hintTextClr,
+        //         ),
+        //       ),
+        //     ),
+        //   ),
+        // ),
         // GridView
         Expanded(
           child: Container(
@@ -106,47 +107,63 @@ class _GridViewModelState extends State<GridViewModel> {
                         final list = eventTypeAll.eventTypeList[index];
                         final bgColor = list['color'];
                         final splitBGColor = bgColor.replaceFirst("#", "0xff");
-                        return Container(
-                          height: 104,
-                          width: 104,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: Color(int.tryParse(splitBGColor)!.toInt()),
-                            border: Border.all(
-                              color: MyColor().borderClr.withOpacity(0.15),
-                            ),
-                          ),
+                        return InkWell(
+                          customBorder: const CircleBorder(),
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BottomNavigationBarPage(
+                                  pageIndex: 1,
+                                  whichScreen: '',
+                                  isLogin: true,
+                                ),
+                              ),
+                            );
+                          },
                           child: Container(
-                            margin: EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: CachedNetworkImage(
-                                    // memCacheHeight: 300,
-                                    fadeInDuration: Duration.zero,
-                                    imageUrl: list['imageUrl'] ?? '',
-                                    height: 45,
-                                    placeholder: (context, url) {
-                                      return Center(
-                                        child: CircularProgressIndicator(
-                                          color: MyColor().primaryClr,
-                                        ),
-                                      );
-                                    },
+                            height: 104,
+                            width: 104,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Color(int.tryParse(splitBGColor)!.toInt()),
+                              border: Border.all(
+                                color: MyColor().borderClr.withOpacity(0.15),
+                              ),
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: CachedNetworkImage(
+                                      // memCacheHeight: 300,
+                                      fadeInDuration: Duration.zero,
+                                      imageUrl: list['imageUrl'] ?? '',
+                                      height: 45,
+                                      placeholder: (context, url) {
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            color: MyColor().primaryClr,
+                                          ),
+                                        );
+                                      },
+                                    ),
                                   ),
-                                ),
-                                Text(
-                                  list['name'],
-                                  maxLines: 2,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
+                                  Text(
+                                    list['name'],
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         );

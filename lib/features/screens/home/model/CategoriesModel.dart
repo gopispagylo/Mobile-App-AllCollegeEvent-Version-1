@@ -55,6 +55,7 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                             builder: (_) => BottomNavigationBarPage(
                               pageIndex: 2,
                               whichScreen: '',
+                              isLogin: false,
                             ),
                           ),
                         );
@@ -93,11 +94,23 @@ class _HomeCategoriesModelState extends State<HomeCategoriesModel> {
                                   builder: (_) => BottomNavigationBarPage(
                                     pageIndex: 2,
                                     whichScreen: '',
+                                    isLogin: true,
                                   ),
                                 ),
                               );
                             }
-                          : null,
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BottomNavigationBarPage(
+                                    pageIndex: 1,
+                                    whichScreen: '',
+                                    isLogin: true,
+                                  ),
+                                ),
+                              );
+                            },
                       child: Container(
                         margin: EdgeInsets.only(
                           left: 16,

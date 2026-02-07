@@ -9,84 +9,143 @@ import 'package:google_fonts/google_fonts.dart';
 
 class ProfileModel extends StatefulWidget {
   final String whichScreen;
+  final bool isLogin;
 
-  const ProfileModel({super.key, required this.whichScreen});
+  const ProfileModel({
+    super.key,
+    required this.whichScreen,
+    required this.isLogin,
+  });
 
   @override
   State<ProfileModel> createState() => _ProfileModelState();
 }
 
 class _ProfileModelState extends State<ProfileModel> {
-
   @override
   Widget build(BuildContext context) {
-
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
     return Container(
-      margin: EdgeInsets.only(left: 16,right: 16),
+      margin: EdgeInsets.only(left: 16, right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Profile",style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: MyColor().blackClr
-          ),),
-          SizedBox(height: 10,),
+          Text(
+            "Profile",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: MyColor().blackClr,
+            ),
+          ),
+          SizedBox(height: 10),
           GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> EditProfileModel(whichScreen: widget.whichScreen,))).then((_){
-                  context.read<UserProfileBloc>().add(ClickedUserProfile(whichUser: widget.whichScreen));
-                });
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) =>
+                      EditProfileModel(whichScreen: widget.whichScreen),
+                ),
+              ).then((_) {
+                context.read<UserProfileBloc>().add(
+                  ClickedUserProfile(whichUser: widget.whichScreen),
+                );
+              });
+            },
+            child: customContainer(
+              name: "Edit Profile",
+              icon: Icons.arrow_forward_ios,
+              borderRadius: checkUser
+                  ? BorderRadius.circular(12)
+                  : BorderRadius.only(
+                      topRight: Radius.circular(12),
+                      topLeft: Radius.circular(12),
+                    ),
+            ),
+          ),
+          if (!checkUser)
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        SocialLinksModel(whichScreen: widget.whichScreen),
+                  ),
+                );
               },
-              child: customContainer(name: "Edit Profile", icon: Icons.arrow_forward_ios, borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
-         if(!checkUser) GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> SocialLinksModel(whichScreen: widget.whichScreen,)));
-              },
-              child: customContainer(name: "Social Links", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)))),
-          if(!checkUser)  SizedBox(height: 24,),
-        if(!checkUser)  Text("My Activities",style: GoogleFonts.poppins(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: MyColor().blackClr
-        ),),
-          SizedBox(height: 10,),
+              child: customContainer(
+                name: "Social Links",
+                icon: Icons.arrow_forward_ios,
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(12),
+                  bottomLeft: Radius.circular(12),
+                ),
+              ),
+            ),
+          if (!checkUser) SizedBox(height: 24),
+          if (!checkUser)
+            Text(
+              "My Activities",
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: MyColor().blackClr,
+              ),
+            ),
+          SizedBox(height: 10),
           GestureDetector(
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (_)=> SavedEventModel()));
-              },
-              child: customContainer(name: "My Saved List", icon: Icons.arrow_forward_ios, borderRadius:BorderRadius.circular(12))),
-         if(!checkUser) SizedBox(height: 24,),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => SavedEventModel(isLogin: widget.isLogin),
+                ),
+              );
+            },
+            child: customContainer(
+              name: "My Saved List",
+              icon: Icons.arrow_forward_ios,
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          if (!checkUser) SizedBox(height: 24),
         ],
       ),
     );
   }
 }
 
-
 // ----------- Custom Widget -------
-Widget customContainer({required String name, required IconData icon,required dynamic borderRadius}) {
+Widget customContainer({
+  required String name,
+  required IconData icon,
+  required dynamic borderRadius,
+}) {
   return Container(
     height: 48,
     decoration: BoxDecoration(
-        color: MyColor().boxInnerClr,
-        borderRadius: borderRadius,
-        // border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+      color: MyColor().boxInnerClr,
+      borderRadius: borderRadius,
+      // border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
     ),
     child: Container(
-      margin: EdgeInsets.only(left: 16,right: 16),
+      margin: EdgeInsets.only(left: 16, right: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name,style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w500,
-            fontSize: 14,
-            color: MyColor().blackClr
-          ),),
-          Icon(icon,size: 18,)
+          Text(
+            name,
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              color: MyColor().blackClr,
+            ),
+          ),
+          Icon(icon, size: 18),
         ],
       ),
     ),

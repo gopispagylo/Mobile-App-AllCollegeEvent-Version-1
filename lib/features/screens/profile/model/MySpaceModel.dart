@@ -19,15 +19,19 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class MySpaceModel extends StatefulWidget {
   final String whichScreen;
+  final bool isLogin;
 
-  const MySpaceModel({super.key, required this.whichScreen});
+  const MySpaceModel({
+    super.key,
+    required this.whichScreen,
+    required this.isLogin,
+  });
 
   @override
   State<MySpaceModel> createState() => _MySpaceModelState();
 }
 
 class _MySpaceModelState extends State<MySpaceModel> {
-
   // ------- Check Box Value ------
   bool checkNotification = false;
   bool checkEmailSetting = false;
@@ -35,7 +39,6 @@ class _MySpaceModelState extends State<MySpaceModel> {
   // ---------- Controller ------
   final deleteController = TextEditingController();
   final whatsAppNumberController = TextEditingController();
-
 
   @override
   void dispose() {
@@ -46,188 +49,287 @@ class _MySpaceModelState extends State<MySpaceModel> {
 
   @override
   Widget build(BuildContext context) {
-
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
     print("checkUsercheckUsercheckUsercheckUser$checkUser");
 
     return Container(
-      margin: EdgeInsets.only(left: 16,right: 16),
+      margin: EdgeInsets.only(left: 16, right: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ----- only visible for organizer ----------
-         Visibility(
-           visible: !checkUser,
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-               Container(
-                 child: Text("My Space",style: GoogleFonts.poppins(
-                     fontSize: 18,
-                     fontWeight: FontWeight.w600,
-                     color: MyColor().blackClr
-                 ),),
-               ),
-               SizedBox(height: 10,),
-               GestureDetector(
-                   onTap: (){
-                     Navigator.push(context, MaterialPageRoute(builder: (_)=> OrganizationCreateDetailPage()));
-                   },
-                   child: customContainer(name: "Create Your Event", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)))),
-               customContainer(name: "Dashboard", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(topRight: Radius.circular(0),topLeft: Radius.circular(0))),
-               GestureDetector(
-                   onTap: (){
-                     Navigator.push(context, MaterialPageRoute(builder: (_)=> MyEventsModel()));
-                   },
-                   child: customContainer(name: "My Events", icon: Icons.arrow_forward_ios, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)))),
-               SizedBox(height: 24,),
-             ],
-           ),
-         ),
-
-         if(!checkUser) Container(
-            child: Text("Settings",style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: MyColor().blackClr
-            ),),
-          ),
-          SizedBox(height: 10,),
-          GestureDetector(
-            onTap: !checkUser ? (){
-              Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> NotificationModel(),
-                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                    var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
-                    return SlideTransition(position: animation.drive(tween),child: child);
+          Visibility(
+            visible: !checkUser,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  child: Text(
+                    "My Space",
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: MyColor().blackClr,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => OrganizationCreateDetailPage(),
+                      ),
+                    );
                   },
-                  transitionDuration: Duration(milliseconds: 400)
-              ));
-          } : null,
-            child: customCheckBox(name: 'Notifications', borderRadius: checkUser ? BorderRadius.circular(12) : BorderRadius.only(topRight: Radius.circular(12),topLeft: Radius.circular(12)), value: checkNotification, onChanged: (value) {
-              setState(() {
-                checkNotification = value;
-              });
-            }),
+                  child: customContainer(
+                    name: "Create Your Event",
+                    icon: Icons.arrow_forward_ios,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(12),
+                      topLeft: Radius.circular(12),
+                    ),
+                  ),
+                ),
+                customContainer(
+                  name: "Dashboard",
+                  icon: Icons.arrow_forward_ios,
+                  borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(0),
+                    topLeft: Radius.circular(0),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => MyEventsModel(isLogin: widget.isLogin),
+                      ),
+                    );
+                  },
+                  child: customContainer(
+                    name: "My Events",
+                    icon: Icons.arrow_forward_ios,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 24),
+              ],
+            ),
+          ),
+
+          if (!checkUser)
+            Container(
+              child: Text(
+                "Settings",
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: MyColor().blackClr,
+                ),
+              ),
+            ),
+          SizedBox(height: 10),
+          GestureDetector(
+            onTap: !checkUser
+                ? () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            NotificationModel(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1.0, 0.0),
+                              ).chain(CurveTween(curve: Curves.easeOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 400),
+                      ),
+                    );
+                  }
+                : null,
+            child: customCheckBox(
+              name: 'Notifications',
+              borderRadius: checkUser
+                  ? BorderRadius.circular(12)
+                  : BorderRadius.only(
+                      topRight: Radius.circular(12),
+                      topLeft: Radius.circular(12),
+                    ),
+              value: checkNotification,
+              onChanged: (value) {
+                setState(() {
+                  checkNotification = value;
+                });
+              },
+            ),
           ),
 
           // ----- only visible for organizer ----------
-        if(checkUser) customCheckBox(name: 'Email Settings', borderRadius: BorderRadius.only(bottomRight: Radius.circular(12),bottomLeft: Radius.circular(12)), value: checkEmailSetting, onChanged: (value) {
-           MyModels().alertDialogContentCustom(context: context, content: Container(
-             child: Column(
-               mainAxisSize: MainAxisSize.min,
-               children: [
-                 Text("Receive timely updates and important notifications via WhatsApp.",style: GoogleFonts.poppins(
-                   fontSize: 12,fontWeight: FontWeight.w500,color: MyColor().blackClr
-                 ),),
+          if (checkUser)
+            customCheckBox(
+              name: 'Email Settings',
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(12),
+                bottomLeft: Radius.circular(12),
+              ),
+              value: checkEmailSetting,
+              onChanged: (value) {
+                MyModels().alertDialogContentCustom(
+                  context: context,
+                  content: Container(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Receive timely updates and important notifications via WhatsApp.",
+                          style: GoogleFonts.poppins(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: MyColor().blackClr,
+                          ),
+                        ),
 
-                 Container(
-                   margin: EdgeInsets.only(top: 20,bottom: 20),
-                   child: TextFormField(
-                     controller: whatsAppNumberController,
-                     validator: Validators().validPhoneWhatsapp,
-                     onTapOutside: (outSideTab){
-                       WidgetsBinding.instance.focusManager.primaryFocus?.unfocus();
-                     },
-                     keyboardType: TextInputType.number,
-                     decoration: InputDecoration(
-                       contentPadding: EdgeInsets.all(10),
-                       enabledBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
-                       ),
-                       focusedBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
-                       ),
-                       errorBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
-                       ),
-                       focusedErrorBorder: OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12),
-                           borderSide: BorderSide(color: MyColor().redClr, width: 0.5)
-                       ),
-                       hintText: "Enter Your WhatsApp Number",
-                       hintStyle: GoogleFonts.poppins(
-                           fontWeight: FontWeight.w400,
-                           fontSize: 12,
-                           color: MyColor().hintTextClr
-                       ),
-                     ),
-                   ),
-                 ),
+                        Container(
+                          margin: EdgeInsets.only(top: 20, bottom: 20),
+                          child: TextFormField(
+                            controller: whatsAppNumberController,
+                            validator: Validators().validPhoneWhatsapp,
+                            onTapOutside: (outSideTab) {
+                              WidgetsBinding.instance.focusManager.primaryFocus
+                                  ?.unfocus();
+                            },
+                            keyboardType: TextInputType.number,
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.all(10),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: MyColor().borderClr,
+                                  width: 0.5,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: MyColor().primaryClr,
+                                  width: 0.5,
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: MyColor().redClr,
+                                  width: 0.5,
+                                ),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: MyColor().redClr,
+                                  width: 0.5,
+                                ),
+                              ),
+                              hintText: "Enter Your WhatsApp Number",
+                              hintStyle: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w400,
+                                fontSize: 12,
+                                color: MyColor().hintTextClr,
+                              ),
+                            ),
+                          ),
+                        ),
 
-                 Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-                     Expanded(
-                       child: InkWell(
-                         onTap: (){
-                           Navigator.pop(context);
-                         },
-                         child: Container(
-                           alignment: Alignment.center,
-                           height: 40,
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(8),
-                             border: Border.all(color: MyColor().borderClr, width: 1),
-                             color: Colors.white,
-                           ),
-                           child: Text(
-                             "Cancel",
-                             style: GoogleFonts.poppins(
-                                 fontSize: 14,
-                                 fontWeight: FontWeight.w600,
-                                 color: MyColor().borderClr
-                             ),
-                           ),
-                         ),
-                       ),
-                     ),
-                     const SizedBox(width: 10),
-                     Expanded(
-                       child: InkWell(
-                         onTap: (){
-                           setState(() {
-                             checkEmailSetting = value;
-                           });
-                           Navigator.pop(context);
-                         },
-                         child: Container(
-                           alignment: Alignment.center,
-                           height: 40,
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(8),
-                             color: MyColor().primaryClr,
-                           ),
-                           child: Text(
-                             "Subscribe",
-                             style: GoogleFonts.poppins(
-                                 fontSize: 14,
-                                 fontWeight: FontWeight.w600,
-                                 color: MyColor().whiteClr
-                             ),
-                           ),
-                         ),
-                       ),
-                     ),
-                   ],
-                 ),
-               ],
-             ),
-           ));
-          }),
-          SizedBox(height: 24,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: MyColor().borderClr,
+                                      width: 1,
+                                    ),
+                                    color: Colors.white,
+                                  ),
+                                  child: Text(
+                                    "Cancel",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: MyColor().borderClr,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    checkEmailSetting = value;
+                                  });
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    color: MyColor().primaryClr,
+                                  ),
+                                  child: Text(
+                                    "Subscribe",
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: MyColor().whiteClr,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          SizedBox(height: 24),
           Container(
-            child: Text("Account Manage",style: GoogleFonts.poppins(
+            child: Text(
+              "Account Manage",
+              style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: MyColor().blackClr
-            ),),
+                color: MyColor().blackClr,
+              ),
+            ),
           ),
-          SizedBox(height: 10,),
+          SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -236,312 +338,471 @@ class _MySpaceModelState extends State<MySpaceModel> {
                 decoration: BoxDecoration(
                   color: MyColor().whiteClr,
                   borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                  border: Border.all(
+                    color: MyColor().borderClr.withOpacity(0.15),
+                  ),
                 ),
                 child: GestureDetector(
-                  onTap: (){
-                    MyModels().alertDialogContentCustom(context: context, content: StatefulBuilder(
-                      builder: (context,setDialogState) {
-                        return Container(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(textAlign: TextAlign.center,"Are you sure you want to delete the account?",style: GoogleFonts.poppins(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                                color: MyColor().blackClr
-                              ),),
-                              SizedBox(height: 10,),
-                              Row(
-                                children: [
-                                  Text("Type ",style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: MyColor().blackClr
-                                  ),),
-                                  Text("Delete ",style: GoogleFonts.poppins(
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14,
-                                    color: MyColor().blackClr
-                                  ),),
-                                  Text("to confirm",style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 14,
-                                      color: MyColor().blackClr
-                                  ),),
-                                ],
-                              ),
-                              SizedBox(height: 16,),
-                              TextFormField(
-                                controller: deleteController,
-                                textCapitalization: TextCapitalization.words,
-                                onChanged: (_){
-                                  setDialogState((){});
-                                },
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(10),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(color: MyColor().borderClr,width: 0.5)
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(color: MyColor().primaryClr,width: 0.5)
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(color: MyColor().redClr,width: 0.5)
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: BorderSide(
-                                          color: MyColor().redClr, width: 0.5)
+                  onTap: () {
+                    MyModels().alertDialogContentCustom(
+                      context: context,
+                      content: StatefulBuilder(
+                        builder: (context, setDialogState) {
+                          return Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  textAlign: TextAlign.center,
+                                  "Are you sure you want to delete the account?",
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: MyColor().blackClr,
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: 16,),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Type ",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: MyColor().blackClr,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Delete ",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14,
+                                        color: MyColor().blackClr,
+                                      ),
+                                    ),
+                                    Text(
+                                      "to confirm",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 14,
+                                        color: MyColor().blackClr,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 16),
+                                TextFormField(
+                                  controller: deleteController,
+                                  textCapitalization: TextCapitalization.words,
+                                  onChanged: (_) {
+                                    setDialogState(() {});
+                                  },
+                                  decoration: InputDecoration(
+                                    contentPadding: EdgeInsets.all(10),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: MyColor().borderClr,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: MyColor().primaryClr,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: MyColor().redClr,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      borderSide: BorderSide(
+                                        color: MyColor().redClr,
+                                        width: 0.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 16),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           elevation: 0,
                                           backgroundColor: MyColor().primaryClr,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
                                         ),
-                                        onPressed: deleteController.text.trim() == "Delete" ?  () async{
-                                          await DBHelper().deleteAllLoginData();
-                                          await DBHelper().deleteUserId();
-                                          await DBHelper().deleteToken();
+                                        onPressed:
+                                            deleteController.text.trim() ==
+                                                "Delete"
+                                            ? () async {
+                                                await DBHelper()
+                                                    .deleteAllLoginData();
+                                                await DBHelper().deleteUserId();
+                                                await DBHelper().deleteToken();
 
-                                          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
-                                        } : null,
-                                        child: Text("Delete Account",
+                                                Navigator.pushAndRemoveUntil(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        CheckUserPage(),
+                                                  ),
+                                                  (route) => false,
+                                                );
+                                              }
+                                            : null,
+                                        child: Text(
+                                          "Delete Account",
                                           style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: MyColor().whiteClr
-                                          ),)),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: ElevatedButton(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: MyColor().whiteClr,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: MyColor().whiteClr,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
-                                            side: BorderSide(color: MyColor().borderClr)
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                            side: BorderSide(
+                                              color: MyColor().borderClr,
+                                            ),
                                           ),
-                                          elevation: 0
+                                          elevation: 0,
                                         ),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: Text("Cancel",
+                                        child: Text(
+                                          "Cancel",
                                           style: GoogleFonts.poppins(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                              color: MyColor().borderClr
-                                          ),)),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    ));
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: MyColor().borderClr,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
-                    children: [
-                      Icon(Iconsax.trash_copy,size: 18,color: MyColor().redClr,),
-                      SizedBox(width: 5,),
-                      Text("Delete Account",style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: MyColor().redClr
-                      ),),
-                    ],
+                      children: [
+                        Icon(
+                          Iconsax.trash_copy,
+                          size: 18,
+                          color: MyColor().redClr,
+                        ),
+                        SizedBox(width: 5),
+                        Text(
+                          "Delete Account",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: MyColor().redClr,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              SizedBox(width: 25,),
+              SizedBox(width: 25),
               GestureDetector(
-                onTap: (){
+                onTap: () {
+                  MyModels().alertDialogCustomizeEdit(
+                    context,
+                    "Are you sure?",
+                    Text(
+                      "You can sign back in anytime. Want to switch accounts?",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        color: MyColor().secondaryClr,
+                      ),
+                    ),
+                    () {
+                      Navigator.pop(context);
+                    },
+                    () async {
+                      final googleSignIn = GoogleSignIn();
 
-                  MyModels().alertDialogCustomizeEdit(context, "Are you sure?", Text("You can sign back in anytime. Want to switch accounts?",style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w400,
-                      color: MyColor().secondaryClr
-                  ),), (){
-                    Navigator.pop(context);
-                  }, () async{
+                      await DBHelper().deleteAllLoginData();
+                      await DBHelper().deleteUser();
+                      await DBHelper().deleteUserId();
+                      await DBHelper().deleteToken();
 
-                    final googleSignIn = GoogleSignIn();
+                      await googleSignIn.signOut();
 
-                    await DBHelper().deleteAllLoginData();
-                    await DBHelper().deleteUser();
-                    await DBHelper().deleteUserId();
-                    await DBHelper().deleteToken();
-
-                    await googleSignIn.signOut();
-
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> CheckUserPage()), (route) => false,);
-                  }, "Cancel", "Logout");
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => CheckUserPage()),
+                        (route) => false,
+                      );
+                    },
+                    "Cancel",
+                    "Logout",
+                  );
                 },
                 child: Container(
                   height: 48,
                   decoration: BoxDecoration(
                     color: MyColor().boxInnerClr,
-                      borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(
+                      color: MyColor().borderClr.withOpacity(0.15),
+                    ),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
-                    children: [
-                      Icon(Iconsax.logout_copy,size: 18,),
-                      SizedBox(width: 5,),
-                      Text("Log Out",style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14,
-                          color: MyColor().blackClr
-                      ),),
-                    ],
+                      children: [
+                        Icon(Iconsax.logout_copy, size: 18),
+                        SizedBox(width: 5),
+                        Text(
+                          "Log Out",
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                            color: MyColor().blackClr,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 30,),
+          SizedBox(height: 30),
           Center(
             child: Wrap(
               alignment: WrapAlignment.center,
               children: [
                 GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> AboutUs(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
-                            return SlideTransition(position: animation.drive(tween),child: child);
-                          },
-                          transitionDuration: Duration(milliseconds: 400)
-                      ));
-                    },
-                    child: customText(text: 'About Us')),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            AboutUs(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1.0, 0.0),
+                              ).chain(CurveTween(curve: Curves.easeOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 400),
+                      ),
+                    );
+                  },
+                  child: customText(text: 'About Us'),
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
-                  child: VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+                  child: VerticalDivider(color: Colors.grey, thickness: 1),
                 ),
                 GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> ContactUs(),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
-                        return SlideTransition(position: animation.drive(tween),child: child);
-                      },
-                        transitionDuration: Duration(milliseconds: 400)
-                      ));
-                    },
-                    child: customText(text: 'Contact us')),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            ContactUs(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1.0, 0.0),
+                              ).chain(CurveTween(curve: Curves.easeOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 400),
+                      ),
+                    );
+                  },
+                  child: customText(text: 'Contact us'),
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
-                  child: VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+                  child: VerticalDivider(color: Colors.grey, thickness: 1),
                 ),
                 GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> FeedBack(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
-                            return SlideTransition(position: animation.drive(tween),child: child);
-                          },
-                          transitionDuration: Duration(milliseconds: 400)
-                      ));
-                    },
-                    child: customText(text: 'Feedback')),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            FeedBack(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1.0, 0.0),
+                              ).chain(CurveTween(curve: Curves.easeOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 400),
+                      ),
+                    );
+                  },
+                  child: customText(text: 'Feedback'),
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
-                  child: VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+                  child: VerticalDivider(color: Colors.grey, thickness: 1),
                 ),
                 GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => Faq(),transitionDuration: Duration(milliseconds: 400),
-                      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        var tween = Tween(end: Offset.zero,begin: Offset(1, 0)).chain(CurveTween(curve: Curves.easeInOut));
-                        return SlideTransition(position: animation.drive(tween),child: child,);
-                      },
-                      ));
-                    },
-                    child: customText(text: 'FAQ')),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            Faq(),
+                        transitionDuration: Duration(milliseconds: 400),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1, 0),
+                              ).chain(CurveTween(curve: Curves.easeInOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                      ),
+                    );
+                  },
+                  child: customText(text: 'FAQ'),
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
-                  child: VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+                  child: VerticalDivider(color: Colors.grey, thickness: 1),
                 ),
                 GestureDetector(
-                    onTap: (){
-                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context,animation,secondaryAnimation)=> PrivacyPolicy(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            var tween = Tween(end: Offset.zero,begin: Offset(1.0, 0.0)).chain(CurveTween(curve: Curves.easeOut));
-                            return SlideTransition(position: animation.drive(tween),child: child);
-                          },
-                          transitionDuration: Duration(milliseconds: 400)
-                      ));
-                    },
-                    child: customText(text: 'Privacy Policy')),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            PrivacyPolicy(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1.0, 0.0),
+                              ).chain(CurveTween(curve: Curves.easeOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 400),
+                      ),
+                    );
+                  },
+                  child: customText(text: 'Privacy Policy'),
+                ),
                 Container(
                   margin: EdgeInsets.only(top: 7),
                   height: 20,
-                  child: VerticalDivider(
-                    color: Colors.grey,
-                    thickness: 1,
-                  ),
+                  child: VerticalDivider(color: Colors.grey, thickness: 1),
                 ),
                 GestureDetector(
-                    onTap: () {
-                      Navigator.push(context, PageRouteBuilder(pageBuilder: (context, animation, secondaryAnimation) => TermsCondition(),transitionDuration: Duration(milliseconds: 400),transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                        var tween = Tween(begin: Offset(1, 0),end: Offset.zero).chain(CurveTween(curve: Curves.easeInOut));
-                        return SlideTransition(position: animation.drive(tween),child: child,);
-                      },));
-                    },
-                    child: customText(text: 'Terms & Conditions')),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            TermsCondition(),
+                        transitionDuration: Duration(milliseconds: 400),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                begin: Offset(1, 0),
+                                end: Offset.zero,
+                              ).chain(CurveTween(curve: Curves.easeInOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                      ),
+                    );
+                  },
+                  child: customText(text: 'Terms & Conditions'),
+                ),
               ],
             ),
           ),
-          SizedBox(height: 50,),
-          Center(child: Text(textAlign: TextAlign.center,"Copyright © 2025 AllCollegeEvent - All Rights Reserved.",style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w500,color: MyColor().borderClr,fontSize: 12
-          ),)),
-          SizedBox(height: 20,),
+          SizedBox(height: 50),
+          Center(
+            child: Text(
+              textAlign: TextAlign.center,
+              "Copyright © 2025 AllCollegeEvent - All Rights Reserved.",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+                color: MyColor().borderClr,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
         ],
       ),
     );
   }
 
   // --------- Check Box -------
-  Widget customCheckBox({required String name,required dynamic borderRadius, required dynamic value,required ValueChanged onChanged}) {
+  Widget customCheckBox({
+    required String name,
+    required dynamic borderRadius,
+    required dynamic value,
+    required ValueChanged onChanged,
+  }) {
     return Container(
       height: 48,
       decoration: BoxDecoration(
@@ -549,28 +810,37 @@ class _MySpaceModelState extends State<MySpaceModel> {
         borderRadius: borderRadius,
       ),
       child: Container(
-        margin: EdgeInsets.only(left: 16,right: 16),
+        margin: EdgeInsets.only(left: 16, right: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(name,style: GoogleFonts.poppins(
+            Text(
+              name,
+              style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w500,
                 fontSize: 14,
-                color: MyColor().blackClr
-            ),),
-            widget.whichScreen == "User" ?  Transform.scale(
-                scale: 0.7,
-                child: Switch(value: value, onChanged: onChanged,)) : Icon(Icons.arrow_forward_ios,size: 18,)
+                color: MyColor().blackClr,
+              ),
+            ),
+            widget.whichScreen == "User"
+                ? Transform.scale(
+                    scale: 0.7,
+                    child: Switch(value: value, onChanged: onChanged),
+                  )
+                : Icon(Icons.arrow_forward_ios, size: 18),
           ],
         ),
       ),
     );
   }
-
 }
 
-  // ----------- Custom Widget -------
-  Widget customContainer({required String name, required IconData icon,required dynamic borderRadius}) {
+// ----------- Custom Widget -------
+Widget customContainer({
+  required String name,
+  required IconData icon,
+  required dynamic borderRadius,
+}) {
   return Container(
     height: 48,
     decoration: BoxDecoration(
@@ -579,30 +849,36 @@ class _MySpaceModelState extends State<MySpaceModel> {
       // border: Border.all(color: MyColor().borderClr.withOpacity(0.15))
     ),
     child: Container(
-      margin: EdgeInsets.only(left: 16,right: 16),
+      margin: EdgeInsets.only(left: 16, right: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(name,style: GoogleFonts.poppins(
+          Text(
+            name,
+            style: GoogleFonts.poppins(
               fontWeight: FontWeight.w500,
               fontSize: 14,
-              color: MyColor().blackClr
-          ),),
-          Icon(icon,size: 18,)
+              color: MyColor().blackClr,
+            ),
+          ),
+          Icon(icon, size: 18),
         ],
       ),
     ),
   );
 }
 
-
-  // ------- custom text -------
-  Widget customText({required String text}) {
+// ------- custom text -------
+Widget customText({required String text}) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
-    child: Text(text, style: GoogleFonts.poppins(
-        fontSize: 14, color: MyColor().borderClr, fontWeight: FontWeight.w500
-    ),),
+    child: Text(
+      text,
+      style: GoogleFonts.poppins(
+        fontSize: 14,
+        color: MyColor().borderClr,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
   );
 }
-

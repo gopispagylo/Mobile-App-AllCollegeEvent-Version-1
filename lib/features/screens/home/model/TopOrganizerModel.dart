@@ -15,7 +15,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 
 class TopOrganizerModel extends StatefulWidget {
-  const TopOrganizerModel({super.key});
+  final bool isLogin;
+
+  const TopOrganizerModel({super.key, required this.isLogin});
 
   @override
   State<TopOrganizerModel> createState() => _TopOrganizerModelState();
@@ -112,6 +114,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                                           .topOrganizer[index]['slug'],
                                       identity: topOrganizerState
                                           .topOrganizer[index]['identity'],
+                                      isLogin: widget.isLogin,
                                     ),
                                   ),
                                 );

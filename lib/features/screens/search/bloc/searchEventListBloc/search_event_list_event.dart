@@ -8,7 +8,7 @@ class FetchSearchEventList extends SearchEventListEvent {
   final List<dynamic>? modes;
   final List<String>? eligibleDeptIdentities;
   final String? certIdentity;
-  final String? eventTypeIdentity;
+  final List<String>? eventTypeIdentity;
   final List<String>? perkIdentities;
   final List<String>? accommodationIdentities;
   final String? country;
@@ -22,6 +22,7 @@ class FetchSearchEventList extends SearchEventListEvent {
   final int? limit;
   final String? searchText;
   final bool isLoadMore;
+  final bool isLogin;
   // final String? sortBy;
 
   FetchSearchEventList({
@@ -43,6 +44,7 @@ class FetchSearchEventList extends SearchEventListEvent {
     required this.limit,
     required this.searchText,
     this.isLoadMore = false,
+    required this.isLogin,
     // required this.sortBy,
   });
 }

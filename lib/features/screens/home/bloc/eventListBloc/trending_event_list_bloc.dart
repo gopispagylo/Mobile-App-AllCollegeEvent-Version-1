@@ -7,7 +7,6 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 part 'trending_event_list_event.dart';
-
 part 'trending_event_list_state.dart';
 
 class TrendingEventListBloc
@@ -18,19 +17,26 @@ class TrendingEventListBloc
   TrendingEventListBloc({required this.apiController})
     : super(TrendingEventListInitial()) {
     on<FetchTrendingEventList>((event, emit) async {
-
       emit(TrendingEventListLoading());
       try {
-
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
         // ------- token -------
         final token = await DBHelper().getToken();
 
-        final response = await apiController.getMethodWithoutBody(
-          endPoint: 'events_protec',
-          token: token!,
+        final response = event.isLogin
+            ? await apiController.getMethodWithoutBody(
+                endPoint:
+                    'events_protec?offset=${event.page}&limit=${event.limit}',
+                token: token!,
+              )
+            : await apiController.getMethodWithoutBodyAndHeader(
+                endPoint: 'events?offset=${event.page}&limit=${event.limit}',
+              );
+
+        print(
+          "TrendingEventListEventTrendingEventListEventTrendingEventListEvent$response",
         );
 
         if (response.statusCode == 200) {

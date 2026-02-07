@@ -109,6 +109,7 @@ class _AreYouPageState extends State<AreYouPage> {
                             builder: (_) => BottomNavigationBarPage(
                               pageIndex: 0,
                               whichScreen: widget.whichScreen,
+                              isLogin: true,
                             ),
                           ),
                           (route) => false,
