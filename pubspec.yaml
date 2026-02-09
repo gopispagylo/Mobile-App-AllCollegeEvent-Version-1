@@ -62,6 +62,8 @@ dependencies:
   file_picker:
   image:
   flutter_widget_from_html:
+  firebase_core:
+  firebase_messaging:
 
 
 

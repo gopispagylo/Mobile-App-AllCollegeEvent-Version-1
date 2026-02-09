@@ -1,15 +1,16 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/multipleImageController/image_controller_bloc.dart';
-import 'package:all_college_event_app/features/screens/profile/bloc/eventUpdateBloc/event_update_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userUpdateBloc/user_update_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -37,15 +38,31 @@ class _SocialLinksModelState extends State<SocialLinksModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: MyColor().whiteClr,
       appBar: AppBar(
-        backgroundColor: MyColor().whiteClr,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.dark,
+        ),
         title: Text(
           "Manage Page",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,
             color: MyColor().blackClr,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        flexibleSpace: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+            child: Container(
+              decoration: BoxDecoration(
+                color: MyColor().whiteClr.withOpacity(0.05),
+              ),
+            ),
           ),
         ),
       ),
@@ -288,7 +305,6 @@ class _SocialLinksModelState extends State<SocialLinksModel> {
               BlocConsumer<UserUpdateBloc, UserUpdateState>(
                 listener: (context, userUpdateState) {
                   if (userUpdateState is SocialLinkOrganizerSuccess) {
-
                     // ---- Success Dialog -----
                     MyModels().alertDialogContentCustom(
                       context: context,
@@ -336,13 +352,20 @@ class _SocialLinksModelState extends State<SocialLinksModel> {
                           context.read<UserUpdateBloc>().add(
                             SocialLinkOrganizer(
                               socialLink: {
-                                 if(instagramController.text.isNotEmpty)"instagram": instagramController.text,
-                                  if(youtubeController.text.isNotEmpty)"youtube": youtubeController.text,
-                                  if(twitterController.text.isNotEmpty)"x": twitterController.text,
-                                  if(faceBookController.text.isNotEmpty)'facebook': faceBookController.text,
-                                  if(telegramController.text.isNotEmpty)'telegram': telegramController.text,
-                                  if(linkedInController.text.isNotEmpty)'linkedin': linkedInController.text,
-                              }, whichUser: 'org',
+                                if (instagramController.text.isNotEmpty)
+                                  "instagram": instagramController.text,
+                                if (youtubeController.text.isNotEmpty)
+                                  "youtube": youtubeController.text,
+                                if (twitterController.text.isNotEmpty)
+                                  "x": twitterController.text,
+                                if (faceBookController.text.isNotEmpty)
+                                  'facebook': faceBookController.text,
+                                if (telegramController.text.isNotEmpty)
+                                  'telegram': telegramController.text,
+                                if (linkedInController.text.isNotEmpty)
+                                  'linkedin': linkedInController.text,
+                              },
+                              whichUser: 'org',
                             ),
                           );
                         },

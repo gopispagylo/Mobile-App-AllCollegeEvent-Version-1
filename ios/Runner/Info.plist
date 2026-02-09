@@ -80,7 +80,7 @@
     <string>UIInterfaceOrientationPortraitUpsideDown</string>
   </array>
 
-  <!-- 🔴 REQUIRED PRIVACY PERMISSIONS (APP STORE FIX) -->
+  <!-- REQUIRED PRIVACY PERMISSIONS (APP STORE FIX) -->
 
   <key>NSPhotoLibraryUsageDescription</key>
   <string>This app needs access to your photo library to select and upload images for events and profile pictures.</string>

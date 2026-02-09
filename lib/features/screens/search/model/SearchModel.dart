@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/controller/Date&TimeController/Date&TimeController.dart';
@@ -197,1482 +198,251 @@ class _SearchModelState extends State<SearchModel> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        // ----------- search bar ----------
-        Center(
-          child: Container(
-            margin: EdgeInsets.only(top: 10, bottom: 16, left: 16, right: 16),
-            width: 380,
-            child: TextFormField(
-              focusNode: GlobalUnFocus.focusNode,
-              controller: searchController,
-              onChanged: (onChanged) {
-                fetchEvents();
-              },
-              onTapOutside: (onOutSideClick) {
-                GlobalUnFocus.unFocus();
+        RefreshIndicator(
+          edgeOffset: 80,
+          backgroundColor: MyColor().whiteClr,
+          color: MyColor().primaryClr,
+          onRefresh: () async {
+            fetchEvents();
+          },
+          child: ListView(
+            children: [
+              Expanded(
+                child: BlocBuilder<SearchEventListBloc, SearchEventListState>(
+                  builder: (context, searchEventListState) {
+                    if (searchEventListState is SearchEventListLoading) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return eventCardShimmer();
+                        },
+                      );
+                    } else if (searchEventListState is SearchEventListSuccess) {
+                      if (isLoadingMore) {
+                        isLoadingMore = false;
 
-                // setState(() {
-                //   isRecent = false;
-                // });
-              },
-              // onTap: () {
-              //   setState(() {
-              //     isRecent = true;
-              //   });
-              // },
-              autofocus: false,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(10),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                    color: MyColor().borderClr,
-                    width: 0.5,
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(100),
-                  borderSide: BorderSide(
-                    color: MyColor().primaryClr,
-                    width: 0.5,
-                  ),
-                ),
-                suffixIcon: GestureDetector(
-                  onTap: () {
-                    showModalBottomSheet(
-                      isDismissible: false,
-                      backgroundColor: MyColor().whiteClr,
-                      context: context,
-                      builder: (_) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(
-                              value: context.read<EventTypeBloc>(),
-                            ),
-                            BlocProvider.value(
-                              value: context.read<PerksBloc>(),
-                            ),
-                            BlocProvider.value(
-                              value: context.read<AccommodationBloc>(),
-                            ),
-                            BlocProvider.value(
-                              value: context.read<CertificationBloc>(),
-                            ),
-                          ],
-                          child: StatefulBuilder(
-                            builder: (context, setState) {
-                              return Container(
-                                alignment: Alignment.topLeft,
-                                margin: EdgeInsets.only(left: 16, right: 16),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: 16,
-                                        bottom: 10,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Filter",
-                                            style: GoogleFonts.poppins(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18,
-                                              color: MyColor().blackClr,
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: Icon(Iconsax.close_circle),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    Expanded(
-                                      child: ListView(
-                                        children: [
-                                          // event status
-                                          Wrap(
-                                            spacing: 12,
-                                            runSpacing: 12,
-                                            children: statusList.map((item) {
-                                              final bool isSelected =
-                                                  selectEventStatus ==
-                                                  item['value'];
-                                              return InkWell(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                onTap: () {
-                                                  setState(() {
-                                                    selectEventStatus =
-                                                        item['value'];
-                                                  });
-                                                },
-                                                child: AnimatedContainer(
-                                                  duration: const Duration(
-                                                    milliseconds: 250,
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 10,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: isSelected
-                                                        ? MyColor().primaryClr
-                                                        : MyColor().whiteClr,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: isSelected
-                                                          ? MyColor().primaryClr
-                                                          : Colors
-                                                                .grey
-                                                                .shade300,
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        item['title'],
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: isSelected
-                                                              ? MyColor()
-                                                                    .whiteClr
-                                                              : MyColor()
-                                                                    .blackClr,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                          ),
-
-                                          // price
-                                          Container(
-                                            margin: EdgeInsets.only(top: 16),
-                                            child: Text(
-                                              "Pricing",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                color: MyColor().blackClr,
-                                              ),
-                                            ),
-                                          ),
-                                          RangeSlider(
-                                            values: RangeValues(
-                                              minPrice,
-                                              maxPrice,
-                                            ),
-                                            min: priceMinLimit,
-                                            max: priceMaxLimit,
-                                            divisions: 100,
-                                            activeColor: MyColor().primaryClr,
-                                            inactiveColor: Colors.grey.shade300,
-                                            onChanged: (RangeValues values) {
-                                              setState(() {
-                                                minPrice = priceMinLimit;
-                                                maxPrice = values.end;
-                                              });
-
-                                              print(
-                                                'minPriceminPriceminPriceminPrice$minPrice to $maxPrice',
-                                              );
-                                            },
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              priceChip(minPrice),
-                                              priceChip(maxPrice),
-                                            ],
-                                          ),
-
-                                          // date & time
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              top: 16,
-                                              bottom: 10,
-                                            ),
-                                            child: Text(
-                                              "Select Event Dates",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                color: MyColor().blackClr,
-                                              ),
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                flex: 1,
-                                                child: TextField(
-                                                  controller:
-                                                      startDateController,
-                                                  enableInteractiveSelection:
-                                                      false,
-                                                  readOnly: true,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: MyColor().primaryClr,
-                                                  ),
-                                                  decoration: InputDecoration(
-                                                    hintText: "Start Date",
-                                                    contentPadding:
-                                                        EdgeInsets.all(10),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          borderSide:
-                                                              BorderSide(
-                                                                color: MyColor()
-                                                                    .borderClr,
-                                                                width: 0.5,
-                                                              ),
-                                                        ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          borderSide:
-                                                              BorderSide(
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                                width: 0.5,
-                                                              ),
-                                                        ),
-                                                    errorBorder: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                      borderSide: BorderSide(
-                                                        color: MyColor().redClr,
-                                                        width: 0.5,
-                                                      ),
-                                                    ),
-                                                    focusedErrorBorder:
-                                                        OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          borderSide:
-                                                              BorderSide(
-                                                                color: MyColor()
-                                                                    .redClr,
-                                                                width: 0.5,
-                                                              ),
-                                                        ),
-                                                    hintStyle:
-                                                        GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: MyColor()
-                                                              .borderClr,
-                                                        ),
-                                                    prefixIcon: Icon(
-                                                      Iconsax.calendar,
-                                                      color:
-                                                          MyColor().borderClr,
-                                                    ),
-                                                  ),
-                                                  onTap: () async {
-                                                    final result =
-                                                        await DateAndTimeController()
-                                                            .selectedDate(
-                                                              context,
-                                                            );
-                                                    if (result != null) {
-                                                      startDateController.text =
-                                                          result;
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Expanded(
-                                                flex: 1,
-                                                child: TextField(
-                                                  controller: endDateController,
-                                                  enableInteractiveSelection:
-                                                      false,
-                                                  readOnly: true,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w500,
-                                                    color: MyColor().primaryClr,
-                                                  ),
-                                                  decoration: InputDecoration(
-                                                    hintText: "End Date",
-                                                    contentPadding:
-                                                        EdgeInsets.all(10),
-                                                    enabledBorder:
-                                                        OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          borderSide:
-                                                              BorderSide(
-                                                                color: MyColor()
-                                                                    .borderClr,
-                                                                width: 0.5,
-                                                              ),
-                                                        ),
-                                                    focusedBorder:
-                                                        OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          borderSide:
-                                                              BorderSide(
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                                width: 0.5,
-                                                              ),
-                                                        ),
-                                                    errorBorder: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            12,
-                                                          ),
-                                                      borderSide: BorderSide(
-                                                        color: MyColor().redClr,
-                                                        width: 0.5,
-                                                      ),
-                                                    ),
-                                                    focusedErrorBorder:
-                                                        OutlineInputBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                12,
-                                                              ),
-                                                          borderSide:
-                                                              BorderSide(
-                                                                color: MyColor()
-                                                                    .redClr,
-                                                                width: 0.5,
-                                                              ),
-                                                        ),
-                                                    hintStyle:
-                                                        GoogleFonts.poppins(
-                                                          fontSize: 12,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: MyColor()
-                                                              .borderClr,
-                                                        ),
-                                                    prefixIcon: Icon(
-                                                      Iconsax.calendar,
-                                                      color:
-                                                          MyColor().borderClr,
-                                                    ),
-                                                  ),
-                                                  onTap: () async {
-                                                    final result =
-                                                        await DateAndTimeController()
-                                                            .selectedDate(
-                                                              context,
-                                                            );
-                                                    if (result != null) {
-                                                      endDateController.text =
-                                                          result;
-                                                    }
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-
-                                          // event mode
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              top: 16,
-                                              bottom: 10,
-                                            ),
-                                            child: Text(
-                                              "Event Mode",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                color: MyColor().blackClr,
-                                              ),
-                                            ),
-                                          ),
-                                          Wrap(
-                                            spacing: 12,
-                                            runSpacing: 12,
-                                            children: modeList.map((item) {
-                                              final bool isSelected =
-                                                  selectEventMode ==
-                                                  item['value'];
-                                              return InkWell(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                onTap: () {
-                                                  setState(() {
-                                                    selectEventMode =
-                                                        item['value'];
-                                                  });
-                                                },
-                                                child: AnimatedContainer(
-                                                  duration: const Duration(
-                                                    milliseconds: 250,
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal: 16,
-                                                        vertical: 10,
-                                                      ),
-                                                  decoration: BoxDecoration(
-                                                    color: isSelected
-                                                        ? MyColor().primaryClr
-                                                        : MyColor().whiteClr,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          20,
-                                                        ),
-                                                    border: Border.all(
-                                                      color: isSelected
-                                                          ? MyColor().primaryClr
-                                                          : Colors
-                                                                .grey
-                                                                .shade300,
-                                                    ),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        item['title'],
-                                                        style: GoogleFonts.poppins(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color: isSelected
-                                                              ? MyColor()
-                                                                    .whiteClr
-                                                              : MyColor()
-                                                                    .blackClr,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
-                                            }).toList(),
-                                          ),
-
-                                          // event type
-                                          Container(
-                                            alignment: Alignment.topLeft,
-                                            margin: EdgeInsets.only(top: 20),
-                                            child: BlocBuilder<EventTypeBloc, EventTypeState>(
-                                              builder: (context, eventTypeState) {
-                                                if (eventTypeState
-                                                    is EventTypeLoading) {
-                                                  return Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          color: MyColor()
-                                                              .primaryClr,
-                                                        ),
-                                                  );
-                                                } else if (eventTypeState
-                                                    is EventTypeSuccess) {
-                                                  eventTypeList =
-                                                      List<
-                                                        Map<String, dynamic>
-                                                      >.from(
-                                                        eventTypeState
-                                                            .eventTypeList,
-                                                      );
-                                                  filterEventTypeList =
-                                                      eventTypeList;
-
-                                                  return Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                          top: 16,
-                                                          bottom: 10,
-                                                        ),
-                                                        child: Text(
-                                                          "Event Type",
-                                                          style:
-                                                              GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: MyColor()
-                                                                    .blackClr,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          final result =
-                                                              await openEventTypeMultiSelect();
-
-                                                          if (result != null) {
-                                                            setState(() {
-                                                              selectEventTypeList =
-                                                                  result;
-                                                            });
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 14,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                              color: MyColor()
-                                                                  .borderClr,
-                                                              width: 0.5,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  12,
-                                                                ),
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  selectEventTypeList
-                                                                          .isEmpty
-                                                                      ? "Select event type"
-                                                                      : selectEventTypeList
-                                                                            .map(
-                                                                              (
-                                                                                e,
-                                                                              ) => e['name'],
-                                                                            )
-                                                                            .join(
-                                                                              ", ",
-                                                                            ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ),
-                                                              Icon(
-                                                                Icons
-                                                                    .arrow_drop_down,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Wrap(
-                                                        spacing: 8,
-                                                        children: selectEventTypeList
-                                                            .map((e) {
-                                                              return Chip(
-                                                                label: Text(
-                                                                  e['name'],
-                                                                ),
-                                                                onDeleted: () {
-                                                                  setState(() {
-                                                                    selectEventTypeList
-                                                                        .remove(
-                                                                          e,
-                                                                        );
-                                                                  });
-                                                                },
-                                                              );
-                                                            })
-                                                            .toList(),
-                                                      ),
-                                                    ],
-                                                  );
-                                                } else if (eventTypeState
-                                                    is EventTypeFail) {
-                                                  return Center(
-                                                    child: Text(
-                                                      eventTypeState
-                                                          .errorMessage,
-                                                    ),
-                                                  );
-                                                }
-                                                return SizedBox.shrink();
-                                              },
-                                            ),
-                                          ),
-
-                                          // perks
-                                          Container(
-                                            alignment: Alignment.topLeft,
-                                            margin: EdgeInsets.only(top: 0),
-                                            child: BlocBuilder<PerksBloc, PerksState>(
-                                              builder: (context, perksState) {
-                                                if (perksState
-                                                    is PerksLoading) {
-                                                  return Center(
-                                                    child:
-                                                        CircularProgressIndicator(
-                                                          color: MyColor()
-                                                              .primaryClr,
-                                                        ),
-                                                  );
-                                                } else if (perksState
-                                                    is PerksSuccess) {
-                                                  perksList =
-                                                      List<
-                                                        Map<String, dynamic>
-                                                      >.from(
-                                                        perksState.perksList,
-                                                      );
-                                                  filterPerksList = perksList;
-                                                  return Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Container(
-                                                        margin: EdgeInsets.only(
-                                                          top: 16,
-                                                          bottom: 10,
-                                                        ),
-                                                        child: Text(
-                                                          "Perks",
-                                                          style:
-                                                              GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: MyColor()
-                                                                    .blackClr,
-                                                              ),
-                                                        ),
-                                                      ),
-                                                      GestureDetector(
-                                                        onTap: () async {
-                                                          final result =
-                                                              await openPerksMultiSelect();
-
-                                                          if (result != null) {
-                                                            setState(() {
-                                                              selectPerksList =
-                                                                  result;
-                                                            });
-                                                          }
-                                                        },
-                                                        child: Container(
-                                                          padding:
-                                                              EdgeInsets.symmetric(
-                                                                horizontal: 12,
-                                                                vertical: 14,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                              color: MyColor()
-                                                                  .borderClr,
-                                                              width: 0.5,
-                                                            ),
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  12,
-                                                                ),
-                                                          ),
-                                                          child: Row(
-                                                            children: [
-                                                              Expanded(
-                                                                child: Text(
-                                                                  selectEventTypeList
-                                                                          .isEmpty
-                                                                      ? "Select perks"
-                                                                      : selectEventTypeList
-                                                                            .map(
-                                                                              (
-                                                                                e,
-                                                                              ) => e['name'],
-                                                                            )
-                                                                            .join(
-                                                                              ", ",
-                                                                            ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ),
-                                                              Icon(
-                                                                Icons
-                                                                    .arrow_drop_down,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      SizedBox(height: 10),
-                                                      Wrap(
-                                                        spacing: 8,
-                                                        children: selectPerksList
-                                                            .map((e) {
-                                                              return Chip(
-                                                                label: Text(
-                                                                  e['perkName'],
-                                                                ),
-                                                                onDeleted: () {
-                                                                  setState(() {
-                                                                    selectPerksList
-                                                                        .remove(
-                                                                          e,
-                                                                        );
-                                                                  });
-                                                                },
-                                                              );
-                                                            })
-                                                            .toList(),
-                                                      ),
-                                                    ],
-                                                  );
-                                                } else if (perksState
-                                                    is PerksFail) {
-                                                  return Text(
-                                                    perksState.errorMessage,
-                                                  );
-                                                }
-                                                return SizedBox.shrink();
-                                              },
-                                            ),
-                                          ),
-
-                                          // Certification
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              top: 16,
-                                              bottom: 10,
-                                            ),
-                                            child: Text(
-                                              "Certification",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                                color: MyColor().blackClr,
-                                              ),
-                                            ),
-                                          ),
-                                          BlocBuilder<
-                                            CertificationBloc,
-                                            CertificationState
-                                          >(
-                                            builder: (context, certificationState) {
-                                              if (certificationState
-                                                  is CertificationLoading) {
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        color: MyColor()
-                                                            .primaryClr,
-                                                      ),
-                                                );
-                                              } else if (certificationState
-                                                  is CertificationSuccess) {
-                                                return Wrap(
-                                                  spacing: 12,
-                                                  runSpacing: 12,
-                                                  children: certificationState.certificationList.map((
-                                                    item,
-                                                  ) {
-                                                    final bool isSelected =
-                                                        selectCertification ==
-                                                        item['identity'];
-
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        setState(() {
-                                                          selectCertification =
-                                                              item['identity'];
-                                                        });
-                                                      },
-                                                      child: AnimatedContainer(
-                                                        duration: Duration(
-                                                          milliseconds: 250,
-                                                        ),
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                              horizontal: 16,
-                                                              vertical: 10,
-                                                            ),
-                                                        decoration: BoxDecoration(
-                                                          color: isSelected
-                                                              ? MyColor()
-                                                                    .primaryClr
-                                                              : MyColor()
-                                                                    .whiteClr,
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                20,
-                                                              ),
-                                                          border: Border.all(
-                                                            color: isSelected
-                                                                ? MyColor()
-                                                                      .primaryClr
-                                                                : Colors
-                                                                      .grey
-                                                                      .shade300,
-                                                          ),
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisSize:
-                                                              MainAxisSize.min,
-                                                          children: [
-                                                            Text(
-                                                              item['certName'],
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color:
-                                                                    isSelected
-                                                                    ? MyColor()
-                                                                          .whiteClr
-                                                                    : MyColor()
-                                                                          .blackClr,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }).toList(),
-                                                );
-                                              } else if (certificationState
-                                                  is CertificationFail) {
-                                                return RefreshIndicator(
-                                                  backgroundColor:
-                                                      MyColor().whiteClr,
-                                                  color: MyColor().primaryClr,
-                                                  onRefresh: () async {
-                                                    context
-                                                        .read<
-                                                          CertificationBloc
-                                                        >()
-                                                        .add(
-                                                          (FetchCertification()),
-                                                        );
-                                                  },
-                                                  child: Center(
-                                                    child: ListView(
-                                                      shrinkWrap: true,
-                                                      children: [
-                                                        Center(
-                                                          child: SizedBox(
-                                                            height: 100,
-                                                            child: Image.asset(
-                                                              ImagePath()
-                                                                  .errorMessageImg,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Center(
-                                                          child: Text(
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            certificationState
-                                                                .errorMessage,
-                                                            style:
-                                                                GoogleFonts.poppins(
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  fontSize: 18,
-                                                                  color: MyColor()
-                                                                      .blackClr,
-                                                                ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                              return SizedBox();
-                                            },
-                                          ),
-
-                                          // accommodation
-                                          Container(
-                                            alignment: Alignment.topLeft,
-                                            margin: EdgeInsets.only(
-                                              top: 20,
-                                              bottom: 20,
-                                            ),
-                                            child:
-                                                BlocBuilder<
-                                                  AccommodationBloc,
-                                                  AccommodationState
-                                                >(
-                                                  builder: (context, accommodationState) {
-                                                    if (accommodationState
-                                                        is AccommodationLoading) {
-                                                      return Center(
-                                                        child:
-                                                            CircularProgressIndicator(
-                                                              color: MyColor()
-                                                                  .primaryClr,
-                                                            ),
-                                                      );
-                                                    } else if (accommodationState
-                                                        is AccommodationSuccess) {
-                                                      accommodationList =
-                                                          List<
-                                                            Map<String, dynamic>
-                                                          >.from(
-                                                            accommodationState
-                                                                .accommodationList,
-                                                          );
-                                                      filterPerksList =
-                                                          perksList;
-                                                      return Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                  top: 16,
-                                                                  bottom: 10,
-                                                                ),
-                                                            child: Text(
-                                                              "Accommodation",
-                                                              style: GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600,
-                                                                color: MyColor()
-                                                                    .blackClr,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          GestureDetector(
-                                                            onTap: () async {
-                                                              final result =
-                                                                  await openAccommodationMultiSelect();
-
-                                                              if (result !=
-                                                                  null) {
-                                                                setState(() {
-                                                                  selectAccommodationList =
-                                                                      result;
-                                                                });
-                                                              }
-                                                            },
-                                                            child: Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        12,
-                                                                    vertical:
-                                                                        14,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                border: Border.all(
-                                                                  color: MyColor()
-                                                                      .borderClr,
-                                                                  width: 0.5,
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      12,
-                                                                    ),
-                                                              ),
-                                                              child: Row(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Text(
-                                                                      selectAccommodationList
-                                                                              .isEmpty
-                                                                          ? "Select accommodation"
-                                                                          : selectAccommodationList
-                                                                                .map(
-                                                                                  (
-                                                                                    e,
-                                                                                  ) => e['accommodationName'],
-                                                                                )
-                                                                                .join(", "),
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                    ),
-                                                                  ),
-                                                                  Icon(
-                                                                    Icons
-                                                                        .arrow_drop_down,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          SizedBox(height: 10),
-                                                          Wrap(
-                                                            spacing: 8,
-                                                            children: selectAccommodationList.map((
-                                                              e,
-                                                            ) {
-                                                              return Chip(
-                                                                label: Text(
-                                                                  e['accommodationName'],
-                                                                ),
-                                                                onDeleted: () {
-                                                                  setState(() {
-                                                                    selectAccommodationList
-                                                                        .remove(
-                                                                          e,
-                                                                        );
-                                                                  });
-                                                                },
-                                                              );
-                                                            }).toList(),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    } else if (accommodationState
-                                                        is AccommodationFail) {
-                                                      return Text(
-                                                        accommodationState
-                                                            .errorMessage,
-                                                      );
-                                                    }
-                                                    return SizedBox.shrink();
-                                                  },
-                                                ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    // apply & clear button
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: 10,
-                                        bottom: 16,
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            flex: 1,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                fixedSize: Size(0, 40),
-                                                backgroundColor:
-                                                    MyColor().whiteClr,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                  side: BorderSide(
-                                                    color: MyColor().primaryClr,
-                                                  ),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                clearAllFilters(setState);
-                                              },
-                                              child: Text(
-                                                "Clear",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: MyColor().primaryClr,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 16),
-                                          Expanded(
-                                            flex: 1,
-                                            child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                fixedSize: Size(0, 40),
-                                                backgroundColor:
-                                                    MyColor().primaryClr,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(50),
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                applyFilter();
-                                              },
-                                              child: Text(
-                                                "Apply",
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: MyColor().whiteClr,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
+                        if (searchEventListState.hasMore) {
+                          page++;
+                        }
+                      }
+                      return Container(
+                        margin: EdgeInsets.only(left: 16, right: 16, top: 80),
+                        child: ListView.builder(
+                          controller: scrollController,
+                          shrinkWrap: true,
+                          itemCount:
+                              searchEventListState.searchEventList.length +
+                              (searchEventListState.hasMore ? 1 : 0),
+                          itemBuilder: (context, index) {
+                            if (index ==
+                                searchEventListState.searchEventList.length) {
+                              return Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Center(
+                                  child: Platform.isAndroid
+                                      ? CircularProgressIndicator(
+                                          color: MyColor().primaryClr,
+                                        )
+                                      : CupertinoActivityIndicator(
+                                          color: MyColor().primaryClr,
+                                        ),
                                 ),
                               );
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  child: Container(
-                    padding: EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: Icon(Icons.tune),
-                  ),
-                ),
-                prefixIcon: Icon(Icons.search, size: 24),
-                hintText: "Search Events",
-                hintStyle: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                  color: MyColor().hintTextClr,
-                ),
-              ),
-            ),
-          ),
-        ),
+                            }
 
-        // ----- recent search ------
-        Visibility(
-          visible: isRecent,
-          child: Container(
-            decoration: BoxDecoration(color: MyColor().whiteClr),
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Recent Search",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: MyColor().blackClr,
-                        ),
-                      ),
-                      Text(
-                        "Clear All",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: MyColor().borderClr,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                            final list =
+                                searchEventListState.searchEventList[index];
 
-                // -------- recent search texts ------
-                Container(
-                  margin: EdgeInsets.only(left: 16, right: 16, top: 16),
-                  height: 100,
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (_, index) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Iconsax.clock_copy),
-                            SizedBox(width: 20),
-                            Expanded(
-                              child: Text(
-                                "International Conference",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  color: MyColor().borderClr,
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            Icon(Iconsax.close_circle_copy),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+                            // -------- field name ------------
+                            final title = list['title'] ?? "No title";
 
-        // -------- event list ------
-        Expanded(
-          child: BlocBuilder<SearchEventListBloc, SearchEventListState>(
-            builder: (context, searchEventListState) {
-              if (searchEventListState is SearchEventListLoading) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    return eventCardShimmer();
-                  },
-                );
-              } else if (searchEventListState is SearchEventListSuccess) {
-                if (isLoadingMore) {
-                  isLoadingMore = false;
+                            final featuredImagePath =
+                                (list['bannerImages'] != null &&
+                                    list['bannerImages'].isNotEmpty)
+                                ? list['bannerImages'][0]
+                                : '';
 
-                  if (searchEventListState.hasMore) {
-                    page++;
-                  }
-                }
-                return RefreshIndicator(
-                  backgroundColor: MyColor().whiteClr,
-                  color: MyColor().primaryClr,
-                  onRefresh: () async {
-                    fetchEvents();
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(left: 16, right: 16, top: 0),
-                    child: ListView.builder(
-                      controller: scrollController,
-                      shrinkWrap: true,
-                      itemCount:
-                          searchEventListState.searchEventList.length +
-                          (searchEventListState.hasMore ? 1 : 0),
-                      itemBuilder: (context, index) {
-                        if (index ==
-                            searchEventListState.searchEventList.length) {
-                          return Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Center(
-                              child: Platform.isAndroid
-                                  ? CircularProgressIndicator(
-                                      color: MyColor().primaryClr,
-                                    )
-                                  : CupertinoActivityIndicator(
-                                      color: MyColor().primaryClr,
-                                    ),
-                            ),
-                          );
-                        }
+                            // ------ date format -------
+                            String formatEventDate({
+                              required dynamic calendars,
+                            }) {
+                              if (calendars == null || calendars.isEmpty) {
+                                return "No date";
+                              }
+                              final rawDate = calendars[0]['startDate'];
 
-                        final list =
-                            searchEventListState.searchEventList[index];
+                              if (rawDate == null || rawDate.isEmpty) {
+                                return "No date";
+                              }
+                              try {
+                                final dateTime = DateTime.parse(rawDate);
+                                return DateFormat('dd MMM yy').format(dateTime);
+                              } catch (e) {
+                                return "No date";
+                              }
+                            }
 
-                        // -------- field name ------------
-                        final title = list['title'] ?? "No title";
+                            String venue;
+                            // venue format
+                            if (list['mode'] == "ONLINE") {
+                              venue = 'Online';
+                            } else {
+                              venue = list['location']['venue'];
+                            }
 
-                        final featuredImagePath =
-                            (list['bannerImages'] != null &&
-                                list['bannerImages'].isNotEmpty)
-                            ? list['bannerImages'][0]
-                            : '';
+                            // -------- identity ---------
+                            final identity = list['slug'];
+                            final paymentLink = list['paymentLink'] ?? "";
 
-                        // ------ date format -------
-                        String formatEventDate({required dynamic calendars}) {
-                          if (calendars == null || calendars.isEmpty) {
-                            return "No date";
-                          }
-                          final rawDate = calendars[0]['startDate'];
-
-                          if (rawDate == null || rawDate.isEmpty) {
-                            return "No date";
-                          }
-                          try {
-                            final dateTime = DateTime.parse(rawDate);
-                            return DateFormat('dd MMM yy').format(dateTime);
-                          } catch (e) {
-                            return "No date";
-                          }
-                        }
-
-                        String venue;
-                        // venue format
-                        if (list['mode'] == "ONLINE") {
-                          venue = 'Online';
-                        } else {
-                          venue = list['location']['venue'];
-                        }
-
-                        // -------- identity ---------
-                        final identity = list['slug'];
-                        final paymentLink = list['paymentLink'] ?? "";
-
-                        print(
-                          "paymentLinkpaymentLinkpaymentLinkpaymentLink$paymentLink",
-                        );
-                        // event identity
-                        final eventId = list['identity'].toString();
-
-                        // ------- Tween Animation -----------
-                        return TweenAnimationBuilder(
-                          tween: Tween(begin: 50.0, end: 0.0),
-                          duration: Duration(milliseconds: 600),
-                          builder: (context, value, child) {
-                            return Transform.translate(
-                              offset: Offset(0, value),
-                              child: Opacity(
-                                opacity: 1 - (value / 50),
-                                child: child,
-                              ),
+                            print(
+                              "paymentLinkpaymentLinkpaymentLinkpaymentLink$paymentLink",
                             );
-                          },
-                          child: GestureDetector(
-                            onTap: () {
-                              if (!isRecent) {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    pageBuilder: (_, __, ___) =>
-                                        EventDetailPage(
-                                          slug: identity,
-                                          title: title,
-                                          whichScreen: 'view',
-                                          paymentLink: paymentLink ?? "",
-                                          isLogin: widget.isLogin,
-                                        ),
-                                    transitionsBuilder:
-                                        (_, animation, __, child) {
-                                          return SlideTransition(
-                                            position: Tween(
-                                              begin: const Offset(1, 0),
-                                              end: Offset.zero,
-                                            ).animate(animation),
-                                            child: child,
-                                          );
-                                        },
+                            // event identity
+                            final eventId = list['identity'].toString();
+
+                            // ------- Tween Animation -----------
+                            return TweenAnimationBuilder(
+                              tween: Tween(begin: 50.0, end: 0.0),
+                              duration: Duration(milliseconds: 600),
+                              builder: (context, value, child) {
+                                return Transform.translate(
+                                  offset: Offset(0, value),
+                                  child: Opacity(
+                                    opacity: 1 - (value / 50),
+                                    child: child,
                                   ),
                                 );
-                              } else {
-                                GlobalUnFocus.unFocus();
-                                setState(() {
-                                  isRecent = false;
-                                });
-                              }
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(left: 0, bottom: 16),
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: MyColor().whiteClr,
-                                border: Border.all(
-                                  color: MyColor().borderClr.withOpacity(0.15),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 2,
-                                    child: Container(
-                                      height: 110,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: CachedNetworkImage(
-                                          // memCacheHeight: 300,
-                                          fadeInDuration: Duration.zero,
-                                          imageUrl: featuredImagePath,
-                                          fit: BoxFit.cover,
-                                          placeholder: (context, url) => Center(
-                                            child: CircularProgressIndicator(
-                                              color: MyColor().primaryClr,
+                              },
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (!isRecent) {
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (_, __, ___) =>
+                                            EventDetailPage(
+                                              slug: identity,
+                                              title: title,
+                                              whichScreen: 'view',
+                                              paymentLink: paymentLink ?? "",
+                                              isLogin: widget.isLogin,
                                             ),
-                                          ),
-                                          errorWidget: (context, url, error) =>
-                                              const Icon(
-                                                Icons.image_not_supported,
-                                              ),
-                                        ),
+                                        transitionsBuilder:
+                                            (_, animation, __, child) {
+                                              return SlideTransition(
+                                                position: Tween(
+                                                  begin: const Offset(1, 0),
+                                                  end: Offset.zero,
+                                                ).animate(animation),
+                                                child: child,
+                                              );
+                                            },
+                                      ),
+                                    );
+                                  } else {
+                                    GlobalUnFocus.unFocus();
+                                    setState(() {
+                                      isRecent = false;
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 0, bottom: 16),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: MyColor().whiteClr,
+                                    border: Border.all(
+                                      color: MyColor().borderClr.withOpacity(
+                                        0.15,
                                       ),
                                     ),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      margin: EdgeInsets.only(left: 10),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  title,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        flex: 2,
+                                        child: Container(
+                                          height: 110,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          clipBehavior: Clip.antiAlias,
+                                          child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                            child: CachedNetworkImage(
+                                              // memCacheHeight: 300,
+                                              fadeInDuration: Duration.zero,
+                                              imageUrl: featuredImagePath,
+                                              fit: BoxFit.cover,
+                                              placeholder: (context, url) =>
+                                                  Center(
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                        ),
                                                   ),
-                                                ),
-                                              ),
-                                              SizedBox(width: 5),
+                                              errorWidget:
+                                                  (
+                                                    context,
+                                                    url,
+                                                    error,
+                                                  ) => const Icon(
+                                                    Icons.image_not_supported,
+                                                  ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Container(
+                                          margin: EdgeInsets.only(left: 10),
+                                          child: Column(
+                                            children: [
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.end,
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
                                                 children: [
-                                                  BlocConsumer<
-                                                    EventLikeBloc,
-                                                    EventLikeState
-                                                  >(
-                                                    listener: (context, state) {
-                                                      if (state
-                                                              is EventLikeFail &&
-                                                          state.id == eventId) {
-                                                        FlutterToast()
-                                                            .flutterToast(
+                                                  Expanded(
+                                                    child: Text(
+                                                      title,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 5),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.end,
+                                                    children: [
+                                                      BlocConsumer<
+                                                        EventLikeBloc,
+                                                        EventLikeState
+                                                      >(
+                                                        listener: (context, state) {
+                                                          if (state
+                                                                  is EventLikeFail &&
+                                                              state.id ==
+                                                                  eventId) {
+                                                            FlutterToast().flutterToast(
                                                               state
                                                                   .errorMessage,
                                                               ToastificationType
@@ -1680,108 +450,111 @@ class _SearchModelState extends State<SearchModel> {
                                                               ToastificationStyle
                                                                   .flat,
                                                             );
-                                                      }
-                                                    },
-                                                    builder: (context, state) {
-                                                      final bloc = context
-                                                          .watch<
-                                                            EventLikeBloc
-                                                          >();
+                                                          }
+                                                        },
+                                                        builder: (context, state) {
+                                                          final bloc = context
+                                                              .watch<
+                                                                EventLikeBloc
+                                                              >();
 
-                                                      final isLiked =
-                                                          bloc.favStatus[eventId] ??
-                                                          list['isLiked'] ??
-                                                          false;
+                                                          final isLiked =
+                                                              bloc.favStatus[eventId] ??
+                                                              list['isLiked'] ??
+                                                              false;
 
-                                                      final count =
-                                                          bloc.likeCount[eventId] ??
-                                                          int.parse(
-                                                            list['likeCount']
-                                                                .toString(),
-                                                          );
+                                                          final count =
+                                                              bloc.likeCount[eventId] ??
+                                                              int.parse(
+                                                                list['likeCount']
+                                                                    .toString(),
+                                                              );
 
-                                                      return InkWell(
-                                                        customBorder:
-                                                            const CircleBorder(),
-                                                        onTap: widget.isLogin
-                                                            ? () {
-                                                                context.read<EventLikeBloc>().add(
-                                                                  ClickEventLike(
-                                                                    eventId:
-                                                                        eventId,
-                                                                    initialFav:
-                                                                        list['isLiked'],
-                                                                    initialCount:
-                                                                        int.parse(
-                                                                          list['likeCount']
-                                                                              .toString(),
-                                                                        ),
-                                                                  ),
-                                                                );
-                                                              }
-                                                            : () async {
-                                                                final getUserClick =
-                                                                    await DBHelper()
-                                                                        .getUser();
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder: (_) =>
-                                                                        LoginPage(
+                                                          return InkWell(
+                                                            customBorder:
+                                                                const CircleBorder(),
+                                                            onTap:
+                                                                widget.isLogin
+                                                                ? () {
+                                                                    context
+                                                                        .read<
+                                                                          EventLikeBloc
+                                                                        >()
+                                                                        .add(
+                                                                          ClickEventLike(
+                                                                            eventId:
+                                                                                eventId,
+                                                                            initialFav:
+                                                                                list['isLiked'],
+                                                                            initialCount: int.parse(
+                                                                              list['likeCount'].toString(),
+                                                                            ),
+                                                                          ),
+                                                                        );
+                                                                  }
+                                                                : () async {
+                                                                    final getUserClick =
+                                                                        await DBHelper()
+                                                                            .getUser();
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder: (_) => LoginPage(
                                                                           whichScreen:
                                                                               getUserClick!,
                                                                         ),
-                                                                  ),
-                                                                );
-                                                              },
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              isLiked
-                                                                  ? Iconsax
-                                                                        .heart
-                                                                  : Iconsax
-                                                                        .heart_copy,
-                                                              color: isLiked
-                                                                  ? MyColor()
-                                                                        .redClr
-                                                                  : null,
-                                                              size: 25,
-                                                            ),
-                                                            if (count != 0)
-                                                              const SizedBox(
-                                                                width: 5,
-                                                              ),
-                                                            if (count != 0)
-                                                              Text(
-                                                                count
-                                                                    .toString(),
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  color: MyColor()
-                                                                      .secondaryClr,
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(
+                                                                  isLiked
+                                                                      ? Iconsax
+                                                                            .heart
+                                                                      : Iconsax
+                                                                            .heart_copy,
+                                                                  color: isLiked
+                                                                      ? MyColor()
+                                                                            .redClr
+                                                                      : null,
+                                                                  size: 25,
                                                                 ),
-                                                              ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                  SizedBox(width: 5),
-                                                  BlocConsumer<
-                                                    RemoveSaveEventBloc,
-                                                    RemoveSaveEventState
-                                                  >(
-                                                    listener: (context, addSaveSate) {
-                                                      if (addSaveSate
-                                                              is RemoveSaveEventFail &&
-                                                          addSaveSate.eventId ==
-                                                              list['identity']) {
-                                                        FlutterToast()
-                                                            .flutterToast(
+                                                                if (count != 0)
+                                                                  const SizedBox(
+                                                                    width: 5,
+                                                                  ),
+                                                                if (count != 0)
+                                                                  Text(
+                                                                    count
+                                                                        .toString(),
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color: MyColor()
+                                                                          .secondaryClr,
+                                                                    ),
+                                                                  ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                      SizedBox(width: 5),
+                                                      BlocConsumer<
+                                                        RemoveSaveEventBloc,
+                                                        RemoveSaveEventState
+                                                      >(
+                                                        listener: (context, addSaveSate) {
+                                                          if (addSaveSate
+                                                                  is RemoveSaveEventFail &&
+                                                              addSaveSate
+                                                                      .eventId ==
+                                                                  list['identity']) {
+                                                            FlutterToast().flutterToast(
                                                               addSaveSate
                                                                   .errorMessage,
                                                               ToastificationType
@@ -1789,218 +562,1566 @@ class _SearchModelState extends State<SearchModel> {
                                                               ToastificationStyle
                                                                   .flat,
                                                             );
-                                                      } else if (addSaveSate
-                                                              is AddSave &&
-                                                          addSaveSate.eventId ==
-                                                              list['identity']) {
-                                                        list['isSaved'] =
-                                                            addSaveSate
-                                                                .checkSave;
-                                                      }
-                                                    },
-                                                    builder: (context, addSaveSate) {
-                                                      final bloc = context
-                                                          .watch<
-                                                            RemoveSaveEventBloc
-                                                          >();
-                                                      final checkSave =
-                                                          bloc.checkSave[list['identity']
-                                                              .toString()] ??
-                                                          list['isSaved'] ??
-                                                          false;
+                                                          } else if (addSaveSate
+                                                                  is AddSave &&
+                                                              addSaveSate
+                                                                      .eventId ==
+                                                                  list['identity']) {
+                                                            list['isSaved'] =
+                                                                addSaveSate
+                                                                    .checkSave;
+                                                          }
+                                                        },
+                                                        builder: (context, addSaveSate) {
+                                                          final bloc = context
+                                                              .watch<
+                                                                RemoveSaveEventBloc
+                                                              >();
+                                                          final checkSave =
+                                                              bloc.checkSave[list['identity']
+                                                                  .toString()] ??
+                                                              list['isSaved'] ??
+                                                              false;
 
-                                                      return InkWell(
-                                                        onTap: widget.isLogin
-                                                            ? () {
-                                                                context
-                                                                    .read<
-                                                                      RemoveSaveEventBloc
-                                                                    >()
-                                                                    .add(
-                                                                      ClickRemoveSaveEvent(
-                                                                        eventId:
-                                                                            list['identity'],
-                                                                      ),
-                                                                    );
-                                                              }
-                                                            : () async {
-                                                                final getUserClick =
-                                                                    await DBHelper()
-                                                                        .getUser();
-                                                                Navigator.push(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder: (_) =>
-                                                                        LoginPage(
+                                                          return InkWell(
+                                                            onTap:
+                                                                widget.isLogin
+                                                                ? () {
+                                                                    context
+                                                                        .read<
+                                                                          RemoveSaveEventBloc
+                                                                        >()
+                                                                        .add(
+                                                                          ClickRemoveSaveEvent(
+                                                                            eventId:
+                                                                                list['identity'],
+                                                                          ),
+                                                                        );
+                                                                  }
+                                                                : () async {
+                                                                    final getUserClick =
+                                                                        await DBHelper()
+                                                                            .getUser();
+                                                                    Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                        builder: (_) => LoginPage(
                                                                           whichScreen:
                                                                               getUserClick!,
                                                                         ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                            child: Container(
+                                                              padding:
+                                                                  EdgeInsets.all(
+                                                                    7,
                                                                   ),
-                                                                );
-                                                              },
-                                                        child: Container(
-                                                          padding:
-                                                              EdgeInsets.all(7),
-                                                          decoration: BoxDecoration(
-                                                            border: Border.all(
-                                                              color: MyColor()
-                                                                  .borderClr
-                                                                  .withOpacity(
-                                                                    0.15,
-                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                border: Border.all(
+                                                                  color: MyColor()
+                                                                      .borderClr
+                                                                      .withOpacity(
+                                                                        0.15,
+                                                                      ),
+                                                                ),
+                                                                color: MyColor()
+                                                                    .boxInnerClr,
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                              ),
+                                                              child: Icon(
+                                                                checkSave
+                                                                    ? Icons
+                                                                          .bookmark
+                                                                    : Icons
+                                                                          .bookmark_outline,
+                                                                size: 20,
+                                                                color: checkSave
+                                                                    ? MyColor()
+                                                                          .primaryClr
+                                                                    : null,
+                                                              ),
                                                             ),
-                                                            color: MyColor()
-                                                                .boxInnerClr,
-                                                            shape:
-                                                                BoxShape.circle,
+                                                          );
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 5),
+                                              Row(
+                                                children: [
+                                                  chip(
+                                                    "Paid",
+                                                    MyColor()
+                                                        .primaryBackgroundClr
+                                                        .withOpacity(0.35),
+                                                  ),
+                                                  chip(
+                                                    "Entertainment",
+                                                    MyColor().blueBackgroundClr
+                                                        .withOpacity(0.35),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.calendar_month,
+                                                    size: 14,
+                                                  ),
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    child: Text(
+                                                      formatEventDate(
+                                                        calendars:
+                                                            list['calendars'],
+                                                      ),
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
                                                           ),
-                                                          child: Icon(
-                                                            checkSave
-                                                                ? Icons.bookmark
-                                                                : Icons
-                                                                      .bookmark_outline,
-                                                            size: 20,
-                                                            color: checkSave
-                                                                ? MyColor()
-                                                                      .primaryClr
-                                                                : null,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: 5),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.location_on_outlined,
+                                                    size: 14,
+                                                  ),
+                                                  SizedBox(width: 5),
+                                                  Expanded(
+                                                    child: Text(
+                                                      venue,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
                                                           ),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          vertical: 3,
+                                                          horizontal: 8,
                                                         ),
-                                                      );
-                                                    },
+                                                    decoration: BoxDecoration(
+                                                      color: MyColor()
+                                                          .primaryBackgroundClr
+                                                          .withOpacity(0.35),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                    ),
+                                                    child: Text(
+                                                      "Ongoing",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 12,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
                                             ],
                                           ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            children: [
-                                              chip(
-                                                "Paid",
-                                                MyColor().primaryBackgroundClr
-                                                    .withOpacity(0.35),
-                                              ),
-                                              chip(
-                                                "Entertainment",
-                                                MyColor().blueBackgroundClr
-                                                    .withOpacity(0.35),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 10),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.calendar_month,
-                                                size: 14,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Expanded(
-                                                child: Text(
-                                                  formatEventDate(
-                                                    calendars:
-                                                        list['calendars'],
-                                                  ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(height: 5),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.location_on_outlined,
-                                                size: 14,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Expanded(
-                                                child: Text(
-                                                  venue,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: 3,
-                                                  horizontal: 8,
-                                                ),
-                                                decoration: BoxDecoration(
-                                                  color: MyColor()
-                                                      .primaryBackgroundClr
-                                                      .withOpacity(0.35),
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                                child: Text(
-                                                  "Ongoing",
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: MyColor().blackClr,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    } else if (searchEventListState is SearchEventListFail) {
+                      return RefreshIndicator(
+                        backgroundColor: MyColor().whiteClr,
+                        color: MyColor().primaryClr,
+                        onRefresh: () async {
+                          fetchEvents();
+                        },
+                        child: SingleChildScrollView(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height - 100,
+                            child: Center(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(
+                                    height: 250,
+                                    child: Image.asset(
+                                      ImagePath().errorMessageImg,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    "No Results Found",
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: MyColor().blackClr,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                );
-              } else if (searchEventListState is SearchEventListFail) {
-                return RefreshIndicator(
-                  backgroundColor: MyColor().whiteClr,
-                  color: MyColor().primaryClr,
-                  onRefresh: () async {
-                    fetchEvents();
+                        ),
+                      );
+                    }
+
+                    return SizedBox.shrink();
                   },
-                  child: Center(
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        Center(
-                          child: SizedBox(
-                            height: 250,
-                            child: Image.asset(ImagePath().errorMessageImg),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // ----------- search bar ----------
+        Positioned(
+          top: 0,
+          child: ClipRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.white.withOpacity(0.07), // IMPORTANT
+                child: Center(
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 16,
+                      left: 16,
+                      right: 16,
+                    ),
+                    width: 320,
+                    child: TextFormField(
+                      focusNode: GlobalUnFocus.focusNode,
+                      controller: searchController,
+                      onChanged: (onChanged) {
+                        fetchEvents();
+                      },
+                      onTapOutside: (onOutSideClick) {
+                        GlobalUnFocus.unFocus();
+
+                        // setState(() {
+                        //   isRecent = false;
+                        // });
+                      },
+                      // onTap: () {
+                      //   setState(() {
+                      //     isRecent = true;
+                      //   });
+                      // },
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(10),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                          borderSide: BorderSide(
+                            color: MyColor().borderClr,
+                            width: 0.5,
                           ),
                         ),
-                        Center(
-                          child: Text(
-                            "No Results Found",
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 18,
-                              color: MyColor().blackClr,
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                          borderSide: BorderSide(
+                            color: MyColor().primaryClr,
+                            width: 0.5,
+                          ),
+                        ),
+                        suffixIcon: GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              isDismissible: false,
+                              backgroundColor: MyColor().whiteClr,
+                              context: context,
+                              builder: (_) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider.value(
+                                      value: context.read<EventTypeBloc>(),
+                                    ),
+                                    BlocProvider.value(
+                                      value: context.read<PerksBloc>(),
+                                    ),
+                                    BlocProvider.value(
+                                      value: context.read<AccommodationBloc>(),
+                                    ),
+                                    BlocProvider.value(
+                                      value: context.read<CertificationBloc>(),
+                                    ),
+                                  ],
+                                  child: StatefulBuilder(
+                                    builder: (context, setState) {
+                                      return Container(
+                                        alignment: Alignment.topLeft,
+                                        margin: EdgeInsets.only(
+                                          left: 16,
+                                          right: 16,
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                top: 16,
+                                                bottom: 10,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Filter",
+                                                    style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 18,
+                                                      color: MyColor().blackClr,
+                                                    ),
+                                                  ),
+                                                  InkWell(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: Icon(
+                                                      Iconsax.close_circle,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            Expanded(
+                                              child: ListView(
+                                                children: [
+                                                  // event status
+                                                  Wrap(
+                                                    spacing: 12,
+                                                    runSpacing: 12,
+                                                    children: statusList.map((
+                                                      item,
+                                                    ) {
+                                                      final bool isSelected =
+                                                          selectEventStatus ==
+                                                          item['value'];
+                                                      return InkWell(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              20,
+                                                            ),
+                                                        onTap: () {
+                                                          setState(() {
+                                                            selectEventStatus =
+                                                                item['value'];
+                                                          });
+                                                        },
+                                                        child: AnimatedContainer(
+                                                          duration:
+                                                              const Duration(
+                                                                milliseconds:
+                                                                    250,
+                                                              ),
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 16,
+                                                                vertical: 10,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? MyColor()
+                                                                      .primaryClr
+                                                                : MyColor()
+                                                                      .whiteClr,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  20,
+                                                                ),
+                                                            border: Border.all(
+                                                              color: isSelected
+                                                                  ? MyColor()
+                                                                        .primaryClr
+                                                                  : Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                item['title'],
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color:
+                                                                      isSelected
+                                                                      ? MyColor()
+                                                                            .whiteClr
+                                                                      : MyColor()
+                                                                            .blackClr,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+
+                                                  // price
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                      top: 16,
+                                                    ),
+                                                    child: Text(
+                                                      "Pricing",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  RangeSlider(
+                                                    values: RangeValues(
+                                                      minPrice,
+                                                      maxPrice,
+                                                    ),
+                                                    min: priceMinLimit,
+                                                    max: priceMaxLimit,
+                                                    divisions: 100,
+                                                    activeColor:
+                                                        MyColor().primaryClr,
+                                                    inactiveColor:
+                                                        Colors.grey.shade300,
+                                                    onChanged:
+                                                        (RangeValues values) {
+                                                          setState(() {
+                                                            minPrice =
+                                                                priceMinLimit;
+                                                            maxPrice =
+                                                                values.end;
+                                                          });
+
+                                                          print(
+                                                            'minPriceminPriceminPriceminPrice$minPrice to $maxPrice',
+                                                          );
+                                                        },
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      priceChip(minPrice),
+                                                      priceChip(maxPrice),
+                                                    ],
+                                                  ),
+
+                                                  // date & time
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                      top: 16,
+                                                      bottom: 10,
+                                                    ),
+                                                    child: Text(
+                                                      "Select Event Dates",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: TextField(
+                                                          controller:
+                                                              startDateController,
+                                                          enableInteractiveSelection:
+                                                              false,
+                                                          readOnly: true,
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: MyColor()
+                                                                    .primaryClr,
+                                                              ),
+                                                          decoration: InputDecoration(
+                                                            hintText:
+                                                                "Start Date",
+                                                            contentPadding:
+                                                                EdgeInsets.all(
+                                                                  10,
+                                                                ),
+                                                            enabledBorder: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                              borderSide: BorderSide(
+                                                                color: MyColor()
+                                                                    .borderClr,
+                                                                width: 0.5,
+                                                              ),
+                                                            ),
+                                                            focusedBorder: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                              borderSide: BorderSide(
+                                                                color: MyColor()
+                                                                    .primaryClr,
+                                                                width: 0.5,
+                                                              ),
+                                                            ),
+                                                            errorBorder: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                    color: MyColor()
+                                                                        .redClr,
+                                                                    width: 0.5,
+                                                                  ),
+                                                            ),
+                                                            focusedErrorBorder:
+                                                                OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        12,
+                                                                      ),
+                                                                  borderSide: BorderSide(
+                                                                    color: MyColor()
+                                                                        .redClr,
+                                                                    width: 0.5,
+                                                                  ),
+                                                                ),
+                                                            hintStyle:
+                                                                GoogleFonts.poppins(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: MyColor()
+                                                                      .borderClr,
+                                                                ),
+                                                            prefixIcon: Icon(
+                                                              Iconsax.calendar,
+                                                              color: MyColor()
+                                                                  .borderClr,
+                                                            ),
+                                                          ),
+                                                          onTap: () async {
+                                                            final result =
+                                                                await DateAndTimeController()
+                                                                    .selectedDate(
+                                                                      context,
+                                                                    );
+                                                            if (result !=
+                                                                null) {
+                                                              startDateController
+                                                                      .text =
+                                                                  result;
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 10),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: TextField(
+                                                          controller:
+                                                              endDateController,
+                                                          enableInteractiveSelection:
+                                                              false,
+                                                          readOnly: true,
+                                                          style:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: MyColor()
+                                                                    .primaryClr,
+                                                              ),
+                                                          decoration: InputDecoration(
+                                                            hintText:
+                                                                "End Date",
+                                                            contentPadding:
+                                                                EdgeInsets.all(
+                                                                  10,
+                                                                ),
+                                                            enabledBorder: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                              borderSide: BorderSide(
+                                                                color: MyColor()
+                                                                    .borderClr,
+                                                                width: 0.5,
+                                                              ),
+                                                            ),
+                                                            focusedBorder: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                              borderSide: BorderSide(
+                                                                color: MyColor()
+                                                                    .primaryClr,
+                                                                width: 0.5,
+                                                              ),
+                                                            ),
+                                                            errorBorder: OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius.circular(
+                                                                    12,
+                                                                  ),
+                                                              borderSide:
+                                                                  BorderSide(
+                                                                    color: MyColor()
+                                                                        .redClr,
+                                                                    width: 0.5,
+                                                                  ),
+                                                            ),
+                                                            focusedErrorBorder:
+                                                                OutlineInputBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        12,
+                                                                      ),
+                                                                  borderSide: BorderSide(
+                                                                    color: MyColor()
+                                                                        .redClr,
+                                                                    width: 0.5,
+                                                                  ),
+                                                                ),
+                                                            hintStyle:
+                                                                GoogleFonts.poppins(
+                                                                  fontSize: 12,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: MyColor()
+                                                                      .borderClr,
+                                                                ),
+                                                            prefixIcon: Icon(
+                                                              Iconsax.calendar,
+                                                              color: MyColor()
+                                                                  .borderClr,
+                                                            ),
+                                                          ),
+                                                          onTap: () async {
+                                                            final result =
+                                                                await DateAndTimeController()
+                                                                    .selectedDate(
+                                                                      context,
+                                                                    );
+                                                            if (result !=
+                                                                null) {
+                                                              endDateController
+                                                                      .text =
+                                                                  result;
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+
+                                                  // event mode
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                      top: 16,
+                                                      bottom: 10,
+                                                    ),
+                                                    child: Text(
+                                                      "Event Mode",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  Wrap(
+                                                    spacing: 12,
+                                                    runSpacing: 12,
+                                                    children: modeList.map((
+                                                      item,
+                                                    ) {
+                                                      final bool isSelected =
+                                                          selectEventMode ==
+                                                          item['value'];
+                                                      return InkWell(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              20,
+                                                            ),
+                                                        onTap: () {
+                                                          setState(() {
+                                                            selectEventMode =
+                                                                item['value'];
+                                                          });
+                                                        },
+                                                        child: AnimatedContainer(
+                                                          duration:
+                                                              const Duration(
+                                                                milliseconds:
+                                                                    250,
+                                                              ),
+                                                          padding:
+                                                              const EdgeInsets.symmetric(
+                                                                horizontal: 16,
+                                                                vertical: 10,
+                                                              ),
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? MyColor()
+                                                                      .primaryClr
+                                                                : MyColor()
+                                                                      .whiteClr,
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  20,
+                                                                ),
+                                                            border: Border.all(
+                                                              color: isSelected
+                                                                  ? MyColor()
+                                                                        .primaryClr
+                                                                  : Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                            ),
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Text(
+                                                                item['title'],
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color:
+                                                                      isSelected
+                                                                      ? MyColor()
+                                                                            .whiteClr
+                                                                      : MyColor()
+                                                                            .blackClr,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+
+                                                  // event type
+                                                  Container(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    margin: EdgeInsets.only(
+                                                      top: 20,
+                                                    ),
+                                                    child:
+                                                        BlocBuilder<
+                                                          EventTypeBloc,
+                                                          EventTypeState
+                                                        >(
+                                                          builder:
+                                                              (
+                                                                context,
+                                                                eventTypeState,
+                                                              ) {
+                                                                if (eventTypeState
+                                                                    is EventTypeLoading) {
+                                                                  return Center(
+                                                                    child: CircularProgressIndicator(
+                                                                      color: MyColor()
+                                                                          .primaryClr,
+                                                                    ),
+                                                                  );
+                                                                } else if (eventTypeState
+                                                                    is EventTypeSuccess) {
+                                                                  eventTypeList =
+                                                                      List<
+                                                                        Map<
+                                                                          String,
+                                                                          dynamic
+                                                                        >
+                                                                      >.from(
+                                                                        eventTypeState
+                                                                            .eventTypeList,
+                                                                      );
+                                                                  filterEventTypeList =
+                                                                      eventTypeList;
+
+                                                                  return Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Container(
+                                                                        margin: EdgeInsets.only(
+                                                                          top:
+                                                                              16,
+                                                                          bottom:
+                                                                              10,
+                                                                        ),
+                                                                        child: Text(
+                                                                          "Event Type",
+                                                                          style: GoogleFonts.poppins(
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color:
+                                                                                MyColor().blackClr,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap: () async {
+                                                                          final result =
+                                                                              await openEventTypeMultiSelect();
+
+                                                                          if (result !=
+                                                                              null) {
+                                                                            setState(() {
+                                                                              selectEventTypeList = result;
+                                                                            });
+                                                                          }
+                                                                        },
+                                                                        child: Container(
+                                                                          padding: EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                12,
+                                                                            vertical:
+                                                                                14,
+                                                                          ),
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border.all(
+                                                                              color: MyColor().borderClr,
+                                                                              width: 0.5,
+                                                                            ),
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              12,
+                                                                            ),
+                                                                          ),
+                                                                          child: Row(
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: Text(
+                                                                                  selectEventTypeList.isEmpty
+                                                                                      ? "Select event type"
+                                                                                      : selectEventTypeList
+                                                                                            .map(
+                                                                                              (
+                                                                                                e,
+                                                                                              ) => e['name'],
+                                                                                            )
+                                                                                            .join(
+                                                                                              ", ",
+                                                                                            ),
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                ),
+                                                                              ),
+                                                                              Icon(
+                                                                                Icons.arrow_drop_down,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            10,
+                                                                      ),
+                                                                      Wrap(
+                                                                        spacing:
+                                                                            8,
+                                                                        children: selectEventTypeList.map((
+                                                                          e,
+                                                                        ) {
+                                                                          return Chip(
+                                                                            label: Text(
+                                                                              e['name'],
+                                                                            ),
+                                                                            onDeleted: () {
+                                                                              setState(
+                                                                                () {
+                                                                                  selectEventTypeList.remove(
+                                                                                    e,
+                                                                                  );
+                                                                                },
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                        }).toList(),
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                } else if (eventTypeState
+                                                                    is EventTypeFail) {
+                                                                  return Center(
+                                                                    child: Text(
+                                                                      eventTypeState
+                                                                          .errorMessage,
+                                                                    ),
+                                                                  );
+                                                                }
+                                                                return SizedBox.shrink();
+                                                              },
+                                                        ),
+                                                  ),
+
+                                                  // perks
+                                                  Container(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    margin: EdgeInsets.only(
+                                                      top: 0,
+                                                    ),
+                                                    child: BlocBuilder<PerksBloc, PerksState>(
+                                                      builder: (context, perksState) {
+                                                        if (perksState
+                                                            is PerksLoading) {
+                                                          return Center(
+                                                            child: CircularProgressIndicator(
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                          );
+                                                        } else if (perksState
+                                                            is PerksSuccess) {
+                                                          perksList =
+                                                              List<
+                                                                Map<
+                                                                  String,
+                                                                  dynamic
+                                                                >
+                                                              >.from(
+                                                                perksState
+                                                                    .perksList,
+                                                              );
+                                                          filterPerksList =
+                                                              perksList;
+                                                          return Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Container(
+                                                                margin:
+                                                                    EdgeInsets.only(
+                                                                      top: 16,
+                                                                      bottom:
+                                                                          10,
+                                                                    ),
+                                                                child: Text(
+                                                                  "Perks",
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontSize:
+                                                                        14,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: MyColor()
+                                                                        .blackClr,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              GestureDetector(
+                                                                onTap: () async {
+                                                                  final result =
+                                                                      await openPerksMultiSelect();
+
+                                                                  if (result !=
+                                                                      null) {
+                                                                    setState(() {
+                                                                      selectPerksList =
+                                                                          result;
+                                                                    });
+                                                                  }
+                                                                },
+                                                                child: Container(
+                                                                  padding:
+                                                                      EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            12,
+                                                                        vertical:
+                                                                            14,
+                                                                      ),
+                                                                  decoration: BoxDecoration(
+                                                                    border: Border.all(
+                                                                      color: MyColor()
+                                                                          .borderClr,
+                                                                      width:
+                                                                          0.5,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                          12,
+                                                                        ),
+                                                                  ),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                        child: Text(
+                                                                          selectEventTypeList.isEmpty
+                                                                              ? "Select perks"
+                                                                              : selectEventTypeList
+                                                                                    .map(
+                                                                                      (
+                                                                                        e,
+                                                                                      ) => e['name'],
+                                                                                    )
+                                                                                    .join(
+                                                                                      ", ",
+                                                                                    ),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
+                                                                      Icon(
+                                                                        Icons
+                                                                            .arrow_drop_down,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Wrap(
+                                                                spacing: 8,
+                                                                children: selectPerksList.map((
+                                                                  e,
+                                                                ) {
+                                                                  return Chip(
+                                                                    label: Text(
+                                                                      e['perkName'],
+                                                                    ),
+                                                                    onDeleted: () {
+                                                                      setState(() {
+                                                                        selectPerksList
+                                                                            .remove(
+                                                                              e,
+                                                                            );
+                                                                      });
+                                                                    },
+                                                                  );
+                                                                }).toList(),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        } else if (perksState
+                                                            is PerksFail) {
+                                                          return Text(
+                                                            perksState
+                                                                .errorMessage,
+                                                          );
+                                                        }
+                                                        return SizedBox.shrink();
+                                                      },
+                                                    ),
+                                                  ),
+
+                                                  // Certification
+                                                  Container(
+                                                    margin: EdgeInsets.only(
+                                                      top: 16,
+                                                      bottom: 10,
+                                                    ),
+                                                    child: Text(
+                                                      "Certification",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  BlocBuilder<
+                                                    CertificationBloc,
+                                                    CertificationState
+                                                  >(
+                                                    builder: (context, certificationState) {
+                                                      if (certificationState
+                                                          is CertificationLoading) {
+                                                        return Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                                color: MyColor()
+                                                                    .primaryClr,
+                                                              ),
+                                                        );
+                                                      } else if (certificationState
+                                                          is CertificationSuccess) {
+                                                        return Wrap(
+                                                          spacing: 12,
+                                                          runSpacing: 12,
+                                                          children: certificationState.certificationList.map((
+                                                            item,
+                                                          ) {
+                                                            final bool
+                                                            isSelected =
+                                                                selectCertification ==
+                                                                item['identity'];
+
+                                                            return InkWell(
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  selectCertification =
+                                                                      item['identity'];
+                                                                });
+                                                              },
+                                                              child: AnimatedContainer(
+                                                                duration: Duration(
+                                                                  milliseconds:
+                                                                      250,
+                                                                ),
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          16,
+                                                                      vertical:
+                                                                          10,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                      isSelected
+                                                                      ? MyColor()
+                                                                            .primaryClr
+                                                                      : MyColor()
+                                                                            .whiteClr,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        20,
+                                                                      ),
+                                                                  border: Border.all(
+                                                                    color:
+                                                                        isSelected
+                                                                        ? MyColor()
+                                                                              .primaryClr
+                                                                        : Colors
+                                                                              .grey
+                                                                              .shade300,
+                                                                  ),
+                                                                ),
+                                                                child: Row(
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    Text(
+                                                                      item['certName'],
+                                                                      style: GoogleFonts.poppins(
+                                                                        fontSize:
+                                                                            14,
+                                                                        fontWeight:
+                                                                            FontWeight.w500,
+                                                                        color:
+                                                                            isSelected
+                                                                            ? MyColor().whiteClr
+                                                                            : MyColor().blackClr,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }).toList(),
+                                                        );
+                                                      } else if (certificationState
+                                                          is CertificationFail) {
+                                                        return RefreshIndicator(
+                                                          backgroundColor:
+                                                              MyColor()
+                                                                  .whiteClr,
+                                                          color: MyColor()
+                                                              .primaryClr,
+                                                          onRefresh: () async {
+                                                            context
+                                                                .read<
+                                                                  CertificationBloc
+                                                                >()
+                                                                .add(
+                                                                  (FetchCertification()),
+                                                                );
+                                                          },
+                                                          child: Center(
+                                                            child: ListView(
+                                                              shrinkWrap: true,
+                                                              children: [
+                                                                Center(
+                                                                  child: SizedBox(
+                                                                    height: 100,
+                                                                    child: Image.asset(
+                                                                      ImagePath()
+                                                                          .errorMessageImg,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Center(
+                                                                  child: Text(
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    certificationState
+                                                                        .errorMessage,
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      fontSize:
+                                                                          18,
+                                                                      color: MyColor()
+                                                                          .blackClr,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }
+                                                      return SizedBox();
+                                                    },
+                                                  ),
+
+                                                  // accommodation
+                                                  Container(
+                                                    alignment:
+                                                        Alignment.topLeft,
+                                                    margin: EdgeInsets.only(
+                                                      top: 20,
+                                                      bottom: 20,
+                                                    ),
+                                                    child:
+                                                        BlocBuilder<
+                                                          AccommodationBloc,
+                                                          AccommodationState
+                                                        >(
+                                                          builder:
+                                                              (
+                                                                context,
+                                                                accommodationState,
+                                                              ) {
+                                                                if (accommodationState
+                                                                    is AccommodationLoading) {
+                                                                  return Center(
+                                                                    child: CircularProgressIndicator(
+                                                                      color: MyColor()
+                                                                          .primaryClr,
+                                                                    ),
+                                                                  );
+                                                                } else if (accommodationState
+                                                                    is AccommodationSuccess) {
+                                                                  accommodationList =
+                                                                      List<
+                                                                        Map<
+                                                                          String,
+                                                                          dynamic
+                                                                        >
+                                                                      >.from(
+                                                                        accommodationState
+                                                                            .accommodationList,
+                                                                      );
+                                                                  filterPerksList =
+                                                                      perksList;
+                                                                  return Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      Container(
+                                                                        margin: EdgeInsets.only(
+                                                                          top:
+                                                                              16,
+                                                                          bottom:
+                                                                              10,
+                                                                        ),
+                                                                        child: Text(
+                                                                          "Accommodation",
+                                                                          style: GoogleFonts.poppins(
+                                                                            fontSize:
+                                                                                14,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            color:
+                                                                                MyColor().blackClr,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap: () async {
+                                                                          final result =
+                                                                              await openAccommodationMultiSelect();
+
+                                                                          if (result !=
+                                                                              null) {
+                                                                            setState(() {
+                                                                              selectAccommodationList = result;
+                                                                            });
+                                                                          }
+                                                                        },
+                                                                        child: Container(
+                                                                          padding: EdgeInsets.symmetric(
+                                                                            horizontal:
+                                                                                12,
+                                                                            vertical:
+                                                                                14,
+                                                                          ),
+                                                                          decoration: BoxDecoration(
+                                                                            border: Border.all(
+                                                                              color: MyColor().borderClr,
+                                                                              width: 0.5,
+                                                                            ),
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              12,
+                                                                            ),
+                                                                          ),
+                                                                          child: Row(
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: Text(
+                                                                                  selectAccommodationList.isEmpty
+                                                                                      ? "Select accommodation"
+                                                                                      : selectAccommodationList
+                                                                                            .map(
+                                                                                              (
+                                                                                                e,
+                                                                                              ) => e['accommodationName'],
+                                                                                            )
+                                                                                            .join(
+                                                                                              ", ",
+                                                                                            ),
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                ),
+                                                                              ),
+                                                                              Icon(
+                                                                                Icons.arrow_drop_down,
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            10,
+                                                                      ),
+                                                                      Wrap(
+                                                                        spacing:
+                                                                            8,
+                                                                        children: selectAccommodationList.map((
+                                                                          e,
+                                                                        ) {
+                                                                          return Chip(
+                                                                            label: Text(
+                                                                              e['accommodationName'],
+                                                                            ),
+                                                                            onDeleted: () {
+                                                                              setState(
+                                                                                () {
+                                                                                  selectAccommodationList.remove(
+                                                                                    e,
+                                                                                  );
+                                                                                },
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                        }).toList(),
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                } else if (accommodationState
+                                                                    is AccommodationFail) {
+                                                                  return Text(
+                                                                    accommodationState
+                                                                        .errorMessage,
+                                                                  );
+                                                                }
+                                                                return SizedBox.shrink();
+                                                              },
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            // apply & clear button
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                top: 10,
+                                                bottom: 16,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        fixedSize: Size(0, 40),
+                                                        backgroundColor:
+                                                            MyColor().whiteClr,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                50,
+                                                              ),
+                                                          side: BorderSide(
+                                                            color: MyColor()
+                                                                .primaryClr,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        clearAllFilters(
+                                                          setState,
+                                                        );
+                                                      },
+                                                      child: Text(
+                                                        "Clear",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 16),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        fixedSize: Size(0, 40),
+                                                        backgroundColor:
+                                                            MyColor()
+                                                                .primaryClr,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                50,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        applyFilter();
+                                                      },
+                                                      child: Text(
+                                                        "Apply",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              color: MyColor()
+                                                                  .whiteClr,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
                             ),
+                            child: Icon(Icons.tune),
                           ),
                         ),
-                      ],
+                        prefixIcon: Icon(Icons.search, size: 24),
+                        hintText: "Search Events",
+                        hintStyle: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: MyColor().hintTextClr,
+                        ),
+                      ),
                     ),
                   ),
-                );
-              }
-              return SizedBox.shrink();
-            },
+                ),
+              ),
+            ),
           ),
         ),
       ],

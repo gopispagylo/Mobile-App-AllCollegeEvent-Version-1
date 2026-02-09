@@ -83,166 +83,187 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                       child: BackdropFilter(
                         filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                         child: SizedBox(
-                          width: 180,
-                          child: Card(
-                            margin: EdgeInsets.only(
-                              left: index == 0 ? 16 : 5,
-                              right:
-                                  index ==
-                                      topOrganizerState.topOrganizer.length - 1
-                                  ? 16
-                                  : 5,
-                            ),
-                            color: MyColor().whiteClr.withOpacity(0.4),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadiusGeometry.circular(20),
-                              side: BorderSide(
-                                color: MyColor().borderClr.withOpacity(0.15),
-                              ),
-                            ),
-                            elevation: 0,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => OrganizationPage(
-                                      title: topOrganizerState
-                                          .topOrganizer[index]['organizationName'],
-                                      slug: topOrganizerState
-                                          .topOrganizer[index]['slug'],
-                                      identity: topOrganizerState
-                                          .topOrganizer[index]['identity'],
-                                      isLogin: widget.isLogin,
+                          width: 170,
+                          child: Stack(
+                            children: [
+                              Card(
+                                margin: EdgeInsets.only(
+                                  left: index == 0 ? 16 : 5,
+                                  right:
+                                      index ==
+                                          topOrganizerState
+                                                  .topOrganizer
+                                                  .length -
+                                              1
+                                      ? 16
+                                      : 5,
+                                ),
+                                color: MyColor().whiteClr.withOpacity(0.4),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadiusGeometry.circular(
+                                    20,
+                                  ),
+                                  side: BorderSide(
+                                    color: MyColor().borderClr.withOpacity(
+                                      0.15,
                                     ),
                                   ),
-                                );
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(16),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Stack(
-                                      children: [
-                                        ClipOval(
-                                          child: CachedNetworkImage(
-                                            height: 60,
-                                            width: 60,
-                                            // memCacheHeight: 300,
-                                            fadeInDuration: Duration.zero,
-                                            imageUrl:
-                                                topOrganizerState
-                                                    .topOrganizer[index]['profileImage'] ??
-                                                "",
-                                            fit: BoxFit.cover,
-                                            placeholder: (context, url) {
-                                              return Center(
-                                                child: Platform.isAndroid
-                                                    ? CircularProgressIndicator(
+                                ),
+                                elevation: 0,
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(20),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => OrganizationPage(
+                                          title: topOrganizerState
+                                              .topOrganizer[index]['organizationName'],
+                                          slug: topOrganizerState
+                                              .topOrganizer[index]['slug'],
+                                          identity: topOrganizerState
+                                              .topOrganizer[index]['identity'],
+                                          isLogin: widget.isLogin,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Stack(
+                                    alignment: AlignmentGeometry.topRight,
+                                    children: [
+                                      if (index < 3)
+                                        Positioned(
+                                          right: 8,
+                                          top: 5,
+                                          child: Image.asset(
+                                            index == 0
+                                                ? ImagePath().rank_1
+                                                : index == 1
+                                                ? ImagePath().rank_2
+                                                : ImagePath().rank_3,
+                                            height: 30,
+                                          ),
+                                        ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            ClipOval(
+                                              child: CachedNetworkImage(
+                                                height: 60,
+                                                width: 60,
+                                                // memCacheHeight: 300,
+                                                fadeInDuration: Duration.zero,
+                                                imageUrl:
+                                                    topOrganizerState
+                                                        .topOrganizer[index]['profileImage'] ??
+                                                    "",
+                                                fit: BoxFit.cover,
+                                                placeholder: (context, url) {
+                                                  return Center(
+                                                    child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(
+                                                            color: MyColor()
+                                                                .primaryClr,
+                                                          )
+                                                        : CupertinoActivityIndicator(
+                                                            color: MyColor()
+                                                                .primaryClr,
+                                                          ),
+                                                  );
+                                                },
+                                                errorWidget: (context, url, error) {
+                                                  return Container(
+                                                    alignment: Alignment.center,
+                                                    decoration: BoxDecoration(
+                                                      color: MyColor().whiteClr,
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
                                                         color: MyColor()
-                                                            .primaryClr,
-                                                      )
-                                                    : CupertinoActivityIndicator(
-                                                        color: MyColor()
-                                                            .primaryClr,
+                                                            .borderClr
+                                                            .withOpacity(0.15),
                                                       ),
-                                              );
-                                            },
-                                            errorWidget: (context, url, error) {
-                                              return Container(
-                                                alignment: Alignment.center,
-                                                decoration: BoxDecoration(
-                                                  color: MyColor().whiteClr,
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                    color: MyColor().borderClr
-                                                        .withOpacity(0.15),
-                                                  ),
-                                                ),
-                                                child: Text(
+                                                    ),
+                                                    child: Text(
+                                                      topOrganizerState
+                                                          .topOrganizer[index]['organizationName'][0],
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 24,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: MyColor()
+                                                                .blackClr,
+                                                          ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            // org name and event count
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                  textAlign: TextAlign.center,
                                                   topOrganizerState
-                                                      .topOrganizer[index]['organizationName'][0],
+                                                      .topOrganizer[index]['organizationName'],
                                                   style: GoogleFonts.poppins(
-                                                    fontSize: 24,
                                                     fontWeight: FontWeight.w500,
+                                                    fontSize: 14,
                                                     color: MyColor().blackClr,
                                                   ),
                                                 ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        if (index < 3)
-                                          Positioned(
-                                            child: Image.asset(
-                                              index == 0
-                                                  ? ImagePath().rank_1
-                                                  : index == 1
-                                                  ? ImagePath().rank_2
-                                                  : ImagePath().rank_3,
-                                              height: 30,
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    // org name and event count
-                                    Column(
-                                      children: [
-                                        Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.center,
-                                          topOrganizerState
-                                              .topOrganizer[index]['organizationName'],
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 14,
-                                            color: MyColor().blackClr,
-                                          ),
-                                        ),
-                                        Text(
-                                          "${topOrganizerState.topOrganizer[index]['eventCount']} Events",
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12,
-                                            color: MyColor().secondaryClr,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10),
-                                    SizedBox(
-                                      height: 40,
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: MyColor().primaryClr,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadiusGeometry.circular(
-                                                  10,
+                                                Text(
+                                                  "${topOrganizerState.topOrganizer[index]['eventCount']} Events",
+                                                  style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12,
+                                                    color:
+                                                        MyColor().secondaryClr,
+                                                  ),
                                                 ),
-                                          ),
-                                        ),
-                                        onPressed: () {},
-                                        child: Text(
-                                          "Follow",
-                                          style: GoogleFonts.poppins(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                            color: MyColor().whiteClr,
-                                          ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 10),
+                                            SizedBox(
+                                              height: 40,
+                                              width: double.infinity,
+                                              child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      MyColor().primaryClr,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadiusGeometry.circular(
+                                                          10,
+                                                        ),
+                                                  ),
+                                                ),
+                                                onPressed: () {},
+                                                child: Text(
+                                                  "Follow",
+                                                  style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 14,
+                                                    color: MyColor().whiteClr,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
                       ),

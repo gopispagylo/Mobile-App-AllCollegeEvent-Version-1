@@ -33,6 +33,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     getUser();
+    print("kdnjjkdskjhdsjkhldskjlhdsjklhdfsjkdfsjhkdfjhkldfjhkldfjhkldfsjhldfjkhldfkhjldfs${widget.isLogin}");
   }
 
   // ------- find a user --------

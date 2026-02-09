@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/screens/event/model/EventListModel.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/rem
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -41,7 +44,14 @@ class _EventPageState extends State<EventPage> {
         ),
       ],
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        backgroundColor: MyColor().whiteClr,
         appBar: AppBar(
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.dark,
+          ),
           title: Text(
             "All Events",
             style: GoogleFonts.poppins(
@@ -50,9 +60,18 @@ class _EventPageState extends State<EventPage> {
               color: MyColor().blackClr,
             ),
           ),
-          backgroundColor: MyColor().whiteClr,
+          backgroundColor: Colors.transparent,
+          flexibleSpace: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: MyColor().whiteClr.withOpacity(0.05),
+                ),
+              ),
+            ),
+          ),
         ),
-        backgroundColor: MyColor().whiteClr,
         body: EventListModel(isLogin: widget.isLogin),
       ),
     );

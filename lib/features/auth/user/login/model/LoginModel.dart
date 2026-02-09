@@ -13,6 +13,7 @@ import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -269,6 +270,15 @@ class _LoginModelState extends State<LoginModel> {
                         );
                         emailController.clear();
                         passwordController.clear();
+
+                        // ---------- Fire base to get a fcm token ---------------
+                        FirebaseMessaging firebaseMessaging =
+                            FirebaseMessaging.instance;
+                        await firebaseMessaging.requestPermission();
+                        String? fcmToken = await firebaseMessaging.getToken();
+                        print(
+                          "fcmTokenfcmTokenfcmTokenfcmTokenfcmToken$fcmToken",
+                        );
                       } else if (loginState is LoginFail) {
                         FlutterToast().flutterToast(
                           loginState.errorMessage,
@@ -356,7 +366,7 @@ class _LoginModelState extends State<LoginModel> {
                   // Google SignIn
                   if (Platform.isAndroid)
                     BlocConsumer<GoogleSignInBloc, GoogleSignInState>(
-                      listener: (context, googleSignInState) {
+                      listener: (context, googleSignInState) async {
                         if (googleSignInState is GoogleSignInSuccess) {
                           setState(() {
                             isGoogleLoading = false;
@@ -371,6 +381,14 @@ class _LoginModelState extends State<LoginModel> {
                               ),
                             ),
                             (route) => false,
+                          );
+                          // ---------- Fire base to get a fcm token ---------------
+                          FirebaseMessaging firebaseMessaging =
+                              FirebaseMessaging.instance;
+                          await firebaseMessaging.requestPermission();
+                          String? fcmToken = await firebaseMessaging.getToken();
+                          print(
+                            "fcmTokenfcmTokenfcmTokenfcmTokenfcmToken$fcmToken",
                           );
                         } else if (googleSignInState is GoogleSignInFail) {
                           setState(() {

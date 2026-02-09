@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
@@ -16,6 +17,7 @@ import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -81,15 +83,31 @@ class _EditProfileModelState extends State<EditProfileModel> {
         ),
       ],
       child: Scaffold(
+        extendBodyBehindAppBar: true,
         backgroundColor: MyColor().whiteClr,
         appBar: AppBar(
-          backgroundColor: MyColor().whiteClr,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.dark,
+          ),
           title: Text(
             "Edit Profile",
             style: GoogleFonts.poppins(
               fontWeight: FontWeight.w600,
               fontSize: 18,
               color: MyColor().blackClr,
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          flexibleSpace: ClipRRect(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: MyColor().whiteClr.withOpacity(0.05),
+                ),
+              ),
             ),
           ),
         ),

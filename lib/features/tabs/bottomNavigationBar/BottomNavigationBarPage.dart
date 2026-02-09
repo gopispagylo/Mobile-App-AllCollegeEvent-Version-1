@@ -71,6 +71,7 @@ class _BottomNavigationBarPageState extends State<BottomNavigationBarPage> {
         }
       }
     });
+    print("ksklalkalalalalallalalalalalala${widget.isLogin}");
   }
 
   @override

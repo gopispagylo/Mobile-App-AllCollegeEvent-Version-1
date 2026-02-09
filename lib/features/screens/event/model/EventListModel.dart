@@ -32,6 +32,9 @@ class _EventListModelState extends State<EventListModel> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      backgroundColor: MyColor().whiteClr,
+      color: MyColor().primaryClr,
+      edgeOffset: 80,
       onRefresh: () async {
         context.read<TrendingEventListBloc>().add(
           FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 2),

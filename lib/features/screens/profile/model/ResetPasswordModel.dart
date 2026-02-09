@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ResetPasswordModel extends StatefulWidget {
@@ -12,29 +15,44 @@ class ResetPasswordModel extends StatefulWidget {
 }
 
 class _ResetPasswordModelState extends State<ResetPasswordModel> {
-
-
   // ----------- Controller --------
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-
 
   // ----------- Password Hide and Show -----------
   bool obscureTexPassword = true;
   bool obscureTexConfirmPassword = true;
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       backgroundColor: MyColor().whiteClr,
       appBar: AppBar(
-        backgroundColor: MyColor().whiteClr,
-        title: Text("Set Your Password",style: GoogleFonts.poppins(
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.dark,
+        ),
+        title: Text(
+          "Set Your Password",
+          style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,
-            color: MyColor().blackClr
-        ),),
+            color: MyColor().blackClr,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        flexibleSpace: ClipRRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+            child: Container(
+              decoration: BoxDecoration(
+                color: MyColor().whiteClr.withOpacity(0.05),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Container(
         margin: EdgeInsets.all(16),
@@ -63,7 +81,8 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
               obscureText: obscureTexConfirmPassword,
               eyeIcon: IconButton(
                 onPressed: () => setState(
-                        () => obscureTexConfirmPassword = !obscureTexConfirmPassword),
+                  () => obscureTexConfirmPassword = !obscureTexConfirmPassword,
+                ),
                 icon: Icon(
                   obscureTexConfirmPassword
                       ? Icons.visibility_off
@@ -71,44 +90,49 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
                 ),
               ),
             ),
-        SizedBox(height: 30,),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            fixedSize: Size(320, 48),
-            backgroundColor: MyColor().primaryClr,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
+            SizedBox(height: 30),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                fixedSize: Size(320, 48),
+                backgroundColor: MyColor().primaryClr,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(50),
+                ),
+              ),
+              onPressed: () {
+                // ---- Success Dialog -----
+                MyModels().alertDialogContentCustom(
+                  context: context,
+                  content: Container(
+                    color: MyColor().boxInnerClr,
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "Password Successfully Changed!!",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                );
+
+                // ---- after showing completed the dialog then back to profile page ----
+                Future.delayed(Duration(milliseconds: 1000), () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                });
+              },
+              child: Text(
+                "Save Changes",
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: MyColor().whiteClr,
+                ),
+              ),
             ),
-          ),
-          onPressed: (){
-
-            // ---- Success Dialog -----
-            MyModels().alertDialogContentCustom(context: context, content: Container(
-              color: MyColor().boxInnerClr,
-              child: Text(textAlign: TextAlign.center,"Password Successfully Changed!!",style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: MyColor().blackClr
-              ),),
-            ));
-
-            // ---- after showing completed the dialog then back to profile page ----
-            Future.delayed(Duration(milliseconds: 1000),(){
-              Navigator.pop(context);
-              Navigator.pop(context);
-              Navigator.pop(context);
-            });
-
-          },
-          child: Text(
-            "Save Changes",
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: MyColor().whiteClr,
-            ),
-          ),
-        )
           ],
         ),
       ),
@@ -117,4 +141,3 @@ class _ResetPasswordModelState extends State<ResetPasswordModel> {
 }
 
 // ------------ Password Success ----------
-
