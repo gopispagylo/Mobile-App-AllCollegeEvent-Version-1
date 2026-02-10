@@ -213,12 +213,15 @@ class _SearchModelState extends State<SearchModel> {
                 child: BlocBuilder<SearchEventListBloc, SearchEventListState>(
                   builder: (context, searchEventListState) {
                     if (searchEventListState is SearchEventListLoading) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return eventCardShimmer();
-                        },
+                      return Container(
+                        margin: EdgeInsets.only(top: 80),
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return eventCardShimmer();
+                          },
+                        ),
                       );
                     } else if (searchEventListState is SearchEventListSuccess) {
                       if (isLoadingMore) {

@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '13.0'
+platform :ios, '15.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -43,17 +43,21 @@ target 'Runner' do
   end
 end
 
-# 🔴 THIS BLOCK IS THE MOST IMPORTANT FIX
+# THIS BLOCK IS THE MOST IMPORTANT FIX
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
 
     target.build_configurations.each do |config|
-      # ✅ Force dSYM generation (FIXES UUID ERROR)
+      # 🔥 THIS LINE FIXES FIREBASE CORE ERROR
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+
+      # Force dSYM generation
       config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf-with-dsym'
 
-      # ✅ Disable Bitcode (REQUIRED FOR FLUTTER)
+      # Disable Bitcode (required for Flutter)
       config.build_settings['ENABLE_BITCODE'] = 'NO'
     end
   end
 end
+

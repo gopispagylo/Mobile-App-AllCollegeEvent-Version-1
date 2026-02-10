@@ -10,8 +10,13 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 
 class TopModel extends StatefulWidget {
   final String whichScreen;
+  final Function onSlugChanged;
 
-  const TopModel({super.key, required this.whichScreen});
+  const TopModel({
+    super.key,
+    required this.whichScreen,
+    required this.onSlugChanged,
+  });
 
   @override
   State<TopModel> createState() => _ProfileModelState();
@@ -23,226 +28,234 @@ class _ProfileModelState extends State<TopModel> {
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
 
-    return BlocBuilder<UserProfileBloc, UserProfileState>(
-      builder: (context, userProfileState) {
-        if (userProfileState is UserProfileLoading) {
-          return profileHeaderShimmer();
-        } else if (userProfileState is UserProfileSuccess) {
-          final list = userProfileState.userProfileList[0];
-          return Container(
-            margin: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                Center(
-                  child: Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: MyColor().borderClr.withOpacity(0.15),
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: CachedNetworkImage(
-                        // memCacheHeight: 300,
-                        fadeInDuration: Duration.zero,
-                        imageUrl: list['profileImage'] ?? '',
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) =>
-                            Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) => Icon(
-                          Iconsax.profile_circle,
-                          color: MyColor().borderClr,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  textAlign: TextAlign.center,
-                  list['name'] ?? list['organizationName'],
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    fontFamily: "blMelody",
-                  ),
-                ),
-                SizedBox(height: 2),
-                Text(
-                  textAlign: TextAlign.center,
-                  checkUser ? "User" : "Organizer",
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 18,
-                    color: MyColor().borderClr,
-                  ),
-                ),
-                SizedBox(height: 20),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // ---------- only show for organizer ----------
-                    if (!checkUser)
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: MyColor().primaryClr.withOpacity(0.07),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                "2K",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: MyColor().primaryClr,
-                                ),
-                              ),
-                              Text(
-                                "Followers",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                    if (!checkUser) SizedBox(width: 3),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: MyColor().greenClr.withOpacity(0.07),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              "1K",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                                color: MyColor().primaryClr,
-                              ),
-                            ),
-                            Text(
-                              "Following",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 12,
-                                color: MyColor().blackClr,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    if (!checkUser) SizedBox(width: 3),
-                    // ---------- only show for organizer ----------
-                    if (!checkUser)
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: MyColor().yellowClr.withOpacity(0.07),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                "2nd",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: MyColor().primaryClr,
-                                ),
-                              ),
-                              Text(
-                                "Rank",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    if (!checkUser) SizedBox(width: 3),
-                    // ---------- only show for organizer ----------
-                    if (!checkUser)
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: MyColor().redClr.withOpacity(0.07),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                "546",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: MyColor().primaryClr,
-                                ),
-                              ),
-                              Text(
-                                "Reviews",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            ),
-          );
-        } else if (userProfileState is UserProfileFail) {
-          return Center(
-            child: ListView(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              children: [
-                Center(
-                  child: SizedBox(
-                    height: 250,
-                    child: Image.asset(ImagePath().errorMessageImg),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    userProfileState.errorMessage,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: MyColor().blackClr,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+    return BlocListener<UserProfileBloc, UserProfileState>(
+      listener: (context, state) {
+        if (state is UserProfileSuccess) {
+          final slug = state.userProfileList[0]['slug'];
+          widget.onSlugChanged(slug);
         }
-        return SizedBox.shrink();
       },
+      child: BlocBuilder<UserProfileBloc, UserProfileState>(
+        builder: (context, userProfileState) {
+          if (userProfileState is UserProfileLoading) {
+            return profileHeaderShimmer();
+          } else if (userProfileState is UserProfileSuccess) {
+            final list = userProfileState.userProfileList[0];
+            return Container(
+              margin: EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: MyColor().borderClr.withOpacity(0.15),
+                        ),
+                      ),
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          // memCacheHeight: 300,
+                          fadeInDuration: Duration.zero,
+                          imageUrl: list['profileImage'] ?? '',
+                          fit: BoxFit.cover,
+                          placeholder: (context, url) =>
+                              Center(child: CircularProgressIndicator()),
+                          errorWidget: (context, url, error) => Icon(
+                            Iconsax.profile_circle,
+                            color: MyColor().borderClr,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    textAlign: TextAlign.center,
+                    list['name'] ?? list['organizationName'],
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: "blMelody",
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    textAlign: TextAlign.center,
+                    checkUser ? "User" : "Organizer",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 18,
+                      color: MyColor().borderClr,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // ---------- only show for organizer ----------
+                      if (!checkUser)
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: MyColor().primaryClr.withOpacity(0.07),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "2K",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color: MyColor().primaryClr,
+                                  ),
+                                ),
+                                Text(
+                                  "Followers",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: MyColor().blackClr,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      if (!checkUser) SizedBox(width: 3),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: MyColor().greenClr.withOpacity(0.07),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                "1K",
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                  color: MyColor().primaryClr,
+                                ),
+                              ),
+                              Text(
+                                "Following",
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  color: MyColor().blackClr,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (!checkUser) SizedBox(width: 3),
+                      // ---------- only show for organizer ----------
+                      if (!checkUser)
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: MyColor().yellowClr.withOpacity(0.07),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "2nd",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color: MyColor().primaryClr,
+                                  ),
+                                ),
+                                Text(
+                                  "Rank",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: MyColor().blackClr,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (!checkUser) SizedBox(width: 3),
+                      // ---------- only show for organizer ----------
+                      if (!checkUser)
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: MyColor().redClr.withOpacity(0.07),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "546",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color: MyColor().primaryClr,
+                                  ),
+                                ),
+                                Text(
+                                  "Reviews",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    color: MyColor().blackClr,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          } else if (userProfileState is UserProfileFail) {
+            return Center(
+              child: ListView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: [
+                  Center(
+                    child: SizedBox(
+                      height: 250,
+                      child: Image.asset(ImagePath().errorMessageImg),
+                    ),
+                  ),
+                  Center(
+                    child: Text(
+                      userProfileState.errorMessage,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 18,
+                        color: MyColor().blackClr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return SizedBox.shrink();
+        },
+      ),
     );
   }
 }

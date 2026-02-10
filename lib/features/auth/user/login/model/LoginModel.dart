@@ -103,6 +103,29 @@ class _LoginModelState extends State<LoginModel> {
   void initState() {
     super.initState();
     getFreeLogin();
+    getFcmToken();
+  }
+
+  // get a fcm token firebase
+  Future<void> getFcmToken() async {
+    // ---------- Fire base to get a fcm token ---------------
+    FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+    // notification request permission
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
+    // small deploy
+    await Future.delayed(Duration(seconds: 2));
+
+    // get a apns token
+    final String? apnsToken = await FirebaseMessaging.instance.getAPNSToken();
+
+    if (apnsToken != null) {
+      String? fcmToken = await firebaseMessaging.getToken();
+    }
   }
 
   // get a is free login
@@ -114,7 +137,7 @@ class _LoginModelState extends State<LoginModel> {
       });
     } else {
       setState(() {
-        isFreeLogin = false; // default
+        isFreeLogin = false;
       });
     }
   }
@@ -381,14 +404,6 @@ class _LoginModelState extends State<LoginModel> {
                               ),
                             ),
                             (route) => false,
-                          );
-                          // ---------- Fire base to get a fcm token ---------------
-                          FirebaseMessaging firebaseMessaging =
-                              FirebaseMessaging.instance;
-                          await firebaseMessaging.requestPermission();
-                          String? fcmToken = await firebaseMessaging.getToken();
-                          print(
-                            "fcmTokenfcmTokenfcmTokenfcmTokenfcmToken$fcmToken",
                           );
                         } else if (googleSignInState is GoogleSignInFail) {
                           setState(() {

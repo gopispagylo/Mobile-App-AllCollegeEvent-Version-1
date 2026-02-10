@@ -4,8 +4,8 @@ part of 'organizer_event_list_bloc.dart';
 sealed class OrganizerEventListEvent {}
 
 class FetchOrganizerEvent extends OrganizerEventListEvent {
-  final String eventId;
+  final String slug;
   final bool isLogin;
 
-  FetchOrganizerEvent({required this.eventId, required this.isLogin});
+  FetchOrganizerEvent({required this.slug, required this.isLogin});
 }

@@ -1,6 +1,7 @@
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/chechUser/ui/CheckUserPage.dart';
+import 'package:all_college_event_app/features/screens/dashBoard/ui/DashBoard.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MyEventsModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/NotificationModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/OrganizationCreateDetailPage.dart';
@@ -20,11 +21,13 @@ import 'package:iconsax_flutter/iconsax_flutter.dart';
 class MySpaceModel extends StatefulWidget {
   final String whichScreen;
   final bool isLogin;
+  final String slug;
 
   const MySpaceModel({
     super.key,
     required this.whichScreen,
     required this.isLogin,
+    required this.slug,
   });
 
   @override
@@ -51,8 +54,6 @@ class _MySpaceModelState extends State<MySpaceModel> {
   Widget build(BuildContext context) {
     // ---------- access the value of whichScreen ---------
     final checkUser = widget.whichScreen == 'User';
-
-    print("checkUsercheckUsercheckUsercheckUser$checkUser");
 
     return Container(
       margin: EdgeInsets.only(left: 16, right: 16),
@@ -94,12 +95,35 @@ class _MySpaceModelState extends State<MySpaceModel> {
                     ),
                   ),
                 ),
-                customContainer(
-                  name: "Dashboard",
-                  icon: Icons.arrow_forward_ios,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(0),
-                    topLeft: Radius.circular(0),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            DashBoard(slug: widget.slug),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                              var tween = Tween(
+                                end: Offset.zero,
+                                begin: Offset(1.0, 0.0),
+                              ).chain(CurveTween(curve: Curves.easeOut));
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: child,
+                              );
+                            },
+                        transitionDuration: Duration(milliseconds: 400),
+                      ),
+                    );
+                  },
+                  child: customContainer(
+                    name: "Dashboard",
+                    icon: Icons.arrow_forward_ios,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(0),
+                      topLeft: Radius.circular(0),
+                    ),
                   ),
                 ),
                 GestureDetector(

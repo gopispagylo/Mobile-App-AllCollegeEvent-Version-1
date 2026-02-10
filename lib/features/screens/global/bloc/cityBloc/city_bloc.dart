@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/handleErrorConfig/HandleErrorConfig.dart';
 import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
@@ -17,15 +15,16 @@ class CityBloc extends Bloc<CityEvent, CityState> {
     on<FetchCity>((event, emit) async {
       emit(CityLoading());
       try {
-
         // ----------- initial set base url -------------
         await apiController.setBaseUrl();
 
-        final response = await apiController.getMethodWithoutBody(endPoint: 'location/states/${event.stateCode}/cities',token: "");
+        final response = await apiController.getMethodWithoutBodyAndHeader(
+          endPoint: 'location/states/${event.stateCode}/cities',
+        );
 
         if (response.statusCode == 200) {
           final responseBody = response.data!;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             cityList.clear();
             cityList.addAll(responseBody['data']);
             if (cityList.isNotEmpty) {

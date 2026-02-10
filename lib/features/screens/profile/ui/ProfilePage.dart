@@ -28,12 +28,11 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   // ------- find user assign the value ------
   String? checkUser;
-
+  String slug = "";
   @override
   void initState() {
     super.initState();
     getUser();
-    print("kdnjjkdskjhdsjkhldskjlhdsjklhdfsjkdfsjhkdfjhkldfjhkldfjhkldfsjhldfjkhldfkhjldfs${widget.isLogin}");
   }
 
   // ------- find a user --------
@@ -78,7 +77,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: ListView(
                       children: [
                         // ------- Profile Header -------
-                        TopModel(whichScreen: checkUser!),
+                        TopModel(
+                          whichScreen: checkUser!,
+                          onSlugChanged: (value) {
+                            setState(() {
+                              slug = value;
+                            });
+                          },
+                        ),
 
                         // ---------- Profile model ----------
                         ProfileModel(
@@ -90,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         MySpaceModel(
                           whichScreen: checkUser!,
                           isLogin: widget.isLogin,
+                          slug: slug,
                         ),
                       ],
                     ),

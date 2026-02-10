@@ -26,11 +26,11 @@ class OrganizerEventListBloc
 
         final response = event.isLogin
             ? await apiController.getMethodWithoutBody(
-                endPoint: "organization/${event.eventId}/events",
+                endPoint: "organizations/${event.slug}/events",
                 token: token!,
               )
             : await apiController.getMethodWithoutBodyAndHeader(
-                endPoint: "organization/${event.eventId}/events",
+                endPoint: "organizations/${event.slug}/events",
               );
         print(
           "OrganizerEventListBlocOrganizerEventListBlocOrganizerEventListBlocOrganizerEventListBloc$response",

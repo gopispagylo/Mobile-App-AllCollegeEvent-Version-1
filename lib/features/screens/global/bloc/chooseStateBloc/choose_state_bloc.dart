@@ -16,38 +16,30 @@ class ChooseStateBloc extends Bloc<ChooseStateEvent, ChooseStateState> {
       emit(ChooseStateLoading());
 
       try {
-
         // ----------- initial set base url -------------
         await apiController.setBaseUrl();
 
-
-        final response = await apiController.getMethodWithoutBody(
+        final response = await apiController.getMethodWithoutBodyAndHeader(
           endPoint: 'location/countries/${event.countryCode}/states',
-          token: "", // "India"
         );
 
         if (response.statusCode == 200) {
           final responseBody = response.data!;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             stateList.clear();
             stateList.addAll(responseBody['data']);
             if (stateList.isNotEmpty) {
-              emit(ChooseStateSuccess(
-                  stateList: List.from(stateList)
-              ));
+              emit(ChooseStateSuccess(stateList: List.from(stateList)));
             } else {
               emit(ChooseStateFail(errorMessage: "No states found"));
             }
           }
-
         }
       } on DioException catch (e) {
         final error = HandleErrorConfig().handleDioError(e);
         emit(ChooseStateFail(errorMessage: error));
       } catch (e) {
-        emit(ChooseStateFail(
-          errorMessage: ConfigMessage().unexpectedErrorMsg,
-        ));
+        emit(ChooseStateFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
   }

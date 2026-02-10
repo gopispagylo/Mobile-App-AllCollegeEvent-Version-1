@@ -1,36 +1,25 @@
 import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
-import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
-import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
-import 'package:all_college_event_app/features/screens/organization/bloc/organizerDetailBloc/organizer_detail_bloc.dart';
+import 'package:all_college_event_app/features/screens/dashBoard/model/DashBoardModel.dart';
+import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBloc/event_detail_bloc.dart';
 import 'package:all_college_event_app/features/screens/organization/bloc/organizerEventListBloc/organizer_event_list_bloc.dart';
-import 'package:all_college_event_app/features/screens/organization/model/OrganizationHeaderModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class OrganizationPage extends StatefulWidget {
-  final String title;
+class DashBoard extends StatefulWidget {
   final String slug;
-  final String identity;
-  final bool isLogin;
 
-  const OrganizationPage({
-    super.key,
-    required this.title,
-    required this.slug,
-    required this.identity,
-    required this.isLogin,
-  });
+  const DashBoard({super.key, required this.slug});
 
   @override
-  State<OrganizationPage> createState() => _OrganizationPageState();
+  State<DashBoard> createState() => _DashBoardState();
 }
 
-class _OrganizationPageState extends State<OrganizationPage> {
+class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +32,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
           statusBarBrightness: Brightness.dark,
         ),
         title: Text(
-          widget.title,
+          "Dashboard",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -65,28 +54,16 @@ class _OrganizationPageState extends State<OrganizationPage> {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => OrganizerDetailBloc(
-              apiController: ApiController(),
-            )..add(ClickOrgDetail(slug: widget.slug, isLogin: widget.isLogin)),
+            create: (context) =>
+                OrganizerEventListBloc(apiController: ApiController())
+                  ..add(FetchOrganizerEvent(slug: widget.slug, isLogin: false)),
           ),
           BlocProvider(
             create: (context) =>
-                OrganizerEventListBloc(apiController: ApiController())..add(
-                  FetchOrganizerEvent(
-                    slug: widget.slug,
-                    isLogin: widget.isLogin,
-                  ),
-                ),
-          ),
-          BlocProvider(
-            create: (context) =>
-                RemoveSaveEventBloc(apiController: ApiController()),
-          ),
-          BlocProvider(
-            create: (context) => EventLikeBloc(apiController: ApiController()),
+                EventDetailBloc(apiController: ApiController()),
           ),
         ],
-        child: OrganizationHeaderModel(isLogin: widget.isLogin),
+        child: DashBoardModel(slug: widget.slug),
       ),
     );
   }
