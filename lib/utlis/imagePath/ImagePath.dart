@@ -66,4 +66,7 @@ class ImagePath {
   final rank_1 = 'assets/image/FirstOr.png';
   final rank_2 = 'assets/image/SecondOr.png';
   final rank_3 = 'assets/image/ThreedOr.png';
+
+  // world image for popular city & country
+  final worldImg = 'assets/image/world.png';
 }

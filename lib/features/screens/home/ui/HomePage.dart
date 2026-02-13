@@ -1,7 +1,9 @@
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/auth/organizer/login/ui/OrganizerLoginPage.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/CreateFollowBloc/create_follow_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/popularCityCountry/popular_city_country_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
@@ -86,6 +88,14 @@ class _HomePageState extends State<HomePage> {
             BlocProvider(
               create: (context) =>
                   RemoveSaveEventBloc(apiController: ApiController()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  PopularCityCountryBloc(apiController: ApiController()),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  CreateFollowBloc(apiController: ApiController()),
             ),
           ],
           child: HomeModel(

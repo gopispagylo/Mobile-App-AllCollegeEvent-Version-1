@@ -53,7 +53,7 @@ class _NotificationModelState extends State<NotificationModel> {
       ),
       body: Container(
         margin: EdgeInsets.only(left: 16, right: 16),
-        child: Column(
+        child: ListView(
           children: [
             Container(
               decoration: BoxDecoration(

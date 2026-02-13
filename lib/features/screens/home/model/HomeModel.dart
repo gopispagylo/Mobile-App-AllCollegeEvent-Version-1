@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/popularCityCountry/popular_city_country_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/CarouselSliderPage.dart';
@@ -44,9 +45,10 @@ class _HomeModelState extends State<HomeModel> {
       await Future.delayed(Duration(milliseconds: 400));
       context.read<EventTypeAllBloc>().add(EventTypeAll());
       context.read<TrendingEventListBloc>().add(
-        FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 2),
+        FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 5),
       );
       context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
+      context.read<PopularCityCountryBloc>().add(FetchPopularCityCountry());
     });
   }
 
@@ -228,7 +230,6 @@ class _HomeModelState extends State<HomeModel> {
                             left: 16,
                             right: 16,
                           ),
-                          width: 380,
                           child: TextFormField(
                             onTap: () {
                               Navigator.push(

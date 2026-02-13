@@ -1,3 +1,5 @@
+import 'package:all_college_event_app/features/screens/follow/ui/FollowersPage.dart';
+import 'package:all_college_event_app/features/screens/follow/ui/FollowingPage.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
@@ -41,6 +43,7 @@ class _ProfileModelState extends State<TopModel> {
             return profileHeaderShimmer();
           } else if (userProfileState is UserProfileSuccess) {
             final list = userProfileState.userProfileList[0];
+            print("listlistlistlistlistlistlist$list");
             return Container(
               margin: EdgeInsets.all(16),
               child: Column(
@@ -99,16 +102,120 @@ class _ProfileModelState extends State<TopModel> {
                       // ---------- only show for organizer ----------
                       if (!checkUser)
                         Expanded(
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(8),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  pageBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                      ) => FollowersPage(
+                                        followingOrFollowers: 'followers',
+                                      ),
+                                  transitionsBuilder:
+                                      (
+                                        context,
+                                        animation,
+                                        secondaryAnimation,
+                                        child,
+                                      ) {
+                                        var tween =
+                                            Tween(
+                                              end: Offset.zero,
+                                              begin: Offset(1.0, 0.0),
+                                            ).chain(
+                                              CurveTween(curve: Curves.easeOut),
+                                            );
+                                        return SlideTransition(
+                                          position: animation.drive(tween),
+                                          child: child,
+                                        );
+                                      },
+                                  transitionDuration: Duration(
+                                    milliseconds: 400,
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: MyColor().primaryClr.withOpacity(0.07),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    list['followersCount'].toString(),
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                      color: MyColor().primaryClr,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Followers",
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 12,
+                                      color: MyColor().blackClr,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (!checkUser) SizedBox(width: 3),
+                      Expanded(
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(8),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        FollowingPage(
+                                          followingOrFollowers: 'following',
+                                        ),
+                                transitionsBuilder:
+                                    (
+                                      context,
+                                      animation,
+                                      secondaryAnimation,
+                                      child,
+                                    ) {
+                                      var tween =
+                                          Tween(
+                                            end: Offset.zero,
+                                            begin: Offset(1.0, 0.0),
+                                          ).chain(
+                                            CurveTween(curve: Curves.easeOut),
+                                          );
+                                      return SlideTransition(
+                                        position: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                transitionDuration: Duration(milliseconds: 400),
+                              ),
+                            );
+                          },
                           child: Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: MyColor().primaryClr.withOpacity(0.07),
+                              color: MyColor().greenClr.withOpacity(0.07),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Column(
                               children: [
                                 Text(
-                                  "2K",
+                                  list['followingCount'].toString(),
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
@@ -116,7 +223,7 @@ class _ProfileModelState extends State<TopModel> {
                                   ),
                                 ),
                                 Text(
-                                  "Followers",
+                                  "Following",
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 12,
@@ -125,36 +232,6 @@ class _ProfileModelState extends State<TopModel> {
                                 ),
                               ],
                             ),
-                          ),
-                        ),
-
-                      if (!checkUser) SizedBox(width: 3),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: MyColor().greenClr.withOpacity(0.07),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                "1K",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 18,
-                                  color: MyColor().primaryClr,
-                                ),
-                              ),
-                              Text(
-                                "Following",
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 12,
-                                  color: MyColor().blackClr,
-                                ),
-                              ),
-                            ],
                           ),
                         ),
                       ),
@@ -203,7 +280,7 @@ class _ProfileModelState extends State<TopModel> {
                             child: Column(
                               children: [
                                 Text(
-                                  "546",
+                                  list['eventCount'].toString(),
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 18,
@@ -211,7 +288,7 @@ class _ProfileModelState extends State<TopModel> {
                                   ),
                                 ),
                                 Text(
-                                  "Reviews",
+                                  "Events",
                                   style: GoogleFonts.poppins(
                                     fontWeight: FontWeight.w500,
                                     fontSize: 12,

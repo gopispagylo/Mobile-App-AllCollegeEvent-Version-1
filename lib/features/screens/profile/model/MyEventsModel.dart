@@ -41,7 +41,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
       create: (context) =>
           MyEventBloc(apiController: ApiController())..add(FetchMyEvent()),
       child: Scaffold(
-        extendBodyBehindAppBar: true,
+        extendBodyBehindAppBar: false,
         backgroundColor: MyColor().whiteClr,
         appBar: AppBar(
           systemOverlayStyle: SystemUiOverlayStyle(
@@ -108,65 +108,6 @@ class _MyEventsModelState extends State<MyEventsModel> {
                 ),
               ),
             ),
-
-            // ---- filter ------
-            Container(
-              margin: EdgeInsets.only(left: 16, top: 16, bottom: 16),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {},
-                    child: Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: MyColor().boxInnerClr,
-                        border: Border.all(
-                          color: MyColor().borderClr.withOpacity(0.15),
-                        ),
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Icon(Icons.tune),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: List.generate(filterList.length, (index) {
-                          return Container(
-                            height: 48,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.only(left: 20, right: 20),
-                            margin: EdgeInsets.only(right: 5),
-                            decoration: BoxDecoration(
-                              color: MyColor().boxInnerClr,
-                              borderRadius: BorderRadius.circular(30),
-                              border: Border.all(
-                                color: MyColor().borderClr.withOpacity(0.15),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  filterList[index],
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: MyColor().blackClr,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
             // ----------- event list -------------
             Expanded(
               child: BlocBuilder<MyEventBloc, MyEventState>(
@@ -188,6 +129,7 @@ class _MyEventsModelState extends State<MyEventsModel> {
                       child: Container(
                         margin: EdgeInsets.only(left: 16, right: 16, top: 20),
                         child: ListView.builder(
+                          shrinkWrap: true,
                           itemCount: myEventState.myEvent.length,
                           itemBuilder: (context, index) {
                             final list = myEventState.myEvent[index];

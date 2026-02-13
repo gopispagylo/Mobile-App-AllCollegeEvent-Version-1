@@ -12,7 +12,7 @@ part 'event_like_state.dart';
 class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
   final ApiController apiController;
 
-  /// local cache
+  // local cache
   final Map<String, bool> favStatus = {};
   final Map<String, int> likeCount = {};
 
@@ -26,11 +26,11 @@ class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
   ) async {
     final eventId = event.eventId;
 
-    /// ---- initialize from UI if not exists ----
+    // ---- initialize from UI if not exists ----
     final currentFav = favStatus[eventId] ?? event.initialFav;
     final currentCount = likeCount[eventId] ?? event.initialCount;
 
-    /// ---- optimistic update ----
+    // ---- optimistic update ----
     final newFav = !currentFav;
     final newCount = newFav ? currentCount + 1 : currentCount - 1;
 

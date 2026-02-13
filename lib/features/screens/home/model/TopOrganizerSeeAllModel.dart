@@ -6,7 +6,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class TopOrganizerSeeAllModel extends StatefulWidget {
   final List<dynamic> topOrganizerList;
@@ -41,7 +40,7 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
           statusBarBrightness: Brightness.dark,
         ),
         title: Text(
-          "Top Organizers",
+          "Leader board",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,
@@ -62,7 +61,7 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
       ),
       body: Container(
         margin: EdgeInsets.only(left: 16, right: 16),
-        child: Column(
+        child: ListView(
           children: [
             // -------- 1st and 2nd and 3rd board ui -----------
             Row(
@@ -70,9 +69,8 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
               children: [
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(right: 7),
                     decoration: BoxDecoration(
-                      color: MyColor().yellowClr.withOpacity(0.15),
+                      // color: MyColor().yellowClr.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Container(
@@ -80,24 +78,44 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                       child: Column(
                         children: [
                           ClipOval(
-                            child: CachedNetworkImage(
-                              // memCacheHeight: 300,
-                              fadeInDuration: Duration.zero,
-                              width: 40,
-                              height: 40,
-                              imageUrl:
-                                  widget.topOrganizerList[1]['profileImage'] ??
-                                  "",
-                              errorWidget: (context, url, error) {
-                                return Center(child: Icon(Iconsax.image));
-                              },
-                              placeholder: (context, url) {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    color: MyColor().primaryClr,
-                                  ),
-                                );
-                              },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: MyColor().primaryClr),
+                              ),
+                              child: CachedNetworkImage(
+                                fadeInDuration: Duration.zero,
+                                width: 40,
+                                height: 40,
+                                imageUrl:
+                                    widget
+                                        .topOrganizerList[1]['profileImage'] ??
+                                    "",
+                                errorWidget: (context, url, error) {
+                                  return Center(
+                                    child: Center(
+                                      child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        widget
+                                            .topOrganizerList[1]['organizationName'][0],
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                placeholder: (context, url) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: MyColor().primaryClr,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(height: 10),
@@ -111,77 +129,17 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                               color: MyColor().blackClr,
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '4.7',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 8,
-                                ),
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                              widget.topOrganizerList[1]['eventCount']
+                                  .toString(),
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: MyColor().blackClr,
                               ),
-                              Row(
-                                children: List.generate(4, (index) {
-                                  return Icon(
-                                    Icons.star,
-                                    size: 13,
-                                    color: MyColor().yellowClr,
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    widget.topOrganizerList[1]['eventCount']
-                                        .toString(),
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Events",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    "1500",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Views",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -191,7 +149,6 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                 Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: MyColor().yellowClr.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Container(
@@ -199,24 +156,42 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                       child: Column(
                         children: [
                           ClipOval(
-                            child: CachedNetworkImage(
-                              // memCacheHeight: 300,
-                              fadeInDuration: Duration.zero,
-                              width: 50,
-                              height: 50,
-                              imageUrl:
-                                  widget.topOrganizerList[0]['profileImage'] ??
-                                  "",
-                              errorWidget: (context, url, error) {
-                                return Center(child: Icon(Iconsax.image));
-                              },
-                              placeholder: (context, url) {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    color: MyColor().primaryClr,
-                                  ),
-                                );
-                              },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: MyColor().primaryClr),
+                              ),
+                              child: CachedNetworkImage(
+                                fadeInDuration: Duration.zero,
+                                width: 50,
+                                height: 50,
+                                imageUrl:
+                                    widget
+                                        .topOrganizerList[0]['profileImage'] ??
+                                    "",
+                                errorWidget: (context, url, error) {
+                                  return Center(
+                                    child: Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      widget
+                                          .topOrganizerList[0]['organizationName'][0],
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                        color: MyColor().blackClr,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                placeholder: (context, url) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: MyColor().primaryClr,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(height: 10),
@@ -230,77 +205,14 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                               color: MyColor().blackClr,
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '4.7',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 10,
-                                ),
-                              ),
-                              Row(
-                                children: List.generate(4, (index) {
-                                  return Icon(
-                                    Icons.star,
-                                    size: 13,
-                                    color: MyColor().yellowClr,
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    widget.topOrganizerList[1]['eventCount']
-                                        .toString(),
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Events",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    "1500",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Views",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          SizedBox(height: 5),
+                          Text(
+                            widget.topOrganizerList[1]['eventCount'].toString(),
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: MyColor().blackClr,
+                            ),
                           ),
                         ],
                       ),
@@ -309,9 +221,8 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 7),
+                    margin: EdgeInsets.only(right: 0),
                     decoration: BoxDecoration(
-                      color: MyColor().yellowClr.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Container(
@@ -319,24 +230,44 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                       child: Column(
                         children: [
                           ClipOval(
-                            child: CachedNetworkImage(
-                              // memCacheHeight: 300,
-                              fadeInDuration: Duration.zero,
-                              width: 40,
-                              height: 40,
-                              imageUrl:
-                                  widget.topOrganizerList[1]['profileImage'] ??
-                                  "",
-                              errorWidget: (context, url, error) {
-                                return Center(child: Icon(Iconsax.image));
-                              },
-                              placeholder: (context, url) {
-                                return Center(
-                                  child: CircularProgressIndicator(
-                                    color: MyColor().primaryClr,
-                                  ),
-                                );
-                              },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: MyColor().primaryClr),
+                              ),
+                              child: CachedNetworkImage(
+                                fadeInDuration: Duration.zero,
+                                width: 40,
+                                height: 40,
+                                imageUrl:
+                                    widget
+                                        .topOrganizerList[2]['profileImage'] ??
+                                    "",
+                                errorWidget: (context, url, error) {
+                                  return Center(
+                                    child: Center(
+                                      child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        widget
+                                            .topOrganizerList[2]['organizationName'][0],
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                placeholder: (context, url) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: MyColor().primaryClr,
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
                           SizedBox(height: 10),
@@ -350,77 +281,17 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                               color: MyColor().blackClr,
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '4.7',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 8,
-                                ),
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                              widget.topOrganizerList[2]['eventCount']
+                                  .toString(),
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                                color: MyColor().blackClr,
                               ),
-                              Row(
-                                children: List.generate(4, (index) {
-                                  return Icon(
-                                    Icons.star,
-                                    size: 13,
-                                    color: MyColor().yellowClr,
-                                  );
-                                }),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 10),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    widget.topOrganizerList[2]['eventCount']
-                                        .toString(),
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Events",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 16),
-                              Column(
-                                children: [
-                                  Text(
-                                    "1500",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Views",
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 10,
-                                      color: MyColor().blackClr,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                            ),
                           ),
                         ],
                       ),
@@ -478,19 +349,6 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                         ),
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.center,
-                      height: 40,
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "Views",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: MyColor().blackClr,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],
@@ -505,7 +363,6 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                   final orgName = list['organizationName'];
                   final orgRank = list['rank'];
                   final orgEventCounts = list['eventCount'];
-                  final orgEventViews = 100;
                   return TableRow(
                     decoration: BoxDecoration(
                       color: MyColor().borderClr.withOpacity(0.10),
@@ -545,19 +402,6 @@ class _TopOrganizerSeeAllModelState extends State<TopOrganizerSeeAllModel> {
                         child: Text(
                           textAlign: TextAlign.center,
                           orgEventCounts.toString(),
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          "Views",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

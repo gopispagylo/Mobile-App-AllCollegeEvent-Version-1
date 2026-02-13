@@ -1,6 +1,13 @@
+import 'dart:io';
+
+import 'package:all_college_event_app/features/screens/global/bloc/popularCityCountry/popular_city_country_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/LocationModel.dart';
+import 'package:all_college_event_app/features/screens/home/model/PopularCityCountryDetail.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CountriesAndCitiesModel extends StatefulWidget {
@@ -133,151 +140,311 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel>
             margin: EdgeInsets.only(top: 20),
             child: SizedBox(
               height: 400,
-              child: TabBarView(
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  // First Tab Bar View
-                  ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      GridView.builder(
-                        itemCount: countries.length,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              Container(
-                                height: 65,
-                                width: 65,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: Image.network(
-                                  countries[index]['flag']!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  width: 110,
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                    countries[index]['name']!,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => LocationModel()),
-                          );
-                        },
-                        child: Center(
-                          child: Container(
-                            height: 48,
-                            width: 130,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: MyColor().boxInnerClr,
-                              borderRadius: BorderRadius.circular(60),
+              child: BlocBuilder<PopularCityCountryBloc, PopularCityCountryState>(
+                builder: (context, popularCityState) {
+                  if (popularCityState is LoadingPopularCityCountry) {
+                    return Center(
+                      child: Platform.isAndroid
+                          ? CircularProgressIndicator(
+                              color: MyColor().primaryClr,
+                            )
+                          : CupertinoActivityIndicator(
+                              color: MyColor().primaryClr,
                             ),
-                            child: Text(
-                              "View All",
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14,
-                                color: MyColor().blackClr,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    );
+                  } else if (popularCityState is SuccessPopularCityCountry) {
+                    final listCountry =
+                        popularCityState.cityCountryList['countries'];
+                    final listCity = popularCityState.cityCountryList['cities'];
 
-                  // Second Tab Bar View
-                  ListView(
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      GridView.builder(
-                        itemCount: topCities.length,
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              Container(
-                                height: 65,
-                                width: 65,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
+                    return TabBarView(
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        // First Tab Bar View
+                        Container(
+                          margin: EdgeInsets.only(left: 16, right: 16),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                    left: 16,
+                                    right: 16,
+                                    bottom: 30,
+                                  ),
+                                  itemCount: listCountry.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 32,
+                                        mainAxisSpacing: 16,
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    return InkWell(
+                                      borderRadius: BorderRadius.circular(16),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                PopularCityCountryDetail(),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: MyColor().boxInnerClr,
+                                          border: Border.all(
+                                            color: MyColor().borderClr
+                                                .withOpacity(0.15),
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.center,
+                                                height: 50,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                  color: MyColor().primaryClr,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    height: 50,
+                                                    width: 50,
+                                                    fadeInDuration:
+                                                        Duration.zero,
+                                                    imageUrl:
+                                                        listCountry[index]['flagImageUrl'],
+                                                    fit: BoxFit.cover,
+                                                    errorWidget: (context, url, error) {
+                                                      return Text(
+                                                        listCountry[index]['countryName'][0],
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                              fontSize: 18,
+                                                              color: MyColor()
+                                                                  .whiteClr,
+                                                            ),
+                                                      );
+                                                    },
+                                                    placeholder: (context, url) {
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                  left: 5,
+                                                  right: 5,
+                                                ),
+                                                child: Text(
+                                                  listCountry[index]['countryName'],
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                "${listCountry[index]['count']} Events",
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                clipBehavior: Clip.antiAlias,
-                                child: Image.network(
-                                  topCities[index]['image']!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Expanded(
-                                child: Container(
-                                  width: 110,
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                    topCities[index]['name']!,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => LocationModel(),
+                                      ),
+                                    );
+                                  },
+                                  child: Center(
+                                    child: Container(
+                                      height: 48,
+                                      width: 130,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: MyColor().boxInnerClr,
+                                        borderRadius: BorderRadius.circular(60),
+                                      ),
+                                      child: Text(
+                                        "View All",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                        ),
-                      ),
-                      Center(
-                        child: Container(
-                          height: 48,
-                          width: 130,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: MyColor().boxInnerClr,
-                            borderRadius: BorderRadius.circular(60),
-                          ),
-                          child: Text(
-                            "View All",
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 14,
-                              color: MyColor().blackClr,
+                              ],
                             ),
                           ),
                         ),
+
+                        // Second Tab Bar View
+                        Container(
+                          margin: EdgeInsets.only(left: 16, right: 16),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.only(
+                                    left: 16,
+                                    right: 16,
+                                    bottom: 30,
+                                  ),
+                                  itemCount: listCity.length,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 32,
+                                        mainAxisSpacing: 16,
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: MyColor().boxInnerClr,
+                                        border: Border.all(
+                                          color: MyColor().borderClr
+                                              .withOpacity(0.15),
+                                        ),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 16,
+                                        ),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              alignment: Alignment.center,
+                                              height: 50,
+                                              width: 50,
+                                              decoration: BoxDecoration(
+                                                color: MyColor().primaryClr,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Text(
+                                                listCity[index]['cityName'][0],
+                                                style: GoogleFonts.poppins(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 18,
+                                                  color: MyColor().whiteClr,
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Text(
+                                              listCity[index]['cityName'],
+                                              overflow: TextOverflow.ellipsis,
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${listCity[index]['count']} Events",
+                                              style: GoogleFonts.poppins(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => LocationModel(),
+                                      ),
+                                    );
+                                  },
+                                  child: Center(
+                                    child: Container(
+                                      height: 48,
+                                      width: 130,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: MyColor().boxInnerClr,
+                                        borderRadius: BorderRadius.circular(60),
+                                      ),
+                                      child: Text(
+                                        "View All",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          color: MyColor().blackClr,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else if (popularCityState is FailPopularCityCountry) {
+                    return Center(
+                      child: Text(
+                        popularCityState.errorMessage,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
                       ),
-                    ],
-                  ),
-                ],
+                    );
+                  }
+                  return SizedBox();
+                },
               ),
             ),
           ),

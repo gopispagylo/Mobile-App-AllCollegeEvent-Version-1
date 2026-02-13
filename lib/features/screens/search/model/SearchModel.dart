@@ -805,914 +805,575 @@ class _SearchModelState extends State<SearchModel> {
         // ----------- search bar ----------
         Positioned(
           top: 0,
+          right: 0,
+          left: 0,
           child: ClipRect(
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
               child: Container(
                 color: Colors.white.withOpacity(0.07), // IMPORTANT
-                child: Center(
-                  child: Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 16,
-                      left: 16,
-                      right: 16,
-                    ),
-                    width: 320,
-                    child: TextFormField(
-                      focusNode: GlobalUnFocus.focusNode,
-                      controller: searchController,
-                      onChanged: (onChanged) {
-                        fetchEvents();
-                      },
-                      onTapOutside: (onOutSideClick) {
-                        GlobalUnFocus.unFocus();
+                child: Container(
+                  margin: const EdgeInsets.only(
+                    top: 10,
+                    bottom: 16,
+                    left: 16,
+                    right: 16,
+                  ),
+                  // width: 360,
+                  child: TextFormField(
+                    focusNode: GlobalUnFocus.focusNode,
+                    controller: searchController,
+                    onChanged: (onChanged) {
+                      fetchEvents();
+                    },
+                    onTapOutside: (onOutSideClick) {
+                      GlobalUnFocus.unFocus();
 
-                        // setState(() {
-                        //   isRecent = false;
-                        // });
-                      },
-                      // onTap: () {
-                      //   setState(() {
-                      //     isRecent = true;
-                      //   });
-                      // },
-                      autofocus: false,
-                      decoration: InputDecoration(
-                        contentPadding: EdgeInsets.all(10),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100),
-                          borderSide: BorderSide(
-                            color: MyColor().borderClr,
-                            width: 0.5,
-                          ),
+                      // setState(() {
+                      //   isRecent = false;
+                      // });
+                    },
+                    // onTap: () {
+                    //   setState(() {
+                    //     isRecent = true;
+                    //   });
+                    // },
+                    autofocus: false,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(10),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: BorderSide(
+                          color: MyColor().borderClr,
+                          width: 0.5,
                         ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(100),
-                          borderSide: BorderSide(
-                            color: MyColor().primaryClr,
-                            width: 0.5,
-                          ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        borderSide: BorderSide(
+                          color: MyColor().primaryClr,
+                          width: 0.5,
                         ),
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              isDismissible: false,
-                              backgroundColor: MyColor().whiteClr,
-                              context: context,
-                              builder: (_) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider.value(
-                                      value: context.read<EventTypeBloc>(),
-                                    ),
-                                    BlocProvider.value(
-                                      value: context.read<PerksBloc>(),
-                                    ),
-                                    BlocProvider.value(
-                                      value: context.read<AccommodationBloc>(),
-                                    ),
-                                    BlocProvider.value(
-                                      value: context.read<CertificationBloc>(),
-                                    ),
-                                  ],
-                                  child: StatefulBuilder(
-                                    builder: (context, setState) {
-                                      return Container(
-                                        alignment: Alignment.topLeft,
-                                        margin: EdgeInsets.only(
-                                          left: 16,
-                                          right: 16,
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                top: 16,
-                                                bottom: 10,
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    "Filter",
+                      ),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                            isDismissible: false,
+                            backgroundColor: MyColor().whiteClr,
+                            context: context,
+                            builder: (_) {
+                              return MultiBlocProvider(
+                                providers: [
+                                  BlocProvider.value(
+                                    value: context.read<EventTypeBloc>(),
+                                  ),
+                                  BlocProvider.value(
+                                    value: context.read<PerksBloc>(),
+                                  ),
+                                  BlocProvider.value(
+                                    value: context.read<AccommodationBloc>(),
+                                  ),
+                                  BlocProvider.value(
+                                    value: context.read<CertificationBloc>(),
+                                  ),
+                                ],
+                                child: StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return Container(
+                                      alignment: Alignment.topLeft,
+                                      margin: EdgeInsets.only(
+                                        left: 16,
+                                        right: 16,
+                                      ),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                              top: 16,
+                                              bottom: 10,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Filter",
+                                                  style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                    color: MyColor().blackClr,
+                                                  ),
+                                                ),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Icon(
+                                                    Iconsax.close_circle,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          Expanded(
+                                            child: ListView(
+                                              children: [
+                                                // event status
+                                                Wrap(
+                                                  spacing: 12,
+                                                  runSpacing: 12,
+                                                  children: statusList.map((
+                                                    item,
+                                                  ) {
+                                                    final bool isSelected =
+                                                        selectEventStatus ==
+                                                        item['value'];
+                                                    return InkWell(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectEventStatus =
+                                                              item['value'];
+                                                        });
+                                                      },
+                                                      child: AnimatedContainer(
+                                                        duration:
+                                                            const Duration(
+                                                              milliseconds: 250,
+                                                            ),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 16,
+                                                              vertical: 10,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          color: isSelected
+                                                              ? MyColor()
+                                                                    .primaryClr
+                                                              : MyColor()
+                                                                    .whiteClr,
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                20,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: isSelected
+                                                                ? MyColor()
+                                                                      .primaryClr
+                                                                : Colors
+                                                                      .grey
+                                                                      .shade300,
+                                                          ),
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              item['title'],
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    isSelected
+                                                                    ? MyColor()
+                                                                          .whiteClr
+                                                                    : MyColor()
+                                                                          .blackClr,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+
+                                                // price
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                    top: 16,
+                                                  ),
+                                                  child: Text(
+                                                    "Pricing",
                                                     style: GoogleFonts.poppins(
+                                                      fontSize: 14,
                                                       fontWeight:
                                                           FontWeight.w600,
-                                                      fontSize: 18,
                                                       color: MyColor().blackClr,
                                                     ),
                                                   ),
-                                                  InkWell(
-                                                    onTap: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    child: Icon(
-                                                      Iconsax.close_circle,
-                                                    ),
+                                                ),
+                                                RangeSlider(
+                                                  values: RangeValues(
+                                                    minPrice,
+                                                    maxPrice,
                                                   ),
-                                                ],
-                                              ),
-                                            ),
+                                                  min: priceMinLimit,
+                                                  max: priceMaxLimit,
+                                                  divisions: 100,
+                                                  activeColor:
+                                                      MyColor().primaryClr,
+                                                  inactiveColor:
+                                                      Colors.grey.shade300,
+                                                  onChanged: (RangeValues values) {
+                                                    setState(() {
+                                                      minPrice = priceMinLimit;
+                                                      maxPrice = values.end;
+                                                    });
 
-                                            Expanded(
-                                              child: ListView(
-                                                children: [
-                                                  // event status
-                                                  Wrap(
-                                                    spacing: 12,
-                                                    runSpacing: 12,
-                                                    children: statusList.map((
-                                                      item,
-                                                    ) {
-                                                      final bool isSelected =
-                                                          selectEventStatus ==
-                                                          item['value'];
-                                                      return InkWell(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            selectEventStatus =
-                                                                item['value'];
-                                                          });
-                                                        },
-                                                        child: AnimatedContainer(
-                                                          duration:
-                                                              const Duration(
-                                                                milliseconds:
-                                                                    250,
-                                                              ),
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 10,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            color: isSelected
-                                                                ? MyColor()
-                                                                      .primaryClr
-                                                                : MyColor()
-                                                                      .whiteClr,
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                            border: Border.all(
-                                                              color: isSelected
-                                                                  ? MyColor()
-                                                                        .primaryClr
-                                                                  : Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                            ),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Text(
-                                                                item['title'],
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color:
-                                                                      isSelected
-                                                                      ? MyColor()
-                                                                            .whiteClr
-                                                                      : MyColor()
-                                                                            .blackClr,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
+                                                    print(
+                                                      'minPriceminPriceminPriceminPrice$minPrice to $maxPrice',
+                                                    );
+                                                  },
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    priceChip(minPrice),
+                                                    priceChip(maxPrice),
+                                                  ],
+                                                ),
 
-                                                  // price
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      top: 16,
-                                                    ),
-                                                    child: Text(
-                                                      "Pricing",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: MyColor()
-                                                                .blackClr,
-                                                          ),
+                                                // date & time
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                    top: 16,
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Text(
+                                                    "Select Event Dates",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: MyColor().blackClr,
                                                     ),
                                                   ),
-                                                  RangeSlider(
-                                                    values: RangeValues(
-                                                      minPrice,
-                                                      maxPrice,
-                                                    ),
-                                                    min: priceMinLimit,
-                                                    max: priceMaxLimit,
-                                                    divisions: 100,
-                                                    activeColor:
-                                                        MyColor().primaryClr,
-                                                    inactiveColor:
-                                                        Colors.grey.shade300,
-                                                    onChanged:
-                                                        (RangeValues values) {
-                                                          setState(() {
-                                                            minPrice =
-                                                                priceMinLimit;
-                                                            maxPrice =
-                                                                values.end;
-                                                          });
-
-                                                          print(
-                                                            'minPriceminPriceminPriceminPrice$minPrice to $maxPrice',
-                                                          );
-                                                        },
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      priceChip(minPrice),
-                                                      priceChip(maxPrice),
-                                                    ],
-                                                  ),
-
-                                                  // date & time
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      top: 16,
-                                                      bottom: 10,
-                                                    ),
-                                                    child: Text(
-                                                      "Select Event Dates",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: MyColor()
-                                                                .blackClr,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Expanded(
-                                                        flex: 1,
-                                                        child: TextField(
-                                                          controller:
-                                                              startDateController,
-                                                          enableInteractiveSelection:
-                                                              false,
-                                                          readOnly: true,
-                                                          style:
-                                                              GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                              ),
-                                                          decoration: InputDecoration(
-                                                            hintText:
-                                                                "Start Date",
-                                                            contentPadding:
-                                                                EdgeInsets.all(
-                                                                  10,
-                                                                ),
-                                                            enabledBorder: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                              borderSide: BorderSide(
-                                                                color: MyColor()
-                                                                    .borderClr,
-                                                                width: 0.5,
-                                                              ),
-                                                            ),
-                                                            focusedBorder: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                              borderSide: BorderSide(
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                                width: 0.5,
-                                                              ),
-                                                            ),
-                                                            errorBorder: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                    color: MyColor()
-                                                                        .redClr,
-                                                                    width: 0.5,
-                                                                  ),
-                                                            ),
-                                                            focusedErrorBorder:
-                                                                OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        12,
-                                                                      ),
-                                                                  borderSide: BorderSide(
-                                                                    color: MyColor()
-                                                                        .redClr,
-                                                                    width: 0.5,
-                                                                  ),
-                                                                ),
-                                                            hintStyle:
-                                                                GoogleFonts.poppins(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: MyColor()
-                                                                      .borderClr,
-                                                                ),
-                                                            prefixIcon: Icon(
-                                                              Iconsax.calendar,
-                                                              color: MyColor()
-                                                                  .borderClr,
-                                                            ),
-                                                          ),
-                                                          onTap: () async {
-                                                            final result =
-                                                                await DateAndTimeController()
-                                                                    .selectedDate(
-                                                                      context,
-                                                                    );
-                                                            if (result !=
-                                                                null) {
-                                                              startDateController
-                                                                      .text =
-                                                                  result;
-                                                            }
-                                                          },
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 10),
-                                                      Expanded(
-                                                        flex: 1,
-                                                        child: TextField(
-                                                          controller:
-                                                              endDateController,
-                                                          enableInteractiveSelection:
-                                                              false,
-                                                          readOnly: true,
-                                                          style:
-                                                              GoogleFonts.poppins(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                              ),
-                                                          decoration: InputDecoration(
-                                                            hintText:
-                                                                "End Date",
-                                                            contentPadding:
-                                                                EdgeInsets.all(
-                                                                  10,
-                                                                ),
-                                                            enabledBorder: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                              borderSide: BorderSide(
-                                                                color: MyColor()
-                                                                    .borderClr,
-                                                                width: 0.5,
-                                                              ),
-                                                            ),
-                                                            focusedBorder: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                              borderSide: BorderSide(
-                                                                color: MyColor()
-                                                                    .primaryClr,
-                                                                width: 0.5,
-                                                              ),
-                                                            ),
-                                                            errorBorder: OutlineInputBorder(
-                                                              borderRadius:
-                                                                  BorderRadius.circular(
-                                                                    12,
-                                                                  ),
-                                                              borderSide:
-                                                                  BorderSide(
-                                                                    color: MyColor()
-                                                                        .redClr,
-                                                                    width: 0.5,
-                                                                  ),
-                                                            ),
-                                                            focusedErrorBorder:
-                                                                OutlineInputBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        12,
-                                                                      ),
-                                                                  borderSide: BorderSide(
-                                                                    color: MyColor()
-                                                                        .redClr,
-                                                                    width: 0.5,
-                                                                  ),
-                                                                ),
-                                                            hintStyle:
-                                                                GoogleFonts.poppins(
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: MyColor()
-                                                                      .borderClr,
-                                                                ),
-                                                            prefixIcon: Icon(
-                                                              Iconsax.calendar,
-                                                              color: MyColor()
-                                                                  .borderClr,
-                                                            ),
-                                                          ),
-                                                          onTap: () async {
-                                                            final result =
-                                                                await DateAndTimeController()
-                                                                    .selectedDate(
-                                                                      context,
-                                                                    );
-                                                            if (result !=
-                                                                null) {
-                                                              endDateController
-                                                                      .text =
-                                                                  result;
-                                                            }
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  // event mode
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      top: 16,
-                                                      bottom: 10,
-                                                    ),
-                                                    child: Text(
-                                                      "Event Mode",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: MyColor()
-                                                                .blackClr,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  Wrap(
-                                                    spacing: 12,
-                                                    runSpacing: 12,
-                                                    children: modeList.map((
-                                                      item,
-                                                    ) {
-                                                      final bool isSelected =
-                                                          selectEventMode ==
-                                                          item['value'];
-                                                      return InkWell(
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              20,
-                                                            ),
-                                                        onTap: () {
-                                                          setState(() {
-                                                            selectEventMode =
-                                                                item['value'];
-                                                          });
-                                                        },
-                                                        child: AnimatedContainer(
-                                                          duration:
-                                                              const Duration(
-                                                                milliseconds:
-                                                                    250,
-                                                              ),
-                                                          padding:
-                                                              const EdgeInsets.symmetric(
-                                                                horizontal: 16,
-                                                                vertical: 10,
-                                                              ),
-                                                          decoration: BoxDecoration(
-                                                            color: isSelected
-                                                                ? MyColor()
-                                                                      .primaryClr
-                                                                : MyColor()
-                                                                      .whiteClr,
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                  20,
-                                                                ),
-                                                            border: Border.all(
-                                                              color: isSelected
-                                                                  ? MyColor()
-                                                                        .primaryClr
-                                                                  : Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                            ),
-                                                          ),
-                                                          child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            children: [
-                                                              Text(
-                                                                item['title'],
-                                                                style: GoogleFonts.poppins(
-                                                                  fontSize: 14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color:
-                                                                      isSelected
-                                                                      ? MyColor()
-                                                                            .whiteClr
-                                                                      : MyColor()
-                                                                            .blackClr,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-
-                                                  // event type
-                                                  Container(
-                                                    alignment:
-                                                        Alignment.topLeft,
-                                                    margin: EdgeInsets.only(
-                                                      top: 20,
-                                                    ),
-                                                    child:
-                                                        BlocBuilder<
-                                                          EventTypeBloc,
-                                                          EventTypeState
-                                                        >(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                                eventTypeState,
-                                                              ) {
-                                                                if (eventTypeState
-                                                                    is EventTypeLoading) {
-                                                                  return Center(
-                                                                    child: CircularProgressIndicator(
-                                                                      color: MyColor()
-                                                                          .primaryClr,
-                                                                    ),
-                                                                  );
-                                                                } else if (eventTypeState
-                                                                    is EventTypeSuccess) {
-                                                                  eventTypeList =
-                                                                      List<
-                                                                        Map<
-                                                                          String,
-                                                                          dynamic
-                                                                        >
-                                                                      >.from(
-                                                                        eventTypeState
-                                                                            .eventTypeList,
-                                                                      );
-                                                                  filterEventTypeList =
-                                                                      eventTypeList;
-
-                                                                  return Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Container(
-                                                                        margin: EdgeInsets.only(
-                                                                          top:
-                                                                              16,
-                                                                          bottom:
-                                                                              10,
-                                                                        ),
-                                                                        child: Text(
-                                                                          "Event Type",
-                                                                          style: GoogleFonts.poppins(
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                            color:
-                                                                                MyColor().blackClr,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap: () async {
-                                                                          final result =
-                                                                              await openEventTypeMultiSelect();
-
-                                                                          if (result !=
-                                                                              null) {
-                                                                            setState(() {
-                                                                              selectEventTypeList = result;
-                                                                            });
-                                                                          }
-                                                                        },
-                                                                        child: Container(
-                                                                          padding: EdgeInsets.symmetric(
-                                                                            horizontal:
-                                                                                12,
-                                                                            vertical:
-                                                                                14,
-                                                                          ),
-                                                                          decoration: BoxDecoration(
-                                                                            border: Border.all(
-                                                                              color: MyColor().borderClr,
-                                                                              width: 0.5,
-                                                                            ),
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              12,
-                                                                            ),
-                                                                          ),
-                                                                          child: Row(
-                                                                            children: [
-                                                                              Expanded(
-                                                                                child: Text(
-                                                                                  selectEventTypeList.isEmpty
-                                                                                      ? "Select event type"
-                                                                                      : selectEventTypeList
-                                                                                            .map(
-                                                                                              (
-                                                                                                e,
-                                                                                              ) => e['name'],
-                                                                                            )
-                                                                                            .join(
-                                                                                              ", ",
-                                                                                            ),
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                ),
-                                                                              ),
-                                                                              Icon(
-                                                                                Icons.arrow_drop_down,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            10,
-                                                                      ),
-                                                                      Wrap(
-                                                                        spacing:
-                                                                            8,
-                                                                        children: selectEventTypeList.map((
-                                                                          e,
-                                                                        ) {
-                                                                          return Chip(
-                                                                            label: Text(
-                                                                              e['name'],
-                                                                            ),
-                                                                            onDeleted: () {
-                                                                              setState(
-                                                                                () {
-                                                                                  selectEventTypeList.remove(
-                                                                                    e,
-                                                                                  );
-                                                                                },
-                                                                              );
-                                                                            },
-                                                                          );
-                                                                        }).toList(),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                } else if (eventTypeState
-                                                                    is EventTypeFail) {
-                                                                  return Center(
-                                                                    child: Text(
-                                                                      eventTypeState
-                                                                          .errorMessage,
-                                                                    ),
-                                                                  );
-                                                                }
-                                                                return SizedBox.shrink();
-                                                              },
-                                                        ),
-                                                  ),
-
-                                                  // perks
-                                                  Container(
-                                                    alignment:
-                                                        Alignment.topLeft,
-                                                    margin: EdgeInsets.only(
-                                                      top: 0,
-                                                    ),
-                                                    child: BlocBuilder<PerksBloc, PerksState>(
-                                                      builder: (context, perksState) {
-                                                        if (perksState
-                                                            is PerksLoading) {
-                                                          return Center(
-                                                            child: CircularProgressIndicator(
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: TextField(
+                                                        controller:
+                                                            startDateController,
+                                                        enableInteractiveSelection:
+                                                            false,
+                                                        readOnly: true,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
                                                               color: MyColor()
                                                                   .primaryClr,
                                                             ),
-                                                          );
-                                                        } else if (perksState
-                                                            is PerksSuccess) {
-                                                          perksList =
-                                                              List<
-                                                                Map<
-                                                                  String,
-                                                                  dynamic
-                                                                >
-                                                              >.from(
-                                                                perksState
-                                                                    .perksList,
-                                                              );
-                                                          filterPerksList =
-                                                              perksList;
-                                                          return Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Container(
-                                                                margin:
-                                                                    EdgeInsets.only(
-                                                                      top: 16,
-                                                                      bottom:
-                                                                          10,
-                                                                    ),
-                                                                child: Text(
-                                                                  "Perks",
-                                                                  style: GoogleFonts.poppins(
-                                                                    fontSize:
-                                                                        14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600,
-                                                                    color: MyColor()
-                                                                        .blackClr,
-                                                                  ),
-                                                                ),
+                                                        decoration: InputDecoration(
+                                                          hintText:
+                                                              "Start Date",
+                                                          contentPadding:
+                                                              EdgeInsets.all(
+                                                                10,
                                                               ),
-                                                              GestureDetector(
-                                                                onTap: () async {
-                                                                  final result =
-                                                                      await openPerksMultiSelect();
-
-                                                                  if (result !=
-                                                                      null) {
-                                                                    setState(() {
-                                                                      selectPerksList =
-                                                                          result;
-                                                                    });
-                                                                  }
-                                                                },
-                                                                child: Container(
-                                                                  padding:
-                                                                      EdgeInsets.symmetric(
-                                                                        horizontal:
-                                                                            12,
-                                                                        vertical:
-                                                                            14,
-                                                                      ),
-                                                                  decoration: BoxDecoration(
-                                                                    border: Border.all(
+                                                          enabledBorder: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                            borderSide: BorderSide(
+                                                              color: MyColor()
+                                                                  .borderClr,
+                                                              width: 0.5,
+                                                            ),
+                                                          ),
+                                                          focusedBorder: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                            borderSide: BorderSide(
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                              width: 0.5,
+                                                            ),
+                                                          ),
+                                                          errorBorder: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                  color: MyColor()
+                                                                      .redClr,
+                                                                  width: 0.5,
+                                                                ),
+                                                          ),
+                                                          focusedErrorBorder:
+                                                              OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      12,
+                                                                    ),
+                                                                borderSide:
+                                                                    BorderSide(
                                                                       color: MyColor()
-                                                                          .borderClr,
+                                                                          .redClr,
                                                                       width:
                                                                           0.5,
                                                                     ),
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                          12,
-                                                                        ),
-                                                                  ),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child: Text(
-                                                                          selectEventTypeList.isEmpty
-                                                                              ? "Select perks"
-                                                                              : selectEventTypeList
-                                                                                    .map(
-                                                                                      (
-                                                                                        e,
-                                                                                      ) => e['name'],
-                                                                                    )
-                                                                                    .join(
-                                                                                      ", ",
-                                                                                    ),
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                        ),
-                                                                      ),
-                                                                      Icon(
-                                                                        Icons
-                                                                            .arrow_drop_down,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
                                                               ),
-                                                              SizedBox(
-                                                                height: 10,
+                                                          hintStyle:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: MyColor()
+                                                                    .borderClr,
                                                               ),
-                                                              Wrap(
-                                                                spacing: 8,
-                                                                children: selectPerksList.map((
-                                                                  e,
-                                                                ) {
-                                                                  return Chip(
-                                                                    label: Text(
-                                                                      e['perkName'],
-                                                                    ),
-                                                                    onDeleted: () {
-                                                                      setState(() {
-                                                                        selectPerksList
-                                                                            .remove(
-                                                                              e,
-                                                                            );
-                                                                      });
-                                                                    },
-                                                                  );
-                                                                }).toList(),
-                                                              ),
-                                                            ],
-                                                          );
-                                                        } else if (perksState
-                                                            is PerksFail) {
-                                                          return Text(
-                                                            perksState
-                                                                .errorMessage,
-                                                          );
-                                                        }
-                                                        return SizedBox.shrink();
-                                                      },
-                                                    ),
-                                                  ),
-
-                                                  // Certification
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      top: 16,
-                                                      bottom: 10,
-                                                    ),
-                                                    child: Text(
-                                                      "Certification",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
+                                                          prefixIcon: Icon(
+                                                            Iconsax.calendar,
                                                             color: MyColor()
-                                                                .blackClr,
+                                                                .borderClr,
                                                           ),
+                                                        ),
+                                                        onTap: () async {
+                                                          final result =
+                                                              await DateAndTimeController()
+                                                                  .selectedDate(
+                                                                    context,
+                                                                  );
+                                                          if (result != null) {
+                                                            startDateController
+                                                                    .text =
+                                                                result;
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                    Expanded(
+                                                      flex: 1,
+                                                      child: TextField(
+                                                        controller:
+                                                            endDateController,
+                                                        enableInteractiveSelection:
+                                                            false,
+                                                        readOnly: true,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500,
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                        decoration: InputDecoration(
+                                                          hintText: "End Date",
+                                                          contentPadding:
+                                                              EdgeInsets.all(
+                                                                10,
+                                                              ),
+                                                          enabledBorder: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                            borderSide: BorderSide(
+                                                              color: MyColor()
+                                                                  .borderClr,
+                                                              width: 0.5,
+                                                            ),
+                                                          ),
+                                                          focusedBorder: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                            borderSide: BorderSide(
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                              width: 0.5,
+                                                            ),
+                                                          ),
+                                                          errorBorder: OutlineInputBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                  12,
+                                                                ),
+                                                            borderSide:
+                                                                BorderSide(
+                                                                  color: MyColor()
+                                                                      .redClr,
+                                                                  width: 0.5,
+                                                                ),
+                                                          ),
+                                                          focusedErrorBorder:
+                                                              OutlineInputBorder(
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      12,
+                                                                    ),
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                      color: MyColor()
+                                                                          .redClr,
+                                                                      width:
+                                                                          0.5,
+                                                                    ),
+                                                              ),
+                                                          hintStyle:
+                                                              GoogleFonts.poppins(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: MyColor()
+                                                                    .borderClr,
+                                                              ),
+                                                          prefixIcon: Icon(
+                                                            Iconsax.calendar,
+                                                            color: MyColor()
+                                                                .borderClr,
+                                                          ),
+                                                        ),
+                                                        onTap: () async {
+                                                          final result =
+                                                              await DateAndTimeController()
+                                                                  .selectedDate(
+                                                                    context,
+                                                                  );
+                                                          if (result != null) {
+                                                            endDateController
+                                                                    .text =
+                                                                result;
+                                                          }
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                // event mode
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                    top: 16,
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Text(
+                                                    "Event Mode",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: MyColor().blackClr,
                                                     ),
                                                   ),
-                                                  BlocBuilder<
-                                                    CertificationBloc,
-                                                    CertificationState
-                                                  >(
-                                                    builder: (context, certificationState) {
-                                                      if (certificationState
-                                                          is CertificationLoading) {
+                                                ),
+                                                Wrap(
+                                                  spacing: 12,
+                                                  runSpacing: 12,
+                                                  children: modeList.map((
+                                                    item,
+                                                  ) {
+                                                    final bool isSelected =
+                                                        selectEventMode ==
+                                                        item['value'];
+                                                    return InkWell(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            20,
+                                                          ),
+                                                      onTap: () {
+                                                        setState(() {
+                                                          selectEventMode =
+                                                              item['value'];
+                                                        });
+                                                      },
+                                                      child: AnimatedContainer(
+                                                        duration:
+                                                            const Duration(
+                                                              milliseconds: 250,
+                                                            ),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 16,
+                                                              vertical: 10,
+                                                            ),
+                                                        decoration: BoxDecoration(
+                                                          color: isSelected
+                                                              ? MyColor()
+                                                                    .primaryClr
+                                                              : MyColor()
+                                                                    .whiteClr,
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                20,
+                                                              ),
+                                                          border: Border.all(
+                                                            color: isSelected
+                                                                ? MyColor()
+                                                                      .primaryClr
+                                                                : Colors
+                                                                      .grey
+                                                                      .shade300,
+                                                          ),
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Text(
+                                                              item['title'],
+                                                              style: GoogleFonts.poppins(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color:
+                                                                    isSelected
+                                                                    ? MyColor()
+                                                                          .whiteClr
+                                                                    : MyColor()
+                                                                          .blackClr,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+
+                                                // event type
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  margin: EdgeInsets.only(
+                                                    top: 20,
+                                                  ),
+                                                  child: BlocBuilder<EventTypeBloc, EventTypeState>(
+                                                    builder: (context, eventTypeState) {
+                                                      if (eventTypeState
+                                                          is EventTypeLoading) {
                                                         return Center(
                                                           child:
                                                               CircularProgressIndicator(
@@ -1720,405 +1381,711 @@ class _SearchModelState extends State<SearchModel> {
                                                                     .primaryClr,
                                                               ),
                                                         );
-                                                      } else if (certificationState
-                                                          is CertificationSuccess) {
-                                                        return Wrap(
-                                                          spacing: 12,
-                                                          runSpacing: 12,
-                                                          children: certificationState.certificationList.map((
-                                                            item,
-                                                          ) {
-                                                            final bool
-                                                            isSelected =
-                                                                selectCertification ==
-                                                                item['identity'];
+                                                      } else if (eventTypeState
+                                                          is EventTypeSuccess) {
+                                                        eventTypeList =
+                                                            List<
+                                                              Map<
+                                                                String,
+                                                                dynamic
+                                                              >
+                                                            >.from(
+                                                              eventTypeState
+                                                                  .eventTypeList,
+                                                            );
+                                                        filterEventTypeList =
+                                                            eventTypeList;
 
-                                                            return InkWell(
-                                                              onTap: () {
-                                                                setState(() {
-                                                                  selectCertification =
-                                                                      item['identity'];
-                                                                });
-                                                              },
-                                                              child: AnimatedContainer(
-                                                                duration: Duration(
-                                                                  milliseconds:
-                                                                      250,
+                                                        return Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(
+                                                                    top: 16,
+                                                                    bottom: 10,
+                                                                  ),
+                                                              child: Text(
+                                                                "Event Type",
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: MyColor()
+                                                                      .blackClr,
                                                                 ),
+                                                              ),
+                                                            ),
+                                                            GestureDetector(
+                                                              onTap: () async {
+                                                                final result =
+                                                                    await openEventTypeMultiSelect();
+
+                                                                if (result !=
+                                                                    null) {
+                                                                  setState(() {
+                                                                    selectEventTypeList =
+                                                                        result;
+                                                                  });
+                                                                }
+                                                              },
+                                                              child: Container(
                                                                 padding:
-                                                                    const EdgeInsets.symmetric(
+                                                                    EdgeInsets.symmetric(
                                                                       horizontal:
-                                                                          16,
+                                                                          12,
                                                                       vertical:
-                                                                          10,
+                                                                          14,
                                                                     ),
                                                                 decoration: BoxDecoration(
-                                                                  color:
-                                                                      isSelected
-                                                                      ? MyColor()
-                                                                            .primaryClr
-                                                                      : MyColor()
-                                                                            .whiteClr,
+                                                                  border: Border.all(
+                                                                    color: MyColor()
+                                                                        .borderClr,
+                                                                    width: 0.5,
+                                                                  ),
                                                                   borderRadius:
                                                                       BorderRadius.circular(
-                                                                        20,
+                                                                        12,
                                                                       ),
-                                                                  border: Border.all(
-                                                                    color:
-                                                                        isSelected
-                                                                        ? MyColor()
-                                                                              .primaryClr
-                                                                        : Colors
-                                                                              .grey
-                                                                              .shade300,
-                                                                  ),
                                                                 ),
                                                                 child: Row(
-                                                                  mainAxisSize:
-                                                                      MainAxisSize
-                                                                          .min,
                                                                   children: [
-                                                                    Text(
-                                                                      item['certName'],
-                                                                      style: GoogleFonts.poppins(
-                                                                        fontSize:
-                                                                            14,
-                                                                        fontWeight:
-                                                                            FontWeight.w500,
-                                                                        color:
-                                                                            isSelected
-                                                                            ? MyColor().whiteClr
-                                                                            : MyColor().blackClr,
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        selectEventTypeList.isEmpty
+                                                                            ? "Select event type"
+                                                                            : selectEventTypeList
+                                                                                  .map(
+                                                                                    (
+                                                                                      e,
+                                                                                    ) => e['name'],
+                                                                                  )
+                                                                                  .join(", "),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
                                                                       ),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .arrow_drop_down,
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                            );
-                                                          }).toList(),
-                                                        );
-                                                      } else if (certificationState
-                                                          is CertificationFail) {
-                                                        return RefreshIndicator(
-                                                          backgroundColor:
-                                                              MyColor()
-                                                                  .whiteClr,
-                                                          color: MyColor()
-                                                              .primaryClr,
-                                                          onRefresh: () async {
-                                                            context
-                                                                .read<
-                                                                  CertificationBloc
-                                                                >()
-                                                                .add(
-                                                                  (FetchCertification()),
-                                                                );
-                                                          },
-                                                          child: Center(
-                                                            child: ListView(
-                                                              shrinkWrap: true,
-                                                              children: [
-                                                                Center(
-                                                                  child: SizedBox(
-                                                                    height: 100,
-                                                                    child: Image.asset(
-                                                                      ImagePath()
-                                                                          .errorMessageImg,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Center(
-                                                                  child: Text(
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    certificationState
-                                                                        .errorMessage,
-                                                                    style: GoogleFonts.poppins(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      fontSize:
-                                                                          18,
-                                                                      color: MyColor()
-                                                                          .blackClr,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
                                                             ),
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Wrap(
+                                                              spacing: 8,
+                                                              children: selectEventTypeList.map((
+                                                                e,
+                                                              ) {
+                                                                return Chip(
+                                                                  label: Text(
+                                                                    e['name'],
+                                                                  ),
+                                                                  onDeleted: () {
+                                                                    setState(() {
+                                                                      selectEventTypeList
+                                                                          .remove(
+                                                                            e,
+                                                                          );
+                                                                    });
+                                                                  },
+                                                                );
+                                                              }).toList(),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      } else if (eventTypeState
+                                                          is EventTypeFail) {
+                                                        return Center(
+                                                          child: Text(
+                                                            eventTypeState
+                                                                .errorMessage,
                                                           ),
                                                         );
                                                       }
-                                                      return SizedBox();
+                                                      return SizedBox.shrink();
                                                     },
                                                   ),
+                                                ),
 
-                                                  // accommodation
-                                                  Container(
-                                                    alignment:
-                                                        Alignment.topLeft,
-                                                    margin: EdgeInsets.only(
-                                                      top: 20,
-                                                      bottom: 20,
-                                                    ),
-                                                    child:
-                                                        BlocBuilder<
-                                                          AccommodationBloc,
-                                                          AccommodationState
-                                                        >(
-                                                          builder:
-                                                              (
-                                                                context,
-                                                                accommodationState,
-                                                              ) {
-                                                                if (accommodationState
-                                                                    is AccommodationLoading) {
-                                                                  return Center(
-                                                                    child: CircularProgressIndicator(
-                                                                      color: MyColor()
-                                                                          .primaryClr,
-                                                                    ),
-                                                                  );
-                                                                } else if (accommodationState
-                                                                    is AccommodationSuccess) {
-                                                                  accommodationList =
-                                                                      List<
-                                                                        Map<
-                                                                          String,
-                                                                          dynamic
-                                                                        >
-                                                                      >.from(
-                                                                        accommodationState
-                                                                            .accommodationList,
-                                                                      );
-                                                                  filterPerksList =
-                                                                      perksList;
-                                                                  return Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Container(
-                                                                        margin: EdgeInsets.only(
-                                                                          top:
-                                                                              16,
-                                                                          bottom:
-                                                                              10,
-                                                                        ),
-                                                                        child: Text(
-                                                                          "Accommodation",
-                                                                          style: GoogleFonts.poppins(
-                                                                            fontSize:
-                                                                                14,
-                                                                            fontWeight:
-                                                                                FontWeight.w600,
-                                                                            color:
-                                                                                MyColor().blackClr,
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      GestureDetector(
-                                                                        onTap: () async {
-                                                                          final result =
-                                                                              await openAccommodationMultiSelect();
-
-                                                                          if (result !=
-                                                                              null) {
-                                                                            setState(() {
-                                                                              selectAccommodationList = result;
-                                                                            });
-                                                                          }
-                                                                        },
-                                                                        child: Container(
-                                                                          padding: EdgeInsets.symmetric(
-                                                                            horizontal:
-                                                                                12,
-                                                                            vertical:
-                                                                                14,
-                                                                          ),
-                                                                          decoration: BoxDecoration(
-                                                                            border: Border.all(
-                                                                              color: MyColor().borderClr,
-                                                                              width: 0.5,
-                                                                            ),
-                                                                            borderRadius: BorderRadius.circular(
-                                                                              12,
-                                                                            ),
-                                                                          ),
-                                                                          child: Row(
-                                                                            children: [
-                                                                              Expanded(
-                                                                                child: Text(
-                                                                                  selectAccommodationList.isEmpty
-                                                                                      ? "Select accommodation"
-                                                                                      : selectAccommodationList
-                                                                                            .map(
-                                                                                              (
-                                                                                                e,
-                                                                                              ) => e['accommodationName'],
-                                                                                            )
-                                                                                            .join(
-                                                                                              ", ",
-                                                                                            ),
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                ),
-                                                                              ),
-                                                                              Icon(
-                                                                                Icons.arrow_drop_down,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            10,
-                                                                      ),
-                                                                      Wrap(
-                                                                        spacing:
-                                                                            8,
-                                                                        children: selectAccommodationList.map((
-                                                                          e,
-                                                                        ) {
-                                                                          return Chip(
-                                                                            label: Text(
-                                                                              e['accommodationName'],
-                                                                            ),
-                                                                            onDeleted: () {
-                                                                              setState(
-                                                                                () {
-                                                                                  selectAccommodationList.remove(
-                                                                                    e,
-                                                                                  );
-                                                                                },
-                                                                              );
-                                                                            },
-                                                                          );
-                                                                        }).toList(),
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                } else if (accommodationState
-                                                                    is AccommodationFail) {
-                                                                  return Text(
-                                                                    accommodationState
-                                                                        .errorMessage,
-                                                                  );
-                                                                }
-                                                                return SizedBox.shrink();
-                                                              },
-                                                        ),
+                                                // perks
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  margin: EdgeInsets.only(
+                                                    top: 0,
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-
-                                            // apply & clear button
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                top: 10,
-                                                bottom: 16,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        fixedSize: Size(0, 40),
-                                                        backgroundColor:
-                                                            MyColor().whiteClr,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                50,
+                                                  child: BlocBuilder<PerksBloc, PerksState>(
+                                                    builder: (context, perksState) {
+                                                      if (perksState
+                                                          is PerksLoading) {
+                                                        return Center(
+                                                          child:
+                                                              CircularProgressIndicator(
+                                                                color: MyColor()
+                                                                    .primaryClr,
                                                               ),
-                                                          side: BorderSide(
-                                                            color: MyColor()
-                                                                .primaryClr,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        clearAllFilters(
-                                                          setState,
                                                         );
-                                                      },
-                                                      child: Text(
-                                                        "Clear",
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
+                                                      } else if (perksState
+                                                          is PerksSuccess) {
+                                                        perksList =
+                                                            List<
+                                                              Map<
+                                                                String,
+                                                                dynamic
+                                                              >
+                                                            >.from(
+                                                              perksState
+                                                                  .perksList,
+                                                            );
+                                                        filterPerksList =
+                                                            perksList;
+                                                        return Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Container(
+                                                              margin:
+                                                                  EdgeInsets.only(
+                                                                    top: 16,
+                                                                    bottom: 10,
+                                                                  ),
+                                                              child: Text(
+                                                                "Perks",
+                                                                style: GoogleFonts.poppins(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color: MyColor()
+                                                                      .blackClr,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            GestureDetector(
+                                                              onTap: () async {
+                                                                final result =
+                                                                    await openPerksMultiSelect();
+
+                                                                if (result !=
+                                                                    null) {
+                                                                  setState(() {
+                                                                    selectPerksList =
+                                                                        result;
+                                                                  });
+                                                                }
+                                                              },
+                                                              child: Container(
+                                                                padding:
+                                                                    EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          14,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  border: Border.all(
+                                                                    color: MyColor()
+                                                                        .borderClr,
+                                                                    width: 0.5,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        12,
+                                                                      ),
+                                                                ),
+                                                                child: Row(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Text(
+                                                                        selectEventTypeList.isEmpty
+                                                                            ? "Select perks"
+                                                                            : selectEventTypeList
+                                                                                  .map(
+                                                                                    (
+                                                                                      e,
+                                                                                    ) => e['name'],
+                                                                                  )
+                                                                                  .join(", "),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                    ),
+                                                                    Icon(
+                                                                      Icons
+                                                                          .arrow_drop_down,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
+                                                            Wrap(
+                                                              spacing: 8,
+                                                              children: selectPerksList.map((
+                                                                e,
+                                                              ) {
+                                                                return Chip(
+                                                                  label: Text(
+                                                                    e['perkName'],
+                                                                  ),
+                                                                  onDeleted: () {
+                                                                    setState(() {
+                                                                      selectPerksList
+                                                                          .remove(
+                                                                            e,
+                                                                          );
+                                                                    });
+                                                                  },
+                                                                );
+                                                              }).toList(),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      } else if (perksState
+                                                          is PerksFail) {
+                                                        return Text(
+                                                          perksState
+                                                              .errorMessage,
+                                                        );
+                                                      }
+                                                      return SizedBox.shrink();
+                                                    },
+                                                  ),
+                                                ),
+
+                                                // Certification
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                    top: 16,
+                                                    bottom: 10,
+                                                  ),
+                                                  child: Text(
+                                                    "Certification",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: MyColor().blackClr,
+                                                    ),
+                                                  ),
+                                                ),
+                                                BlocBuilder<
+                                                  CertificationBloc,
+                                                  CertificationState
+                                                >(
+                                                  builder: (context, certificationState) {
+                                                    if (certificationState
+                                                        is CertificationLoading) {
+                                                      return Center(
+                                                        child:
+                                                            CircularProgressIndicator(
                                                               color: MyColor()
                                                                   .primaryClr,
                                                             ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 16),
-                                                  Expanded(
-                                                    flex: 1,
-                                                    child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        fixedSize: Size(0, 40),
-                                                        backgroundColor:
-                                                            MyColor()
-                                                                .primaryClr,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                50,
+                                                      );
+                                                    } else if (certificationState
+                                                        is CertificationSuccess) {
+                                                      return Wrap(
+                                                        spacing: 12,
+                                                        runSpacing: 12,
+                                                        children: certificationState.certificationList.map((
+                                                          item,
+                                                        ) {
+                                                          final bool
+                                                          isSelected =
+                                                              selectCertification ==
+                                                              item['identity'];
+
+                                                          return InkWell(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                selectCertification =
+                                                                    item['identity'];
+                                                              });
+                                                            },
+                                                            child: AnimatedContainer(
+                                                              duration: Duration(
+                                                                milliseconds:
+                                                                    250,
                                                               ),
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        16,
+                                                                    vertical:
+                                                                        10,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    isSelected
+                                                                    ? MyColor()
+                                                                          .primaryClr
+                                                                    : MyColor()
+                                                                          .whiteClr,
+                                                                borderRadius:
+                                                                    BorderRadius.circular(
+                                                                      20,
+                                                                    ),
+                                                                border: Border.all(
+                                                                  color:
+                                                                      isSelected
+                                                                      ? MyColor()
+                                                                            .primaryClr
+                                                                      : Colors
+                                                                            .grey
+                                                                            .shade300,
+                                                                ),
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Text(
+                                                                    item['certName'],
+                                                                    style: GoogleFonts.poppins(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      color:
+                                                                          isSelected
+                                                                          ? MyColor().whiteClr
+                                                                          : MyColor().blackClr,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      );
+                                                    } else if (certificationState
+                                                        is CertificationFail) {
+                                                      return RefreshIndicator(
+                                                        backgroundColor:
+                                                            MyColor().whiteClr,
+                                                        color: MyColor()
+                                                            .primaryClr,
+                                                        onRefresh: () async {
+                                                          context
+                                                              .read<
+                                                                CertificationBloc
+                                                              >()
+                                                              .add(
+                                                                (FetchCertification()),
+                                                              );
+                                                        },
+                                                        child: Center(
+                                                          child: ListView(
+                                                            shrinkWrap: true,
+                                                            children: [
+                                                              Center(
+                                                                child: SizedBox(
+                                                                  height: 100,
+                                                                  child: Image.asset(
+                                                                    ImagePath()
+                                                                        .errorMessageImg,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Center(
+                                                                child: Text(
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
+                                                                  certificationState
+                                                                      .errorMessage,
+                                                                  style: GoogleFonts.poppins(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    fontSize:
+                                                                        18,
+                                                                    color: MyColor()
+                                                                        .blackClr,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }
+                                                    return SizedBox();
+                                                  },
+                                                ),
+
+                                                // accommodation
+                                                Container(
+                                                  alignment: Alignment.topLeft,
+                                                  margin: EdgeInsets.only(
+                                                    top: 20,
+                                                    bottom: 20,
+                                                  ),
+                                                  child:
+                                                      BlocBuilder<
+                                                        AccommodationBloc,
+                                                        AccommodationState
+                                                      >(
+                                                        builder:
+                                                            (
+                                                              context,
+                                                              accommodationState,
+                                                            ) {
+                                                              if (accommodationState
+                                                                  is AccommodationLoading) {
+                                                                return Center(
+                                                                  child: CircularProgressIndicator(
+                                                                    color: MyColor()
+                                                                        .primaryClr,
+                                                                  ),
+                                                                );
+                                                              } else if (accommodationState
+                                                                  is AccommodationSuccess) {
+                                                                accommodationList =
+                                                                    List<
+                                                                      Map<
+                                                                        String,
+                                                                        dynamic
+                                                                      >
+                                                                    >.from(
+                                                                      accommodationState
+                                                                          .accommodationList,
+                                                                    );
+                                                                filterPerksList =
+                                                                    perksList;
+                                                                return Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Container(
+                                                                      margin: EdgeInsets.only(
+                                                                        top: 16,
+                                                                        bottom:
+                                                                            10,
+                                                                      ),
+                                                                      child: Text(
+                                                                        "Accommodation",
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontSize:
+                                                                              14,
+                                                                          fontWeight:
+                                                                              FontWeight.w600,
+                                                                          color:
+                                                                              MyColor().blackClr,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    GestureDetector(
+                                                                      onTap: () async {
+                                                                        final result =
+                                                                            await openAccommodationMultiSelect();
+
+                                                                        if (result !=
+                                                                            null) {
+                                                                          setState(
+                                                                            () {
+                                                                              selectAccommodationList = result;
+                                                                            },
+                                                                          );
+                                                                        }
+                                                                      },
+                                                                      child: Container(
+                                                                        padding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              12,
+                                                                          vertical:
+                                                                              14,
+                                                                        ),
+                                                                        decoration: BoxDecoration(
+                                                                          border: Border.all(
+                                                                            color:
+                                                                                MyColor().borderClr,
+                                                                            width:
+                                                                                0.5,
+                                                                          ),
+                                                                          borderRadius: BorderRadius.circular(
+                                                                            12,
+                                                                          ),
+                                                                        ),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text(
+                                                                                selectAccommodationList.isEmpty
+                                                                                    ? "Select accommodation"
+                                                                                    : selectAccommodationList
+                                                                                          .map(
+                                                                                            (
+                                                                                              e,
+                                                                                            ) => e['accommodationName'],
+                                                                                          )
+                                                                                          .join(
+                                                                                            ", ",
+                                                                                          ),
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                              ),
+                                                                            ),
+                                                                            Icon(
+                                                                              Icons.arrow_drop_down,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height:
+                                                                          10,
+                                                                    ),
+                                                                    Wrap(
+                                                                      spacing:
+                                                                          8,
+                                                                      children: selectAccommodationList.map((
+                                                                        e,
+                                                                      ) {
+                                                                        return Chip(
+                                                                          label: Text(
+                                                                            e['accommodationName'],
+                                                                          ),
+                                                                          onDeleted: () {
+                                                                            setState(() {
+                                                                              selectAccommodationList.remove(
+                                                                                e,
+                                                                              );
+                                                                            });
+                                                                          },
+                                                                        );
+                                                                      }).toList(),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              } else if (accommodationState
+                                                                  is AccommodationFail) {
+                                                                return Text(
+                                                                  accommodationState
+                                                                      .errorMessage,
+                                                                );
+                                                              }
+                                                              return SizedBox.shrink();
+                                                            },
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          // apply & clear button
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                              top: 10,
+                                              bottom: 16,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      fixedSize: Size(0, 40),
+                                                      backgroundColor:
+                                                          MyColor().whiteClr,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              50,
+                                                            ),
+                                                        side: BorderSide(
+                                                          color: MyColor()
+                                                              .primaryClr,
                                                         ),
                                                       ),
-                                                      onPressed: () {
-                                                        applyFilter();
-                                                      },
-                                                      child: Text(
-                                                        "Apply",
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                              fontSize: 14,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              color: MyColor()
-                                                                  .whiteClr,
+                                                    ),
+                                                    onPressed: () {
+                                                      clearAllFilters(setState);
+                                                    },
+                                                    child: Text(
+                                                      "Clear",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: MyColor()
+                                                                .primaryClr,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 16),
+                                                Expanded(
+                                                  flex: 1,
+                                                  child: ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                      fixedSize: Size(0, 40),
+                                                      backgroundColor:
+                                                          MyColor().primaryClr,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              50,
                                                             ),
                                                       ),
                                                     ),
+                                                    onPressed: () {
+                                                      applyFilter();
+                                                    },
+                                                    child: Text(
+                                                      "Apply",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: MyColor()
+                                                                .whiteClr,
+                                                          ),
+                                                    ),
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Icon(Icons.tune),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(100),
                           ),
+                          child: Icon(Icons.tune),
                         ),
-                        prefixIcon: Icon(Icons.search, size: 24),
-                        hintText: "Search Events",
-                        hintStyle: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12,
-                          color: MyColor().hintTextClr,
-                        ),
+                      ),
+                      prefixIcon: Icon(Icons.search, size: 24),
+                      hintText: "Search Events",
+                      hintStyle: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                        color: MyColor().hintTextClr,
                       ),
                     ),
                   ),

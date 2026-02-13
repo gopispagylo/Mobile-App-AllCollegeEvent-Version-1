@@ -593,7 +593,8 @@ class _PaymentModelState extends State<PaymentModel> {
                                                                   categoryIdentity:
                                                                       orgDetail['categoryIdentity'],
                                                                   eventTypeIdentity:
-                                                                      orgDetail['eventTypeIdentity'],
+                                                                      orgDetail['eventTypeIdentity'] ??
+                                                                      "",
                                                                   perkIdentities:
                                                                       orgDetail['perkIdentities'],
                                                                   accommodationIdentities:

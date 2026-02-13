@@ -9,6 +9,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 
 class DashBoardModel extends StatefulWidget {
   final String slug;
@@ -78,24 +79,28 @@ class _DashBoardModelState extends State<DashBoardModel> {
                     );
                   });
                 }
-                return MyModels().customDropdown(
-                  label: "Select Event",
-                  hint: "All Events",
-                  value: selectEvent,
-                  onChanged: (onChanged) {
-                    context.read<EventDetailBloc>().add(
-                      ClickEventDetail(slug: onChanged, isLogin: true),
-                    );
-                  },
-                  items: list
-                      .map(
-                        (e) => DropdownMenuItem<String>(
-                          value: e['slug'],
-                          child: Text(e['title']),
-                        ),
-                      )
-                      .toList(),
-                  valid: (value) {},
+                return Column(
+                  children: [
+                    MyModels().customDropdown(
+                      label: "Select Event",
+                      hint: "All Events",
+                      value: selectEvent,
+                      onChanged: (onChanged) {
+                        context.read<EventDetailBloc>().add(
+                          ClickEventDetail(slug: onChanged, isLogin: true),
+                        );
+                      },
+                      items: list
+                          .map(
+                            (e) => DropdownMenuItem<String>(
+                              value: e['slug'],
+                              child: Text(e['title']),
+                            ),
+                          )
+                          .toList(),
+                      valid: (value) {},
+                    ),
+                  ],
                 );
               } else if (organizerEventState is OrganizerEventFail) {
                 return Center(
@@ -113,51 +118,6 @@ class _DashBoardModelState extends State<DashBoardModel> {
             },
           ),
 
-          Container(
-            margin: EdgeInsets.only(top: 24),
-            child: Text(
-              "Analytics",
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          Row(
-            children: List.generate(analyticsList.length, (index) {
-              final checkSelect = analyticsList[index] == selectAnalytics;
-              return InkWell(
-                onTap: () {
-                  setState(() {
-                    selectAnalytics = analyticsList[index];
-                  });
-                },
-                child: Container(
-                  margin: EdgeInsets.only(right: 5, top: 10),
-                  alignment: Alignment.center,
-                  height: 48,
-                  width: 90,
-                  decoration: BoxDecoration(
-                    color: checkSelect
-                        ? MyColor().primaryClr
-                        : MyColor().whiteClr,
-                    border: Border.all(color: MyColor().primaryClr),
-                    borderRadius: BorderRadiusGeometry.circular(100),
-                  ),
-                  child: Text(
-                    analyticsList[index],
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: checkSelect
-                          ? MyColor().whiteClr
-                          : MyColor().primaryClr,
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
           BlocBuilder<EventDetailBloc, EventDetailState>(
             builder: (context, getEventState) {
               if (getEventState is EventDetailLoading) {
@@ -182,57 +142,140 @@ class _DashBoardModelState extends State<DashBoardModel> {
                 }
 
                 final spots = generateSpotsFromTotal(total: selectTotalCount);
-                return Container(
-                  margin: EdgeInsets.only(top: 20),
-                  height: 220,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: MyColor().whiteClr,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: MyColor().borderClr.withOpacity(0.15),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(top: 24),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          container(
+                            myColor: MyColor().primaryClr,
+                            text: clicks.toString(),
+                            myColorBorder: MyColor().primaryClr.withOpacity(
+                              0.15,
+                            ),
+                            icon: Iconsax.mouse_1,
+                          ),
+                          container(
+                            myColor: MyColor().primaryClr,
+                            text: likes.toString(),
+                            myColorBorder: MyColor().primaryClr.withOpacity(
+                              0.15,
+                            ),
+                            icon: Iconsax.heart,
+                          ),
+                          container(
+                            myColor: MyColor().primaryClr,
+                            text: views.toString(),
+                            myColorBorder: MyColor().primaryClr.withOpacity(
+                              0.15,
+                            ),
+                            icon: Iconsax.eye,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: LineChart(
-                    LineChartData(
-                      minY: 0,
-                      maxY: 1500,
-                      gridData: FlGridData(
-                        show: true,
-                        drawHorizontalLine: false,
-                        verticalInterval: 1,
-                      ),
-                      titlesData: FlTitlesData(
-                        rightTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        topTitles: const AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
+                    Container(
+                      margin: EdgeInsets.only(top: 24),
+                      child: Text(
+                        "Analytics",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      borderData: FlBorderData(show: false),
-                      lineBarsData: [
-                        LineChartBarData(
-                          spots: spots,
-                          isCurved: true,
-                          barWidth: 0.5,
-                          dotData: const FlDotData(show: false),
-                          belowBarData: BarAreaData(
-                            show: true,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                MyColor().primaryClr.withOpacity(0.6),
-                                MyColor().primaryClr.withOpacity(0.05),
-                              ],
+                    ),
+                    Row(
+                      children: List.generate(analyticsList.length, (index) {
+                        final checkSelect =
+                            analyticsList[index] == selectAnalytics;
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectAnalytics = analyticsList[index];
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 5, top: 10),
+                            alignment: Alignment.center,
+                            height: 48,
+                            width: 90,
+                            decoration: BoxDecoration(
+                              color: checkSelect
+                                  ? MyColor().primaryClr
+                                  : MyColor().whiteClr,
+                              border: Border.all(color: MyColor().primaryClr),
+                              borderRadius: BorderRadiusGeometry.circular(100),
+                            ),
+                            child: Text(
+                              analyticsList[index],
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: checkSelect
+                                    ? MyColor().whiteClr
+                                    : MyColor().primaryClr,
+                              ),
                             ),
                           ),
-                          color: Colors.purple,
-                        ),
-                      ],
+                        );
+                      }),
                     ),
-                  ),
+                    Container(
+                      margin: EdgeInsets.only(top: 20),
+                      height: 220,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: MyColor().whiteClr,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: MyColor().borderClr.withOpacity(0.15),
+                        ),
+                      ),
+                      child: LineChart(
+                        LineChartData(
+                          minY: 0,
+                          maxY: 1500,
+                          gridData: FlGridData(
+                            show: true,
+                            drawHorizontalLine: false,
+                            verticalInterval: 1,
+                          ),
+                          titlesData: FlTitlesData(
+                            rightTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                            topTitles: const AxisTitles(
+                              sideTitles: SideTitles(showTitles: false),
+                            ),
+                          ),
+                          borderData: FlBorderData(show: false),
+                          lineBarsData: [
+                            LineChartBarData(
+                              spots: spots,
+                              isCurved: true,
+                              barWidth: 0.5,
+                              dotData: const FlDotData(show: false),
+                              belowBarData: BarAreaData(
+                                show: true,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    MyColor().primaryClr.withOpacity(0.6),
+                                    MyColor().primaryClr.withOpacity(0.05),
+                                  ],
+                                ),
+                              ),
+                              color: Colors.purple,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               } else if (getEventState is EventDetailFail) {
                 return Center(
@@ -261,6 +304,39 @@ class _DashBoardModelState extends State<DashBoardModel> {
               }
               return SizedBox();
             },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget container({
+    required Color myColorBorder,
+    required String text,
+    required Color myColor,
+    required IconData icon,
+  }) {
+    return Container(
+      height: 80,
+      width: 80,
+      decoration: BoxDecoration(
+        color: myColorBorder,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: myColor),
+          Container(
+            margin: EdgeInsets.only(top: 5),
+            child: Text(
+              text,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: MyColor().primaryClr,
+              ),
+            ),
           ),
         ],
       ),

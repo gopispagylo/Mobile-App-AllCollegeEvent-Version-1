@@ -69,7 +69,7 @@ class _SavedEventModelState extends State<SavedEventModel> {
                 RemoveSaveEventBloc(apiController: ApiController()),
           ),
         ],
-        child: Column(
+        child: ListView(
           children: [
             Center(
               child: Container(

@@ -31,7 +31,7 @@ class TrendingEventModel extends StatefulWidget {
 class _TrendingEventModelState extends State<TrendingEventModel> {
   // horizontal pagination
   int page = 1;
-  int limit = 2;
+  int limit = 10;
   bool isLoadingMore = false;
 
   @override

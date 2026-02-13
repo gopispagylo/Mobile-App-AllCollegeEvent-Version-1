@@ -28,7 +28,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // extendBodyBehindAppBar: true,
       backgroundColor: MyColor().whiteClr,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -37,7 +36,7 @@ class _SearchPageState extends State<SearchPage> {
           statusBarBrightness: Brightness.dark,
         ),
         title: Text(
-          "Top Organizers",
+          "Search",
           style: GoogleFonts.poppins(
             fontWeight: FontWeight.w600,
             fontSize: 18,

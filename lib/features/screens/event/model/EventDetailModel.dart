@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
@@ -7,10 +9,12 @@ import 'package:all_college_event_app/features/screens/event/bloc/eventDetailBlo
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/report/ui/ReportPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:all_college_event_app/utlis/configMessage/ConfigMessage.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -132,13 +136,47 @@ class _EventDetailModelState extends State<EventDetailModel>
                 }
 
                 // ----- format date and time --------
-                final dateFormat = DateFormat("dd MMM yy");
+
+                // ------ date format start -------
+                String formatEventDate({required dynamic calendars}) {
+                  if (calendars == null || calendars.isEmpty) {
+                    return "No date";
+                  }
+                  final rawDate = calendars[0]['startDate'];
+
+                  if (rawDate == null || rawDate.isEmpty) {
+                    return "No date";
+                  }
+
+                  try {
+                    final dateTime = DateTime.parse(rawDate);
+                    return DateFormat('dd MMM yyyy').format(dateTime);
+                  } catch (e) {
+                    return rawDate;
+                  }
+                }
+
+                // ------ date format end -------
+                String formatEventEndDate({required dynamic calendars}) {
+                  if (calendars == null || calendars.isEmpty) {
+                    return "No date";
+                  }
+                  final rawDate = calendars[0]['endDate'];
+
+                  if (rawDate == null || rawDate.isEmpty) {
+                    return "No date";
+                  }
+
+                  try {
+                    final dateTime = DateTime.parse(rawDate);
+                    return DateFormat('dd MMM yyyy').format(dateTime);
+                  } catch (e) {
+                    return rawDate;
+                  }
+                }
 
                 String location =
                     "${toTitleCase(list['location']['venue'] ?? '')}, ${list['location']['city'] ?? ''}";
-
-                String startAndEndEvent =
-                    "${dateFormat.format(DateTime.parse(list['calendars'][0]['startDate']))} to ${dateFormat.format(DateTime.parse(list['calendars'][0]['endDate']))}";
 
                 return RefreshIndicator(
                   edgeOffset: 20,
@@ -742,7 +780,7 @@ class _EventDetailModelState extends State<EventDetailModel>
                                                 ),
                                                 SizedBox(width: 10),
                                                 Text(
-                                                  startAndEndEvent,
+                                                  "${formatEventDate(calendars: list['calendars'])} to ${formatEventEndDate(calendars: list['calendars'])}",
                                                   style: GoogleFonts.poppins(
                                                     fontSize: 14,
                                                     fontWeight: FontWeight.w500,
@@ -752,7 +790,6 @@ class _EventDetailModelState extends State<EventDetailModel>
                                               ],
                                             ),
                                           ),
-
                                           GestureDetector(
                                             onTap: () async {
                                               final url = Uri.parse(
@@ -2168,26 +2205,102 @@ class _EventDetailModelState extends State<EventDetailModel>
                 Expanded(
                   child: GestureDetector(
                     onTap: widget.isLogin
-                        ? () async {
-                            if (checkPaymentLink) return;
+                        ? () {
+                            MyModels().alertDialogContentCustom(
+                              context: context,
+                              content: StatefulBuilder(
+                                builder: (context, setState) {
+                                  return Container(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          textAlign: TextAlign.center,
+                                          ConfigMessage().confirmText,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: MyColor().blackClr,
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                            left: 16,
+                                            right: 16,
+                                            top: 16,
+                                          ),
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              fixedSize: Size(320, 48),
+                                              backgroundColor:
+                                                  MyColor().primaryClr,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(50),
+                                              ),
+                                            ),
+                                            onPressed: () async {
+                                              if (checkPaymentLink) return;
 
-                            final paymentUrl = Uri.parse(widget.paymentLink);
+                                              String url = widget.paymentLink
+                                                  .trim();
 
-                            setState(() {
-                              checkPaymentLink = true;
-                            });
+                                              // Add https if missing
+                                              if (!url.startsWith('http')) {
+                                                url = 'https://$url';
+                                              }
 
-                            final canLaunch = await canLaunchUrl(paymentUrl);
+                                              final Uri paymentUrl = Uri.parse(
+                                                url,
+                                              );
 
-                            if (!canLaunch) {
-                              setState(() {
-                                checkPaymentLink = false;
-                              });
-                              return;
-                            }
-                            await launchUrl(
-                              paymentUrl,
-                              mode: LaunchMode.externalApplication,
+                                              setState(() {
+                                                checkPaymentLink = true;
+                                              });
+
+                                              try {
+                                                await launchUrl(
+                                                  paymentUrl,
+                                                  mode: LaunchMode
+                                                      .externalApplication,
+                                                );
+                                              } catch (e) {
+                                                print("Error launching: $e");
+                                              }
+
+                                              setState(() {
+                                                checkPaymentLink = false;
+                                              });
+                                            },
+
+                                            child: checkPaymentLink
+                                                ? Center(
+                                                    child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(
+                                                            color: MyColor()
+                                                                .whiteClr,
+                                                          )
+                                                        : CupertinoActivityIndicator(
+                                                            color: MyColor()
+                                                                .whiteClr,
+                                                          ),
+                                                  )
+                                                : Text(
+                                                    "Confirm",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: MyColor().whiteClr,
+                                                    ),
+                                                  ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                             );
                           }
                         : () async {
@@ -2208,20 +2321,14 @@ class _EventDetailModelState extends State<EventDetailModel>
                         color: MyColor().primaryClr,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: checkPaymentLink
-                          ? Center(
-                              child: CircularProgressIndicator(
-                                color: MyColor().whiteClr,
-                              ),
-                            )
-                          : Text(
-                              "Register",
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
-                                color: MyColor().whiteClr,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                      child: Text(
+                        "Register",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: MyColor().whiteClr,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
                 ),
