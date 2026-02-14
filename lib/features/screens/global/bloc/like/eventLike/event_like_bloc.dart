@@ -32,6 +32,7 @@ class EventLikeBloc extends Bloc<EventLikeEvent, EventLikeState> {
 
     // ---- optimistic update ----
     final newFav = !currentFav;
+
     final newCount = newFav ? currentCount + 1 : currentCount - 1;
 
     favStatus[eventId] = newFav;

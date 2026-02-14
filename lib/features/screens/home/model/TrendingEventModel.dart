@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
@@ -11,6 +11,7 @@ import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/t
 import 'package:all_college_event_app/features/tabs/bottomNavigationBar/BottomNavigationBarPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -29,11 +30,33 @@ class TrendingEventModel extends StatefulWidget {
 }
 
 class _TrendingEventModelState extends State<TrendingEventModel> {
-  // horizontal pagination
-  // this is check gdhgfhgf
-  int page = 1;
-  int limit = 10;
-  bool isLoadingMore = false;
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    // First load
+    context.read<TrendingEventListBloc>().add(
+      FetchTrendingEventList(isLogin: widget.isLogin),
+    );
+
+    // Load more
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent - 50) {
+        context.read<TrendingEventListBloc>().add(
+          FetchTrendingEventList(isLogin: widget.isLogin, loadMore: true),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,11 +111,25 @@ class _TrendingEventModelState extends State<TrendingEventModel> {
                 height: 260,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: min(
-                    trendingEventState.trendingEventList.length,
-                    15,
-                  ),
+                  controller: scrollController,
+                  itemCount:
+                      trendingEventState.trendingEventList.length +
+                      (trendingEventState.hasMore ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index == trendingEventState.trendingEventList.length) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Center(
+                          child: Platform.isAndroid
+                              ? CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
+                                )
+                              : CupertinoActivityIndicator(
+                                  color: MyColor().primaryClr,
+                                ),
+                        ),
+                      );
+                    }
                     final list = trendingEventState.trendingEventList[index];
 
                     final title = list['title'];

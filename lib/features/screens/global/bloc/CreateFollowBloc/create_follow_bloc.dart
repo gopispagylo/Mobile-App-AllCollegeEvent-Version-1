@@ -11,13 +11,24 @@ part 'create_follow_state.dart';
 
 class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
   final ApiController apiController;
+  final Map<String, dynamic> followStatus = {};
+
   CreateFollowBloc({required this.apiController})
     : super(CreateFollowInitial()) {
     on<ClickCreateFollow>((event, emit) async {
-
-      emit(SuccessCreateFollow(orgId: event.orgId, isFollow: event.isFollow));
-
       try {
+        final orgId = event.orgId;
+
+        // initialize first data
+        final currentFollow = followStatus[orgId] ?? event.isFollow;
+
+        // ---- optimistic update ----
+        final newFollow = !currentFollow;
+
+        followStatus[orgId] = newFollow;
+
+        emit(SuccessCreateFollow(orgId: orgId, isFollow: newFollow));
+
         // --------- set a base url --------
         await apiController.setBaseUrl();
 
@@ -32,18 +43,14 @@ class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
           token: token!,
           data: params,
         );
-        print("CreateFollowBlocCreateFollowBlocCreateFollowBlocCreateFollowBloc$response");
+        print(
+          "CreateFollowBlocCreateFollowBlocCreateFollowBlocCreateFollowBloc$response",
+        );
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
           } else {
-            emit(
-              FailCreateFollow(
-                errorMessage: responseBody['message'],
-                orgId: event.orgId,
-                previousValue: event.isFollow,
-              ),
-            );
+            emit(SuccessCreateFollow(orgId: orgId, isFollow: newFollow));
           }
         } else {
           emit(

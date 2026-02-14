@@ -15,10 +15,9 @@ part 'user_update_state.dart';
 class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
   final ApiController apiController;
   UserUpdateBloc({required this.apiController}) : super(UserUpdateInitial()) {
-    on<ClickUserUpdate>((event, emit) async{
+    on<ClickUserUpdate>((event, emit) async {
       emit(UserUpdateLoading());
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -28,22 +27,15 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
         // ----- get a user id -----
         final userId = await DBHelper().getUserId();
 
-        print("userIduserIduserIduserId$userId");
-        print("tokentokentokentokentoken$token");
-
         // -------- Build form data --------
         final formData = FormData();
 
         // ------- required fields -------
         if (event.whichUser.trim().isNotEmpty) {
-          formData.fields.add(
-            MapEntry('type', event.whichUser.trim()),
-          );
+          formData.fields.add(MapEntry('type', event.whichUser.trim()));
         }
 
-        formData.fields.add(
-          MapEntry('identity', userId.toString()),
-        );
+        formData.fields.add(MapEntry('identity', userId.toString()));
 
         // ------- name / org name -------
         if (event.whichUser == 'org') {
@@ -54,22 +46,24 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
           }
         } else {
           if (event.name.trim().isNotEmpty) {
-            formData.fields.add(
-              MapEntry('name', event.name.trim()),
-            );
+            formData.fields.add(MapEntry('name', event.name.trim()));
           }
         }
 
         // ------- image upload -------
-        if(event.profileImage != null){
-          formData.files.add(MapEntry('profileImage', await MultipartFile.fromFile(
-            event.profileImage!.path!,
-            filename: event.profileImage!.name
-          )));
+        if (event.profileImage != null) {
+          formData.files.add(
+            MapEntry(
+              'profileImage',
+              await MultipartFile.fromFile(
+                event.profileImage!.path!,
+                filename: event.profileImage!.name,
+              ),
+            ),
+          );
         }
 
         // ------- other fields -------
-        print("statestatestatestatestate${event.userState}");
         if (event.userState.trim().isNotEmpty) {
           formData.fields.add(MapEntry('state', event.userState.trim()));
         }
@@ -83,39 +77,42 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
           formData.fields.add(MapEntry('phone', event.phone.trim()));
         }
 
-        print('FORM DATA → ${formData.fields.map((e)=> e.value)}');
+        print('FORM DATA → ${formData.fields.map((e) => e.value)}');
         print('FORM FILES → ${formData.files}');
 
+        final response = await apiController.postMethodWithFormData(
+          endPoint: 'auth/update-profile',
+          token: token!,
+          data: formData,
+        );
 
-        final response = await apiController.postMethodWithFormData(endPoint: 'auth/update-profile', token: token!, data: formData);
+        print(
+          "UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$response",
+        );
 
-        print("UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$response");
-
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
-          emit(UserUpdateSuccess());
-          }else{
+          if (responseBody['status'] == true) {
+            emit(UserUpdateSuccess());
+          } else {
             emit(UserUpdateFail(errorMessage: responseBody['message']));
           }
         }
-      }on DioException catch(e){
+      } on DioException catch (e) {
         print("kakakakakakakakakakakakak$e");
         // ------ error handle config --------
-      final errorMessage =  HandleErrorConfig().handleDioError(e);
-      emit(UserUpdateFail(errorMessage: errorMessage));
-
-      } catch(e){
+        final errorMessage = HandleErrorConfig().handleDioError(e);
+        emit(UserUpdateFail(errorMessage: errorMessage));
+      } catch (e) {
         print("kakakakakakakakakakakakak$e");
         emit(UserUpdateFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });
 
     // ---------- update social media links ----------
-    on<SocialLinkOrganizer>((event, emit) async{
+    on<SocialLinkOrganizer>((event, emit) async {
       emit(SocialLinkOrganizerLoading());
-      try{
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
@@ -130,45 +127,51 @@ class UserUpdateBloc extends Bloc<UserUpdateEvent, UserUpdateState> {
 
         // ------- social link -----------
         formData.fields.add(
-          MapEntry('socialLinks', jsonEncode(event.socialLink))
+          MapEntry('socialLinks', jsonEncode(event.socialLink)),
         );
 
         if (event.whichUser.trim().isNotEmpty) {
-          formData.fields.add(
-            MapEntry('type', event.whichUser.trim()),
-          );
+          formData.fields.add(MapEntry('type', event.whichUser.trim()));
         }
 
-        formData.fields.add(
-          MapEntry('identity', userId.toString()),
+        formData.fields.add(MapEntry('identity', userId.toString()));
+
+        print(
+          'FORM DATA → ${formData.fields.map((e) => '${e.key}: ${e.value}').toList()}',
+        );
+
+        final response = await apiController.postMethodWithFormData(
+          endPoint: 'auth/update-profile',
+          token: token!,
+          data: formData,
         );
 
         print(
-            'FORM DATA → ${formData.fields.map((e) => '${e.key}: ${e.value}').toList()}'
+          "UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$response",
         );
 
-
-        final response = await apiController.postMethodWithFormData(endPoint: 'auth/update-profile', token: token!, data: formData);
-
-        print("UserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBlocUserUpdateBloc$response");
-
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             emit(SocialLinkOrganizerSuccess());
-          }else{
-            emit(SocialLinkOrganizerFail(errorMessage: responseBody['message']));
+          } else {
+            emit(
+              SocialLinkOrganizerFail(errorMessage: responseBody['message']),
+            );
           }
         }
-      }on DioException catch(e){
+      } on DioException catch (e) {
         print("kakakakakakakakakakakakak$e");
         // ------ error handle config --------
-        final errorMessage =  HandleErrorConfig().handleDioError(e);
+        final errorMessage = HandleErrorConfig().handleDioError(e);
         emit(SocialLinkOrganizerFail(errorMessage: errorMessage));
-
-      } catch(e){
+      } catch (e) {
         print("kakakakakakakakakakakakak$e");
-        emit(SocialLinkOrganizerFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
+        emit(
+          SocialLinkOrganizerFail(
+            errorMessage: ConfigMessage().unexpectedErrorMsg,
+          ),
+        );
       }
     });
   }

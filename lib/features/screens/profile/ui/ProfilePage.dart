@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
 import 'package:all_college_event_app/features/auth/user/login/ui/LoginPage.dart';
-import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/MySpaceModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/ProfileModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/TopModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -48,7 +51,9 @@ class _ProfilePageState extends State<ProfilePage> {
     if (checkUser == null) {
       return Scaffold(
         body: Center(
-          child: CircularProgressIndicator(color: MyColor().primaryClr),
+          child: Platform.isAndroid
+              ? CircularProgressIndicator(color: MyColor().primaryClr)
+              : CupertinoActivityIndicator(color: MyColor().primaryClr),
         ),
       );
     }
@@ -57,7 +62,7 @@ class _ProfilePageState extends State<ProfilePage> {
         BlocProvider(
           create: (context) =>
               UserProfileBloc(apiController: ApiController())
-                ..add(ClickedUserProfile(whichUser: checkUser!)),
+                ..add(ClickedUserProfile(whichUser: checkUser!, id: '')),
         ),
       ],
       child: Builder(
@@ -71,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: MyColor().primaryClr,
                     onRefresh: () async {
                       context.read<UserProfileBloc>().add(
-                        ClickedUserProfile(whichUser: checkUser!),
+                        ClickedUserProfile(whichUser: checkUser!, id: ''),
                       );
                     },
                     child: ListView(

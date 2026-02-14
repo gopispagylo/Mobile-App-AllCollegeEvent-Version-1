@@ -25,13 +25,10 @@ class OrganizerDetailBloc
         // ----- access token data base -------
         final token = await DBHelper().getToken();
 
-        final parameter = {"": ""};
-
         final response = event.isLogin
-            ? await apiController.getMethod(
-                endPoint: 'organizations/${event.slug}/events',
+            ? await apiController.getMethodWithoutBody(
+                endPoint: 'organizations/${event.slug}/events_protec',
                 token: token!,
-                data: parameter,
               )
             : await apiController.getMethodWithoutBodyAndHeader(
                 endPoint: 'organizations/${event.slug}/events',

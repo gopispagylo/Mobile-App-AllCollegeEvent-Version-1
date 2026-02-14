@@ -13,47 +13,51 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
   final ApiController apiController;
   final List<dynamic> userProfileList = [];
   UserProfileBloc({required this.apiController}) : super(UserProfileInitial()) {
-    on<ClickedUserProfile>((event, emit) async{
-
+    on<ClickedUserProfile>((event, emit) async {
       emit(UserProfileLoading());
 
-      try{
-
-
+      try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
         // ----- access token data base -------
         final token = await DBHelper().getToken();
 
-        // ----- get a user id -----
         final userId = await DBHelper().getUserId();
 
         print("userIduserIduserIduserIduserIduserId$userId");
         print("tokentokentokentokentokentokentoken$token");
 
+        final response = await apiController.getMethodWithoutBody(
+          endPoint: event.whichUser == "Organizer"
+              ? 'organizations/${event.id != null && event.id.isNotEmpty ? event.id : userId}'
+              : 'users/${event.id != null && event.id.isNotEmpty ? event.id : userId}',
+          token: token!,
+        );
 
-        final response = await apiController.getMethodWithoutBody(endPoint: event.whichUser == "Organizer" ? 'organizations/$userId' : 'users/$userId', token: token!);
-        print("UserProfileBlocUserProfileBlocUserProfileBlocUserProfileBloc$response");
+        print(
+          "UserProfileBlocUserProfileBlocUserProfileBlocUserProfileBloc$response",
+        );
 
-        if(response.statusCode == 200){
+        if (response.statusCode == 200) {
           final responseBody = response.data;
-          if(responseBody['status'] == true){
+          if (responseBody['status'] == true) {
             userProfileList.clear();
             userProfileList.add(responseBody['data']);
-            emit(UserProfileSuccess(userProfileList: List.from(userProfileList)));
-          }else{
+            emit(
+              UserProfileSuccess(userProfileList: List.from(userProfileList)),
+            );
+          } else {
             emit(UserProfileFail(errorMessage: responseBody['message']));
           }
         }
-      } on DioException catch(e){
+      } on DioException catch (e) {
         print("jfhjfjfjfjfjfjfjffj$e");
 
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(UserProfileFail(errorMessage: error));
-
-      } catch(e){
+      } catch (e) {
         print("jfhjfjfjfjfjfjfjffj$e");
         emit(UserProfileFail(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }

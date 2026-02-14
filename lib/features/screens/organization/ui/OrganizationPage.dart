@@ -1,9 +1,12 @@
 import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/CreateFollowBloc/create_follow_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
-import 'package:all_college_event_app/features/screens/organization/bloc/organizerDetailBloc/organizer_detail_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
+import 'package:all_college_event_app/features/screens/home/bloc/pastEvent/past_event_bloc.dart';
+import 'package:all_college_event_app/features/screens/home/bloc/upComingEvent/up_coming_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/organization/bloc/organizerEventListBloc/organizer_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/organization/model/OrganizationHeaderModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
@@ -32,9 +35,14 @@ class OrganizationPage extends StatefulWidget {
 
 class _OrganizationPageState extends State<OrganizationPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
+      // extendBodyBehindAppBar: true,
       backgroundColor: MyColor().whiteClr,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -53,7 +61,7 @@ class _OrganizationPageState extends State<OrganizationPage> {
         backgroundColor: Colors.transparent,
         flexibleSpace: ClipRRect(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+            filter: ImageFilter.blur(sigmaY: 0, sigmaX: 0),
             child: Container(
               decoration: BoxDecoration(
                 color: MyColor().whiteClr.withOpacity(0.05),
@@ -65,9 +73,10 @@ class _OrganizationPageState extends State<OrganizationPage> {
       body: MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => OrganizerDetailBloc(
-              apiController: ApiController(),
-            )..add(ClickOrgDetail(slug: widget.slug, isLogin: widget.isLogin)),
+            create: (context) => UserProfileBloc(apiController: ApiController())
+              ..add(
+                ClickedUserProfile(whichUser: 'Organizer', id: widget.identity),
+              ),
           ),
           BlocProvider(
             create: (context) =>
@@ -85,8 +94,29 @@ class _OrganizationPageState extends State<OrganizationPage> {
           BlocProvider(
             create: (context) => EventLikeBloc(apiController: ApiController()),
           ),
+          BlocProvider(
+            create: (context) =>
+                CreateFollowBloc(apiController: ApiController()),
+          ),
+          BlocProvider(
+            create: (context) =>
+                PastEventBloc(apiController: ApiController())
+                  ..add(FetchPastEventList(slug: widget.slug)),
+          ),
+          BlocProvider(
+            create: (context) =>
+                UpComingEventBloc(apiController: ApiController())..add(
+                  FetchUpComingEvent(
+                    slug: widget.slug,
+                    isLogin: widget.isLogin,
+                  ),
+                ),
+          ),
         ],
-        child: OrganizationHeaderModel(isLogin: widget.isLogin),
+        child: OrganizationHeaderModel(
+          isLogin: widget.isLogin,
+          slug: widget.slug,
+        ),
       ),
     );
   }

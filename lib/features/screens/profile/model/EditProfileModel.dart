@@ -9,7 +9,7 @@ import 'package:all_college_event_app/features/screens/global/bloc/chooseStateBl
 import 'package:all_college_event_app/features/screens/global/bloc/cityBloc/city_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/countryBloc/country_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/singleImageController/single_image_controller_bloc.dart';
-import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/userUpdateBloc/user_update_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
@@ -58,9 +58,8 @@ class _EditProfileModelState extends State<EditProfileModel> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              UserProfileBloc(apiController: ApiController())
-                ..add(ClickedUserProfile(whichUser: widget.whichScreen)),
+          create: (context) => UserProfileBloc(apiController: ApiController())
+            ..add(ClickedUserProfile(whichUser: widget.whichScreen, id: '')),
         ),
 
         BlocProvider(
@@ -149,7 +148,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                   color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<UserProfileBloc>().add(
-                      ClickedUserProfile(whichUser: widget.whichScreen),
+                      ClickedUserProfile(whichUser: widget.whichScreen, id: ''),
                     );
                   },
                   child: Container(
@@ -1046,7 +1045,7 @@ class _EditProfileModelState extends State<EditProfileModel> {
                   color: MyColor().primaryClr,
                   onRefresh: () async {
                     context.read<UserProfileBloc>().add(
-                      ClickedUserProfile(whichUser: widget.whichScreen),
+                      ClickedUserProfile(whichUser: widget.whichScreen, id: ''),
                     );
                   },
                   child: Center(

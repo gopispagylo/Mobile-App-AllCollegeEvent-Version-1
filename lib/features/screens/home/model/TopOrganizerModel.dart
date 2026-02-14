@@ -149,7 +149,6 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                                             child: CachedNetworkImage(
                                               height: 60,
                                               width: 60,
-                                              // memCacheHeight: 300,
                                               fadeInDuration: Duration.zero,
                                               imageUrl:
                                                   topOrganizerState

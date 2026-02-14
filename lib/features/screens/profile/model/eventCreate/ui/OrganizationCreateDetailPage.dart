@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/orgCategories/org_categories_bloc.dart';
-import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/model/OrganizationCreateDetailModel.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +61,7 @@ class _OrganizationCreateDetailPageState
           BlocProvider(
             create: (context) =>
                 UserProfileBloc(apiController: ApiController())
-                  ..add(ClickedUserProfile(whichUser: 'Organizer')),
+                  ..add(ClickedUserProfile(whichUser: 'Organizer', id: '')),
           ),
         ],
         child: OrganizationCreateDetailModel(),

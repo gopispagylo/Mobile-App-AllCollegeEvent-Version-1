@@ -30,8 +30,7 @@ class _EventPageState extends State<EventPage> {
               TrendingEventListBloc(apiController: ApiController())..add(
                 FetchTrendingEventList(
                   isLogin: widget.isLogin,
-                  page: 1,
-                  limit: 2,
+                  loadMore: false,
                 ),
               ),
         ),

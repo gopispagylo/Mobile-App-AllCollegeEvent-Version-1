@@ -18,8 +18,6 @@ class TopOrganizerBloc extends Bloc<TopOrganizerEvent, TopOrganizerState> {
       emit(TopOrganizerLoading());
 
       try {
-        print('jhsjhdshjkdsjhdsjhdsjhdsjhdsajhadsjhadsjhasdjhadssadjh');
-
         // --------- set a base url -------
         await apiController.setBaseUrl();
 

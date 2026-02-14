@@ -6,79 +6,78 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'trending_event_list_event.dart';
-part 'trending_event_list_state.dart';
+part 'up_coming_event_event.dart';
+part 'up_coming_event_state.dart';
 
-class TrendingEventListBloc
-    extends Bloc<TrendingEventListEvent, TrendingEventListState> {
+class UpComingEventBloc extends Bloc<UpComingEventEvent, UpComingEventState> {
   final ApiController apiController;
-  final List<dynamic> trendingEventList = [];
+  final List<dynamic> upComingEventList = [];
 
   int page = 1;
-  final int limit = 2;
+  final int limit = 5;
 
   bool hasMore = true;
   bool isLoadingMore = false;
 
-  TrendingEventListBloc({required this.apiController})
-    : super(TrendingEventListInitial()) {
-    on<FetchTrendingEventList>((event, emit) async {
+  UpComingEventBloc({required this.apiController})
+    : super(UpComingEventInitial()) {
+    on<FetchUpComingEvent>((event, emit) async {
       if (!event.loadMore) {
         page = 1;
         hasMore = true;
-        trendingEventList.clear();
-        emit(TrendingEventListLoading());
+        upComingEventList.clear();
+        emit(LoadingUpComingEventList());
       } else {
         if (isLoadingMore || !hasMore) return;
         isLoadingMore = true;
         page++;
       }
-
       try {
         // --------- set a base url -------
         await apiController.setBaseUrl();
 
-        // ------- token -------
+        // ----- access token data base -------
         final token = await DBHelper().getToken();
 
         final response = event.isLogin
             ? await apiController.getMethodWithoutBody(
                 endPoint:
-                    'events_protec?offset=${(page - 1) * limit}&limit=$limit',
+                    'organizations/${event.slug}/events_protec?page=${(page - 1) * limit}&limit=$limit',
                 token: token!,
               )
             : await apiController.getMethodWithoutBodyAndHeader(
-                endPoint: 'events?offset=${(page - 1) * limit}&limit=$limit',
+                endPoint:
+                    'organizations/${event.slug}/events?page=${(page - 1) * limit}&limit=$limit',
               );
 
         print(
-          "TrendingEventListEventTrendingEventListEventTrendingEventListEvent$response",
+          "PastEventBlocPastEventBlocPastEventBlocPastEventBlocPastEventBloc$response",
         );
 
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-            trendingEventList.addAll(responseBody['data']);
+            upComingEventList.addAll(responseBody['data']);
             hasMore = responseBody['data'].length == limit;
             isLoadingMore = false;
 
             emit(
-              TrendingEventListSuccess(
-                trendingEventList: List.from(trendingEventList),
+              SuccessUpComingEventList(
+                upComingEventList: List.from(upComingEventList),
                 hasMore: hasMore,
               ),
             );
           } else {
-            emit(TrendingEventListFail(errorMessage: responseBody['message']));
+            emit(FailUpComingEventList(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch (e) {
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
-        emit(TrendingEventListFail(errorMessage: error));
+        emit(FailUpComingEventList(errorMessage: error));
       } catch (e) {
         emit(
-          TrendingEventListFail(
+          FailUpComingEventList(
             errorMessage: ConfigMessage().unexpectedErrorMsg,
           ),
         );

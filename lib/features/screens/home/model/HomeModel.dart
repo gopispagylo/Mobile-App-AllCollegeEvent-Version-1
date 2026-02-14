@@ -44,9 +44,6 @@ class _HomeModelState extends State<HomeModel> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(Duration(milliseconds: 400));
       context.read<EventTypeAllBloc>().add(EventTypeAll());
-      context.read<TrendingEventListBloc>().add(
-        FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 5),
-      );
       context.read<TopOrganizerBloc>().add(FetchTopOrganizer());
       context.read<PopularCityCountryBloc>().add(FetchPopularCityCountry());
     });
@@ -68,7 +65,7 @@ class _HomeModelState extends State<HomeModel> {
       color: MyColor().primaryClr,
       onRefresh: () async {
         context.read<TrendingEventListBloc>().add(
-          FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 2),
+          FetchTrendingEventList(isLogin: widget.isLogin, loadMore: false),
         );
         context.read<EventTypeAllBloc>().add(EventTypeAll());
         context.read<TopOrganizerBloc>().add(FetchTopOrganizer());

@@ -37,7 +37,7 @@ class _EventListModelState extends State<EventListModel> {
       edgeOffset: 80,
       onRefresh: () async {
         context.read<TrendingEventListBloc>().add(
-          FetchTrendingEventList(isLogin: widget.isLogin, page: 1, limit: 2),
+          FetchTrendingEventList(isLogin: widget.isLogin, loadMore: false),
         );
       },
       child: ListView(

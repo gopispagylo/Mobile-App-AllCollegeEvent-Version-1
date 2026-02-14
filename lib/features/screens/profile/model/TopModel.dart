@@ -1,6 +1,6 @@
 import 'package:all_college_event_app/features/screens/follow/ui/FollowersPage.dart';
 import 'package:all_college_event_app/features/screens/follow/ui/FollowingPage.dart';
-import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -43,7 +43,6 @@ class _ProfileModelState extends State<TopModel> {
             return profileHeaderShimmer();
           } else if (userProfileState is UserProfileSuccess) {
             final list = userProfileState.userProfileList[0];
-            print("listlistlistlistlistlistlist$list");
             return Container(
               margin: EdgeInsets.all(16),
               child: Column(

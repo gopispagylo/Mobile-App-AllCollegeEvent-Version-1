@@ -1,4 +1,4 @@
-import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/EditProfileModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/SavedEventModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/SocialLinksModel.dart';
@@ -51,7 +51,7 @@ class _ProfileModelState extends State<ProfileModel> {
                 ),
               ).then((_) {
                 context.read<UserProfileBloc>().add(
-                  ClickedUserProfile(whichUser: widget.whichScreen),
+                  ClickedUserProfile(whichUser: widget.whichScreen, id: ''),
                 );
               });
             },

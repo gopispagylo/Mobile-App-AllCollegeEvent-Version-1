@@ -5,12 +5,7 @@ sealed class TrendingEventListEvent {}
 
 class FetchTrendingEventList extends TrendingEventListEvent {
   final bool isLogin;
-  final int page;
-  final int limit;
+  final bool loadMore;
 
-  FetchTrendingEventList({
-    required this.isLogin,
-    required this.page,
-    required this.limit,
-  });
+  FetchTrendingEventList({required this.isLogin, this.loadMore = false});
 }

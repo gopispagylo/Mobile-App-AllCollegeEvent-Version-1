@@ -1,7 +1,7 @@
 import 'package:all_college_event_app/data/controller/DynamicControllersModel/DynamicControllersModel.dart';
 import 'package:all_college_event_app/data/uiModels/MyModels.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/bloc/eventCreateDropdown/orgCategories/org_categories_bloc.dart';
-import 'package:all_college_event_app/features/screens/profile/bloc/userProfileBloc/user_profile_bloc.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/EventCreateDetailPage.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/validator/validator.dart';
@@ -18,10 +18,9 @@ class OrganizationCreateDetailModel extends StatefulWidget {
       _OrganizationCreateDetailModelState();
 }
 
-class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetailModel> {
-
+class _OrganizationCreateDetailModelState
+    extends State<OrganizationCreateDetailModel> {
   List<Map<String, dynamic>> orgDepartment = [
-
     {"code": "CSE", "name": "Computer Science and Engineering"},
     {"code": "IT", "name": "Information Technology"},
     {"code": "ECE", "name": "Electronics and CE"},
@@ -71,445 +70,482 @@ class _OrganizationCreateDetailModelState extends State<OrganizationCreateDetail
     eventHostItemList.add(EventHostItem());
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserProfileBloc, UserProfileState>(
-  builder: (context, state) {
-    return Form(
-      key: formKey,
-      child: ListView(
-        children: [
-          Container(
-            margin: EdgeInsets.only(left: 16, right: 16, top: 10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Stack(
-                        alignment: AlignmentGeometry.center,
+      builder: (context, state) {
+        return Form(
+          key: formKey,
+          child: ListView(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 16, right: 16, top: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
                         children: [
-                          SizedBox(
-                            height: 50,
-                            width: 50,
-                            child: CircularProgressIndicator(
-                              color: MyColor().primaryClr,
-                              value: 0.1,
-                              strokeWidth: 5,
-                              backgroundColor: MyColor().borderClr.withOpacity(
-                                0.30,
-                              ),
-                              valueColor: AlwaysStoppedAnimation(
-                                MyColor().primaryClr,
-                              ),
-                            ),
-                          ),
-                          Icon(Icons.newspaper),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 5),
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          "Organization Details",
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Stack(
-                        alignment: AlignmentGeometry.center,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            width: 50,
-                            child: CircularProgressIndicator(
-                              color: MyColor().primaryClr,
-                              value: 0.0,
-                              strokeWidth: 5,
-                              backgroundColor: MyColor().borderClr.withOpacity(
-                                0.30,
-                              ),
-                              valueColor: AlwaysStoppedAnimation(
-                                MyColor().primaryClr,
-                              ),
-                            ),
-                          ),
-                          Icon(Icons.newspaper),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 5),
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          "Event Details",
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Stack(
-                        alignment: AlignmentGeometry.center,
-                        children: [
-                          SizedBox(
-                            height: 50,
-                            width: 50,
-                            child: CircularProgressIndicator(
-                              color: MyColor().primaryClr,
-                              value: 0.0,
-                              strokeWidth: 5,
-                              backgroundColor: MyColor().borderClr.withOpacity(
-                                0.30,
-                              ),
-                              valueColor: AlwaysStoppedAnimation(
-                                MyColor().primaryClr,
-                              ),
-                            ),
-                          ),
-                          Icon(Icons.newspaper),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 5),
-                        child: Text(
-                          textAlign: TextAlign.center,
-                          "Media & Tickets",
-                          style: GoogleFonts.poppins(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: MyColor().blackClr,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: eventHostItemList.length,
-            physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              final item = eventHostItemList[index];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                 if(index != 0) Center(
-                    child: Container(
-                      margin: EdgeInsets.only(top: 20),
-                      width: 320,
-                      child: Text("Organization $index",style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,fontSize: 16,color: MyColor().primaryClr
-                      ),),
-                    ),
-                  ),
-                  // ------ event host Dropdown ----------
-                  Center(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 16, right: 16, top: 20),
-                      child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
-                        builder: (context, orgCategoriesState) {
-                          if (orgCategoriesState is OrgCategoriesLoading) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: MyColor().primaryClr,
-                              ),
-                            );
-                          } else if (orgCategoriesState
-                              is OrgCategoriesSuccess) {
-                            return SizedBox(
-                              width: 320,
-                              child: MyModels().customDropdown(
-                                label: "Event Host By *",
-                                hint: "Select your Organization Category",
-                                value: item.selectHostBy,
-                                onChanged: (hostBy) {
-                                  setState(() {
-                                    item.selectHostBy = hostBy;
-                                  });
-                                },
-                                items: orgCategoriesState.orgCategoriesList
-                                    .map(
-                                      (e) => DropdownMenuItem<String>(
-                                        value: e['identity'],
-                                        child: Text(e['categoryName']),
-                                      ),
-                                    )
-                                    .toList(),
-                                valid: Validators().validOrgCategories,
-                              ),
-                            );
-                          } else if (orgCategoriesState is OrgCategoriesFail) {
-                            return Center(
-                              child: Text(orgCategoriesState.errorMessage),
-                            );
-                          }
-                          return SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 20),
-
-                  // ------ Organization Name -------
-                  MyModels().customTextField(
-                    label: "Organization Name *",
-                    controller: item.organizationNameController,
-                    hintText: "Enter Organization Name",
-                    validator: Validators().validOrganizationName,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    readOnly: false,
-                  ),
-
-                  SizedBox(height: 20),
-
-                  // ----- Location --------
-                  MyModels().customTextField(
-                    label: "Location *",
-                    controller: item.locationController,
-                    hintText: "Enter Location",
-                    validator: Validators().validLocation,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    readOnly: false,
-                  ),
-
-                  SizedBox(height: 20),
-
-                  // ---------- Organizer Name --------
-                  MyModels().customTextField(
-                    label: "Organizer Name *",
-                    controller: item.organizerNameController,
-                    hintText: "Enter Organizer Name",
-                    validator: Validators().validOrganizationPhone,
-                    textInputType: TextInputType.text,
-                    textCapitalization: TextCapitalization.words,
-                    readOnly: false,
-                  ),
-
-                  SizedBox(height: 20),
-
-                  // ---------- Organizer Number --------
-                  MyModels().customTextField(
-                    label: "Organizer Number *",
-                    controller: item.organizerNumberController,
-                    hintText: "Phone number",
-                    validator: Validators().validOrganizationPhone,
-                    textInputType: TextInputType.phone,
-                    textCapitalization: TextCapitalization.words,
-                    readOnly: false,
-                  ),
-
-                  // ------- Organization Department --------
-                 if(item.selectHostBy == "29d8620d-9d1f-414c-a53d-c1d1574b17a7" || item.selectHostBy == "2d78a998-263b-403c-b757-0c92c56004f8" ) Center(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 16, right: 16, top: 20),
-                      child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
-                        builder: (context, orgCategoriesState) {
-                          if (orgCategoriesState is OrgCategoriesLoading) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                color: MyColor().primaryClr,
-                              ),
-                            );
-                          } else if (orgCategoriesState
-                              is OrgCategoriesSuccess) {
-                            return SizedBox(
-                              width: 320,
-                              child: MyModels().customDropdown(
-                                label: "Organization Department *",
-                                hint: "Select your Organization Department",
-                                value: item.selectOrganizationDepart,
-                                onChanged: (organizationDep) {
-                                  setState(() {
-                                    item.selectOrganizationDepart =
-                                        organizationDep;
-                                  });
-                                },
-                                items: orgDepartment
-                                    .map(
-                                      (e) => DropdownMenuItem<String>(
-                                        value: e['code'],
-                                        child: Text(e['name']),
-                                      ),
-                                    )
-                                    .toList(),
-                                valid: Validators().validOrgDepartment,
-                              ),
-                            );
-                          } else if (orgCategoriesState is OrgCategoriesFail) {
-                            return Center(
-                              child: Text(orgCategoriesState.errorMessage),
-                            );
-                          }
-                          return SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                  ),
-
-                  if (index == eventHostItemList.length - 1)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        // ----- Add Collaborate -----------
-                        if (eventHostItemList.length != 4)
-                          Align(
-                            alignment: AlignmentGeometry.topRight,
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  eventHostItemList.add(EventHostItem());
-                                });
-                              },
-                              child: Container(
-                                margin: EdgeInsets.only(top: 16, right: 16),
-                                height: 48,
-                                width: MediaQuery.of(context).size.width / 2,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  border: Border.all(
-                                    color: MyColor().primaryClr,
+                          Stack(
+                            alignment: AlignmentGeometry.center,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
+                                  value: 0.1,
+                                  strokeWidth: 5,
+                                  backgroundColor: MyColor().borderClr
+                                      .withOpacity(0.30),
+                                  valueColor: AlwaysStoppedAnimation(
+                                    MyColor().primaryClr,
                                   ),
                                 ),
-                                child: Text("Add Collaborators +"),
+                              ),
+                              Icon(Icons.newspaper),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Organization Details",
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().blackClr,
                               ),
                             ),
                           ),
-                        // ---------- trash ---------
-                        if (eventHostItemList.length > 1)
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                eventHostItemList.removeAt(index);
-                              });
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(right: 20, top: 10),
-                              child: Icon(Iconsax.trash,color: MyColor().redClr,),
-                            ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                ],
-              );
-            },
-          ),
-
-          // ----- Select Eligible Department -------
-          Center(
-            child: Container(
-              margin: EdgeInsets.only(left: 16, right: 16, top: 20),
-              child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
-                builder: (context, orgCategoriesState) {
-                  if (orgCategoriesState is OrgCategoriesLoading) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        color: MyColor().primaryClr,
-                      ),
-                    );
-                  } else if (orgCategoriesState is OrgCategoriesSuccess) {
-                    return SizedBox(
-                      width: 320,
-                      child: MyModels().customDropdown(
-                        label: "Eligible Department *",
-                        hint: "Select Eligible Department",
-                        value: selectEligibleDepart,
-                        onChanged: (eligibleDep) {
-                          setState(() {
-                            eligibleList.add(eligibleDep);
-                          });
-                        },
-                        items: orgDepartment
-                            .map(
-                              (e) => DropdownMenuItem<String>(
-                                value: e['code'],
-                                child: Text(e['name']),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Stack(
+                            alignment: AlignmentGeometry.center,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
+                                  value: 0.0,
+                                  strokeWidth: 5,
+                                  backgroundColor: MyColor().borderClr
+                                      .withOpacity(0.30),
+                                  valueColor: AlwaysStoppedAnimation(
+                                    MyColor().primaryClr,
+                                  ),
+                                ),
                               ),
-                            )
-                            .toList(),
-                        valid: Validators().validEligibleDepartment,
+                              Icon(Icons.newspaper),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Event Details",
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().blackClr,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    );
-                  } else if (orgCategoriesState is OrgCategoriesFail) {
-                    return Center(child: Text(orgCategoriesState.errorMessage));
-                  }
-                  return SizedBox.shrink();
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Stack(
+                            alignment: AlignmentGeometry.center,
+                            children: [
+                              SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: CircularProgressIndicator(
+                                  color: MyColor().primaryClr,
+                                  value: 0.0,
+                                  strokeWidth: 5,
+                                  backgroundColor: MyColor().borderClr
+                                      .withOpacity(0.30),
+                                  valueColor: AlwaysStoppedAnimation(
+                                    MyColor().primaryClr,
+                                  ),
+                                ),
+                              ),
+                              Icon(Icons.newspaper),
+                            ],
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 5),
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              "Media & Tickets",
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: MyColor().blackClr,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: eventHostItemList.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final item = eventHostItemList[index];
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (index != 0)
+                        Center(
+                          child: Container(
+                            margin: EdgeInsets.only(top: 20),
+                            width: 320,
+                            child: Text(
+                              "Organization $index",
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                color: MyColor().primaryClr,
+                              ),
+                            ),
+                          ),
+                        ),
+                      // ------ event host Dropdown ----------
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 16, right: 16, top: 20),
+                          child:
+                              BlocBuilder<
+                                OrgCategoriesBloc,
+                                OrgCategoriesState
+                              >(
+                                builder: (context, orgCategoriesState) {
+                                  if (orgCategoriesState
+                                      is OrgCategoriesLoading) {
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        color: MyColor().primaryClr,
+                                      ),
+                                    );
+                                  } else if (orgCategoriesState
+                                      is OrgCategoriesSuccess) {
+                                    return SizedBox(
+                                      width: 320,
+                                      child: MyModels().customDropdown(
+                                        label: "Event Host By *",
+                                        hint:
+                                            "Select your Organization Category",
+                                        value: item.selectHostBy,
+                                        onChanged: (hostBy) {
+                                          setState(() {
+                                            item.selectHostBy = hostBy;
+                                          });
+                                        },
+                                        items: orgCategoriesState
+                                            .orgCategoriesList
+                                            .map(
+                                              (e) => DropdownMenuItem<String>(
+                                                value: e['identity'],
+                                                child: Text(e['categoryName']),
+                                              ),
+                                            )
+                                            .toList(),
+                                        valid: Validators().validOrgCategories,
+                                      ),
+                                    );
+                                  } else if (orgCategoriesState
+                                      is OrgCategoriesFail) {
+                                    return Center(
+                                      child: Text(
+                                        orgCategoriesState.errorMessage,
+                                      ),
+                                    );
+                                  }
+                                  return SizedBox.shrink();
+                                },
+                              ),
+                        ),
+                      ),
+
+                      SizedBox(height: 20),
+
+                      // ------ Organization Name -------
+                      MyModels().customTextField(
+                        label: "Organization Name *",
+                        controller: item.organizationNameController,
+                        hintText: "Enter Organization Name",
+                        validator: Validators().validOrganizationName,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        readOnly: false,
+                      ),
+
+                      SizedBox(height: 20),
+
+                      // ----- Location --------
+                      MyModels().customTextField(
+                        label: "Location *",
+                        controller: item.locationController,
+                        hintText: "Enter Location",
+                        validator: Validators().validLocation,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        readOnly: false,
+                      ),
+
+                      SizedBox(height: 20),
+
+                      // ---------- Organizer Name --------
+                      MyModels().customTextField(
+                        label: "Organizer Name *",
+                        controller: item.organizerNameController,
+                        hintText: "Enter Organizer Name",
+                        validator: Validators().validOrganizationPhone,
+                        textInputType: TextInputType.text,
+                        textCapitalization: TextCapitalization.words,
+                        readOnly: false,
+                      ),
+
+                      SizedBox(height: 20),
+
+                      // ---------- Organizer Number --------
+                      MyModels().customTextField(
+                        label: "Organizer Number *",
+                        controller: item.organizerNumberController,
+                        hintText: "Phone number",
+                        validator: Validators().validOrganizationPhone,
+                        textInputType: TextInputType.phone,
+                        textCapitalization: TextCapitalization.words,
+                        readOnly: false,
+                      ),
+
+                      // ------- Organization Department --------
+                      if (item.selectHostBy ==
+                              "29d8620d-9d1f-414c-a53d-c1d1574b17a7" ||
+                          item.selectHostBy ==
+                              "2d78a998-263b-403c-b757-0c92c56004f8")
+                        Center(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: 16,
+                              right: 16,
+                              top: 20,
+                            ),
+                            child:
+                                BlocBuilder<
+                                  OrgCategoriesBloc,
+                                  OrgCategoriesState
+                                >(
+                                  builder: (context, orgCategoriesState) {
+                                    if (orgCategoriesState
+                                        is OrgCategoriesLoading) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: MyColor().primaryClr,
+                                        ),
+                                      );
+                                    } else if (orgCategoriesState
+                                        is OrgCategoriesSuccess) {
+                                      return SizedBox(
+                                        width: 320,
+                                        child: MyModels().customDropdown(
+                                          label: "Organization Department *",
+                                          hint:
+                                              "Select your Organization Department",
+                                          value: item.selectOrganizationDepart,
+                                          onChanged: (organizationDep) {
+                                            setState(() {
+                                              item.selectOrganizationDepart =
+                                                  organizationDep;
+                                            });
+                                          },
+                                          items: orgDepartment
+                                              .map(
+                                                (e) => DropdownMenuItem<String>(
+                                                  value: e['code'],
+                                                  child: Text(e['name']),
+                                                ),
+                                              )
+                                              .toList(),
+                                          valid:
+                                              Validators().validOrgDepartment,
+                                        ),
+                                      );
+                                    } else if (orgCategoriesState
+                                        is OrgCategoriesFail) {
+                                      return Center(
+                                        child: Text(
+                                          orgCategoriesState.errorMessage,
+                                        ),
+                                      );
+                                    }
+                                    return SizedBox.shrink();
+                                  },
+                                ),
+                          ),
+                        ),
+
+                      if (index == eventHostItemList.length - 1)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            // ----- Add Collaborate -----------
+                            if (eventHostItemList.length != 4)
+                              Align(
+                                alignment: AlignmentGeometry.topRight,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      eventHostItemList.add(EventHostItem());
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 16, right: 16),
+                                    height: 48,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      border: Border.all(
+                                        color: MyColor().primaryClr,
+                                      ),
+                                    ),
+                                    child: Text("Add Collaborators +"),
+                                  ),
+                                ),
+                              ),
+                            // ---------- trash ---------
+                            if (eventHostItemList.length > 1)
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    eventHostItemList.removeAt(index);
+                                  });
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 20, top: 10),
+                                  child: Icon(
+                                    Iconsax.trash,
+                                    color: MyColor().redClr,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                    ],
+                  );
                 },
               ),
-            ),
-          ),
 
-          // ------- Continue -------
-          GestureDetector(
-            onTap: () {
-              if (formKey.currentState!.validate()) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => EventCreateDetailPage(
-                      orgDetailList: {
-                        'orgDetailList' : eventHostItemList.map((e)=> e.toJson()).toList(),
-                        'eligibleDeptIdentities': eligibleList},
-                    ),
-                  ),
-                );
-              }
-            },
-            child: Align(
-              alignment: AlignmentGeometry.topRight,
-              child: Container(
-                margin: EdgeInsets.only(top: 20, right: 16),
-                height: 48,
-                width: MediaQuery.of(context).size.width / 2,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: MyColor().primaryClr,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: MyColor().primaryClr),
-                ),
-                child: Text(
-                  "Continue",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: MyColor().whiteClr,
+              // ----- Select Eligible Department -------
+              Center(
+                child: Container(
+                  margin: EdgeInsets.only(left: 16, right: 16, top: 20),
+                  child: BlocBuilder<OrgCategoriesBloc, OrgCategoriesState>(
+                    builder: (context, orgCategoriesState) {
+                      if (orgCategoriesState is OrgCategoriesLoading) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            color: MyColor().primaryClr,
+                          ),
+                        );
+                      } else if (orgCategoriesState is OrgCategoriesSuccess) {
+                        return SizedBox(
+                          width: 320,
+                          child: MyModels().customDropdown(
+                            label: "Eligible Department *",
+                            hint: "Select Eligible Department",
+                            value: selectEligibleDepart,
+                            onChanged: (eligibleDep) {
+                              setState(() {
+                                eligibleList.add(eligibleDep);
+                              });
+                            },
+                            items: orgDepartment
+                                .map(
+                                  (e) => DropdownMenuItem<String>(
+                                    value: e['code'],
+                                    child: Text(e['name']),
+                                  ),
+                                )
+                                .toList(),
+                            valid: Validators().validEligibleDepartment,
+                          ),
+                        );
+                      } else if (orgCategoriesState is OrgCategoriesFail) {
+                        return Center(
+                          child: Text(orgCategoriesState.errorMessage),
+                        );
+                      }
+                      return SizedBox.shrink();
+                    },
                   ),
                 ),
               ),
-            ),
-          ),
 
-          SizedBox(height: 30),
-          
-        ],
-      ),
+              // ------- Continue -------
+              GestureDetector(
+                onTap: () {
+                  if (formKey.currentState!.validate()) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => EventCreateDetailPage(
+                          orgDetailList: {
+                            'orgDetailList': eventHostItemList
+                                .map((e) => e.toJson())
+                                .toList(),
+                            'eligibleDeptIdentities': eligibleList,
+                          },
+                        ),
+                      ),
+                    );
+                  }
+                },
+                child: Align(
+                  alignment: AlignmentGeometry.topRight,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 20, right: 16),
+                    height: 48,
+                    width: MediaQuery.of(context).size.width / 2,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: MyColor().primaryClr,
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: MyColor().primaryClr),
+                    ),
+                    child: Text(
+                      "Continue",
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: MyColor().whiteClr,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 30),
+            ],
+          ),
+        );
+      },
     );
-  },
-);
   }
 }
