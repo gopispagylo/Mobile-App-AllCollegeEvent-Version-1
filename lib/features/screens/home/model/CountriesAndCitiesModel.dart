@@ -11,7 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CountriesAndCitiesModel extends StatefulWidget {
-  const CountriesAndCitiesModel({super.key});
+  final bool isLogin;
+
+  const CountriesAndCitiesModel({super.key, required this.isLogin});
 
   @override
   State<CountriesAndCitiesModel> createState() =>
@@ -182,6 +184,7 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel>
                                         mainAxisSpacing: 16,
                                       ),
                                   itemBuilder: (context, index) {
+                                    final list = listCountry[index];
                                     return InkWell(
                                       borderRadius: BorderRadius.circular(16),
                                       onTap: () {
@@ -189,7 +192,12 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel>
                                           context,
                                           MaterialPageRoute(
                                             builder: (_) =>
-                                                PopularCityCountryDetail(),
+                                                PopularCityCountryDetail(
+                                                  isLogin: widget.isLogin,
+                                                  country: 'country',
+                                                  countryCode:
+                                                      list['countryIdentity'],
+                                                ),
                                           ),
                                         );
                                       },

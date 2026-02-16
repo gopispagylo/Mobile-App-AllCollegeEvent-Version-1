@@ -289,7 +289,9 @@ class _HomeModelState extends State<HomeModel> {
             SliverToBoxAdapter(
               child: TopOrganizerModel(isLogin: widget.isLogin),
             ),
-            SliverToBoxAdapter(child: CountriesAndCitiesModel()),
+            SliverToBoxAdapter(
+              child: CountriesAndCitiesModel(isLogin: widget.isLogin),
+            ),
           ],
         ),
       ),
