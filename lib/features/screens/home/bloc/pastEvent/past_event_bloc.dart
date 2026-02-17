@@ -48,6 +48,11 @@ class PastEventBloc extends Bloc<PastEventEvent, PastEventState> {
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
+            // when a data is empty show error
+            if (!event.loadMore && responseBody['data'].isEmpty) {
+              emit(FailPastEventList(errorMessage: "Data not found"));
+              return;
+            }
             pastEventList.addAll(responseBody['data']);
             hasMore = responseBody['data'].length == limit;
             isLoadingMore = false;

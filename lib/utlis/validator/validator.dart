@@ -140,6 +140,7 @@ class Validators {
     }
     return null;
   }
+
   String? validGoogleMeet(String? value) {
     if (value == null || value.isEmpty) {
       return "Please enter your google meet link";
@@ -261,7 +262,7 @@ class Validators {
 
   String? validComment(String? value) {
     if (value == null || value.isEmpty) {
-      return "Please select your thoughts";
+      return "Please enter your thoughts";
     }
     return null;
   }

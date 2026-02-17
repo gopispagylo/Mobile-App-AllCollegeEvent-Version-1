@@ -85,9 +85,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         TopModel(
                           whichScreen: checkUser!,
                           onSlugChanged: (value) {
-                            setState(() {
-                              slug = value;
-                            });
+                            if (value != null) {
+                              setState(() {
+                                slug = value;
+                              });
+                            }
                           },
                         ),
 

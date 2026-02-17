@@ -5,6 +5,12 @@ sealed class CreateFollowState {}
 
 final class CreateFollowInitial extends CreateFollowState {}
 
+class LoadingCreateFollow extends CreateFollowState {
+  final String orgId;
+
+  LoadingCreateFollow({required this.orgId});
+}
+
 class SuccessCreateFollow extends CreateFollowState {
   final String orgId;
   final bool isFollow;

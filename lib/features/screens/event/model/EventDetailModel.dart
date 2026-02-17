@@ -405,6 +405,7 @@ class _EventDetailModelState extends State<EventDetailModel>
                                         false;
                                     // final checkFav = false;
                                     return InkWell(
+                                      borderRadius: BorderRadius.circular(100),
                                       onTap: widget.isLogin
                                           ? () {
                                               context.read<EventLikeBloc>().add(
@@ -447,8 +448,8 @@ class _EventDetailModelState extends State<EventDetailModel>
                                         ),
                                         child: Icon(
                                           checkFav
-                                              ? Icons.favorite
-                                              : Icons.favorite_border,
+                                              ? Iconsax.heart
+                                              : Iconsax.heart_copy,
                                           size: 20,
                                           color: checkFav
                                               ? MyColor().redClr
@@ -1362,6 +1363,7 @@ class _EventDetailModelState extends State<EventDetailModel>
                                               right: 0,
                                               top: 10,
                                               bottom: 20,
+                                              left: 16,
                                             ),
                                             decoration: BoxDecoration(
                                               color: MyColor().boxInnerClr,
@@ -1690,31 +1692,31 @@ class _EventDetailModelState extends State<EventDetailModel>
                                         ),
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Container(
-                                        margin: EdgeInsets.only(
-                                          left: 16,
-                                          right: 16,
-                                          bottom: 0,
-                                        ),
-                                        alignment: Alignment.center,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          color: MyColor().primaryClr,
-                                          borderRadius: BorderRadius.circular(
-                                            100,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "Follow",
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 14,
-                                            color: MyColor().whiteClr,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                    // Expanded(
+                                    //   child: Container(
+                                    //     margin: EdgeInsets.only(
+                                    //       left: 16,
+                                    //       right: 16,
+                                    //       bottom: 0,
+                                    //     ),
+                                    //     alignment: Alignment.center,
+                                    //     height: 40,
+                                    //     decoration: BoxDecoration(
+                                    //       color: MyColor().primaryClr,
+                                    //       borderRadius: BorderRadius.circular(
+                                    //         100,
+                                    //       ),
+                                    //     ),
+                                    //     child: Text(
+                                    //       "Follow",
+                                    //       style: GoogleFonts.poppins(
+                                    //         fontSize: 14,
+                                    //         color: MyColor().whiteClr,
+                                    //         fontWeight: FontWeight.w600,
+                                    //       ),
+                                    //     ),
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                                 Padding(
@@ -1744,29 +1746,31 @@ class _EventDetailModelState extends State<EventDetailModel>
                                               ),
                                             ),
                                             const SizedBox(width: 12),
-                                            Expanded(
-                                              child: _infoCard(
-                                                title: "Organizer",
-                                                items: [
-                                                  _infoRow(
-                                                    Iconsax.profile_circle,
-                                                    list['Collaborator'][index]['member']['organizerName'],
-                                                  ),
-                                                  _infoRow(
-                                                    Iconsax.call,
-                                                    list['Collaborator'][index]['member']['organizerNumber'],
-                                                  ),
-                                                  if (list['Collaborator'][index]['member']['orgDept'] !=
-                                                          null &&
-                                                      list['Collaborator'][index]['member']['orgDept']
-                                                          .isNotEmpty)
-                                                    _infoRow(
-                                                      Iconsax.book,
-                                                      list['Collaborator'][index]['member']['orgDept'],
-                                                    ),
-                                                ],
-                                              ),
-                                            ),
+                                            // if (list['Collaborator'][index]['member'] !=
+                                            //     null)
+                                            // Expanded(
+                                            //   child: _infoCard(
+                                            //     title: "Organizer",
+                                            //     items: [
+                                            //       _infoRow(
+                                            //         Iconsax.profile_circle,
+                                            //         list['Collaborator'][index]['member']['organizerName'],
+                                            //       ),
+                                            //       _infoRow(
+                                            //         Iconsax.call,
+                                            //         list['Collaborator'][index]['member']['organizerNumber'],
+                                            //       ),
+                                            //       if (list['Collaborator'][index]['member']['orgDept'] !=
+                                            //               null &&
+                                            //           list['Collaborator'][index]['member']['orgDept']
+                                            //               .isNotEmpty)
+                                            //         _infoRow(
+                                            //           Iconsax.book,
+                                            //           list['Collaborator'][index]['member']['orgDept'],
+                                            //         ),
+                                            //     ],
+                                            //   ),
+                                            // ),
                                           ],
                                         ),
                                       );
@@ -1775,11 +1779,13 @@ class _EventDetailModelState extends State<EventDetailModel>
                                 ),
 
                                 // ------- Follow us on ------
-                                if (list['socialLinks']['linkedin']
-                                        .isNotEmpty ||
-                                    list['socialLinks']['instagram']
-                                        .isNotEmpty ||
-                                    list['socialLinks']['whatsapp'].isNotEmpty)
+                                if (list['socialLinks'].isNotEmpty &&
+                                    (list['socialLinks']['linkedin']
+                                            .isNotEmpty ||
+                                        list['socialLinks']['instagram']
+                                            .isNotEmpty ||
+                                        list['socialLinks']['whatsapp']
+                                            .isNotEmpty))
                                   Container(
                                     margin: EdgeInsets.only(
                                       left: 16,
@@ -2202,136 +2208,138 @@ class _EventDetailModelState extends State<EventDetailModel>
                   child: Icon(Icons.bookmark_outline),
                 ),
                 // if (widget.paymentLink != null && widget.paymentLink.isNotEmpty)
-                Expanded(
-                  child: GestureDetector(
-                    onTap: widget.isLogin
-                        ? () {
-                            MyModels().alertDialogContentCustom(
-                              context: context,
-                              content: StatefulBuilder(
-                                builder: (context, setState) {
-                                  return Container(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          textAlign: TextAlign.center,
-                                          ConfigMessage().confirmText,
-                                          style: GoogleFonts.poppins(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: MyColor().blackClr,
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            left: 16,
-                                            right: 16,
-                                            top: 16,
-                                          ),
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              fixedSize: Size(320, 48),
-                                              backgroundColor:
-                                                  MyColor().primaryClr,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                              ),
+                if (widget.paymentLink != 'no_link')
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: widget.isLogin
+                          ? () {
+                              MyModels().alertDialogContentCustom(
+                                context: context,
+                                content: StatefulBuilder(
+                                  builder: (context, setState) {
+                                    return Container(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            textAlign: TextAlign.center,
+                                            ConfigMessage().confirmText,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: MyColor().blackClr,
                                             ),
-                                            onPressed: () async {
-                                              if (checkPaymentLink) return;
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                              left: 16,
+                                              right: 16,
+                                              top: 16,
+                                            ),
+                                            child: ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                fixedSize: Size(320, 48),
+                                                backgroundColor:
+                                                    MyColor().primaryClr,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(50),
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                if (checkPaymentLink) return;
 
-                                              String url = widget.paymentLink
-                                                  .trim();
+                                                String url = widget.paymentLink
+                                                    .trim();
 
-                                              // Add https if missing
-                                              if (!url.startsWith('http')) {
-                                                url = 'https://$url';
-                                              }
+                                                // Add https if missing
+                                                if (!url.startsWith('http')) {
+                                                  url = 'https://$url';
+                                                }
 
-                                              final Uri paymentUrl = Uri.parse(
-                                                url,
-                                              );
+                                                final Uri paymentUrl =
+                                                    Uri.parse(url);
 
-                                              setState(() {
-                                                checkPaymentLink = true;
-                                              });
+                                                setState(() {
+                                                  checkPaymentLink = true;
+                                                });
 
-                                              try {
-                                                await launchUrl(
-                                                  paymentUrl,
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              } catch (e) {
-                                                print("Error launching: $e");
-                                              }
+                                                try {
+                                                  await launchUrl(
+                                                    paymentUrl,
+                                                    mode: LaunchMode
+                                                        .externalApplication,
+                                                  );
+                                                } catch (e) {
+                                                  print("Error launching: $e");
+                                                }
 
-                                              setState(() {
-                                                checkPaymentLink = false;
-                                              });
-                                            },
+                                                setState(() {
+                                                  checkPaymentLink = false;
+                                                });
+                                              },
 
-                                            child: checkPaymentLink
-                                                ? Center(
-                                                    child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(
-                                                            color: MyColor()
-                                                                .whiteClr,
-                                                          )
-                                                        : CupertinoActivityIndicator(
+                                              child: checkPaymentLink
+                                                  ? Center(
+                                                      child: Platform.isAndroid
+                                                          ? CircularProgressIndicator(
+                                                              color: MyColor()
+                                                                  .whiteClr,
+                                                            )
+                                                          : CupertinoActivityIndicator(
+                                                              color: MyColor()
+                                                                  .whiteClr,
+                                                            ),
+                                                    )
+                                                  : Text(
+                                                      "Confirm",
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                             color: MyColor()
                                                                 .whiteClr,
                                                           ),
-                                                  )
-                                                : Text(
-                                                    "Confirm",
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      color: MyColor().whiteClr,
                                                     ),
-                                                  ),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          }
-                        : () async {
-                            final getUserClick = await DBHelper().getUser();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    LoginPage(whichScreen: getUserClick!),
-                              ),
-                            );
-                          },
-                    child: Container(
-                      margin: EdgeInsets.only(left: 16),
-                      alignment: Alignment.center,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: MyColor().primaryClr,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: Text(
-                        "Register",
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: MyColor().whiteClr,
-                          fontWeight: FontWeight.w500,
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            }
+                          : () async {
+                              final getUserClick = await DBHelper().getUser();
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) =>
+                                      LoginPage(whichScreen: getUserClick!),
+                                ),
+                              );
+                            },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 16),
+                        alignment: Alignment.center,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: MyColor().primaryClr,
+                          borderRadius: BorderRadius.circular(100),
+                        ),
+                        child: Text(
+                          "Register",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: MyColor().whiteClr,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

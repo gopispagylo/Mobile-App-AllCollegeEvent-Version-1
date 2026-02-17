@@ -48,6 +48,7 @@ class _AreYouPageState extends State<AreYouPage> {
               Container(
                 margin: EdgeInsets.only(left: 16, right: 16),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       textAlign: TextAlign.center,

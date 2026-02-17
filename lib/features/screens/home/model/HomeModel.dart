@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:all_college_event_app/data/controller/DBHelper/DBHelper.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc/event_type_all_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/popularCityCountry/popular_city_country_bloc.dart';
-import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/trendingEventBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/CarouselSliderPage.dart';
 import 'package:all_college_event_app/features/screens/home/model/CategoriesModel.dart';

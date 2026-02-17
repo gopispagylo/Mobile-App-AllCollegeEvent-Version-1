@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/screens/follow/bloc/FollowingBloc/following_bloc.dart';
 import 'package:all_college_event_app/features/screens/follow/model/FollowingModel.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/CreateFollowBloc/create_follow_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -50,11 +51,21 @@ class _FollowingPageState extends State<FollowingPage> {
           ),
         ),
       ),
-      body: BlocProvider(
-        create: (context) => FollowingBloc(apiController: ApiController())
-          ..add(
-            FetchFollowing(followingOrFollowers: widget.followingOrFollowers),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => FollowingBloc(apiController: ApiController())
+              ..add(
+                FetchFollowing(
+                  followingOrFollowers: widget.followingOrFollowers,
+                ),
+              ),
           ),
+          BlocProvider(
+            create: (context) =>
+                CreateFollowBloc(apiController: ApiController()),
+          ),
+        ],
         child: FollowingModel(
           followingOrFollowers: widget.followingOrFollowers,
         ),

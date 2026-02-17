@@ -29,7 +29,6 @@ class _SavedEventModelState extends State<SavedEventModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       backgroundColor: MyColor().whiteClr,
       appBar: AppBar(
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -69,448 +68,492 @@ class _SavedEventModelState extends State<SavedEventModel> {
                 RemoveSaveEventBloc(apiController: ApiController()),
           ),
         ],
-        child: ListView(
+        child: Stack(
           children: [
-            Center(
-              child: Container(
-                margin: EdgeInsets.only(top: 10, left: 16, right: 16),
-                width: 380,
-                child: TextFormField(
-                  onTapOutside: (onChanged) {
-                    WidgetsBinding.instance.focusManager.primaryFocus!
-                        .unfocus();
+            Builder(
+              builder: (context) {
+                return RefreshIndicator(
+                  // edgeOffset: 80,
+                  backgroundColor: MyColor().whiteClr,
+                  color: MyColor().primaryClr,
+                  onRefresh: () async {
+                    context.read<SavedEventBloc>().add(FetchSavedEvent());
                   },
-                  decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(10),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(100),
-                      borderSide: BorderSide(
-                        color: MyColor().borderClr,
-                        width: 0.5,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(100),
-                      borderSide: BorderSide(
-                        color: MyColor().primaryClr,
-                        width: 0.5,
-                      ),
-                    ),
-                    prefixIcon: Icon(Icons.search, size: 24),
-                    hintText: "Search Events",
-                    hintStyle: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                      color: MyColor().hintTextClr,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              child: BlocBuilder<SavedEventBloc, SavedEventState>(
-                builder: (context, savedEventState) {
-                  if (savedEventState is SavedEventLoading) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return eventCardShimmer();
-                      },
-                    );
-                  } else if (savedEventState is SavedEventSuccess) {
-                    return RefreshIndicator(
-                      edgeOffset: 20,
-                      backgroundColor: MyColor().whiteClr,
-                      color: MyColor().primaryClr,
-                      onRefresh: () async {
-                        context.read<SavedEventBloc>().add(FetchSavedEvent());
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          left: 16,
-                          right: 16,
-                          top: 10,
-                          bottom: 20,
-                        ),
-                        child: ListView.builder(
-                          itemCount: savedEventState.savedEventList.length,
+                  child: BlocBuilder<SavedEventBloc, SavedEventState>(
+                    builder: (context, savedEventState) {
+                      if (savedEventState is SavedEventLoading) {
+                        return ListView.builder(
                           shrinkWrap: true,
+                          itemCount: 10,
                           itemBuilder: (context, index) {
-                            final list = savedEventState.savedEventList[index];
+                            return Container(
+                              margin: EdgeInsets.only(top: index == 0 ? 0 : 0),
+                              child: eventCardShimmer(),
+                            );
+                          },
+                        );
+                      } else if (savedEventState is SavedEventSuccess) {
+                        return Container(
+                          margin: EdgeInsets.only(left: 16, right: 16, top: 0),
+                          child: ListView.builder(
+                            itemCount: savedEventState.savedEventList.length,
+                            shrinkWrap: true,
+                            itemBuilder: (context, index) {
+                              final list =
+                                  savedEventState.savedEventList[index];
 
-                            // -------- field name ------------
-                            final title = list['title'] ?? "No title";
+                              // -------- field name ------------
+                              final title = list['title'] ?? "No title";
 
-                            final featuredImagePath =
-                                (list['bannerImages'] != null &&
-                                    list['bannerImages'].isNotEmpty)
-                                ? list['bannerImages'][0]
-                                : '';
+                              final featuredImagePath =
+                                  (list['bannerImages'] != null &&
+                                      list['bannerImages'].isNotEmpty)
+                                  ? list['bannerImages'][0]
+                                  : '';
 
-                            // ------ date format -------
-                            final rawDate = list['eventDate']?.toString() ?? "";
+                              // ------ date format -------
+                              final rawDate =
+                                  list['eventDate']?.toString() ?? "";
 
-                            // 2. Safe Date Parsing
-                            String dateFormat = "Date TBD";
+                              // 2. Safe Date Parsing
+                              String dateFormat = "Date TBD";
 
-                            if (rawDate.isNotEmpty) {
-                              try {
-                                // Use MM for months!
-                                final parsedDate = DateFormat(
-                                  'dd/MM/yyyy',
-                                ).parse(rawDate);
-                                dateFormat = DateFormat(
-                                  'dd MMM yyyy',
-                                ).format(parsedDate);
-                              } catch (e) {
-                                debugPrint("Date parsing error: $e");
-                                dateFormat =
-                                    rawDate; // Fallback to raw string if parsing fails
+                              if (rawDate.isNotEmpty) {
+                                try {
+                                  // Use MM for months!
+                                  final parsedDate = DateFormat(
+                                    'dd/MM/yyyy',
+                                  ).parse(rawDate);
+                                  dateFormat = DateFormat(
+                                    'dd MMM yyyy',
+                                  ).format(parsedDate);
+                                } catch (e) {
+                                  debugPrint("Date parsing error: $e");
+                                  dateFormat =
+                                      rawDate; // Fallback to raw string if parsing fails
+                                }
                               }
-                            }
 
-                            // ---- venue ---
-                            final venue = list['venue'] ?? "no venue";
+                              // ---- venue ---
+                              final venue = list['venue'] ?? "no venue";
 
-                            // -------- identity ---------
-                            final identity = list['slug'];
+                              // -------- identity ---------
+                              final identity = list['slug'];
 
-                            final eventId = list['identity'];
+                              final eventId = list['identity'];
 
-                            // final identity = list['slug'];
+                              // final identity = list['slug'];
 
-                            final paymentLink = list['paymentLink'];
+                              final paymentLink = list['paymentLink'];
 
-                            return TweenAnimationBuilder(
-                              tween: Tween(begin: 50.0, end: 0.0),
-                              duration: Duration(milliseconds: 600),
-                              builder: (context, value, child) {
-                                return Transform.translate(
-                                  offset: Offset(0, value),
-                                  child: Opacity(
-                                    opacity: 1 - (value / 50),
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => EventDetailPage(
-                                        slug: identity,
-                                        title: title,
-                                        whichScreen: 'view',
-                                        paymentLink: paymentLink,
-                                        isLogin: widget.isLogin,
-                                      ),
+                              return TweenAnimationBuilder(
+                                tween: Tween(begin: 50.0, end: 0.0),
+                                duration: Duration(milliseconds: 600),
+                                builder: (context, value, child) {
+                                  return Transform.translate(
+                                    offset: Offset(0, value),
+                                    child: Opacity(
+                                      opacity: 1 - (value / 50),
+                                      child: child,
                                     ),
                                   );
                                 },
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 0, bottom: 16),
-                                  padding: EdgeInsets.only(
-                                    left: 10,
-                                    right: 5,
-                                    bottom: 5,
-                                    top: 5,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: MyColor().whiteClr,
-                                    border: Border.all(
-                                      color: MyColor().borderClr.withOpacity(
-                                        0.15,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => EventDetailPage(
+                                          slug: identity,
+                                          title: title,
+                                          whichScreen: 'view',
+                                          paymentLink: paymentLink,
+                                          isLogin: widget.isLogin,
+                                        ),
                                       ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      left: 0,
+                                      bottom: 16,
                                     ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
-                                          ),
-                                          clipBehavior: Clip.antiAlias,
-                                          child: Hero(
-                                            tag: 'event_image_$identity',
-                                            child: ClipRRect(
+                                    padding: EdgeInsets.only(
+                                      left: 10,
+                                      right: 5,
+                                      bottom: 5,
+                                      top: 5,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: MyColor().whiteClr,
+                                      border: Border.all(
+                                        color: MyColor().borderClr.withOpacity(
+                                          0.15,
+                                        ),
+                                      ),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Expanded(
+                                          flex: 2,
+                                          child: Container(
+                                            decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: CachedNetworkImage(
-                                                // memCacheHeight: 300,
-                                                fadeInDuration: Duration.zero,
-                                                imageUrl: featuredImagePath,
-                                                fit: BoxFit.cover,
-                                                height: 110,
-                                                placeholder: (context, url) =>
-                                                    Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                            color: MyColor()
-                                                                .primaryClr,
-                                                          ),
-                                                    ),
-                                                errorWidget:
-                                                    (
-                                                      context,
-                                                      url,
-                                                      error,
-                                                    ) => const Icon(
-                                                      Icons.image_not_supported,
-                                                    ),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: Hero(
+                                              tag: 'event_image_$identity',
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                child: CachedNetworkImage(
+                                                  // memCacheHeight: 300,
+                                                  fadeInDuration: Duration.zero,
+                                                  imageUrl: featuredImagePath,
+                                                  fit: BoxFit.cover,
+                                                  height: 110,
+                                                  placeholder: (context, url) =>
+                                                      Center(
+                                                        child:
+                                                            CircularProgressIndicator(
+                                                              color: MyColor()
+                                                                  .primaryClr,
+                                                            ),
+                                                      ),
+                                                  errorWidget:
+                                                      (
+                                                        context,
+                                                        url,
+                                                        error,
+                                                      ) => const Icon(
+                                                        Icons
+                                                            .image_not_supported,
+                                                      ),
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Container(
-                                          padding: EdgeInsets.all(5),
-                                          margin: EdgeInsets.only(left: 10),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Expanded(
-                                                    child: Text(
-                                                      title,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Container(
+                                            padding: EdgeInsets.all(5),
+                                            margin: EdgeInsets.only(left: 10),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Expanded(
+                                                      child: Text(
+                                                        title,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                      ),
                                                     ),
-                                                  ),
-                                                  SizedBox(width: 5),
-                                                  BlocConsumer<
-                                                    RemoveSaveEventBloc,
-                                                    RemoveSaveEventState
-                                                  >(
-                                                    listener: (context, removeEventState) {
-                                                      if (removeEventState
-                                                          is RemoveSaveEventSuccess) {
-                                                        context
-                                                            .read<
-                                                              SavedEventBloc
-                                                            >()
-                                                            .add(
-                                                              FetchSavedEvent(),
-                                                            );
-                                                        FlutterToast().flutterToast(
-                                                          "${removeEventState.successMessage} 🎉",
-                                                          ToastificationType
-                                                              .success,
-                                                          ToastificationStyle
-                                                              .flat,
-                                                        );
-                                                      } else if (removeEventState
-                                                          is RemoveSaveEventFail) {
-                                                        FlutterToast()
-                                                            .flutterToast(
-                                                              removeEventState
-                                                                  .errorMessage,
-                                                              ToastificationType
-                                                                  .error,
-                                                              ToastificationStyle
-                                                                  .flat,
-                                                            );
-                                                      }
-                                                    },
-                                                    builder: (context, removeEventState) {
-                                                      final checkLoading =
-                                                          removeEventState
-                                                              is RemoveSaveEventLoading &&
-                                                          removeEventState
-                                                                  .eventId ==
-                                                              eventId;
-                                                      return InkWell(
-                                                        onTap: () {
+                                                    SizedBox(width: 5),
+                                                    BlocConsumer<
+                                                      RemoveSaveEventBloc,
+                                                      RemoveSaveEventState
+                                                    >(
+                                                      listener: (context, removeEventState) {
+                                                        if (removeEventState
+                                                            is RemoveSaveEventSuccess) {
                                                           context
                                                               .read<
-                                                                RemoveSaveEventBloc
+                                                                SavedEventBloc
                                                               >()
                                                               .add(
-                                                                ClickRemoveSaveEvent(
-                                                                  eventId:
-                                                                      eventId,
-                                                                ),
+                                                                FetchSavedEvent(),
                                                               );
-                                                        },
-                                                        child: checkLoading
-                                                            ? Center(
-                                                                child: SizedBox(
-                                                                  height: 20,
-                                                                  width: 20,
-                                                                  child: CircularProgressIndicator(
-                                                                    color: MyColor()
-                                                                        .primaryClr,
-                                                                    strokeWidth:
-                                                                        2,
+                                                          FlutterToast().flutterToast(
+                                                            "${removeEventState.successMessage} 🎉",
+                                                            ToastificationType
+                                                                .success,
+                                                            ToastificationStyle
+                                                                .flat,
+                                                          );
+                                                        } else if (removeEventState
+                                                            is RemoveSaveEventFail) {
+                                                          FlutterToast().flutterToast(
+                                                            removeEventState
+                                                                .errorMessage,
+                                                            ToastificationType
+                                                                .error,
+                                                            ToastificationStyle
+                                                                .flat,
+                                                          );
+                                                        }
+                                                      },
+                                                      builder: (context, removeEventState) {
+                                                        final checkLoading =
+                                                            removeEventState
+                                                                is RemoveSaveEventLoading &&
+                                                            removeEventState
+                                                                    .eventId ==
+                                                                eventId;
+                                                        return InkWell(
+                                                          onTap: () {
+                                                            context
+                                                                .read<
+                                                                  RemoveSaveEventBloc
+                                                                >()
+                                                                .add(
+                                                                  ClickRemoveSaveEvent(
+                                                                    eventId:
+                                                                        eventId,
                                                                   ),
+                                                                );
+                                                          },
+                                                          child: checkLoading
+                                                              ? Center(
+                                                                  child: SizedBox(
+                                                                    height: 20,
+                                                                    width: 20,
+                                                                    child: CircularProgressIndicator(
+                                                                      color: MyColor()
+                                                                          .primaryClr,
+                                                                      strokeWidth:
+                                                                          2,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                              : circleIcon(
+                                                                  Icons
+                                                                      .bookmark,
                                                                 ),
-                                                              )
-                                                            : circleIcon(
-                                                                Icons.bookmark,
-                                                              ),
-                                                      );
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 5),
-                                              Row(
-                                                children: [
-                                                  chip(
-                                                    "Paid",
-                                                    MyColor()
-                                                        .primaryBackgroundClr
-                                                        .withOpacity(0.35),
-                                                  ),
-                                                  chip(
-                                                    "Entertainment",
-                                                    MyColor().blueBackgroundClr
-                                                        .withOpacity(0.35),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 10),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.calendar_month,
-                                                    size: 14,
-                                                  ),
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    child: Text(
-                                                      dateFormat,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          ),
+                                                        );
+                                                      },
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 5),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on_outlined,
-                                                    size: 14,
-                                                  ),
-                                                  SizedBox(width: 5),
-                                                  Expanded(
-                                                    child: Text(
-                                                      venue,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          vertical: 3,
-                                                          horizontal: 8,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: MyColor()
+                                                  ],
+                                                ),
+                                                SizedBox(height: 5),
+                                                Row(
+                                                  children: [
+                                                    chip(
+                                                      "Paid",
+                                                      MyColor()
                                                           .primaryBackgroundClr
                                                           .withOpacity(0.35),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
                                                     ),
-                                                    child: Text(
-                                                      "Ongoing",
-                                                      style:
-                                                          GoogleFonts.poppins(
-                                                            fontSize: 12,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                            color: MyColor()
-                                                                .blackClr,
-                                                          ),
+                                                    chip(
+                                                      "Entertainment",
+                                                      MyColor()
+                                                          .blueBackgroundClr
+                                                          .withOpacity(0.35),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                  ],
+                                                ),
+                                                SizedBox(height: 10),
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.calendar_month,
+                                                      size: 14,
+                                                    ),
+                                                    SizedBox(width: 5),
+                                                    Expanded(
+                                                      child: Text(
+                                                        dateFormat,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: 5),
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons
+                                                          .location_on_outlined,
+                                                      size: 14,
+                                                    ),
+                                                    SizedBox(width: 5),
+                                                    Expanded(
+                                                      child: Text(
+                                                        venue,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                            vertical: 3,
+                                                            horizontal: 8,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: MyColor()
+                                                            .primaryBackgroundClr
+                                                            .withOpacity(0.35),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              8,
+                                                            ),
+                                                      ),
+                                                      child: Text(
+                                                        "Ongoing",
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                              fontSize: 12,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: MyColor()
+                                                                  .blackClr,
+                                                            ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
+                              );
+                            },
+                          ),
+                        );
+                      } else if (savedEventState is SavedEventFail) {
+                        return RefreshIndicator(
+                          edgeOffset: 20,
+                          backgroundColor: MyColor().whiteClr,
+                          color: MyColor().primaryClr,
+                          onRefresh: () async {
+                            context.read<SavedEventBloc>().add(
+                              FetchSavedEvent(),
                             );
                           },
-                        ),
-                      ),
-                    );
-                  } else if (savedEventState is SavedEventFail) {
-                    return RefreshIndicator(
-                      edgeOffset: 20,
-                      backgroundColor: MyColor().whiteClr,
-                      color: MyColor().primaryClr,
-                      onRefresh: () async {
-                        context.read<SavedEventBloc>().add(FetchSavedEvent());
-                      },
-                      child: Center(
-                        child: ListView(
-                          shrinkWrap: true,
-                          children: [
-                            Center(
-                              child: SizedBox(
-                                height: 250,
-                                child: Image.asset(ImagePath().errorMessageImg),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                savedEventState.errorMessage,
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                  color: MyColor().blackClr,
+                          child: Center(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: [
+                                Center(
+                                  child: SizedBox(
+                                    height: 250,
+                                    child: Image.asset(
+                                      ImagePath().errorMessageImg,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Center(
+                                  child: Text(
+                                    savedEventState.errorMessage,
+                                    style: GoogleFonts.poppins(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
+                                      color: MyColor().blackClr,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-                  return SizedBox();
-                },
-              ),
+                          ),
+                        );
+                      }
+                      return SizedBox();
+                    },
+                  ),
+                );
+              },
             ),
+            // Positioned(
+            //   top: 0,
+            //   right: 0,
+            //   left: 0,
+            //   child: ClipRect(
+            //     child: BackdropFilter(
+            //       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            //       child: Container(
+            //         color: Colors.white.withOpacity(0.07),
+            //         child: Container(
+            //           margin: const EdgeInsets.only(
+            //             top: 10,
+            //             bottom: 16,
+            //             left: 16,
+            //             right: 16,
+            //           ),
+            //           // width: 360,
+            //           child: TextFormField(
+            //             focusNode: GlobalUnFocus.focusNode,
+            //             // controller: searchController,
+            //             // onChanged: (onChanged) {
+            //             //   fetchEvents();
+            //             // },
+            //             onTapOutside: (onOutSideClick) {
+            //               GlobalUnFocus.unFocus();
+            //
+            //               // setState(() {
+            //               //   isRecent = false;
+            //               // });
+            //             },
+            //             // onTap: () {
+            //             //   setState(() {
+            //             //     isRecent = true;
+            //             //   });
+            //             // },
+            //             decoration: InputDecoration(
+            //               contentPadding: EdgeInsets.all(10),
+            //               enabledBorder: OutlineInputBorder(
+            //                 borderRadius: BorderRadius.circular(100),
+            //                 borderSide: BorderSide(
+            //                   color: MyColor().borderClr,
+            //                   width: 0.5,
+            //                 ),
+            //               ),
+            //               focusedBorder: OutlineInputBorder(
+            //                 borderRadius: BorderRadius.circular(100),
+            //                 borderSide: BorderSide(
+            //                   color: MyColor().primaryClr,
+            //                   width: 0.5,
+            //                 ),
+            //               ),
+            //               prefixIcon: Icon(Icons.search, size: 24),
+            //               hintText: "Search Events",
+            //               hintStyle: GoogleFonts.poppins(
+            //                 fontWeight: FontWeight.w400,
+            //                 fontSize: 12,
+            //                 color: MyColor().hintTextClr,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

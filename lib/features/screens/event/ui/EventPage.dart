@@ -2,9 +2,12 @@ import 'dart:ui';
 
 import 'package:all_college_event_app/data/controller/ApiController/ApiController.dart';
 import 'package:all_college_event_app/features/screens/event/model/EventListModel.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/featuredEventBloc/featured_event_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
-import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/trendingEventBloc/trending_event_list_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/upComingEventBloc/up_coming_event_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/virtualEventBloc/virtual_event_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,9 +33,24 @@ class _EventPageState extends State<EventPage> {
               TrendingEventListBloc(apiController: ApiController())..add(
                 FetchTrendingEventList(
                   isLogin: widget.isLogin,
-                  loadMore: false,
+                  // loadMore: false,
                 ),
               ),
+        ),
+        BlocProvider(
+          create: (context) =>
+              UpComingEventBloc(apiController: ApiController())
+                ..add(FetchUpComingEventList(isLogin: widget.isLogin)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              VirtualEventBloc(apiController: ApiController())
+                ..add(FetchVirtualEventList(isLogin: widget.isLogin)),
+        ),
+        BlocProvider(
+          create: (context) =>
+              FeaturedEventBloc(apiController: ApiController())
+                ..add(FetchFeaturedEventList(isLogin: widget.isLogin)),
         ),
         BlocProvider(
           create: (context) => EventLikeBloc(apiController: ApiController()),

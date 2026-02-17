@@ -16,6 +16,8 @@ class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
   CreateFollowBloc({required this.apiController})
     : super(CreateFollowInitial()) {
     on<ClickCreateFollow>((event, emit) async {
+      emit(LoadingCreateFollow(orgId: event.orgId));
+
       try {
         final orgId = event.orgId;
 
@@ -27,16 +29,21 @@ class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
 
         followStatus[orgId] = newFollow;
 
-        emit(SuccessCreateFollow(orgId: orgId, isFollow: newFollow));
+        if (!event.unFollow) {
+          emit(SuccessCreateFollow(orgId: orgId, isFollow: newFollow));
+        }
 
         // --------- set a base url --------
         await apiController.setBaseUrl();
 
-        // ------- token -------
+        // ------------- token -------------
         final token = await DBHelper().getToken();
 
-        // body
+        // -------------- body ------------
         final params = {"orgIdentity": event.orgId};
+        print(
+          "paramsparamsparamsparamsparamsparamsparamsparams${params.values}",
+        );
 
         final response = await apiController.postMethodWithHeader(
           endPoint: 'organizations/follow-org',
@@ -49,8 +56,15 @@ class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-          } else {
             emit(SuccessCreateFollow(orgId: orgId, isFollow: newFollow));
+          } else {
+            emit(
+              FailCreateFollow(
+                errorMessage: ConfigMessage().serverError,
+                orgId: event.orgId,
+                previousValue: event.isFollow,
+              ),
+            );
           }
         } else {
           emit(
@@ -62,6 +76,9 @@ class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
           );
         }
       } on DioException catch (e) {
+        print(
+          "DioExceptionDioExceptionDioExceptionDioExceptionDioExceptionDioException$e",
+        );
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(
@@ -72,6 +89,9 @@ class CreateFollowBloc extends Bloc<CreateFollowEvent, CreateFollowState> {
           ),
         );
       } catch (e) {
+        print(
+          "DioExceptionDioExceptionDioExceptionDioExceptionDioExceptionDioException$e",
+        );
         emit(
           FailCreateFollow(
             errorMessage: ConfigMessage().unexpectedErrorMsg,

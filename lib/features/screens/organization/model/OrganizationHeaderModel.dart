@@ -276,16 +276,15 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
 
                               return InkWell(
                                 borderRadius: BorderRadius.circular(30),
-                                onTap: !isFollow
-                                    ? () {
-                                        context.read<CreateFollowBloc>().add(
-                                          ClickCreateFollow(
-                                            orgId: orgId,
-                                            isFollow: isFollow,
-                                          ),
-                                        );
-                                      }
-                                    : null,
+                                onTap: () {
+                                  context.read<CreateFollowBloc>().add(
+                                    ClickCreateFollow(
+                                      orgId: orgId,
+                                      isFollow: isFollow,
+                                      unFollow: false,
+                                    ),
+                                  );
+                                },
                                 child: Container(
                                   padding: EdgeInsets.only(
                                     left: 20,
@@ -422,22 +421,27 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                       // ------- social media -------
                       Container(
                         margin: EdgeInsets.only(top: 20),
-                        decoration: BoxDecoration(
-                          color: MyColor().boxInnerClr,
-                          borderRadius: BorderRadius.circular(15),
-                          border: Border.all(
-                            color: MyColor().borderClr.withOpacity(0.15),
-                          ),
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.all(16),
-                          child: Column(
-                            children: [
-                              if (list['socialLinks']['linkedin'] != null ||
-                                  list['socialLinks']['instagram'] != null ||
-                                  list['socialLinks']['whatsapp'] != null)
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (list['socialLinks']['linkedin'] != null ||
+                                list['socialLinks']['instagram'] != null ||
+                                list['socialLinks']['whatsapp'] != null)
+                              Container(
+                                child: Text(
+                                  "Follow us",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 18,
+                                    color: MyColor().blackClr,
+                                  ),
+                                ),
+                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     if (list['socialLinks']['whatsapp'] !=
                                             null &&
@@ -512,30 +516,22 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                                       ),
                                   ],
                                 ),
-                              SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    child: Container(
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        color: MyColor().borderClr.withOpacity(
-                                          0.15,
-                                        ),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [Icon(Iconsax.share)],
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: MyColor().boxInnerClr,
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: MyColor().borderClr.withOpacity(
+                                        0.15,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                  padding: EdgeInsets.all(10),
+                                  child: Icon(Icons.share),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
 
@@ -644,7 +640,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   // Pagination Loader Guard
-                  if (index >= upComingEventState.upComingEventList.length) {
+                  if (index == upComingEventState.upComingEventList.length) {
                     return Padding(
                       padding: const EdgeInsets.all(16),
                       child: Center(
@@ -655,6 +651,8 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                     );
                   }
                   final list = upComingEventState.upComingEventList[index];
+
+                  print("listlistlistlistlistlistlistlistlistlistlist$list");
 
                   // -------- field name ------------
                   final title = list['title'] ?? "No title";
@@ -1169,6 +1167,7 @@ class _OrganizationHeaderModelState extends State<OrganizationHeaderModel> {
                     );
                   }
                   final gridList = pastEventState.pastEventList[index];
+                  print("gridListgridListgridListgridListgridListgridList$gridList");
                   final featuredImagePath =
                       (gridList['bannerImages'] != null &&
                           gridList['bannerImages'].isNotEmpty)

@@ -6,13 +6,12 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'trending_event_list_event.dart';
-part 'trending_event_list_state.dart';
+part 'virtual_event_event.dart';
+part 'virtual_event_state.dart';
 
-class TrendingEventListBloc
-    extends Bloc<TrendingEventListEvent, TrendingEventListState> {
+class VirtualEventBloc extends Bloc<VirtualEventEvent, VirtualEventState> {
   final ApiController apiController;
-  final List<dynamic> trendingEventList = [];
+  final List<dynamic> virtualEventList = [];
 
   int page = 1;
   final int limit = 2;
@@ -20,14 +19,14 @@ class TrendingEventListBloc
   bool hasMore = true;
   bool isLoadingMore = false;
 
-  TrendingEventListBloc({required this.apiController})
-    : super(TrendingEventListInitial()) {
-    on<FetchTrendingEventList>((event, emit) async {
+  VirtualEventBloc({required this.apiController})
+    : super(VirtualEventInitial()) {
+    on<FetchVirtualEventList>((event, emit) async {
       if (!event.loadMore) {
         page = 1;
         hasMore = true;
-        trendingEventList.clear();
-        emit(TrendingEventListLoading());
+        virtualEventList.clear();
+        emit(VirtualEventListLoading());
       } else {
         if (isLoadingMore || !hasMore) return;
         isLoadingMore = true;
@@ -44,41 +43,42 @@ class TrendingEventListBloc
         final response = event.isLogin
             ? await apiController.getMethodWithoutBody(
                 endPoint:
-                    'events_protec?offset=${(page - 1) * limit}&limit=$limit',
+                    'virtual_events?offset=${(page - 1) * limit}&limit=$limit',
                 token: token!,
               )
             : await apiController.getMethodWithoutBodyAndHeader(
-                endPoint: 'events?offset=${(page - 1) * limit}&limit=$limit',
+                endPoint:
+                    'virtual_events?offset=${(page - 1) * limit}&limit=$limit',
               );
 
         print(
-          "TrendingEventListEventTrendingEventListEventTrendingEventListEvent$response",
+          "VirtualEventBlocVirtualEventBlocVirtualEventBlocVirtualEventBlocVirtualEventBloc$response",
         );
 
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-            trendingEventList.addAll(responseBody['data']);
+            virtualEventList.addAll(responseBody['data']);
             hasMore = responseBody['data'].length == limit;
             isLoadingMore = false;
 
             emit(
-              TrendingEventListSuccess(
-                trendingEventList: List.from(trendingEventList),
+              VirtualEventListSuccess(
+                virtualEventList: List.from(virtualEventList),
                 hasMore: hasMore,
               ),
             );
           } else {
-            emit(TrendingEventListFail(errorMessage: responseBody['message']));
+            emit(VirtualEventListFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch (e) {
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
-        emit(TrendingEventListFail(errorMessage: error));
+        emit(VirtualEventListFail(errorMessage: error));
       } catch (e) {
         emit(
-          TrendingEventListFail(
+          VirtualEventListFail(
             errorMessage: ConfigMessage().unexpectedErrorMsg,
           ),
         );

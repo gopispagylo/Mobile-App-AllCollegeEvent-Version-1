@@ -6,36 +6,34 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
-part 'country_based_event_event.dart';
-part 'country_based_event_state.dart';
+part 'featured_event_event.dart';
+part 'featured_event_state.dart';
 
-class CountryBasedEventBloc
-    extends Bloc<CountryBasedEventEvent, CountryBasedEventState> {
+class FeaturedEventBloc extends Bloc<FeaturedEventEvent, FeaturedEventState> {
   final ApiController apiController;
-  final List<dynamic> countryBasedEventList = [];
+  final List<dynamic> featuredEventList = [];
 
   int page = 1;
-  final int limit = 10;
+  final int limit = 2;
 
   bool hasMore = true;
   bool isLoadingMore = false;
-
-  CountryBasedEventBloc({required this.apiController})
-    : super(CountryBasedEventInitial()) {
-    on<FetchCountryBaseEvent>((event, emit) async {
+  FeaturedEventBloc({required this.apiController})
+    : super(FeaturedEventInitial()) {
+    on<FetchFeaturedEventList>((event, emit) async {
       if (!event.loadMore) {
         page = 1;
         hasMore = true;
-        countryBasedEventList.clear();
-        emit(CountryBasedEventLoading());
+        featuredEventList.clear();
+        emit(FeaturedEventListLoading());
       } else {
-        if (isLoadingMore || !hasMore) {
-          isLoadingMore = true;
-          page++;
-        }
+        if (isLoadingMore || !hasMore) return;
+        isLoadingMore = true;
+        page++;
       }
+
       try {
-        // --------- set a base url ---------
+        // --------- set a base url -------
         await apiController.setBaseUrl();
 
         // ------- token -------
@@ -44,42 +42,42 @@ class CountryBasedEventBloc
         final response = event.isLogin
             ? await apiController.getMethodWithoutBody(
                 endPoint:
-                    'protec_analytics/location?${event.name == 'country' ? 'country' : "city"}=${event.countryCode}&${(page - 1) * limit}&limit=$limit',
+                    'featured_events?offset=${(page - 1) * limit}&limit=$limit',
                 token: token!,
               )
             : await apiController.getMethodWithoutBodyAndHeader(
                 endPoint:
-                    'analytics/location?${event.name == 'country' ? 'country' : "city"}=${event.countryCode}&${(page - 1) * limit}&limit=$limit',
+                    'featured_events?offset=${(page - 1) * limit}&limit=$limit',
               );
 
         print(
-          "CountryBasedEventBlocCountryBasedEventBlocCountryBasedEventBlocCountryBasedEventBloc$response",
+          "FeaturedEventBlocFeaturedEventBlocFeaturedEventBlocFeaturedEventBlocFeaturedEventBloc$response",
         );
 
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
-            countryBasedEventList.addAll(responseBody['data']);
+            featuredEventList.addAll(responseBody['data']);
             hasMore = responseBody['data'].length == limit;
             isLoadingMore = false;
 
             emit(
-              CountryBasedEventSuccess(
-                countryBasedEventList: List.from(countryBasedEventList),
+              FeaturedEventListSuccess(
+                featuredEventList: List.from(featuredEventList),
                 hasMore: hasMore,
               ),
             );
           } else {
-            emit(CountryBasedEventFail(errorMessage: responseBody['message']));
+            emit(FeaturedEventListFail(errorMessage: responseBody['message']));
           }
         }
       } on DioException catch (e) {
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
-        emit(CountryBasedEventFail(errorMessage: error));
+        emit(FeaturedEventListFail(errorMessage: error));
       } catch (e) {
         emit(
-          CountryBasedEventFail(
+          FeaturedEventListFail(
             errorMessage: ConfigMessage().unexpectedErrorMsg,
           ),
         );

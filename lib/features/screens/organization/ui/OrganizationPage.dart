@@ -50,14 +50,6 @@ class _OrganizationPageState extends State<OrganizationPage> {
           statusBarIconBrightness: Brightness.dark,
           statusBarBrightness: Brightness.dark,
         ),
-        title: Text(
-          widget.title,
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-            color: MyColor().blackClr,
-          ),
-        ),
         backgroundColor: Colors.transparent,
         flexibleSpace: ClipRRect(
           child: BackdropFilter(

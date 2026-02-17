@@ -5,7 +5,7 @@ import 'package:all_college_event_app/features/screens/global/bloc/eventTypeBloc
 import 'package:all_college_event_app/features/screens/global/bloc/like/eventLike/event_like_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/popularCityCountry/popular_city_country_bloc.dart';
 import 'package:all_college_event_app/features/screens/global/bloc/saveEvent/removeSaveEventBloc/remove_save_event_bloc.dart';
-import 'package:all_college_event_app/features/screens/home/bloc/eventListBloc/trending_event_list_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/trendingEventBloc/trending_event_list_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/HomeModel.dart';
 import 'package:all_college_event_app/features/screens/profile/model/eventCreate/ui/OrganizationCreateDetailPage.dart';

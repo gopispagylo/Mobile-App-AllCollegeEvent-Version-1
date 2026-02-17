@@ -57,6 +57,11 @@ class UpComingEventBloc extends Bloc<UpComingEventEvent, UpComingEventState> {
         if (response.statusCode == 200) {
           final responseBody = response.data;
           if (responseBody['status'] == true) {
+            // when a data is empty show error
+            if (!event.loadMore && responseBody['data'].isEmpty) {
+              emit(FailUpComingEventList(errorMessage: "Data not found"));
+              return;
+            }
             upComingEventList.addAll(responseBody['data']);
             hasMore = responseBody['data'].length == limit;
             isLoadingMore = false;

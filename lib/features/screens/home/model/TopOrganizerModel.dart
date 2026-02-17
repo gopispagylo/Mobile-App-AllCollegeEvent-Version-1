@@ -2,8 +2,6 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:all_college_event_app/data/toast/AceToast.dart';
-import 'package:all_college_event_app/features/screens/global/bloc/CreateFollowBloc/create_follow_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/bloc/topOrganizerBloc/top_organizer_bloc.dart';
 import 'package:all_college_event_app/features/screens/home/model/TopOrganizerSeeAllModel.dart';
 import 'package:all_college_event_app/features/screens/organization/ui/OrganizationPage.dart';
@@ -15,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
-import 'package:toastification/toastification.dart';
 
 class TopOrganizerModel extends StatefulWidget {
   final bool isLogin;
@@ -76,7 +73,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
               ),
               Container(
                 padding: EdgeInsets.only(bottom: 10, top: 0),
-                height: 221,
+                height: 175,
                 child: ListView.builder(
                   itemCount: min(topOrganizerState.topOrganizer.length, 5),
                   scrollDirection: Axis.horizontal,
@@ -88,6 +85,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                         child: Stack(
                           children: [
                             Container(
+                              alignment: Alignment.center,
                               width: 165,
                               margin: EdgeInsets.only(
                                 left: index == 0 ? 16 : 5,
@@ -99,6 +97,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                                     : 5,
                               ),
                               decoration: BoxDecoration(
+                                // color: Colors.red,
                                 color: MyColor().whiteClr.withOpacity(0.4),
                                 borderRadius: BorderRadiusGeometry.circular(20),
                                 border: Border.all(
@@ -124,12 +123,13 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                                   );
                                 },
                                 child: Stack(
-                                  alignment: AlignmentGeometry.topRight,
+                                  fit: StackFit.expand,
                                   children: [
                                     if (index < 3)
                                       Positioned(
                                         right: 8,
                                         top: 5,
+
                                         child: Image.asset(
                                           index == 0
                                               ? ImagePath().rank_1
@@ -143,7 +143,7 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                                       padding: const EdgeInsets.all(16),
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.center,
                                         children: [
                                           ClipOval(
                                             child: CachedNetworkImage(
@@ -219,84 +219,83 @@ class _TopOrganizerModelState extends State<TopOrganizerModel> {
                                               ),
                                             ],
                                           ),
-                                          SizedBox(height: 10),
-                                          BlocConsumer<
-                                            CreateFollowBloc,
-                                            CreateFollowState
-                                          >(
-                                            listener: (context, followCreateState) {
-                                              final orgId = topOrganizerState
-                                                  .topOrganizer[index]['identity'];
-                                              bool isFollow = topOrganizerState
-                                                  .topOrganizer[index]['identity'];
-                                              if (followCreateState
-                                                      is SuccessCreateFollow &&
-                                                  followCreateState.orgId ==
-                                                      orgId) {
-                                                isFollow =
-                                                    followCreateState.isFollow;
-                                              } else {
-                                                if (followCreateState
-                                                        is FailCreateFollow &&
-                                                    followCreateState.orgId ==
-                                                        orgId) {
-                                                  isFollow = followCreateState
-                                                      .previousValue;
-                                                  FlutterToast().flutterToast(
-                                                    followCreateState
-                                                        .errorMessage,
-                                                    ToastificationType.error,
-                                                    ToastificationStyle.flat,
-                                                  );
-                                                }
-                                              }
-                                            },
-                                            builder: (context, followCreateState) {
-                                              final orgId = topOrganizerState
-                                                  .topOrganizer[index]['identity'];
-                                              bool isFollow = false;
-                                              return SizedBox(
-                                                height: 40,
-                                                width: double.infinity,
-                                                child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: isFollow
-                                                        ? Colors.grey
-                                                        : MyColor().primaryClr,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadiusGeometry.circular(
-                                                            10,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
-                                                    context
-                                                        .read<
-                                                          CreateFollowBloc
-                                                        >()
-                                                        .add(
-                                                          ClickCreateFollow(
-                                                            orgId: orgId,
-                                                            isFollow: isFollow,
-                                                          ),
-                                                        );
-                                                  },
-                                                  child: Text(
-                                                    isFollow
-                                                        ? "Following"
-                                                        : "Follow",
-                                                    style: GoogleFonts.poppins(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 14,
-                                                      color: MyColor().whiteClr,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
+                                          // BlocConsumer<
+                                          //   CreateFollowBloc,
+                                          //   CreateFollowState
+                                          // >(
+                                          //   listener: (context, followCreateState) {
+                                          //     final orgId = topOrganizerState
+                                          //         .topOrganizer[index]['identity'];
+                                          //     bool isFollow = topOrganizerState
+                                          //         .topOrganizer[index]['identity'];
+                                          //     if (followCreateState
+                                          //             is SuccessCreateFollow &&
+                                          //         followCreateState.orgId ==
+                                          //             orgId) {
+                                          //       isFollow =
+                                          //           followCreateState.isFollow;
+                                          //     } else {
+                                          //       if (followCreateState
+                                          //               is FailCreateFollow &&
+                                          //           followCreateState.orgId ==
+                                          //               orgId) {
+                                          //         isFollow = followCreateState
+                                          //             .previousValue;
+                                          //         FlutterToast().flutterToast(
+                                          //           followCreateState
+                                          //               .errorMessage,
+                                          //           ToastificationType.error,
+                                          //           ToastificationStyle.flat,
+                                          //         );
+                                          //       }
+                                          //     }
+                                          //   },
+                                          //   builder: (context, followCreateState) {
+                                          //     final orgId = topOrganizerState
+                                          //         .topOrganizer[index]['identity'];
+                                          //     bool isFollow = false;
+                                          //     return SizedBox(
+                                          //       height: 40,
+                                          //       width: double.infinity,
+                                          //       child: ElevatedButton(
+                                          //         style: ElevatedButton.styleFrom(
+                                          //           backgroundColor: isFollow
+                                          //               ? Colors.grey
+                                          //               : MyColor().primaryClr,
+                                          //           shape: RoundedRectangleBorder(
+                                          //             borderRadius:
+                                          //                 BorderRadiusGeometry.circular(
+                                          //                   10,
+                                          //                 ),
+                                          //           ),
+                                          //         ),
+                                          //         onPressed: () {
+                                          //           context
+                                          //               .read<
+                                          //                 CreateFollowBloc
+                                          //               >()
+                                          //               .add(
+                                          //                 ClickCreateFollow(
+                                          //                   orgId: orgId,
+                                          //                   isFollow: isFollow,
+                                          //                 ),
+                                          //               );
+                                          //         },
+                                          //         child: Text(
+                                          //           isFollow
+                                          //               ? "Following"
+                                          //               : "Follow",
+                                          //           style: GoogleFonts.poppins(
+                                          //             fontWeight:
+                                          //                 FontWeight.w600,
+                                          //             fontSize: 14,
+                                          //             color: MyColor().whiteClr,
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //     );
+                                          //   },
+                                          // ),
                                         ],
                                       ),
                                     ),

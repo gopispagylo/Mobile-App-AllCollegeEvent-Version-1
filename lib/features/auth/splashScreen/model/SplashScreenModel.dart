@@ -73,7 +73,7 @@ class _OnboardingScreenModelState extends State<OnboardingScreenModel>
       vsync: this,
       duration: Duration(milliseconds: 700),
     );
-    scale = Tween<double>(begin: 0.1, end: 1).animate(
+    scale = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: animatedContainer, curve: Curves.easeInOut),
     );
     playAnimation();

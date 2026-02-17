@@ -49,10 +49,16 @@ class FollowingBloc extends Bloc<FollowingEvent, FollowingState> {
           }
         }
       } on DioException catch (e) {
+        print(
+          "FollowingBlocFollowingBlocFollowingBlocFollowingBlocFollowingBloc$e",
+        );
         // ------ error handle config --------
         final error = HandleErrorConfig().handleDioError(e);
         emit(FailFollowing(errorMessage: error));
       } catch (e) {
+        print(
+          "FollowingBlocFollowingBlocFollowingBlocFollowingBlocFollowingBloc$e",
+        );
         emit(FailFollowing(errorMessage: ConfigMessage().unexpectedErrorMsg));
       }
     });

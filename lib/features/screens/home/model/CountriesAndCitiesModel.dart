@@ -349,57 +349,77 @@ class _CountriesAndCitiesModelState extends State<CountriesAndCitiesModel>
                                         mainAxisSpacing: 16,
                                       ),
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        color: MyColor().boxInnerClr,
-                                        border: Border.all(
-                                          color: MyColor().borderClr
-                                              .withOpacity(0.15),
+                                    final list = listCity[index];
+                                    return InkWell(
+                                      borderRadius: BorderRadius.circular(16),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                PopularCityCountryDetail(
+                                                  isLogin: widget.isLogin,
+                                                  country: 'city',
+                                                  countryCode:
+                                                      list['cityIdentity'],
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: MyColor().boxInnerClr,
+                                          border: Border.all(
+                                            color: MyColor().borderClr
+                                                .withOpacity(0.15),
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
                                         ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 16,
-                                        ),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              height: 50,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                color: MyColor().primaryClr,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Text(
-                                                listCity[index]['cityName'][0],
-                                                style: GoogleFonts.poppins(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 18,
-                                                  color: MyColor().whiteClr,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 16,
+                                          ),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.center,
+                                                height: 50,
+                                                width: 50,
+                                                decoration: BoxDecoration(
+                                                  color: MyColor().primaryClr,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Text(
+                                                  listCity[index]['cityName'][0],
+                                                  style: GoogleFonts.poppins(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 18,
+                                                    color: MyColor().whiteClr,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Text(
-                                              listCity[index]['cityName'],
-                                              overflow: TextOverflow.ellipsis,
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w500,
+                                              const SizedBox(height: 10),
+                                              Text(
+                                                listCity[index]['cityName'],
+                                                overflow: TextOverflow.ellipsis,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
-                                            ),
-                                            Text(
-                                              "${listCity[index]['count']} Events",
-                                              style: GoogleFonts.poppins(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
+                                              Text(
+                                                "${listCity[index]['count']} Events",
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     );

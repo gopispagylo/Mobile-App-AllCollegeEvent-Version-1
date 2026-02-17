@@ -16,8 +16,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0-beta+10
-#version: 1.0.0+11
+#version: 1.0.0-beta+12
+version: 1.0.0+13
 
 
 environment:
@@ -65,6 +65,7 @@ dependencies:
   firebase_core:
   firebase_messaging:
   fl_chart:
+  flutter_native_splash:
 
 
 
@@ -128,6 +129,23 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+flutter_native_splash:
+  android: true
+  ios: true
+
+  color: "#FFFFFF"
+  image: assets/image/splash_screen_logo.png
+    #  branding: assets/images/logo.png
+
+  branding_bottom_padding_ios: 35
+
+  color_dark: "#FFFFFF"
+
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#FFFFFF"
+    image: assets/image/splash_screen_logo.png
+  #    branding: assets/images/logo.png
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

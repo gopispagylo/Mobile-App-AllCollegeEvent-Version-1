@@ -1,10 +1,16 @@
+import 'dart:io';
+
+import 'package:all_college_event_app/data/toast/AceToast.dart';
 import 'package:all_college_event_app/features/screens/follow/bloc/FollowingBloc/following_bloc.dart';
+import 'package:all_college_event_app/features/screens/global/bloc/CreateFollowBloc/create_follow_bloc.dart';
 import 'package:all_college_event_app/utlis/color/MyColor.dart';
 import 'package:all_college_event_app/utlis/imagePath/ImagePath.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:toastification/toastification.dart';
 
 class FollowingModel extends StatefulWidget {
   final String followingOrFollowers;
@@ -16,24 +22,6 @@ class FollowingModel extends StatefulWidget {
 }
 
 class _FollowingModelState extends State<FollowingModel> {
-  final List<String> names = [
-    "Nandhini Jaganathan",
-    "Vanisree",
-    "Kanchana Mala",
-    "Sriram",
-    "Prabhavathi",
-    "Siva",
-    "Kanishkaa",
-    "Nandhini Jaganathan",
-    "Vanisree",
-    "Kanchana Mala",
-    "Sriram",
-    "Prabhavathi",
-  ];
-
-  final String imageUrl =
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrWsmpxWIrs7BrP7r6ttYkSKxoingrePM1SidGPsuTi_1BPPAa1_EH-Uw&s";
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -58,8 +46,13 @@ class _FollowingModelState extends State<FollowingModel> {
                 itemCount: followState.followingList.length,
                 itemBuilder: (BuildContext context, int index) {
                   final list = followState.followingList[index];
-                  final name = list['followingOrg']['name'];
-                  final profilePath = list['followingOrg']['profileImage'];
+                  final name = list['followingOrg'] != null
+                      ? list['followingOrg']['name']
+                      : list['name'];
+                  final profilePath = list['followingOrg'] != null
+                      ? list['followingOrg']['profileImage']
+                      : list['profileImage'];
+
                   return Card(
                     margin: EdgeInsets.only(left: 16, right: 16, bottom: 12),
                     color: MyColor().boxInnerClr,
@@ -141,25 +134,76 @@ class _FollowingModelState extends State<FollowingModel> {
                             ),
                           ),
                           SizedBox(width: 10),
-                          Container(
-                            padding: EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 7,
-                              bottom: 7,
-                            ),
-                            decoration: BoxDecoration(
-                              color: MyColor().primaryClr,
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                            child: Text(
-                              'Unfollow',
-                              style: GoogleFonts.poppins(
-                                fontWeight: FontWeight.w500,
-                                color: MyColor().whiteClr,
-                                fontSize: 14,
-                              ),
-                            ),
+
+                          BlocConsumer<CreateFollowBloc, CreateFollowState>(
+                            listener: (context, followState) {
+                              final id = list['followingOrg'] != null
+                                  ? list['followingOrg']['identity']
+                                  : list['identity'];
+                              if (followState is SuccessCreateFollow) {
+                                context.read<FollowingBloc>().add(
+                                  FetchFollowing(
+                                    followingOrFollowers:
+                                        widget.followingOrFollowers,
+                                  ),
+                                );
+                              } else if (followState is FailCreateFollow &&
+                                  followState.orgId == id) {
+                                FlutterToast().flutterToast(
+                                  followState.errorMessage,
+                                  ToastificationType.error,
+                                  ToastificationStyle.flat,
+                                );
+                              }
+                            },
+                            builder: (context, followState) {
+                              final id = list['followingOrg'] != null
+                                  ? list['followingOrg']['identity']
+                                  : list['identity'];
+                              return InkWell(
+                                onTap: () {
+                                  context.read<CreateFollowBloc>().add(
+                                    ClickCreateFollow(
+                                      orgId: id,
+                                      isFollow: false,
+                                      unFollow: true,
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                    top: 7,
+                                    bottom: 7,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: MyColor().primaryClr,
+                                    borderRadius: BorderRadius.circular(100),
+                                  ),
+                                  child:
+                                      followState is LoadingCreateFollow &&
+                                          followState.orgId == id
+                                      ? Center(
+                                          child: Platform.isAndroid
+                                              ? CircularProgressIndicator(
+                                                  color: MyColor().whiteClr,
+                                                )
+                                              : CupertinoActivityIndicator(
+                                                  color: MyColor().whiteClr,
+                                                ),
+                                        )
+                                      : Text(
+                                          'Unfollow',
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w500,
+                                            color: MyColor().whiteClr,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -192,6 +236,7 @@ class _FollowingModelState extends State<FollowingModel> {
                     ),
                     Center(
                       child: Text(
+                        textAlign: TextAlign.center,
                         followState.errorMessage,
                         style: GoogleFonts.poppins(
                           fontWeight: FontWeight.w600,
